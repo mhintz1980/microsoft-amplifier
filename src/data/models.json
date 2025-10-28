@@ -1,0 +1,53 @@
+{
+  "models": [
+    {
+      "model": "DD-4S",
+      "description": "4\" Double Diaphragm",
+      "price": 20000,
+      "bom": { "engine": "HATZ 1B50E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-4S SAFE",
+      "description": "4\" Double Diaphragm (Enclosed)",
+      "price": 25000,
+      "bom": { "engine": "HATZ 1B50E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-6",
+      "description": "6\" Double Diaphragm",
+      "price": 24000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-6 SAFE",
+      "description": "6\" Double Diaphragm (Enclosed)",
+      "price": 30000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.0 }
+    },
+    {
+      "model": "DV-6",
+      "description": "6\" Vacuum Assisted, Double Diaphragm",
+      "price": 29000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.0 }
+    },
+    {
+      "model": "DD-8",
+      "description": "8\" Double Diaphragm",
+      "price": 38000,
+      "bom": { "engine": "HATZ 3H5OT", "gearbox": "RENOLD WM8", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 2, "powder_coat": 7, "assembly": 2, "testing": 0.25, "total_days": 11.25 }
+    },
+    {
+      "model": "RL200",
+      "description": "8\" Rotary Lobe",
+      "price": 45000,
+      "bom": { "engine": "Isuzu FT4 4LE2X", "gearbox": "TWIN DISC RM70", "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    }
+  ]
+}
