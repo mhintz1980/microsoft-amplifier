@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Sidebar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background-color: #0b1120;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, #1e293b 0%, #0b1120 55%, #020617 100%);
+      color: #e2e8f0;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    img,
+    svg {
+      display: block;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .flex-1 {
+      flex: 1 1 0%;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .min-w-0 {
+      min-width: 0;
+    }
+
+    .h-screen {
+      height: 100vh;
+    }
+
+    .h-16 {
+      height: 4rem;
+    }
+
+    .h-10 {
+      height: 2.5rem;
+    }
+
+    .h-8 {
+      height: 2rem;
+    }
+
+    .h-5 {
+      height: 1.25rem;
+    }
+
+    .h-4 {
+      height: 1rem;
+    }
+
+    .h-3 {
+      height: 0.75rem;
+    }
+
+    .w-64 {
+      width: 16rem;
+    }
+
+    .w-72 {
+      width: 18rem;
+    }
+
+    .w-10 {
+      width: 2.5rem;
+    }
+
+    .w-8 {
+      width: 2rem;
+    }
+
+    .w-5 {
+      width: 1.25rem;
+    }
+
+    .w-4 {
+      width: 1rem;
+    }
+
+    .w-3 {
+      width: 0.75rem;
+    }
+
+    .rounded-lg {
+      border-radius: 0.75rem;
+    }
+
+    .rounded-full {
+      border-radius: 9999px;
+    }
+
+    .text-white {
+      color: #f8fafc;
+    }
+
+    .text-slate-300 {
+      color: #cbd5f5;
+    }
+
+    .text-slate-400 {
+      color: #94a3b8;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    .text-xl {
+      font-size: 1.25rem;
+      line-height: 1.5rem;
+    }
+
+    .font-medium {
+      font-weight: 500;
+    }
+
+    .font-semibold {
+      font-weight: 600;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    .bg-blue-600 {
+      background-color: #2563eb;
+    }
+
+    .bg-green-500 {
+      background-color: #22c55e;
+    }
+
+    .bg-gradient-to-b,
+    .bg-gradient-to-br,
+    .bg-gradient-to-r {
+      --gradient-from: #1f2937;
+      --gradient-to: #111827;
+      background-size: 100% 100%;
+    }
+
+    .bg-gradient-to-b {
+      background-image: linear-gradient(to bottom, var(--gradient-from), var(--gradient-to));
+    }
+
+    .bg-gradient-to-br {
+      background-image: linear-gradient(to bottom right, var(--gradient-from), var(--gradient-to));
+    }
+
+    .bg-gradient-to-r {
+      background-image: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
+    }
+
+    .from-slate-900 {
+      --gradient-from: #0f172a;
+    }
+
+    .to-slate-800 {
+      --gradient-to: #1e293b;
+    }
+
+    .from-blue-500 {
+      --gradient-from: #3b82f6;
+    }
+
+    .to-purple-600 {
+      --gradient-to: #9333ea;
+    }
+
+    .from-blue-400 {
+      --gradient-from: #60a5fa;
+    }
+
+    .to-purple-400 {
+      --gradient-to: #c084fc;
+    }
+
+    .from-blue-600 {
+      --gradient-from: #2563eb;
+    }
+
+    .to-blue-700 {
+      --gradient-to: #1d4ed8;
+    }
+
+    .bg-clip-text {
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .text-transparent {
+      color: transparent;
+    }
+
+    .shadow-2xl {
+      box-shadow: 0 35px 70px -20px rgba(15, 23, 42, 0.75);
+    }
+
+    .shadow-lg {
+      box-shadow: 0 20px 45px -20px rgba(15, 23, 42, 0.6);
+    }
+
+    .hover\:shadow-xl:hover {
+      box-shadow: 0 25px 55px -25px rgba(15, 23, 42, 0.8);
+    }
+
+    .transition-all {
+      transition-property: all;
+    }
+
+    .transition-colors {
+      transition-property: color, background-color, border-color, fill, stroke, box-shadow;
+    }
+
+    .duration-300 {
+      transition-duration: 300ms;
+    }
+
+    .duration-200 {
+      transition-duration: 200ms;
+    }
+
+    .ease-in-out {
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover\:w-72:hover {
+      width: 18rem;
+    }
+
+    .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    .p-4 {
+      padding: 1rem;
+    }
+
+    .p-3 {
+      padding: 0.75rem;
+    }
+
+    .p-2 {
+      padding: 0.5rem;
+    }
+
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .px-2 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .py-3 {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+
+    .py-1 {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .space-x-3 > * + * {
+      margin-left: 0.75rem;
+    }
+
+    .space-y-1 > * + * {
+      margin-top: 0.25rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .my-4 {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    .overflow-y-auto {
+      overflow-y: auto;
+    }
+
+    .border-b {
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    }
+
+    .border-t {
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
+
+    .border-slate-700\/50 {
+      border-color: rgba(51, 65, 85, 0.5);
+    }
+
+    .hover\:bg-slate-700\/50:hover {
+      background-color: rgba(51, 65, 85, 0.5);
+    }
+
+    .hover\:text-white:hover {
+      color: #f8fafc;
+    }
+
+    .hover\:from-blue-700:hover {
+      --gradient-from: #1d4ed8;
+    }
+
+    .hover\:to-blue-800:hover {
+      --gradient-to: #1e40af;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .absolute {
+      position: absolute;
+    }
+
+    .-bottom-1 {
+      bottom: -0.25rem;
+    }
+
+    .-right-1 {
+      right: -0.25rem;
+    }
+
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    .ring-2 {
+      box-shadow: 0 0 0 2px var(--ring-color, rgba(148, 163, 184, 0.6));
+    }
+
+    .ring-blue-500 {
+      --ring-color: #3b82f6;
+    }
+
+    .ring-offset-2 {
+      box-shadow: 0 0 0 2px var(--ring-offset-color, #0f172a) inset, 0 0 0 4px var(--ring-color, rgba(148, 163, 184, 0.6));
+    }
+
+    .ring-offset-slate-800 {
+      --ring-offset-color: #1e293b;
+    }
+
+    .object-cover {
+      object-fit: cover;
+    }
+
+    .lg\\:hidden {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (min-width: 1024px) {
+      .lg\\:hidden {
+        display: none !important;
+      }
+    }
+
+    aside {
+      border-radius: 1.25rem;
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body>
+  <aside class="flex h-screen w-64 flex-col bg-gradient-to-b from-slate-900 to-slate-800 text-white shadow-2xl transition-all duration-300 ease-in-out hover:w-72 group">
+    <div class="flex h-16 items-center justify-between px-6 border-b border-slate-700/50">
+      <div class="flex items-center space-x-3">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Dashboard</span>
+      </div>
+      <button class="rounded-lg p-2 hover:bg-slate-700/50 transition-colors duration-200 lg:hidden" aria-label="Close sidebar">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto p-4 space-y-2" aria-label="Primary">
+      <div class="space-y-1">
+        <a href="#" class="flex items-center space-x-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-white shadow-lg transition-all duration-200 ease-in-out hover:from-blue-700 hover:to-blue-800 hover:shadow-xl">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span class="font-medium">Dashboard</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span class="font-medium">Analytics</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span class="font-medium">Users</span>
+          <span class="ml-auto rounded-full bg-blue-600 px-2 py-1 text-xs font-semibold">12</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          <span class="font-medium">Projects</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="font-medium">Calendar</span>
+        </a>
+      </div>
+
+      <div class="my-4 border-t border-slate-700/50"></div>
+
+      <div class="space-y-1">
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span class="font-medium">Settings</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 rounded-lg px-4 py-3 text-slate-300 transition-all duration-200 ease-in-out hover:bg-slate-700/50 hover:text-white">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span class="font-medium">Documentation</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="border-t border-slate-700/50 p-4">
+      <div class="flex items-center space-x-3 rounded-lg p-3 hover:bg-slate-700/50 transition-colors duration-200 cursor-pointer">
+        <div class="relative">
+          <img class="h-10 w-10 rounded-full object-cover ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-800" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt="John Doe" loading="lazy" />
+          <div class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-green-500 ring-2 ring-offset-2 ring-offset-slate-800"></div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">John Doe</p>
+          <p class="text-xs text-slate-400 truncate">john@example.com</p>
+        </div>
+        <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+  </aside>
+</body>
+</html>

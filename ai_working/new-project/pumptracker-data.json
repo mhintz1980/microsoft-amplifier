@@ -1,0 +1,141 @@
+{
+  "models": [
+    {
+      "model": "DD-4S",
+      "description": "4” Double Diaphragm",
+      "price": 20000,
+      "bom": { "engine": "HATZ 1B50E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-4S SAFE",
+      "description": "4” Double Diaphragm (Enclosed)",
+      "price": 25000,
+      "bom": { "engine": "HATZ 1B50E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-6",
+      "description": "6” Double Diaphragm",
+      "price": 24000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DD-6 SAFE",
+      "description": "6” Double Diaphragm (Enclosed)",
+      "price": 30000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.0 }
+    },
+    {
+      "model": "DV-6",
+      "description": "6” Vacuum Assisted, Double Diaphragm",
+      "price": 29000,
+      "bom": { "engine": "HATZ 1D90E", "gearbox": "RENOLD WM6", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.0 }
+    },
+    {
+      "model": "DD-8",
+      "description": "8” Double Diaphragm",
+      "price": 38000,
+      "bom": { "engine": "HATZ 3H5OT", "gearbox": "RENOLD WM8", "control_panel": "DSEE050" },
+      "lead_times": { "fabrication": 2, "powder_coat": 7, "assembly": 2, "testing": 0.25, "total_days": 11.25 }
+    },
+    {
+      "model": "RL200",
+      "description": "8” Rotary Lobe",
+      "price": 45000,
+      "bom": { "engine": "Isuzu FT4 4LE2X", "gearbox": "TWIN DISC RM70", "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "RL200-SAFE",
+      "description": "8” Rotary Lobe Enclosed",
+      "price": 49500,
+      "bom": { "engine": "Isuzu FT4 4LE2X", "gearbox": "TWIN DISC RM70", "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "RL300",
+      "description": "12” Rotary Lobe",
+      "price": 50000,
+      "bom": { "engine": "Perkins 904J", "gearbox": "TWIN DISC RM100", "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "RL300-SAFE",
+      "description": "12” Rotary Lobe Enclosed",
+      "price": 55000,
+      "bom": { "engine": "Perkins 904J", "gearbox": "TWIN DISC RM100", "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "HC-150",
+      "description": "6” High CFM High Vacuum Centrifugal Pump",
+      "price": 36000,
+      "bom": { "engine": "HATZ 3H5OTIC", "gearbox": null, "control_panel": "CATTRON MCU-C" },
+      "lead_times": { "fabrication": 2, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.5 }
+    },
+    {
+      "model": "HC-150-SAFE",
+      "description": "6” High CFM High Vacuum Centrifugal Pump Enclosed",
+      "price": null,
+      "bom": { "engine": "HATZ 3H5OTIC", "gearbox": null, "control_panel": "CATTRON MCU-C" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1.25, "testing": 0.25, "total_days": 10.0 }
+    },
+    {
+      "model": "PP-150",
+      "description": "6” Piston Pump Enclosed",
+      "price": 25000,
+      "bom": { "engine": "HATZ 1D90-EZ", "gearbox": null, "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "SIP-150",
+      "description": "6” Screw Impeller Centrifugal Pump",
+      "price": 30000,
+      "bom": { "engine": "HATZ 3H5OTIC", "gearbox": null, "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "DP-150",
+      "description": "6” Vacuum Assisted Centrifugal Trash Pump",
+      "price": 25000,
+      "bom": { "engine": "Deutz TCD 2.9", "gearbox": null, "control_panel": "MPC-10" },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    },
+    {
+      "model": "HP-150",
+      "description": "6” x 3” High Pressure Centrifugal Pump",
+      "price": 25000,
+      "bom": { "engine": null, "gearbox": null, "control_panel": null },
+      "lead_times": { "fabrication": 1.5, "powder_coat": 7, "assembly": 1, "testing": 0.25, "total_days": 9.75 }
+    }
+  ],
+  "customers": [
+    "United Rentals",
+    "Sunbelt Rentals",
+    "Herc Rentals",
+    "Valencourt",
+    "Rain For Rent",
+    "Equipment Share",
+    "H&E Equipment",
+    "Carter CAT",
+    "Ring Power CAT",
+    "Thompson CAT",
+    "Texas First CAT",
+    "Yancey CAT",
+    "Pioneer Pump",
+    "Nat. Tank & Equip.",
+    "SunState"
+  ],
+  "productionStages": [
+    "Not Started",
+    "Fabrication",
+    "Powder Coat",
+    "Assembly",
+    "Testing",
+    "Shipping"
+  ]
+}

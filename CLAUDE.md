@@ -225,3 +225,39 @@ When working with documents that contain references:
 4. **Track which articles informed which decisions** for learning
 
 This ensures we build on the full depth of ideas, not just their summaries.
+
+# Frontend Aesthetics Guidance
+
+When creating frontend interfaces, avoid generic "AI slop" aesthetics and focus on creating distinctive, creative designs that surprise and delight:
+
+## Typography
+- Choose beautiful, unique, and interesting fonts
+- Avoid generic fonts like Arial, Inter, Roboto, system fonts
+- Opt for distinctive choices that elevate the frontend's aesthetics
+- Avoid converging on common choices like Space Grotesk
+
+## Color & Theme
+- Commit to a cohesive aesthetic with CSS variables for consistency
+- Use dominant colors with sharp accents over timid, evenly-distributed palettes
+- Draw inspiration from IDE themes and cultural aesthetics
+- Avoid clichéd color schemes (particularly purple gradients on white backgrounds)
+- Vary between light and dark themes
+
+## Motion & Animation
+- Use animations for effects and micro-interactions
+- Prioritize CSS-only solutions for HTML
+- Use Motion library for React when available
+- Focus on high-impact moments: one well-orchestrated page load with staggered reveals creates more delight than scattered micro-interactions
+- Use animation-delay for coordinated reveals
+
+## Backgrounds
+- Create atmosphere and depth rather than defaulting to solid colors
+- Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic
+
+## Layout & Design Patterns
+- Avoid predictable layouts and component patterns
+- Create context-specific character in design
+- Think outside the box and make unexpected choices that feel genuinely designed for the context
+
+## Key Principle
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. Avoid converging on common design patterns - it is critical to think outside the box!

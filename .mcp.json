@@ -26,6 +26,17 @@
         "git+https://github.com/BeehiveInnovations/zen-mcp-server.git",
         "zen-mcp-server"
       ]
+    },
+    "database-server": {
+      "command": "uvx",
+      "args": ["--with", "mcp-server-sqlite", "mcp-server-sqlite", "--db-path", "/home/markimus/projects/microsoft-amplifier/database.db"],
+      "env": {
+        "DATABASE_PATH": "/home/markimus/projects/microsoft-amplifier/database.db"
+      }
+    },
+    "github-mcp": {
+      "command": "python3",
+      "args": ["/home/markimus/projects/microsoft-amplifier/github_mcp_server.py"]
     }
   }
 }
