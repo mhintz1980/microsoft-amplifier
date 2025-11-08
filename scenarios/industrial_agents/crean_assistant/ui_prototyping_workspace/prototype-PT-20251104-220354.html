@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PumpTracker Scheduling UI Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .panel h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary-color);
+        }
+
+        .pump-card {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: move;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .pump-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+
+        .pump-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        .pump-model {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .pump-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .pump-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .customer {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .timeline {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 2px dashed var(--border-color);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+        }
+
+        .timeline.drag-over {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--primary-color);
+        }
+
+        .timeline.scheduled {
+            border-style: solid;
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+            color: var(--text-color);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-not-started { background: #94a3b8; }
+        .status-fabrication { background: var(--primary-color); }
+        .status-assembly { background: var(--warning-color); }
+        .status-shipping { background: var(--success-color); }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            padding: 2px;
+            border-radius: 8px;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .calendar-day.today {
+            background: var(--accent-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.has-jobs {
+            background: linear-gradient(135deg, white, rgba(37, 99, 235, 0.1));
+            border: 1px solid var(--primary-color);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            margin: 12px 0;
+        }
+
+        .drop-zone.active {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--primary-color);
+        }
+
+        .prototype-info {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .prototype-info h3 {
+            margin-bottom: 8px;
+            font-size: 1.25rem;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                margin-bottom: 16px;
+            }
+        }
+
+        .drag-handle {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            cursor: move;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .scheduled-item {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 PumpTracker Scheduling UI</h1>
+            <p>Drag & Drop Pump Production Scheduling Prototype</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Panel: Available Pumps -->
+            <div class="panel">
+                <h2>📦 Available Pumps</h2>
+                <div id="pump-list">
+                    
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DD-4S</div>
+                    <div class="pump-description">4” Double Diaphragm</div>
+                    <div class="pump-meta">
+                        <span class="customer">Yancey CAT</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DD-4S SAFE</div>
+                    <div class="pump-description">4” Double Diaphragm (Enclosed)</div>
+                    <div class="pump-meta">
+                        <span class="customer">Sunbelt Rentals</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DD-6</div>
+                    <div class="pump-description">6” Double Diaphragm</div>
+                    <div class="pump-meta">
+                        <span class="customer">Carter CAT</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DD-6 SAFE</div>
+                    <div class="pump-description">6” Double Diaphragm (Enclosed)</div>
+                    <div class="pump-meta">
+                        <span class="customer">Pioneer Pump</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DV-6</div>
+                    <div class="pump-description">6” Vacuum Assisted, Double Diaphragm</div>
+                    <div class="pump-meta">
+                        <span class="customer">United Rentals</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+
+                <div class="pump-card" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div class="pump-model">DD-8</div>
+                    <div class="pump-description">8” Double Diaphragm</div>
+                    <div class="pump-meta">
+                        <span class="customer">Texas First CAT</span>
+                        <span class="status-indicator status-not-started"></span>
+                    </div>
+                </div>
+            
+                </div>
+            </div>
+
+            <!-- Center Panel: Scheduling Area -->
+            <div class="panel">
+                <h2>📅 Production Schedule</h2>
+                <div id="schedule-area">
+                    
+                <div class="timeline" id="timeline-monday">
+                    Monday - Drop pumps here
+                </div>
+            
+
+                <div class="timeline" id="timeline-tuesday">
+                    Tuesday - Drop pumps here
+                </div>
+            
+
+                <div class="timeline" id="timeline-wednesday">
+                    Wednesday - Drop pumps here
+                </div>
+            
+
+                <div class="timeline" id="timeline-thursday">
+                    Thursday - Drop pumps here
+                </div>
+            
+
+                <div class="timeline" id="timeline-friday">
+                    Friday - Drop pumps here
+                </div>
+            
+                </div>
+
+                <h3 style="margin-top: 24px;">📆 Calendar View</h3>
+                <div class="calendar" id="calendar">
+                    <div class="calendar-day">1</div>
+<div class="calendar-day">2</div>
+<div class="calendar-day">3</div>
+<div class="calendar-day">4</div>
+<div class="calendar-day">5</div>
+<div class="calendar-day">6</div>
+<div class="calendar-day">7</div>
+<div class="calendar-day">8</div>
+<div class="calendar-day">9</div>
+<div class="calendar-day">10</div>
+<div class="calendar-day">11</div>
+<div class="calendar-day">12</div>
+<div class="calendar-day">13</div>
+<div class="calendar-day has-jobs">14</div>
+<div class="calendar-day today has-jobs">15</div>
+<div class="calendar-day has-jobs">16</div>
+<div class="calendar-day">17</div>
+<div class="calendar-day">18</div>
+<div class="calendar-day">19</div>
+<div class="calendar-day">20</div>
+<div class="calendar-day has-jobs">21</div>
+<div class="calendar-day has-jobs">22</div>
+<div class="calendar-day">23</div>
+<div class="calendar-day">24</div>
+<div class="calendar-day">25</div>
+<div class="calendar-day">26</div>
+<div class="calendar-day">27</div>
+<div class="calendar-day">28</div>
+<div class="calendar-day">29</div>
+<div class="calendar-day">30</div>
+<div class="calendar-day">31</div>
+<div class="calendar-day"></div>
+<div class="calendar-day"></div>
+<div class="calendar-day"></div>
+<div class="calendar-day"></div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Schedule Details -->
+            <div class="panel">
+                <h2>📊 Schedule Overview</h2>
+                <div id="schedule-summary">
+                    <div style="margin-bottom: 16px;">
+                        <strong>Total Scheduled:</strong> <span id="scheduled-count">0</span> pumps
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <strong>Production Capacity:</strong> 3 pumps/day
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <strong>Next Available:</strong> Tomorrow
+                    </div>
+                </div>
+
+                <h3>🎯 Quick Actions</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button onclick="clearSchedule()" style="padding: 8px 16px; background: var(--error-color); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Clear Schedule
+                    </button>
+                    <button onclick="autoSchedule()" style="padding: 8px 16px; background: var(--success-color); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Auto Schedule
+                    </button>
+                    <button onclick="exportSchedule()" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Export Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="prototype-info">
+            <h3>🎨 UI Concept 1: Design Thinking Approach</h3>
+            <p>UI Rapid Prototyping Assistant - CreaTech Powered</p>
+            <div class="confidence-badge">
+                Confidence: 80.0% |
+                Complexity: Medium |
+                Est. Time: 3-5 days
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Drag and Drop functionality
+        let draggedElement = null;
+        let scheduledPumps = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+            updateScheduleCount();
+        });
+
+        function initializeDragAndDrop() {
+            // Make pump cards draggable
+            document.querySelectorAll('.pump-card').forEach(card => {
+                card.draggable = true;
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+            });
+
+            // Make timelines droppable
+            document.querySelectorAll('.timeline').forEach(timeline => {
+                timeline.addEventListener('dragover', handleDragOver);
+                timeline.addEventListener('drop', handleDrop);
+                timeline.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            e.target.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+
+            const timeline = e.target.closest('.timeline');
+            if (timeline && draggedElement) {
+                timeline.classList.remove('drag-over');
+                timeline.classList.add('scheduled');
+
+                // Add scheduled item to timeline
+                const pumpInfo = draggedElement.querySelector('.pump-model').textContent;
+                const scheduledItem = document.createElement('div');
+                scheduledItem.className = 'scheduled-item';
+                scheduledItem.textContent = pumpInfo;
+                timeline.appendChild(scheduledItem);
+
+                // Hide original pump card
+                draggedElement.style.display = 'none';
+
+                // Update scheduled pumps array
+                scheduledPumps.push({
+                    model: pumpInfo,
+                    timeline: timeline.id
+                });
+
+                updateScheduleCount();
+                showSuccessFeedback(timeline);
+            }
+
+            return false;
+        }
+
+        function updateScheduleCount() {
+            document.getElementById('scheduled-count').textContent = scheduledPumps.length;
+        }
+
+        function showSuccessFeedback(element) {
+            element.style.background = 'rgba(16, 185, 129, 0.2)';
+            setTimeout(() => {
+                element.style.background = '';
+            }, 1000);
+        }
+
+        function clearSchedule() {
+            if (confirm('Clear all scheduled pumps?')) {
+                document.querySelectorAll('.timeline').forEach(timeline => {
+                    timeline.classList.remove('scheduled');
+                    timeline.innerHTML = timeline.id.includes('monday') ? 'Monday - Drop pumps here' :
+                                    timeline.id.includes('tuesday') ? 'Tuesday - Drop pumps here' : 'Drop pumps here';
+                });
+
+                document.querySelectorAll('.pump-card').forEach(card => {
+                    card.style.display = '';
+                });
+
+                scheduledPumps = [];
+                updateScheduleCount();
+            }
+        }
+
+        function autoSchedule() {
+            const availablePumps = document.querySelectorAll('.pump-card:not([style*="display: none"])');
+            const timelines = document.querySelectorAll('.timeline');
+
+            availablePumps.forEach((pump, index) => {
+                setTimeout(() => {
+                    if (index < timelines.length) {
+                        const timeline = timelines[index];
+                        const pumpInfo = pump.querySelector('.pump-model').textContent;
+
+                        timeline.classList.add('scheduled');
+                        timeline.innerHTML = `<div class="scheduled-item">${pumpInfo}</div>`;
+                        pump.style.display = 'none';
+
+                        scheduledPumps.push({
+                            model: pumpInfo,
+                            timeline: timeline.id
+                        });
+
+                        updateScheduleCount();
+                        showSuccessFeedback(timeline);
+                    }
+                }, index * 300);
+            });
+        }
+
+        function exportSchedule() {
+            const scheduleData = {
+                scheduled_pumps: scheduledPumps,
+                total_count: scheduledPumps.length,
+                export_date: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(scheduleData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = 'pumptracker-schedule.json';
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+    </script>
+</body>
+</html>
+        

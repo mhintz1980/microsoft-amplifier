@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "browser-use": {
-      "command": "uvx",
-      "args": ["browser-use[cli]==0.5.10", "--mcp"],
-      "env": {
-        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
-      }
-    },
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
@@ -15,28 +8,16 @@
       "type": "http",
       "url": "https://mcp.deepwiki.com/mcp"
     },
-    "repomix": {
-      "command": "npx",
-      "args": ["-y", "repomix", "--mcp"]
-    },
     "zen": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/BeehiveInnovations/zen-mcp-server.git",
-        "zen-mcp-server"
-      ]
-    },
-    "database-server": {
-      "command": "uvx",
-      "args": ["--with", "mcp-server-sqlite", "mcp-server-sqlite", "--db-path", "/home/markimus/projects/microsoft-amplifier/database.db"],
+      "command": "bash",
+      "args": ["-c", "for p in $(which uvx 2>/dev/null) $HOME/.local/bin/uvx /opt/homebrew/bin/uvx /usr/local/bin/uvx uvx; do [ -x \"$p\" ] && exec \"$p\" --from git+https://github.com/BeehiveInnovations/zen-mcp-server.git zen-mcp-server; done; echo 'uvx not found' >&2; exit 1"],
       "env": {
-        "DATABASE_PATH": "/home/markimus/projects/microsoft-amplifier/database.db"
+        "PATH": "/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:~/.local/bin",
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "DISABLED_TOOLS": "analyze,refactor,testgen,secaudit,docgen,tracer",
+        "DEFAULT_MODEL": "auto"
       }
-    },
-    "github-mcp": {
-      "command": "python3",
-      "args": ["/home/markimus/projects/microsoft-amplifier/github_mcp_server.py"]
     }
   }
 }

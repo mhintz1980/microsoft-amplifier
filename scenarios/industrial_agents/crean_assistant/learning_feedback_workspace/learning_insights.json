@@ -1,0 +1,122 @@
+[
+  {
+    "pattern": "high_user_satisfaction",
+    "confidence": 0.8,
+    "frequency": 1,
+    "impact_score": 0.7,
+    "actionable": true,
+    "recommendation": "Document successful patterns for reuse"
+  },
+  {
+    "pattern": "improvement_suggestion: add keyboard shortcuts",
+    "confidence": 0.6,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Address: Add keyboard shortcuts"
+  },
+  {
+    "pattern": "improvement_suggestion: implement bulk scheduling",
+    "confidence": 0.6,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Address: Implement bulk scheduling"
+  },
+  {
+    "pattern": "success_factor: intuitive drag & drop",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Reinforce: Intuitive drag & drop"
+  },
+  {
+    "pattern": "success_factor: clear visual hierarchy",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Reinforce: Clear visual hierarchy"
+  },
+  {
+    "pattern": "success_factor: professional design",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Reinforce: Professional design"
+  },
+  {
+    "pattern": "success_pattern: clear requirements definition",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Document and replicate: Clear requirements definition"
+  },
+  {
+    "pattern": "success_pattern: effective agent coordination",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Document and replicate: Effective agent coordination"
+  },
+  {
+    "pattern": "success_pattern: rapid prototyping approach",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Document and replicate: Rapid prototyping approach"
+  },
+  {
+    "pattern": "success_pattern: user-centered design focus",
+    "confidence": 0.7,
+    "frequency": 1,
+    "impact_score": 0.6,
+    "actionable": true,
+    "recommendation": "Document and replicate: User-centered design focus"
+  },
+  {
+    "pattern": "challenge_pattern: initial scope management",
+    "confidence": 0.6,
+    "frequency": 1,
+    "impact_score": 0.7,
+    "actionable": true,
+    "recommendation": "Address recurring challenge: Initial scope management"
+  },
+  {
+    "pattern": "challenge_pattern: technical constraint balancing",
+    "confidence": 0.6,
+    "frequency": 1,
+    "impact_score": 0.7,
+    "actionable": true,
+    "recommendation": "Address recurring challenge: Technical constraint balancing"
+  },
+  {
+    "pattern": "lesson_learned: early ui prototyping prevents costly mistakes",
+    "confidence": 0.8,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Incorporate lesson: Early UI prototyping prevents costly mistakes"
+  },
+  {
+    "pattern": "lesson_learned: multi-agent coordination produces comprehensive solutions",
+    "confidence": 0.8,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Incorporate lesson: Multi-agent coordination produces comprehensive solutions"
+  },
+  {
+    "pattern": "lesson_learned: user feedback integration is critical",
+    "confidence": 0.8,
+    "frequency": 1,
+    "impact_score": 0.5,
+    "actionable": true,
+    "recommendation": "Incorporate lesson: User feedback integration is critical"
+  }
+]

@@ -31,7 +31,37 @@ This development philosophy values clear documentation, readable code, and belie
 - **Scrappy but structured**: Lightweight implementations of solid architectural foundations
 - **End-to-end thinking**: Focus on complete flows rather than perfect components
 
-### 3. Library vs Custom Code
+### 3. Agent-First Development
+
+Based on Anthropic's research, modern software development must prioritize agent consumption alongside human usability:
+
+- **Agent-Computer Interfaces**: Design tools specifically for AI agent usage patterns
+- **Token Efficiency**: Optimize for minimal context usage while maintaining information content
+- **Structured Responses**: Use consistent, parseable formats rather than verbose human language
+- **Systematic Evaluation**: Measure tool performance with agent-specific metrics (success rate, ergonomics)
+- **Progressive Disclosure**: Provide summary views with optional detailed expansion
+
+**Agent-Optimized Tool Characteristics:**
+- Response format enums for token efficiency
+- Natural language identifiers instead of technical UUIDs
+- Consistent error handling patterns
+- Measurable performance characteristics (>90% success rate, <1000 tokens per call)
+
+### 4. Context Engineering
+
+Implement intelligent context management based on conversation length and complexity:
+
+- **Progressive Compression**: Multi-level context summarization (FULL → SUMMARY → ESSENTIAL → METADATA)
+- **Just-in-Time Retrieval**: Load relevant context based on current task requirements
+- **Memory Consolidation**: Automatically extract and store key insights from long conversations
+- **Semantic Importance Scoring**: Prioritize context chunks by relevance and importance
+
+**Target Compression Ratios:**
+- SUMMARY level: 70% token reduction
+- ESSENTIAL level: 90% token reduction
+- METADATA level: 95% token reduction
+
+### 5. Library vs Custom Code
 
 Choosing between custom code and external libraries is a judgment call that evolves with your requirements. There's no rigid rule - it's about understanding trade-offs and being willing to revisit decisions as needs change.
 

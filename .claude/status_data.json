@@ -1,0 +1,19 @@
+{
+  "context_usage": 0,
+  "operation_count": 2,
+  "token_efficiency_history": [
+    {
+      "timestamp": 1762566308.712498,
+      "tokens": 3000,
+      "type": "ENHANCE_STATUS_PERSISTENCE"
+    },
+    {
+      "timestamp": 1762566344.0280232,
+      "tokens": 1500,
+      "type": "CREATE_WORKFLOW_WRAPPER"
+    }
+  ],
+  "last_operation_context": 0,
+  "learning_patterns": [],
+  "last_updated": 1762566344.0280247
+}

@@ -48,11 +48,27 @@ default: ## Show essential commands
 	@echo "  make transcribe      Transcribe audio/video files or YouTube URLs"
 	@echo "  make transcribe-index Generate index of all transcripts"
 	@echo ""
+	@echo "CAD Design Review:"
+	@echo "  make cad-reviewer FILE=file.step OUTPUT=output/   Analyze CAD design"
+	@echo "  make cad-reviewer-batch DIR=designs/ OUTPUT=output/  Batch analyze CAD files"
+	@echo "  make cad-reviewer-train DATA=data/ MODEL=models/  Train ML models"
+	@echo "  make cad-reviewer-validate MODEL=models/ TEST_DATA=test/  Validate models"
+	@echo "  make cad-reviewer-setup  Setup CAD reviewer environment"
+	@echo ""
 	@echo "Article Illustration:"
 	@echo "  make illustrate      Generate AI illustrations for article"
 	@echo ""
 	@echo "Web to Markdown:"
 	@echo "  make web-to-md       Convert web pages to markdown"
+	@echo ""
+	@echo "Industrial Agents:"
+	@echo "  make diesel-expert-query Q=\"...\" Query diesel engine knowledge base"
+	@echo "  make diesel-expert-interactive Start interactive Q&A mode"
+	@echo "  make diesel-expert-train Train on new documents"
+	@echo "  make diesel-expert-stats Show knowledge base statistics"
+	@echo ""
+	@echo "Industrial Frontend:"
+	@echo "  make industrial-ui     Generate industrial frontend interface"
 	@echo ""
 	@echo "Other:"
 	@echo "  make clean          Clean build artifacts"
@@ -523,6 +539,84 @@ blog-write-example: ## Run blog writer with example data
 	@uv run python -m scenarios.blog_writer \
 		--idea scenarios/blog_writer/tests/sample_brain_dump.md \
 		--writings-dir scenarios/blog_writer/tests/sample_writings/
+# Industrial Frontend
+industrial-ui: ## Generate industrial frontend interface. Usage: make industrial-ui TYPE=dashboard FRAMEWORK=react TEMPLATE=pump-monitoring OUTPUT=factory_dashboard/
+	@if [ -z "$(TYPE)" ]; then 
+		echo "Error: Please provide interface type. Usage: make industrial-ui TYPE=dashboard FRAMEWORK=react TEMPLATE=pump-monitoring OUTPUT=factory_dashboard/"; 
+		exit 1; 
+	fi
+	@if [ -z "$(FRAMEWORK)" ]; then 
+		echo "Error: Please provide framework. Usage: make industrial-ui TYPE=dashboard FRAMEWORK=react TEMPLATE=pump-monitoring OUTPUT=factory_dashboard/"; 
+		exit 1; 
+	fi
+	@if [ -z "$(TEMPLATE)" ]; then 
+		echo "Error: Please provide template. Usage: make industrial-ui TYPE=dashboard FRAMEWORK=react TEMPLATE=pump-monitoring OUTPUT=factory_dashboard/"; 
+		exit 1; 
+	fi
+	@if [ -z "$(OUTPUT)" ]; then 
+		echo "Error: Please provide output directory. Usage: make industrial-ui TYPE=dashboard FRAMEWORK=react TEMPLATE=pump-monitoring OUTPUT=factory_dashboard/"; 
+		exit 1; 
+	fi
+	@echo "🏭 Generating industrial frontend interface..."; 
+	echo "  Type: $(TYPE)"; 
+	echo "  Framework: $(FRAMEWORK)"; 
+	echo "  Template: $(TEMPLATE)"; 
+	echo "  Output: $(OUTPUT)"; 
+	if [ -n "$(FACTORY_OPTS)" ]; then echo "  Factory Options: $(FACTORY_OPTS)"; fi; 
+	if [ -n "$(THEME)" ]; then echo "  Theme: $(THEME)"; fi; 
+	if [ -n "$(DATA_SOURCE)" ]; then echo "  Data Source: $(DATA_SOURCE)"; fi; 
+	uv run python -m scenarios.industrial_agents.frontend_assistant 
+		--type "$(TYPE)" 
+		--framework "$(FRAMEWORK)" 
+		--template "$(TEMPLATE)" 
+		--output "$(OUTPUT)" 
+		$(if $(FACTORY_OPTS),--factory-opts $(FACTORY_OPTS),) 
+		$(if $(THEME),--theme "$(THEME)",) 
+		$(if $(DATA_SOURCE),--data-source "$(DATA_SOURCE)",) 
+		$(if $(FEATURES),--features $(FEATURES),)
+
+industrial-ui-example: ## Generate example pump monitoring dashboard
+	@echo "🏭 Generating example pump monitoring dashboard..."
+	@uv run python -m scenarios.industrial_agents.frontend_assistant 
+		--type dashboard 
+		--framework react 
+		--template pump-monitoring 
+		--output example_pump_dashboard/ 
+		--factory-opts touch-friendly high-contrast offline-first 
+		--theme factory-dark 
+		--data-source mock 
+		--features alerts real-time
+
+industrial-ui-list: ## List available industrial interface templates
+	@echo "🏭 Available Industrial Interface Templates:"
+	@echo ""
+	@echo "📊 Dashboards:"
+	@echo "  • pump-monitoring    - Real-time pump performance monitoring"
+	@echo "  • system-overview    - Factory system status overview"
+	@echo "  • quality-control    - Quality metrics dashboard"
+	@echo "  • energy-monitoring  - Energy consumption monitoring"
+	@echo ""
+	@echo "🎛️ Control Panels:"
+	@echo "  • equipment-control  - Touch-friendly equipment control"
+	@echo "  • valve-control      - Valve positioning interface"
+	@echo "  • motor-control      - Motor speed and direction controls"
+	@echo "  • hmi-interface      - Human-machine interface panel"
+	@echo ""
+	@echo "🧮 Calculators:"
+	@echo "  • pipe-sizing        - Industrial pipe sizing calculator"
+	@echo "  • flow-calculator    - Flow rate and pressure calculations"
+	@echo "  • energy-calculator  - Energy consumption calculator"
+	@echo "  • conversion-tools   - Unit conversion utilities"
+	@echo ""
+	@echo "📚 Documentation:"
+	@echo "  • technical-manual   - Interactive technical documentation"
+	@echo "  • maintenance-guide  - Equipment maintenance procedures"
+	@echo "  • safety-procedures  - Safety protocol documentation"
+	@echo ""
+	@echo "🛠️ Frameworks: react, vue, streamlit"
+	@echo "🎨 Themes: factory-dark, factory-light, high-contrast"
+	@echo "🏭 Factory Options: touch-friendly, high-contrast, offline-first, ruggedized, accessibility"
+
 
 # Tips Synthesis
 tips-synthesizer: ## Synthesize tips from markdown files into cohesive document. Usage: make tips-synthesizer INPUT=tips_dir/ OUTPUT=guide.md [RESUME=true] [VERBOSE=true]
@@ -666,3 +760,44 @@ dot-to-mermaid: ## Convert DOT files to Mermaid format. Usage: make dot-to-merma
 	mkdir -p "$$SESSION_DIR"; \
 	echo "Converting DOT files to Mermaid format..."; \
 	uv run python -m ai_working.dot_to_mermaid.cli "$(INPUT)" --session-file "$$SESSION_DIR/session.json"
+
+# Diesel Engine Expert RAG Agent
+diesel-expert-install: ## Install diesel engine expert dependencies
+	@cd scenarios/industrial_agents/diesel_engine_expert && pip install -r requirements.txt
+
+diesel-expert-query: ## Query diesel engine knowledge base. Usage: make diesel-expert-query Q="your question"
+	@if [ -z "$(Q)" ]; then \
+		echo "Error: Please provide a question. Usage: make diesel-expert-query Q=\"your question\""; \
+		exit 1; \
+	fi
+	@cd scenarios/industrial_agents/diesel_engine_expert && python -m diesel_engine_expert query "$(Q)"
+
+diesel-expert-interactive: ## Start interactive diesel engine Q&A mode
+	@cd scenarios/industrial_agents/diesel_engine_expert && python -m diesel_engine_expert interactive
+
+diesel-expert-train: ## Train diesel engine expert on documents
+	@cd scenarios/industrial_agents/diesel_engine_expert && python -m diesel_engine_expert train
+
+diesel-expert-stats: ## Show diesel engine knowledge base statistics
+	@cd scenarios/industrial_agents/diesel_engine_expert && python -m diesel_engine_expert stats
+
+diesel-expert-setup: ## Setup diesel engine expert with sample data
+	@echo "Setting up Diesel Engine Expert..."
+	@cd scenarios/industrial_agents/diesel_engine_expert && make dev-setup
+
+# CAD Reviewer Agent
+cad-reviewer: ## Run CAD design analysis
+	@cd scenarios/industrial_agents/cad_reviewer && python -m cad_reviewer analyze $(FILE) --output $(OUTPUT)
+
+cad-reviewer-batch: ## Batch analyze CAD designs
+	@cd scenarios/industrial_agents/cad_reviewer && python -m cad_reviewer batch-review $(DIR) --output $(OUTPUT)
+
+cad-reviewer-train: ## Train CAD analysis models
+	@cd scenarios/industrial_agents/cad_reviewer && python -m cad_reviewer train --data $(DATA) --model $(MODEL)
+
+cad-reviewer-validate: ## Validate CAD analysis models
+	@cd scenarios/industrial_agents/cad_reviewer && python -m cad_reviewer validate --model $(MODEL) --test-data $(TEST_DATA)
+
+cad-reviewer-setup: ## Setup CAD reviewer environment
+	@echo "Setting up CAD Reviewer..."
+	@cd scenarios/industrial_agents/cad_reviewer && pip install -e ".[dev,ml]"

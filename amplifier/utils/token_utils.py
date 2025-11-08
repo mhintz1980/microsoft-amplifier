@@ -57,3 +57,16 @@ def truncate_to_tokens(text: str, max_tokens: int = 80000, model: str = "cl100k_
     final_count = len(truncated_tokens)
 
     return truncated_text, original_count, final_count
+
+
+def estimate_tokens(text: str, model: str = "cl100k_base") -> int:
+    """Estimate the number of tokens in text (alias for count_tokens).
+
+    Args:
+        text: The text to estimate tokens for
+        model: The tiktoken encoding model to use
+
+    Returns:
+        Estimated number of tokens
+    """
+    return count_tokens(text, model)
