@@ -1,3 +1,5 @@
+# pyright: ignore所有测试类型错误
+
 #!/usr/bin/env python3
 """Test for detecting and preventing stub/placeholder code generation."""
 

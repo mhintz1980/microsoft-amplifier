@@ -313,7 +313,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "api_server:app",
         host="0.0.0.0",
-        port=8000,  # CreaTech API port
+        port=8001,  # CreaTech API port
         reload=True,
         log_level="info",
     )

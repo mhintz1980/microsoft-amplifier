@@ -255,7 +255,7 @@ class CreativeTechnicalSynthesizer:
 
         # Iterative refinement loop
         refinement_iterations = 3
-        for iteration in range(refinement_iterations):
+        for _iteration in range(refinement_iterations):
             # Creative feedback
             creative_feedback = await self._get_creative_feedback(current_solution)
             # Technical feedback
@@ -274,7 +274,7 @@ class CreativeTechnicalSynthesizer:
         final_solution = await self._final_optimization(current_solution)
 
         # Calculate scores
-        confidence = 0.9 - (iteration * 0.1)  # Confidence based on refinement
+        confidence = 0.6  # Fixed confidence after 3 refinement iterations
         aesthetic_score = self._evaluate_aesthetic_quality(final_solution)
         feasibility_score = self._evaluate_feasibility(final_solution)
 

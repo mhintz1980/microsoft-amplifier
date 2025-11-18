@@ -1,0 +1,31 @@
+{
+  "session_start": 1763342412.1034844,
+  "project_context": {
+    "project_type": "amplifier-framework",
+    "frameworks": [
+      "fastapi",
+      "pydantic",
+      "pydantic",
+      "pydantic",
+      "microsoft-amplifier"
+    ],
+    "languages": [
+      "python"
+    ],
+    "tools": [],
+    "patterns": [
+      "agent-based"
+    ],
+    "complexity": "high"
+  },
+  "active_agents": [
+    "context-optimization-specialist",
+    "performance-optimization-specialist",
+    "mcp-integration-specialist",
+    "memory-persistence-specialist",
+    "api-development-specialist",
+    "architecture-reviewer"
+  ],
+  "compression_enabled": false,
+  "enhanced_sdk_enabled": true
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2025-11-16T20:20:07.714768",
+    "hook_name": "testHook",
+    "error_type": "ValueError",
+    "error_message": "This is a test error",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/markimus/projects/microsoft-amplifier/.claude/hooks/error_handler.py\", line 154, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/markimus/projects/microsoft-amplifier/.claude/hooks/error_handler.py\", line 289, in failing_hook\n    raise ValueError(\"This is a test error\")\nValueError: This is a test error\n",
+    "context": {
+      "function_name": "failing_hook",
+      "args_count": 0,
+      "kwargs_keys": []
+    },
+    "fallback_attempted": false,
+    "fallback_successful": false
+  }
+]

@@ -1,0 +1,162 @@
+{
+  "version": "1.0",
+  "created_at": "2025-11-09T16:15:57.703793",
+  "last_updated": "2025-11-09T16:15:57.707043",
+  "techniques": {
+    "7a8430db7d3e": {
+      "id": "7a8430db7d3e",
+      "name": "Serena-First Code Analysis",
+      "category": "context_management",
+      "description": "Always use Serena tools (get_symbols_overview, find_symbol, search_for_pattern) before direct file operations",
+      "implementation": "Use Serena tools for code analysis first. Only break pattern for small config files or when Serena tools fail.",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "serena",
+        "code_analysis",
+        "efficiency"
+      ],
+      "created_at": "2025-11-09T16:15:57.703915",
+      "last_used": null
+    },
+    "ea6acfb2ebcc": {
+      "id": "ea6acfb2ebcc",
+      "name": "Parallel Execution Strategy",
+      "category": "context_management",
+      "description": "Single message with multiple tool calls whenever possible for maximum efficiency",
+      "implementation": "Use parallel tool calls when tasks don't depend on each other's output",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "parallel",
+        "efficiency",
+        "tool_usage"
+      ],
+      "created_at": "2025-11-09T16:15:57.704171",
+      "last_used": null
+    },
+    "49592b229f03": {
+      "id": "49592b229f03",
+      "name": "Memory Checkpoint Schedule",
+      "category": "context_management",
+      "description": "Auto-checkpoint after major tasks, when context >50% full, or every 30 minutes",
+      "implementation": "Store session progress at regular intervals to prevent context loss",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "memory",
+        "checkpoints",
+        "context"
+      ],
+      "created_at": "2025-11-09T16:15:57.704377",
+      "last_used": null
+    },
+    "f59c4c924e17": {
+      "id": "f59c4c924e17",
+      "name": "Token Efficiency Rules",
+      "category": "prime_optimization",
+      "description": "Targeted search first, never read entire files unless absolutely necessary",
+      "implementation": "Use Grep/find_symbol for targeted searches, only read full files when essential",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "tokens",
+        "efficiency",
+        "search"
+      ],
+      "created_at": "2025-11-09T16:15:57.705352",
+      "last_used": null
+    },
+    "1f671601cd7a": {
+      "id": "1f671601cd7a",
+      "name": "Async Pytest Fixtures Pattern",
+      "category": "fix_patterns",
+      "description": "Change @pytest.fixture + async def to @pytest_asyncio.fixture + import pytest_asyncio",
+      "implementation": "Replace pytest fixtures with pytest_asyncio fixtures and add proper imports",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "pytest",
+        "async",
+        "fix"
+      ],
+      "created_at": "2025-11-09T16:15:57.705872",
+      "last_used": null
+    },
+    "33197927fcd0": {
+      "id": "33197927fcd0",
+      "name": "Agent Delegation Decision Tree",
+      "category": "agent_delegation",
+      "description": "Ask before coding: Is there specialized agent? Can this benefit from expertise? Is this repetitive?",
+      "implementation": "Use Task tool immediately when answer is YES to delegation questions",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "agents",
+        "delegation",
+        "specialization"
+      ],
+      "created_at": "2025-11-09T16:15:57.706220",
+      "last_used": null
+    },
+    "a1fc01025595": {
+      "id": "a1fc01025595",
+      "name": "Container Pooling Optimization",
+      "category": "performance_optimization",
+      "description": "50-70% container startup reduction through pooling strategies",
+      "implementation": "Reuse warm containers instead of creating new ones for each task",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "containers",
+        "performance",
+        "mcp"
+      ],
+      "created_at": "2025-11-09T16:15:57.706587",
+      "last_used": null
+    },
+    "76841c47107d": {
+      "id": "76841c47107d",
+      "name": "MCP Code Execution Framework",
+      "category": "mcp_integration",
+      "description": "98.7% token reduction through Docker-based execution",
+      "implementation": "Execute code in isolated Docker containers with minimal context transfer",
+      "success_rate": 0.0,
+      "usage_count": 0,
+      "tags": [
+        "mcp",
+        "execution",
+        "tokens"
+      ],
+      "created_at": "2025-11-09T16:15:57.707021",
+      "last_used": null
+    }
+  },
+  "categories": {
+    "prime_optimization": [
+      "f59c4c924e17"
+    ],
+    "context_management": [
+      "7a8430db7d3e",
+      "ea6acfb2ebcc",
+      "49592b229f03"
+    ],
+    "agent_delegation": [
+      "33197927fcd0"
+    ],
+    "performance_optimization": [
+      "a1fc01025595"
+    ],
+    "mcp_integration": [
+      "76841c47107d"
+    ],
+    "fix_patterns": [
+      "1f671601cd7a"
+    ]
+  },
+  "metadata": {
+    "total_techniques": 8,
+    "success_rate": 0.0,
+    "usage_count": 0
+  }
+}

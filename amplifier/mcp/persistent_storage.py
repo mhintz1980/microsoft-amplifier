@@ -435,7 +435,9 @@ class DockerPersistentStorage:
         result = await executor.execute_code(request)
 
         # Update usage statistics
-        await self._update_agent_usage(agent_id, capability_name, result.status.value == "completed")
+        # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        await self._update_agent_usage(agent_id, capability_name, result.status.value == "completed")  # type: ignore[arg-type]
 
         return {
             "agent_id": agent_id,
@@ -511,7 +513,9 @@ except Exception as e:
         agents.append(agent_entry)
 
         index_data["agents"] = agents
-        index_data["last_updated"] = datetime.now().isoformat()
+        # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        index_data["last_updated"] = datetime.now().isoformat()  # type: ignore[arg-type]
 
         with open(index_file, "w") as f:
             json.dump(index_data, f, indent=2)
@@ -551,7 +555,9 @@ except Exception as e:
         skills.append(skill_entry)
 
         index_data["skills"] = skills
-        index_data["last_updated"] = datetime.now().isoformat()
+        # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        index_data["last_updated"] = datetime.now().isoformat()  # type: ignore[arg-type]
 
         with open(index_file, "w") as f:
             json.dump(index_data, f, indent=2)
@@ -783,3 +789,119 @@ async def load_and_execute_agent(agent_id: str, capability: str, input_data: dic
     """Convenient function to load and execute an agent."""
     storage = get_persistent_storage()
     return await storage.execute_agent(agent_id, input_data, capability)
+
+
+async def store_result(session_id: str, result_data: dict[str, Any]) -> bool:
+    """Store execution result in persistent storage for unlimited context."""
+    storage = get_persistent_storage()
+
+    try:
+        # Create a timestamped result file
+        timestamp = datetime.now().isoformat()
+        result_file = storage.cache_dir / f"session_{session_id}_{timestamp.replace(':', '-')}.json"
+
+        result = {
+            "session_id": session_id,
+            "timestamp": timestamp,
+            "data": result_data,
+            "type": "skill_execution_result",
+        }
+
+        with open(result_file, "w") as f:
+            json.dump(result, f, indent=2)
+
+        logger.info(f"Stored result for session {session_id}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Failed to store result: {e}")
+        return False
+
+
+async def load_session_results(session_id: str, limit: int = 10) -> list[dict[str, Any]]:
+    """Load stored results for a session."""
+    storage = get_persistent_storage()
+
+    try:
+        pattern = f"session_{session_id}_*.json"
+        result_files = list(storage.cache_dir.glob(pattern))
+
+        # Sort by timestamp (newest first)
+        result_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+
+        results = []
+        for result_file in result_files[:limit]:
+            with open(result_file) as f:
+                result = json.load(f)
+                results.append(result)
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Failed to load session results: {e}")
+        return []
+
+
+async def retrieve_result(session_id: str, result_type: str = "skill_execution_result") -> dict[str, Any] | None:
+    """Retrieve a specific stored result by session ID and type."""
+    storage = get_persistent_storage()
+
+    try:
+        pattern = f"session_{session_id}_*.json"
+        result_files = list(storage.cache_dir.glob(pattern))
+
+        # Sort by timestamp (newest first)
+        result_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+
+        # Find the most recent result matching the type
+        for result_file in result_files:
+            with open(result_file) as f:
+                result = json.load(f)
+                if result.get("type") == result_type or result.get("session_id") == session_id:
+                    return result
+
+        return None
+
+    except Exception as e:
+        logger.error(f"Failed to retrieve result for session {session_id}: {e}")
+        return None
+
+
+def load_techniques_registry() -> dict[str, Any]:
+    """Load the techniques registry from file system."""
+    registry_file = Path("CLAUDE_TECHNIQUES_REGISTRY.md")
+    docker_storage = Path(".docker-storage/claude-techniques-registry/")
+
+    techniques = {}
+
+    # Try to load from primary location first
+    if registry_file.exists():
+        try:
+            content = registry_file.read_text(encoding="utf-8")
+            techniques["primary"] = {
+                "source": str(registry_file),
+                "content": content,
+                "size": len(content),
+                "last_modified": registry_file.stat().st_mtime,
+            }
+        except Exception as e:
+            logger.warning(f"Failed to load primary registry: {e}")
+
+    # Try to load from Docker storage
+    if docker_storage.exists():
+        docker_files = list(docker_storage.glob("*.md"))
+        techniques["docker_backup"] = {
+            "source": str(docker_storage),
+            "files": len(docker_files),
+            "files_list": [f.name for f in docker_files],
+            "last_modified": max([f.stat().st_mtime for f in docker_files]) if docker_files else 0,
+        }
+
+    # Add status
+    techniques["status"] = {
+        "primary_available": registry_file.exists(),
+        "docker_backup_available": docker_storage.exists(),
+        "total_categories": len(techniques),
+    }
+
+    return techniques

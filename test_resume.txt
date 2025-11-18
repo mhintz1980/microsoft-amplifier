@@ -1,0 +1,27 @@
+John Doe
+Software Engineer
+Email: john.doe@example.com
+Phone: (555) 123-4567
+LinkedIn: linkedin.com/in/johndoe
+
+PROFESSIONAL SUMMARY
+Experienced software engineer with 5 years of experience in full-stack development and cloud technologies.
+
+WORK EXPERIENCE
+Senior Software Engineer | Tech Corp Inc. | 2020 - Present
+- Led development of microservices architecture
+- Implemented CI/CD pipelines
+- Mentored junior developers
+
+Software Developer | StartupXYZ | 2018 - 2020
+- Built React applications
+- Developed REST APIs
+- Worked with agile methodologies
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology | 2014 - 2018
+GPA: 3.8
+
+SKILLS
+Python, JavaScript, React, Node.js, AWS, Docker, Git, SQL

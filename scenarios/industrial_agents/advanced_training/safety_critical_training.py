@@ -14,6 +14,7 @@ import json
 import logging
 import uuid
 from collections import defaultdict
+from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
@@ -24,6 +25,7 @@ from typing import Any
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional
 import torch.optim as optim
 
 logger = logging.getLogger(__name__)
@@ -292,7 +294,7 @@ class ConstrainedPolicyNetwork(nn.Module):
         modified_policy = policy_probs * modification_factors
 
         # Renormalize to ensure valid probability distribution
-        modified_policy = F.softmax(modified_policy, dim=-1)
+        modified_policy = torch.nn.functional.softmax(modified_policy, dim=-1)
 
         return {
             "policy": modified_policy,
@@ -628,12 +630,7 @@ class RobustnessTrainer:
             return True
 
         # Successful recovery conditions
-        if all(s < 0.3 for s in state[:3]) and all(s < 0.1 for s in state[10:13]):  # All safe
-            return True
-
-        # Time limit
-        # This would be tracked separately in a real implementation
-        return False
+        return all(s < 0.3 for s in state[:3]) and all(s < 0.1 for s in state[10:13])  # All safe
 
     def _attempt_recovery(self, state: list[float], scenario: SafetyScenario) -> bool:
         """Attempt recovery from unsafe state."""
@@ -661,11 +658,11 @@ class RobustnessTrainer:
 
         # Calculate returns
         returns = []
-        R = 0
+        discounted_return = 0
         gamma = 0.99
         for exp in reversed(experience_buffer):
-            R = exp["reward"] + gamma * R
-            returns.insert(0, R)
+            discounted_return = exp["reward"] + gamma * discounted_return
+            returns.insert(0, discounted_return)
 
         returns = torch.tensor(returns, dtype=torch.float32)
 

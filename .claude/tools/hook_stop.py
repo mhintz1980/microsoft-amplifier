@@ -23,6 +23,8 @@ try:
     from amplifier.memory import MemoryStore
 except ImportError as e:
     logger.error(f"Failed to import amplifier modules: {e}")
+    logger.debug(f"Python path: {sys.path}")
+    logger.debug(f"Working directory: {Path.cwd()}")
     # Exit gracefully to not break hook chain
     json.dump({}, sys.stdout)
     sys.exit(0)

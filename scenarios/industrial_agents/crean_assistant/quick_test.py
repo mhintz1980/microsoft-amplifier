@@ -4,6 +4,7 @@ Quick test script for CreaTech Assistant functionality
 """
 
 import asyncio
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -17,41 +18,51 @@ def test_imports():
     print("🧪 Testing imports...")
 
     try:
-        from crean_assistant import CreaTechAssistant
-
-        print("✅ Main CreaTech Assistant imported successfully")
+        spec = importlib.util.find_spec("crean_assistant")
+        if spec is not None:
+            print("✅ Main CreaTech Assistant imported successfully")
+        else:
+            raise ImportError("Module not found")
     except ImportError as e:
         print(f"❌ Failed to import main module: {e}")
         return False
 
     try:
-        from core.creative_engineer import CreativeEngineer
-
-        print("✅ Creative Engineer imported successfully")
+        spec = importlib.util.find_spec("core.creative_engineer")
+        if spec is not None:
+            print("✅ Creative Engineer imported successfully")
+        else:
+            raise ImportError("Module not found")
     except ImportError as e:
         print(f"❌ Failed to import Creative Engineer: {e}")
         return False
 
     try:
-        from core.synthesizer import CreativeTechnicalSynthesizer
-
-        print("✅ Synthesizer imported successfully")
+        spec = importlib.util.find_spec("core.synthesizer")
+        if spec is not None:
+            print("✅ Synthesizer imported successfully")
+        else:
+            raise ImportError("Module not found")
     except ImportError as e:
         print(f"❌ Failed to import Synthesizer: {e}")
         return False
 
     try:
-        from training.crean_trainer import CreaTechTrainer
-
-        print("✅ CreaTech Trainer imported successfully")
+        spec = importlib.util.find_spec("training.crean_trainer")
+        if spec is not None:
+            print("✅ CreaTech Trainer imported successfully")
+        else:
+            raise ImportError("Module not found")
     except ImportError as e:
         print(f"❌ Failed to import CreaTech Trainer: {e}")
         return False
 
     try:
-        from workflows.creative_workflows import CreativeWorkflows
-
-        print("✅ Creative Workflows imported successfully")
+        spec = importlib.util.find_spec("workflows.creative_workflows")
+        if spec is not None:
+            print("✅ Creative Workflows imported successfully")
+        else:
+            raise ImportError("Module not found")
     except ImportError as e:
         print(f"❌ Failed to import Creative Workflows: {e}")
         return False

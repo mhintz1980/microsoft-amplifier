@@ -70,6 +70,11 @@ default: ## Show essential commands
 	@echo "Industrial Frontend:"
 	@echo "  make industrial-ui     Generate industrial frontend interface"
 	@echo ""
+	@echo "Agent Lightning:"
+	@echo "  make agent-lightning-fix        Fix Agent Lightning integration errors"
+	@echo "  make agent-lightning-check       Check Agent Lightning for errors"
+	@echo "  make agent-lightning-dry-run     Show what would be fixed"
+	@echo ""
 	@echo "Other:"
 	@echo "  make clean          Clean build artifacts"
 	@echo "  make help           Show ALL available commands"
@@ -147,6 +152,12 @@ help: ## Show ALL available commands
 	@echo ""
 	@echo "WEB TO MARKDOWN:"
 	@echo "  make web-to-md URL=<url> [URL2=<url>] [OUTPUT=<path>]  Convert web pages to markdown (saves to content_dirs[0]/sites/)"
+	@echo ""
+	@echo "AGENT LIGHTNING:"
+	@echo "  make agent-lightning-fix        Fix Agent Lightning integration errors"
+	@echo "  make agent-lightning-check       Check Agent Lightning for errors"
+	@echo "  make agent-lightning-dry-run     Show what would be fixed"
+	@echo "  make agent-lightning-fix-no-ai  Fix errors without AI assistance"
 	@echo ""
 	@echo "UTILITIES:"
 	@echo "  make clean           Clean build artifacts"
@@ -801,3 +812,28 @@ cad-reviewer-validate: ## Validate CAD analysis models
 cad-reviewer-setup: ## Setup CAD reviewer environment
 	@echo "Setting up CAD Reviewer..."
 	@cd scenarios/industrial_agents/cad_reviewer && pip install -e ".[dev,ml]"
+
+# Agent Lightning Integration Fixes
+agent-lightning-fix: ## Fix Agent Lightning integration errors with AI assistance
+	@echo "🔧 Fixing Agent Lightning integration errors with AI assistance..."
+	@uv run python amplifier/cli/fix_agent_lightning.py
+
+agent-lightning-fix-no-ai: ## Fix Agent Lightning integration errors without AI assistance
+	@echo "🔧 Fixing Agent Lightning integration errors (pattern-based only)..."
+	@uv run python amplifier/cli/fix_agent_lightning.py --no-ai
+
+agent-lightning-check: ## Check Agent Lightning for errors without fixing
+	@echo "🔍 Checking Agent Lightning for errors..."
+	@uv run python amplifier/cli/fix_agent_lightning.py --list-errors
+
+agent-lightning-dry-run: ## Show what would be fixed without making changes
+	@echo "🔍 Agent Lightning dry run - showing planned fixes..."
+	@uv run python amplifier/cli/fix_agent_lightning.py --dry-run
+
+agent-lightning-fix-target: ## Fix specific directory. Usage: make agent-lightning-fix-target TARGET=./path
+	@if [ -z "$(TARGET)" ]; then \
+		echo "Error: Please provide a target directory. Usage: make agent-lightning-fix-target TARGET=./path"; \
+		exit 1; \
+	fi
+	@echo "🔧 Fixing Agent Lightning errors in $(TARGET)..."
+	@uv run python amplifier/cli/fix_agent_lightning.py --target-dir "$(TARGET)"

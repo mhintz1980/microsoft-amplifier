@@ -14,6 +14,7 @@ import logging
 import uuid
 from collections import defaultdict
 from collections.abc import Callable
+from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
@@ -422,7 +423,7 @@ class CompetitiveTraining:
 
         # Calculate rankings
         sorted_agents = sorted(self.agent_scores.items(), key=lambda x: x[1], reverse=True)
-        for rank, (agent_id, score) in enumerate(sorted_agents, 1):
+        for rank, (agent_id, _score) in enumerate(sorted_agents, 1):
             self.agent_rankings[agent_id] = rank
 
         # Record competition
@@ -913,7 +914,7 @@ async def main():
 
     # Generate synthetic training data
     training_data = []
-    for i in range(1000):
+    for _i in range(1000):
         sample = {"features": np.random.randn(64).tolist(), "labels": np.random.randint(0, 10)}
         training_data.append(sample)
 

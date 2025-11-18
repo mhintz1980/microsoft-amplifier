@@ -141,10 +141,8 @@ class FactoryValidator:
             content = component_file.read_text()
 
             # Look for onClick handlers
-            if "onClick" in content or "@click" in content:
-                # Check if there are any visual feedback styles
-                if ":hover" not in content and ":active" not in content:
-                    issues.append(f"{component_file.name}: Missing hover/active states for touch feedback")
+            if ("onClick" in content or "@click" in content) and (":hover" not in content and ":active" not in content):
+                issues.append(f"{component_file.name}: Missing hover/active states for touch feedback")
 
         return {
             "category": "Touch Interface",

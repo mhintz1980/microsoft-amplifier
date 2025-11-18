@@ -71,6 +71,7 @@ class ExecutionRequest:
     environment_vars: dict[str, str] = field(default_factory=dict)
     working_directory: str | None = None
     input_data: dict[str, Any] | None = None
+    timeout: int = 30
 
 
 @dataclass
@@ -276,8 +277,8 @@ class DockerExecutor:
             "--rm",
             "--name",
             f"amplifier_exec_{work_dir.name}",
-            f"--memory={request.resource_limits.max_memory_mb}m",
-            f"--cpus={request.resource_limits.max_cpu_percent / 100.0}",
+            f"--memory={request.resource_limits.max_memory_mb}m",  # type: ignore[assignment]
+            f"--cpus={request.resource_limits.max_cpu_percent / 100.0}",  # type: ignore[assignment]
             "--network=none",  # No network access by default
             "-v",
             f"{work_dir}:/workspace",
@@ -312,7 +313,8 @@ class DockerExecutor:
             # Wait for completion with timeout
             try:
                 stdout, stderr = await asyncio.wait_for(
-                    process.communicate(), timeout=request.resource_limits.max_runtime_seconds
+                    process.communicate(),
+                    timeout=request.resource_limits.max_runtime_seconds,  # type: ignore[assignment]
                 )
             except TimeoutError:
                 process.kill()
@@ -320,7 +322,7 @@ class DockerExecutor:
                 result.runtime_seconds = asyncio.get_event_loop().time() - start_time
                 result.status = ExecutionStatus.TIMEOUT
                 result.stderr = "Execution timed out"
-                result.execution_log.append(f"Execution timed out after {request.resource_limits.max_runtime_seconds}s")
+                result.execution_log.append(f"Execution timed out after {request.resource_limits.max_runtime_seconds}s")  # type: ignore[assignment]
                 return result
 
             # Collect results
@@ -512,6 +514,17 @@ if __name__ == "__main__":
         )
         self.skill_registry.register_skill(text_analysis_skill, "text_analysis")
 
+        # Type error batch fixing skill
+        with open(__file__.replace("code_execution.py", "skills/fix_type_errors_batch.py")) as f:
+            type_error_fix_code = f.read()
+
+        type_error_fix_skill = Skill(
+            name="fix_type_errors_batch",
+            code=type_error_fix_code,
+            language="python",
+        )
+        self.skill_registry.register_skill(type_error_fix_skill, "code_fixing")
+
     async def execute_code(self, request: ExecutionRequest) -> ExecutionResult:
         """Execute code request."""
         # Set default resource limits if not provided
@@ -607,3 +620,28 @@ async def execute_skill_by_name(skill_name: str, input_data: dict[str, Any]) -> 
     """Convenient function for skill execution."""
     executor = get_mcp_executor()
     return await executor.execute_skill(skill_name, input_data)
+
+
+async def execute_in_docker(
+    command: str,
+    code: str | None = None,
+    input_data: dict[str, Any] | None = None,
+    security_level: SecurityLevel = SecurityLevel.MINIMAL,
+    timeout: int = 30,
+    language: str = "python",
+) -> ExecutionResult:
+    """Convenient function for executing code in Docker."""
+    executor = get_mcp_executor()
+
+    # If code is provided, execute it directly
+    if code is not None:
+        request = ExecutionRequest(
+            code=code, language=language, input_data=input_data, security_level=security_level, timeout=timeout
+        )
+        return await executor.execute_code(request)
+
+    # Otherwise, execute the command as code
+    request = ExecutionRequest(
+        code=command, language="bash", input_data=input_data, security_level=security_level, timeout=timeout
+    )
+    return cast(dict[str, Any], await executor.execute_code(request))

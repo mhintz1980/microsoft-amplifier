@@ -9,6 +9,7 @@ import json
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -18,16 +19,19 @@ try:
     from agentlightning.algorithm.verl import VERL
     from agentlightning.store.sqlite import SQLiteLightningStore
     from agentlightning.trainer import Trainer
-    from agentlightning.types import Dataset
-    from agentlightning.types import Rollout
+
+    AGENT_LIGHTNING_AVAILABLE = True
 except ImportError:
-    logger.warning("Agent Lightning not fully available - using mock implementation")
+    AGENT_LIGHTNING_AVAILABLE = False
 
 from ..core.creative_engineer import CreativeEngineer
 from ..core.synthesizer import CreativeTechnicalSynthesizer
 from ..core.synthesizer import SynthesisResult
 
 logger = logging.getLogger(__name__)
+
+if not AGENT_LIGHTNING_AVAILABLE:
+    logger.warning("Agent Lightning not fully available - using mock implementation")
 
 
 @dataclass

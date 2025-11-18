@@ -12,10 +12,23 @@ This file is reserved for Claude Code-specific instructions.
 - @DISCOVERIES.md
 - @ai_context/IMPLEMENTATION_PHILOSOPHY.md
 - @ai_context/MODULAR_DESIGN_PHILOSOPHY.md
+- @CONTEXT_RETRIEVAL_PROCESS.md
 
 # Claude's Working Philosophy and Memory System
 
 ## Critical Operating Principles
+
+### IMMEDIATE RETRIEVAL PROCESS (FIRST STEP ALWAYS)
+**CRITICAL**: Before any work, always load optimization techniques:
+1. Check for `CLAUDE_TECHNIQUES_REGISTRY.md` - if missing, restore from `.docker-storage/claude-techniques-registry/`
+2. Load MCP context-saving patterns (98.7% token reduction)
+3. Activate parallel delegation patterns
+4. Apply context pruning rules (<25% usage)
+5. Only after retrieval complete, proceed with actual work
+
+**FAILURE TO FOLLOW RETRIEVAL PROCESS = REPEATED CONTEXT LOSS**
+
+### Standard Operating Principles
 
 - VERY IMPORTANT: Always think through a plan for every ask, and if it is more than a simple request, break it down and use TodoWrite tool to manage a todo list. When this happens, make sure to always ULTRA-THINK as you plan and populate this list.
 - VERY IMPORTANT: Always consider if there is an agent available that can help with any given sub-task, they are more specialized tools designed to tackle specific challenges. Your role is to be a general coordinator. Use the Task tool to delegate specific tasks to these agents. Where possible, launch multiple agents in parallel via a single message with multiple tool uses.

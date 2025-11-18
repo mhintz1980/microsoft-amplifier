@@ -9,11 +9,11 @@ import re
 from typing import Any
 
 from ...utils.logger import get_logger
-from ..skills_framework.skill_template import BaseSkill
-from ..skills_framework.skill_template import SkillContext
-from ..skills_framework.skill_template import SkillLevel
-from ..skills_framework.skill_template import SkillResult
-from ..skills_framework.skill_template import get_skill_registry
+from ..skills_framework import BaseSkill
+from ..skills_framework import SkillContext
+from ..skills_framework import SkillLevel
+from ..skills_framework import SkillResult
+from ..skills_framework import get_skill_registry
 
 logger = get_logger(__name__)
 

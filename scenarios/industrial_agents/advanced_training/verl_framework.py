@@ -337,11 +337,11 @@ class ConstraintBasedPolicyGradient:
     def compute_returns(self, gamma: float = 0.99) -> list[float]:
         """Compute discounted returns."""
         returns = []
-        R = 0
+        discounted_return = 0
 
         for reward in reversed(self.rewards):
-            R = reward + gamma * R
-            returns.insert(0, R)
+            discounted_return = reward + gamma * discounted_return
+            returns.insert(0, discounted_return)
 
         return returns
 
@@ -424,11 +424,10 @@ class MultiObjectiveOptimizer:
             dominated = False
 
             for j, reward_j in enumerate(rewards):
-                if i != j:
+                if i != j and self._dominates(reward_j, reward_i):
                     # Check if reward_i is dominated by reward_j
-                    if self._dominates(reward_j, reward_i):
-                        dominated = True
-                        break
+                    dominated = True
+                    break
 
             if not dominated:
                 pareto_indices.append(i)

@@ -1,0 +1,102 @@
+make -C .smoke_test_data/ check
+Formatting code with ruff...
+429 files left unchanged
+Linting code with ruff...
+amplifier/mcp/skills/fix_type_errors_batch.py:204:17: SIM102 Use a single `if` statement instead of nested `if` statements
+    |
+202 |                       for alias in node.names:
+203 |                           existing_imports.add(alias.name)
+204 | /                 elif isinstance(node, ast.ImportFrom):
+205 | |                     if node.module:
+    | |___________________________________^ SIM102
+206 |                           existing_imports.add(node.module)
+207 |           except:
+    |
+    = help: Combine `if` statements using `and`
+
+amplifier/mcp/skills/fix_type_errors_batch.py:207:9: E722 Do not use bare `except`
+    |
+205 |                     if node.module:
+206 |                         existing_imports.add(node.module)
+207 |         except:
+    |         ^^^^^^ E722
+208 |             existing_imports = set()
+    |
+
+amplifier/mcp/skills/fix_type_errors_batch.py:340:21: B007 Loop control variable `i` not used within loop body
+    |
+338 |                 # Try to identify the line and add await
+339 |                 lines = content.split("\n")
+340 |                 for i, line in enumerate(lines):
+    |                     ^ B007
+341 |                     # Look for function calls that might need await
+342 |                     if "await" not in line and ("(" in line and ")" in line):
+    |
+    = help: Rename unused `i` to `_i`
+
+amplifier/mcp/skills/fix_type_errors_batch.py:384:21: F841 Local variable `source_type` is assigned to but never used
+    |
+382 |                 )
+383 |                 if match:
+384 |                     source_type, param_name, target_type = match.group(1), match.group(2), match.group(3)
+    |                     ^^^^^^^^^^^ F841
+385 |
+386 |                     # Try to add type annotation or cast
+    |
+    = help: Remove assignment to unused variable `source_type`
+
+amplifier/mcp/skills/fix_type_errors_batch.py:384:34: F841 Local variable `param_name` is assigned to but never used
+    |
+382 |                 )
+383 |                 if match:
+384 |                     source_type, param_name, target_type = match.group(1), match.group(2), match.group(3)
+    |                                  ^^^^^^^^^^ F841
+385 |
+386 |                     # Try to add type annotation or cast
+    |
+    = help: Remove assignment to unused variable `param_name`
+
+amplifier/mcp/skills/fix_type_errors_batch.py:419:5: F841 Local variable `files` is assigned to but never used
+    |
+418 |     errors = type_errors_data.get("errors", [])
+419 |     files = type_errors_data.get("files", {})
+    |     ^^^^^ F841
+420 |     config = type_errors_data.get("config", {})
+    |
+    = help: Remove assignment to unused variable `files`
+
+amplifier/mcp/skills/fix_type_errors_batch.py:420:5: F841 Local variable `config` is assigned to but never used
+    |
+418 |     errors = type_errors_data.get("errors", [])
+419 |     files = type_errors_data.get("files", {})
+420 |     config = type_errors_data.get("config", {})
+    |     ^^^^^^ F841
+421 |
+422 |     if not errors:
+    |
+    = help: Remove assignment to unused variable `config`
+
+demo_test_file.py:20:5: F841 Local variable `processed` is assigned to but never used
+   |
+18 |     # This will cause an await error
+19 |     awaitable_result = some_function()
+20 |     processed = await awaitable_result  # 'object' is not awaitable
+   |     ^^^^^^^^^ F841
+21 |
+22 |     # This will cause a None assignment error
+   |
+   = help: Remove assignment to unused variable `processed`
+
+demo_test_file.py:23:5: F841 Local variable `name` is assigned to but never used
+   |
+22 |     # This will cause a None assignment error
+23 |     name: str = None  # Object of type "None" cannot be assigned to type "str"
+   |     ^^^^ F841
+24 |
+25 |     return result
+   |
+   = help: Remove assignment to unused variable `name`
+
+Found 9 errors.
+No fixes available (8 hidden fixes can be enabled with the `--unsafe-fixes` option).
+make: *** [Makefile:203: check] Error 1

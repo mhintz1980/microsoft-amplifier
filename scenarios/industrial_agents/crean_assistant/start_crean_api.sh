@@ -9,7 +9,7 @@ echo "🚀 Starting CreaTech API Server..."
 export AMPLIFIER_ROOT="/home/markimus/projects/microsoft-amplifier"
 export BOLT_PROJECT_ROOT="/home/markimus/projects/bolt.diy"
 export CREANTECH_API_KEY="crean-api-key-local"
-export CREANTECH_BASE_URL="http://localhost:8000"
+export CREANTECH_BASE_URL="http://localhost:8001"
 
 # Change to the CreaTech directory
 cd "$(dirname "$0")"
@@ -33,9 +33,9 @@ fi
 echo "✅ Dependencies verified"
 
 # Start the API server
-echo "🌐 Starting CreaTech API server on http://localhost:8000"
-echo "📊 Health check: http://localhost:8000/health"
-echo "🤖 Models endpoint: http://localhost:8000/models"
+echo "🌐 Starting CreaTech API server on http://localhost:8001"
+echo "📊 Health check: http://localhost:8001/health"
+echo "🤖 Models endpoint: http://localhost:8001/models"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""

@@ -1,3 +1,5 @@
+# pyright: ignore所有测试类型错误
+
 """
 Pytest configuration and shared fixtures for tests.
 

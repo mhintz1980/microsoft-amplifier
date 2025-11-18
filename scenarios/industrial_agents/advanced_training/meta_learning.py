@@ -22,7 +22,7 @@ from typing import Any
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional
 import torch.optim as optim
 
 logger = logging.getLogger(__name__)
@@ -204,7 +204,9 @@ class MemoryAugmentedNetwork(nn.Module):
 
         # Compute attention over memory
         memory_keys = self.key_transform(self.memory)
-        attention_weights = F.softmax(torch.matmul(key, memory_keys.t()) / np.sqrt(self.memory_dim), dim=1)
+        attention_weights = torch.nn.functional.softmax(
+            torch.matmul(key, memory_keys.t()) / np.sqrt(self.memory_dim), dim=1
+        )
 
         # Retrieve memory values
         memory_values = self.value_transform(self.memory)
@@ -343,7 +345,7 @@ class MetaLearningTrainer:
 
             # Forward pass on support set
             predictions = self.model(support_features)
-            loss = F.cross_entropy(predictions, support_labels)
+            loss = torch.nn.functional.cross_entropy(predictions, support_labels)
 
             # Update parameters
             inner_optimizer.zero_grad()
@@ -359,7 +361,7 @@ class MetaLearningTrainer:
         # Evaluate on query set
         with torch.no_grad():
             query_predictions = self.model(query_features)
-            query_loss = F.cross_entropy(query_predictions, query_labels)
+            query_loss = torch.nn.functional.cross_entropy(query_predictions, query_labels)
 
             # Calculate accuracy
             accuracy = (query_predictions.argmax(dim=1) == query_labels).float().mean().item()
@@ -388,7 +390,7 @@ class MetaLearningTrainer:
         logits = self.model.classify(query_embeddings, prototypes)
 
         # Calculate loss and accuracy
-        loss = F.cross_entropy(logits, query_labels)
+        loss = torch.nn.functional.cross_entropy(logits, query_labels)
         accuracy = (logits.argmax(dim=1) == query_labels).float().mean().item()
 
         return loss, accuracy
@@ -407,7 +409,7 @@ class MetaLearningTrainer:
 
         # Forward pass on query set
         predictions = self.model(query_features)
-        loss = F.cross_entropy(predictions, query_labels)
+        loss = torch.nn.functional.cross_entropy(predictions, query_labels)
         accuracy = (predictions.argmax(dim=1) == query_labels).float().mean().item()
 
         return loss, accuracy

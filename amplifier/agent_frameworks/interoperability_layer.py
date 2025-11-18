@@ -13,6 +13,7 @@ Following amplifier philosophy:
 """
 
 import asyncio
+import random
 import time
 from dataclasses import dataclass
 from dataclasses import field
@@ -502,7 +503,7 @@ class HybridOrchestrator:
                 results[framework] = result
                 # Vote based on success and confidence
                 weight = architecture.voting_weights.get(framework, 1.0)
-                confidence = result.get("confidence", 0.5)
+                confidence = result.get("confidence", 0.5)  # type: ignore[attribute]
                 votes.append((framework, confidence * weight, result))
 
         # Select best result based on weighted voting
@@ -660,13 +661,13 @@ class HybridOrchestrator:
         # Simulate framework-specific behavior
         success_rates = {"langchain": 0.85, "openai_sdk": 0.90, "autogen": 0.82, "crewai": 0.88}
 
-        success = time.random() < success_rates.get(framework, 0.8)
+        success = random.random() < success_rates.get(framework, 0.8)
 
         if success:
             return {
                 "success": True,
                 "output": f"Processed by {framework}: {task.get('input', 'No input')[:50]}...",
-                "confidence": 0.7 + (0.2 * time.random()),
+                "confidence": 0.7 + (0.2 * random.random()),
                 "framework": framework,
                 "metadata": {"processing_time": 0.1},
             }
@@ -703,7 +704,7 @@ class PerformanceMonitor:
     def get_framework_stats(self, framework: str) -> dict[str, float]:
         """Get performance statistics for a framework."""
         if framework not in self.framework_stats or not self.framework_stats[framework]:
-            return {"error": "No data available"}
+            return {"error": "No data available"}  # type: ignore[assignment]
 
         times = self.framework_stats[framework]
         successful_executions = [r for r in self.execution_history if r["name"] == framework and r["success"]]
@@ -723,7 +724,7 @@ class PerformanceMonitor:
         architecture_executions = [r for r in self.execution_history if r.get("architecture") == architecture]
 
         if not architecture_executions:
-            return {"error": "No data available"}
+            return {"error": "No data available"}  # type: ignore[assignment]
 
         times = [e["execution_time"] for e in architecture_executions]
         successful = [e for e in architecture_executions if e["success"]]

@@ -20,10 +20,236 @@ import {
   Priority,
   QualityStatus,
   POStatus,
-  createSimplifiedPump,
-  updatePumpStage,
   computePumpDerivedFields
 } from '../types/denormalized-pump-model';
+
+// Import catalog data for lead times
+import pumptrackerData from '../../pumptracker-manus/src/data/pumptracker-data.json';
+
+// Catalog data types
+interface CatalogModel {
+  model: string;
+  description: string;
+  price: number | null;
+  bom: {
+    engine: string | null;
+    gearbox: string | null;
+    control_panel: string | null;
+  };
+  lead_times: {
+    fabrication: number;
+    powder_coat: number;
+    assembly: number;
+    testing: number;
+    total_days: number;
+  };
+}
+
+interface CatalogData {
+  models: CatalogModel[];
+  customers: string[];
+  productionStages: string[];
+}
+
+// ===== CATALOG DATA ACCESS UTILITIES =====
+
+/**
+ * Get model lead times from catalog data
+ * @param modelId - The model identifier (e.g., "DD-4S", "RL200")
+ * @returns Lead times object or null if model not found
+ */
+export function getModelLeadTimes(modelId: string): CatalogModel['lead_times'] | null {
+  try {
+    const catalog = pumptrackerData as CatalogData;
+    const model = catalog.models.find(m => m.model === modelId);
+    return model ? model.lead_times : null;
+  } catch (error) {
+    console.error(`Error getting lead times for model ${modelId}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Get all models from catalog data
+ * @returns Array of catalog models
+ */
+export function getCatalogModels(): CatalogModel[] {
+  try {
+    const catalog = pumptrackerData as CatalogData;
+    return catalog.models || [];
+  } catch (error) {
+    console.error('Error getting catalog models:', error);
+    return [];
+  }
+}
+
+/**
+ * Get a specific model from catalog data
+ * @param modelId - The model identifier
+ * @returns Catalog model or null if not found
+ */
+export function getCatalogModel(modelId: string): CatalogModel | null {
+  try {
+    const catalog = pumptrackerData as CatalogData;
+    return catalog.models.find(m => m.model === modelId) || null;
+  } catch (error) {
+    console.error(`Error getting catalog model ${modelId}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Convert catalog model to denormalized pump model format
+ * @param catalogModel - Catalog model to convert
+ * @returns DenormalizedPumpModel
+ */
+export function catalogModelToDenormalized(catalogModel: CatalogModel): DenormalizedPumpModel {
+  return {
+    id: catalogModel.model,
+    modelId: catalogModel.model,
+    name: catalogModel.description,
+    description: catalogModel.description,
+    category: 'Standard', // Default category
+    specifications: {
+      flowRate: null,
+      pressure: null,
+      power: null,
+      speed: null,
+      material: null,
+      weight: null,
+      dimensions: null
+    },
+    bom: {
+      engine: catalogModel.bom.engine || null,
+      gearbox: catalogModel.bom.gearbox || null,
+      controlPanel: catalogModel.bom.control_panel || null,
+      additionalComponents: []
+    },
+    pricing: {
+      basePrice: catalogModel.price || 0,
+      laborCost: 0,
+      materialCost: 0,
+      totalPrice: catalogModel.price || 0,
+      currency: 'USD'
+    },
+    leadTimes: {
+      fabrication: catalogModel.lead_times.fabrication,
+      assembly: catalogModel.lead_times.assembly,
+      testing: catalogModel.lead_times.testing,
+      finishing: catalogModel.lead_times.powder_coat,
+      totalDays: catalogModel.lead_times.total_days
+    },
+    qualityRequirements: {
+      minQualityScore: 80,
+      requiredTests: ['performance', 'safety'],
+      passCriteria: {}
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true
+  };
+}
+
+/**
+ * Load all catalog models as denormalized pump models
+ * @returns Record of denormalized pump models keyed by model ID
+ */
+export function loadCatalogModelsAsDenormalized(): Record<string, DenormalizedPumpModel> {
+  const catalogModels = getCatalogModels();
+  return catalogModels.reduce((acc, catalogModel) => {
+    const denormalizedModel = catalogModelToDenormalized(catalogModel);
+    acc[denormalizedModel.id] = denormalizedModel;
+    return acc;
+  }, {} as Record<string, DenormalizedPumpModel>);
+}
+
+// ===== UTILITY FUNCTIONS FOR STORE OPERATIONS =====
+
+/**
+ * Create a simplified pump from a model and order data
+ */
+function createSimplifiedPump(
+  model: DenormalizedPumpModel,
+  orderData: {
+    poNumber: string;
+    customerName: string;
+    orderDate: string;
+  },
+  overrides?: Partial<SimplifiedPump>
+): SimplifiedPump {
+  const pumpId = nanoid();
+  const now = new Date().toISOString();
+
+  const basePump: SimplifiedPump = {
+    id: pumpId,
+    modelId: model.id,
+    purchaseOrderNumber: orderData.poNumber,
+    customerName: orderData.customerName,
+    serialNumber: null,
+    currentStage: 'not_started',
+    priority: 'normal',
+    status: 'on_track',
+    notes: null,
+
+    // Model data (embedded)
+    model: {
+      id: model.id,
+      modelId: model.id,
+      name: model.name,
+      description: model.description,
+      category: model.category,
+      specifications: model.specifications,
+      bom: model.bom,
+      pricing: model.pricing,
+      leadTimes: model.leadTimes,
+      qualityRequirements: model.qualityRequirements,
+      searchableText: `${model.id} ${model.name} ${model.description}`.toLowerCase()
+    },
+
+    // Dates
+    createdAt: now,
+    updatedAt: now,
+    estimatedCompletionDate: null,
+    actualCompletionDate: null,
+
+    // Computed fields (will be calculated by computePumpDerivedFields)
+    isOverdue: false,
+    completionPercentage: 0,
+    timeInCurrentStage: 0
+  };
+
+  // Apply any overrides
+  const pumpWithOverrides = { ...basePump, ...overrides };
+
+  // Calculate derived fields
+  const derivedFields = computePumpDerivedFields(pumpWithOverrides);
+
+  return { ...pumpWithOverrides, ...derivedFields };
+}
+
+/**
+ * Update pump stage and related fields
+ */
+function updatePumpStage(
+  pump: SimplifiedPump,
+  newStage: string,
+  notes?: string
+): SimplifiedPump {
+  const now = new Date().toISOString();
+
+  return {
+    ...pump,
+    currentStage: newStage,
+    notes: notes || pump.notes,
+    updatedAt: now,
+    // Update derived fields
+    ...computePumpDerivedFields({
+      ...pump,
+      currentStage: newStage,
+      updatedAt: now
+    })
+  };
+}
 
 // Store State Interface
 interface PumpTrackerState {
@@ -50,6 +276,7 @@ interface PumpTrackerState {
 interface PumpTrackerActions {
   // Data loading
   loadModels: (models: Record<string, DenormalizedPumpModel>) => void;
+  loadCatalogModels: () => void;
   loadData: (data: {
     pumps?: SimplifiedPump[];
     purchaseOrders?: SimplifiedPurchaseOrder[];
@@ -135,6 +362,39 @@ export const usePumpTrackerStore = create<PumpTrackerState & PumpTrackerActions>
 
       // Actions
       loadModels: (models) => set({ models }),
+
+      loadCatalogModels: () => {
+        try {
+          const catalogModels = loadCatalogModelsAsDenormalized();
+          const catalog = pumptrackerData as CatalogData;
+
+          // Convert catalog production stages to the expected format
+          const productionStages: ProductionStage[] = catalog.productionStages.map((stageName, index) => ({
+            id: stageName.toUpperCase(),
+            name: stageName,
+            displayName: stageName,
+            description: `${stageName} production stage`,
+            order: index,
+            color: `hsl(${index * 60}, 70%, 50%)`, // Generate different colors for each stage
+            isActive: true,
+            estimatedDays: null,
+            requirements: {
+              skills: [],
+              tools: [],
+              materials: [],
+              qualityChecks: []
+            }
+          }));
+
+          set({
+            models: catalogModels,
+            productionStages
+          });
+        } catch (error) {
+          console.error('Failed to load catalog models:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to load catalog models' });
+        }
+      },
 
       loadData: (data) => set((state) => {
         const newState = { ...state };
@@ -415,7 +675,7 @@ export const usePumpTrackerStore = create<PumpTrackerState & PumpTrackerActions>
       })
     }),
     {
-      name: 'pumptracker-denormalized-v1',
+      name: 'pumptracker-denormalized-v2-catalog-integrated',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         pumps: state.pumps,

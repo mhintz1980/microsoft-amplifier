@@ -1,0 +1,16 @@
+{
+  "errors": [
+    "/home/markimus/projects/microsoft-amplifier/test_file.py:10:15 - error: Cannot access attribute \"compress\" for class \"ContextCompactor\"",
+    "/home/markimus/projects/microsoft-amplifier/test_file.py:11:26 - error: \"object\" is not awaitable",
+    "/home/markimus/projects/microsoft-amplifier/test_file.py:12:37 - error: Cannot access attribute \"compress\" for class \"ContextCompactor\"",
+    "/home/markimus/projects/microsoft-amplifier/test_file.py:15:35 - error: Object of type \"None\" cannot be assigned to type \"str\"",
+    "/home/markimus/projects/microsoft-amplifier/another_file.py:20:44 - error: Cannot access attribute \"items\" for class \"BaseException\"",
+    "/home/markimus/projects/microsoft-amplifier/another_file.py:25:48 - error: Argument of type \"Unknown\" cannot be assigned to parameter \"gradient\" of type \"dict[str, float]\"",
+    "/home/markimus/projects/microsoft-amplifier/utils.py:30:34 - error: Type \"str\" is not assignable to return type \"Optional[str]\""
+  ],
+  "config": {
+    "dry_run": true,
+    "parallel_processing": true,
+    "max_files_per_batch": 5
+  }
+}

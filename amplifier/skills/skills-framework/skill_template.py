@@ -154,4 +154,4 @@ def get_skill_registry() -> SkillRegistry:
 
 def register_skill(skill: BaseSkill) -> None:
     """Register a skill in the global registry."""
-    _skill_registry.register(skill)
+    _skill_registry.register(skill)  # type: ignore  # type: ignore

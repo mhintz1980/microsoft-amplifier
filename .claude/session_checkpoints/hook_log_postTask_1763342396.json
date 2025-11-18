@@ -1,0 +1,47 @@
+{
+  "timestamp": 1763342396.5828357,
+  "hook_name": "postTask",
+  "results": [
+    {
+      "success": true,
+      "result": {
+        "learned": true,
+        "task_outcome": {
+          "success": true,
+          "completion_time": 1763342396.582456,
+          "error_patterns": [],
+          "success_patterns": [
+            "success",
+            "completed"
+          ],
+          "performance_issues": [],
+          "optimization_effectiveness": {},
+          "learnings": [
+            "Task completed successfully"
+          ]
+        },
+        "effectiveness": {
+          "overall_score": 0.7,
+          "optimization_scores": {
+            "techniques_for_implementation": 0.5,
+            "memories_for_development": 0.5,
+            "agents:memory-persistence-specialist,mcp-integration-specialist,architecture-reviewer,context-optimization-specialist,api-development-specialist,modular-builder,performance-optimization-specialist,zen-code-architect": 0.8,
+            "implementation_tools_ready": 0.7
+          },
+          "recommendations": [
+            "Effective optimization: agents:memory-persistence-specialist,mcp-integration-specialist,architecture-reviewer,context-optimization-specialist,api-development-specialist,modular-builder,performance-optimization-specialist,zen-code-architect"
+          ]
+        },
+        "learning_data": {
+          "stored_patterns": true
+        },
+        "summary": "Task: \u2705 Success | Optimizations: Moderately Effective | Key Learning: Task completed successfully",
+        "recommendations": []
+      },
+      "execution_time": 0.0003819465637207031,
+      "hook_name": "postTask"
+    }
+  ],
+  "success_count": 1,
+  "total_count": 1
+}

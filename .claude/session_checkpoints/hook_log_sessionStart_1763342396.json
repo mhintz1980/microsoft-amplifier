@@ -1,0 +1,14 @@
+{
+  "timestamp": 1763342396.5816019,
+  "hook_name": "sessionStart",
+  "results": [
+    {
+      "success": true,
+      "result": null,
+      "execution_time": 0.3714485168457031,
+      "hook_name": "sessionStart"
+    }
+  ],
+  "success_count": 1,
+  "total_count": 1
+}

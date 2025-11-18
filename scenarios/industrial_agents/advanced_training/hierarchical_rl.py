@@ -497,11 +497,11 @@ class HierarchicalRLTrainer:
     def compute_returns(self, episode: list[dict]) -> list[float]:
         """Compute discounted returns for episode."""
         returns = []
-        R = 0
+        discounted_return = 0
 
         for experience in reversed(episode):
-            R = experience["reward"] + self.gamma * R
-            returns.insert(0, R)
+            discounted_return = experience["reward"] + self.gamma * discounted_return
+            returns.insert(0, discounted_return)
 
         return returns
 

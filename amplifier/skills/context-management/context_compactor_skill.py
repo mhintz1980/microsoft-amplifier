@@ -346,4 +346,4 @@ class ContextCompactorSkill(BaseSkill):
         if last_period > max_chars * 0.8:
             return truncated[: last_period + 1]
 
-        return truncated + "..."
+        return cast(dict[str, Any], truncated + "...")

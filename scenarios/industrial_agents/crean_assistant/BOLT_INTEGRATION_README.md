@@ -52,7 +52,7 @@ cd /home/markimus/projects/microsoft-amplifier/scenarios/industrial_agents/crean
 ./start_crean_api.sh
 ```
 
-The API server will start on `http://localhost:8000`
+The API server will start on `http://localhost:8001`
 
 ### Step 2: Configure bolt.diy
 
@@ -61,7 +61,7 @@ The API server will start on `http://localhost:8000`
 3. Find "CreaTech" in the provider list
 4. Configure the following settings:
    - **API Key**: `crean-api-key-local` (or any value for local development)
-   - **Base URL**: `http://localhost:8000` (should be pre-filled)
+   - **Base URL**: `http://localhost:8001` (should be pre-filled)
 5. Enable the CreaTech provider
 
 ### Step 3: Test the Integration
@@ -81,19 +81,19 @@ The API server will start on `http://localhost:8000`
 
 ### Health Check
 ```
-GET http://localhost:8000/health
+GET http://localhost:8001/health
 ```
 Returns the health status of CreaTech components
 
 ### Models
 ```
-GET http://localhost:8000/models
+GET http://localhost:8001/models
 ```
 Returns available CreaTech models and their capabilities
 
 ### Chat Completions (OpenAI-Compatible)
 ```
-POST http://localhost:8000/v1/chat/completions
+POST http://localhost:8001/v1/chat/completions
 ```
 OpenAI-compatible endpoint for bolt.diy integration
 
@@ -118,14 +118,14 @@ Coordinate a multi-agent project to develop a smart home energy management syste
 
 ### CreaTech Not Showing in bolt.diy
 
-1. **Check API Server**: Ensure `http://localhost:8000/health` is accessible
+1. **Check API Server**: Ensure `http://localhost:8001/health` is accessible
 2. **Refresh Providers**: In bolt.diy settings, refresh the provider list
 3. **Check Configuration**: Verify API key and base URL are set correctly
 4. **Check Logs**: Look for CreaTech registration logs in bolt.diy console
 
 ### API Connection Issues
 
-1. **Port Conflict**: Ensure port 8000 is not in use
+1. **Port Conflict**: Ensure port 8001 is not in use
 2. **CORS Issues**: The API server includes CORS middleware for bolt.diy
 3. **Dependencies**: Run `pip install fastapi uvicorn pydantic` in the CreaTech directory
 

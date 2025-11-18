@@ -4,12 +4,30 @@ Project Builder for Industrial Frontend Interfaces
 Builds complete projects from templates and configurations.
 """
 
+import os
+import sys
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 from amplifier.utils.logger import get_logger
 
 from ..generators.base_generator import BaseGenerator
+
+# Add the app directory to the path for test imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# These imports are for test functionality only
+try:
+    from app import main
+
+    from utils.data_simulator import DataSimulator
+    from utils.industrial_components import industrial_metric_card
+except ImportError:
+    # These are optional test dependencies
+    main = None
+    DataSimulator = None
+    industrial_metric_card = None
 
 logger = get_logger(__name__)
 
@@ -542,19 +560,6 @@ describe('App', () => {
     def _create_streamlit_tests(self) -> None:
         """Create Streamlit test files."""
         # Test utilities
-
-
-import os
-import sys
-from unittest.mock import patch
-
-# Add the app directory to the path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from app import main
-
-from utils.data_simulator import DataSimulator
-from utils.industrial_components import industrial_metric_card
 
 
 def test_data_simulator():

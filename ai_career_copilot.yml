@@ -1,0 +1,129 @@
+version: "1.0.0"
+
+app:
+  name: "AI Career Copilot"
+  description: >
+    An AI-powered career companion that transforms an unstructured resume into a
+    dynamic Master Profile. This profile becomes the centralized source of truth
+    for generating tailored resumes, cover letters, and job-matching insights.
+    The system uses the Claude API for parsing, conversational enrichment, and
+    intelligent skill suggestion. The UI is built with React, TypeScript, and
+    Tailwind CSS, guiding users through a clean step-by-step workflow.
+
+technology:
+  ai_engine: "Claude API"
+  frontend_stack:
+    - React
+    - TypeScript
+    - TailwindCSS
+
+schema:
+  master_profile_fields:
+    - contact
+    - education
+    - work_experience
+    - skills
+    - goals
+    - personal_preferences
+    - ideal_work_environment
+    - career_summary
+
+functionality:
+  resume_parsing: >
+    Extracts work experience, education, contact details, and skill data from
+    raw resume text and converts it into a structured JSON UserProfile.
+  enrichment_chat: >
+    A conversational AI career coach gathers deeper details such as ambitions,
+    constraints, motivations, and career preferences.
+  skill_suggestions: >
+    When the user states their goals, AI suggests relevant skills to fill gaps.
+  job_matching: >
+    AI analyzes the Master Profile and generates hypothetical but highly-aligned
+    job descriptions tailored to the user.
+  resume_generation: >
+    Creates job-specific resume versions with rewritten summaries and experience
+    sections aligned to selected job descriptions.
+  cover_letter_generation: >
+    Produces personalized, professional cover letters based on the Master Profile.
+
+ui_flow:
+  - onboarding
+  - ai_parsing
+  - verification
+  - enrichment
+  - master_profile_ready
+
+intended_use_and_flow:
+  stages:
+    onboarding:
+      description: >
+        User pastes their full resume text into the large input area.
+    ai_parsing:
+      description: >
+        Resume text is sent to Claude for structured extraction. A loading state is shown.
+      output: "Structured UserProfile JSON"
+    verification:
+      description: >
+        User reviews the parsed profile. They may edit the resume text or confirm accuracy.
+      options:
+        - "Edit resume text"
+        - "Confirm and proceed"
+    enrichment:
+      description: >
+        The user chats with an AI career coach to add deeper context. When career
+        goals are mentioned, the AI suggests new skills to improve alignment.
+      interactions:
+        - "Accept or reject skill suggestions"
+        - "Continue chatting for deeper refinement"
+    master_profile_ready:
+      description: >
+        Displays the final, combined Master Profile including both parsed and enriched data.
+      actions:
+        - "Restart the process"
+        - "Use the Master Profile for additional tools"
+
+api_calls:
+  resume_parser:
+    model: "claude-3-5-sonnet"
+    prompt_type: "structured_extraction"
+  enrichment_coach:
+    model: "claude-3-5-sonnet"
+    prompt_type: "chat"
+  skill_suggester:
+    model: "claude-3-5-sonnet"
+    prompt_type: "analysis"
+
+constraints:
+  max_resume_length: "50,000 characters"
+  accepted_resume_formats:
+    - plain_text
+    - extracted_pdf_text
+
+env:
+  CLAUDE_API_KEY: "required"
+  APP_ENV: "development | production"
+
+post_master_profile_features:
+  job_matching:
+    description: >
+      AI generates hypothetical but aligned job postings based on the full Master Profile.
+  tailored_resumes:
+    description: >
+      Rewrites summary and experience sections to match the chosen job.
+  custom_cover_letters:
+    description: >
+      Automatically produces tailored cover letters for any selected job.
+
+future_features:
+  - linkedin_import
+  - portfolio_generator
+  - interview_practice
+  - ATS_compatibility_scoring
+  - achievements_rewriter
+  - salary_estimation_engine
+
+transformation_purpose: >
+  Converts the application from a simple profile builder into a complete
+  end-to-end job search assistant, automating profile creation, job targeting,
+  resume tailoring, and cover letter generation to massively reduce time spent
+  applying for roles.

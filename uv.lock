@@ -5475,6 +5475,7 @@ dependencies = [
     { name = "claude-code-sdk" },
     { name = "click" },
     { name = "faiss-cpu" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "langchain" },
     { name = "langchain-community" },
@@ -5509,6 +5510,7 @@ dependencies = [
     { name = "structlog" },
     { name = "tiktoken" },
     { name = "tqdm" },
+    { name = "uvicorn" },
     { name = "yt-dlp" },
 ]
 
@@ -5535,6 +5537,7 @@ requires-dist = [
     { name = "claude-code-sdk", specifier = ">=0.0.20" },
     { name = "click", specifier = ">=8.2.1" },
     { name = "faiss-cpu", specifier = ">=1.12.0" },
+    { name = "fastapi", specifier = ">=0.120.4" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "langchain", specifier = ">=0.2.1" },
     { name = "langchain-community", specifier = ">=0.3.31" },
@@ -5569,6 +5572,7 @@ requires-dist = [
     { name = "structlog", specifier = ">=25.5.0" },
     { name = "tiktoken", specifier = ">=0.11.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
+    { name = "uvicorn", specifier = ">=0.36.0" },
     { name = "yt-dlp", specifier = ">=2025.9.26" },
 ]
 
