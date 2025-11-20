@@ -11,12 +11,15 @@ import asyncio
 import json
 import logging
 import re
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, asdict
+from collections import Counter
+from collections import defaultdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
 from enum import Enum
-from collections import defaultdict, Counter
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -62,8 +65,8 @@ class ErrorPattern:
     frequency: int
     first_detected: datetime
     last_detected: datetime
-    affected_skills: Set[str]
-    suggested_fix: Optional[str] = None
+    affected_skills: set[str]
+    suggested_fix: str | None = None
     false_positive_rate: float = 0.0
 
 
@@ -74,9 +77,9 @@ class DetectionResult:
     execution_id: str
     skill_id: str
     timestamp: datetime
-    errors_detected: List[ErrorPattern]
+    errors_detected: list[ErrorPattern]
     overall_risk_score: float
-    recommendations: List[str]
+    recommendations: list[str]
     requires_immediate_attention: bool
 
 
@@ -85,8 +88,8 @@ class HallucinationDetection:
     """Detection of hallucination patterns"""
 
     confidence: float
-    indicators: List[str]
-    context_analysis: Dict[str, Any]
+    indicators: list[str]
+    context_analysis: dict[str, Any]
     factuality_score: float
     consistency_score: float
 
@@ -101,12 +104,12 @@ class ErrorDetectionEngine:
         self.patterns_path.mkdir(parents=True, exist_ok=True)
 
         # Error pattern database
-        self.known_patterns: Dict[str, ErrorPattern] = {}
-        self.skill_error_history: Dict[str, List[DetectionResult]] = defaultdict(list)
+        self.known_patterns: dict[str, ErrorPattern] = {}
+        self.skill_error_history: dict[str, list[DetectionResult]] = defaultdict(list)
 
         # RL training data
-        self.training_examples: List[Dict] = []
-        self.detection_model: Optional[Any] = None
+        self.training_examples: list[dict] = []
+        self.detection_model: Any | None = None
 
         # Anti-pattern definitions
         self.anti_patterns = self._initialize_anti_patterns()
@@ -115,8 +118,8 @@ class ErrorDetectionEngine:
         self.hallucination_indicators = self._initialize_hallucination_indicators()
 
         # Background tasks
-        self._training_task: Optional[asyncio.Task] = None
-        self._pattern_mining_task: Optional[asyncio.Task] = None
+        self._training_task: asyncio.Task | None = None
+        self._pattern_mining_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -153,7 +156,7 @@ class ErrorDetectionEngine:
         await self._save_error_patterns()
         await self._save_training_data()
 
-    async def analyze_execution(self, execution_data: Dict[str, Any]) -> DetectionResult:
+    async def analyze_execution(self, execution_data: dict[str, Any]) -> DetectionResult:
         """Analyze a skill execution for errors"""
         try:
             skill_id = execution_data.get("skill_id", "unknown")
@@ -215,7 +218,7 @@ class ErrorDetectionEngine:
                 requires_immediate_attention=False,
             )
 
-    async def detect_hallucination(self, skill_output: str, context: Dict[str, Any]) -> HallucinationDetection:
+    async def detect_hallucination(self, skill_output: str, context: dict[str, Any]) -> HallucinationDetection:
         """Detect hallucinations in skill output using sophisticated analysis"""
         try:
             indicators = []
@@ -264,7 +267,7 @@ class ErrorDetectionEngine:
                 confidence=0.0, indicators=[], context_analysis={}, factuality_score=1.0, consistency_score=1.0
             )
 
-    async def get_error_trends(self, skill_id: str, days: int = 7) -> Dict[str, Any]:
+    async def get_error_trends(self, skill_id: str, days: int = 7) -> dict[str, Any]:
         """Analyze error trends for a skill"""
         try:
             if skill_id not in self.skill_error_history:
@@ -305,7 +308,7 @@ class ErrorDetectionEngine:
 
     # Private methods
 
-    async def _detect_syntax_errors(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_syntax_errors(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect syntax errors in code"""
         errors = []
 
@@ -345,7 +348,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_runtime_errors(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_runtime_errors(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect runtime errors from execution output"""
         errors = []
 
@@ -393,7 +396,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_logic_errors(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_logic_errors(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect logic errors through output analysis"""
         errors = []
 
@@ -440,7 +443,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_hallucinations(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_hallucinations(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect hallucinations in skill output"""
         errors = []
 
@@ -479,7 +482,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_anti_patterns(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_anti_patterns(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect anti-patterns in code"""
         errors = []
 
@@ -510,7 +513,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_performance_issues(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_performance_issues(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect performance issues"""
         errors = []
 
@@ -573,7 +576,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    async def _detect_security_vulnerabilities(self, execution_data: Dict[str, Any]) -> List[ErrorPattern]:
+    async def _detect_security_vulnerabilities(self, execution_data: dict[str, Any]) -> list[ErrorPattern]:
         """Detect security vulnerabilities"""
         errors = []
 
@@ -619,7 +622,7 @@ class ErrorDetectionEngine:
 
         return errors
 
-    def _initialize_anti_patterns(self) -> List[Dict]:
+    def _initialize_anti_patterns(self) -> list[dict]:
         """Initialize common anti-patterns"""
         return [
             {
@@ -648,7 +651,7 @@ class ErrorDetectionEngine:
             },
         ]
 
-    def _initialize_hallucination_indicators(self) -> Dict[str, str]:
+    def _initialize_hallucination_indicators(self) -> dict[str, str]:
         """Initialize hallucination detection patterns"""
         return {
             "uncertainty_phrases": r"\b(perhaps|maybe|might|could|possibly|probably|I think|I believe)\b",
@@ -661,7 +664,7 @@ class ErrorDetectionEngine:
             "fake_quotes": r'"[^"]*"[^,;]*(?:said|stated|mentioned)(?!\s+according\s+to)',
         }
 
-    async def _analyze_factuality(self, output: str, context: Dict[str, Any]) -> float:
+    async def _analyze_factuality(self, output: str, context: dict[str, Any]) -> float:
         """Analyze factual accuracy of output"""
         try:
             # Check for verifiable claims
@@ -733,7 +736,7 @@ class ErrorDetectionEngine:
         complexity = (avg_sentence_length / 20 + unique_ratio) / 2
         return min(complexity, 1.0)
 
-    def _calculate_risk_score(self, errors: List[ErrorPattern]) -> float:
+    def _calculate_risk_score(self, errors: list[ErrorPattern]) -> float:
         """Calculate overall risk score from detected errors"""
         if not errors:
             return 0.0
@@ -751,7 +754,7 @@ class ErrorDetectionEngine:
         # Cap at 1.0
         return min(normalized_score, 1.0)
 
-    def _generate_recommendations(self, errors: List[ErrorPattern], risk_score: float) -> List[str]:
+    def _generate_recommendations(self, errors: list[ErrorPattern], risk_score: float) -> list[str]:
         """Generate recommendations based on detected errors"""
         recommendations = []
 
@@ -886,7 +889,7 @@ class ErrorDetectionEngine:
         }
         return suggestions.get(pattern_name, "Review security best practices")
 
-    async def _create_new_pattern(self, pattern_id: str, skill_id: str, results: List[DetectionResult]):
+    async def _create_new_pattern(self, pattern_id: str, skill_id: str, results: list[DetectionResult]):
         """Create a new error pattern from recurring issues"""
         try:
             # Extract common characteristics from the pattern
@@ -919,7 +922,7 @@ class ErrorDetectionEngine:
         except Exception as e:
             logger.error(f"Failed to create new pattern {pattern_id}: {e}")
 
-    def _calculate_risk_trend(self, risk_scores: List[float]) -> str:
+    def _calculate_risk_trend(self, risk_scores: list[float]) -> str:
         """Calculate risk trend over time"""
         if len(risk_scores) < 2:
             return "insufficient_data"
@@ -929,17 +932,16 @@ class ErrorDetectionEngine:
 
         if recent_avg > early_avg + 0.1:
             return "increasing"
-        elif recent_avg < early_avg - 0.1:
+        if recent_avg < early_avg - 0.1:
             return "decreasing"
-        else:
-            return "stable"
+        return "stable"
 
     async def _load_error_patterns(self):
         """Load existing error patterns from disk"""
         try:
             patterns_file = self.patterns_path / "known_patterns.json"
             if patterns_file.exists():
-                with open(patterns_file, "r") as f:
+                with open(patterns_file) as f:
                     data = json.load(f)
                     for pattern_data in data:
                         pattern = ErrorPattern(**pattern_data)
@@ -979,7 +981,7 @@ class ErrorDetectionEngine:
         try:
             training_file = self.patterns_path / "training_data.json"
             if training_file.exists():
-                with open(training_file, "r") as f:
+                with open(training_file) as f:
                     self.training_examples = json.load(f)
                 logger.info(f"Loaded {len(self.training_examples)} training examples")
 
@@ -992,12 +994,12 @@ class ErrorDetectionEngine:
             training_file = self.patterns_path / "training_data.json"
             with open(training_file, "w") as f:
                 json.dump(self.training_examples[-10000:], f)  # Keep last 10k examples
-            logger.info(f"Saved training data")
+            logger.info("Saved training data")
 
         except Exception as e:
             logger.error(f"Failed to save training data: {e}")
 
-    async def _update_error_patterns(self, errors: List[ErrorPattern]):
+    async def _update_error_patterns(self, errors: list[ErrorPattern]):
         """Update error patterns with new detections"""
         try:
             for error in errors:
@@ -1015,7 +1017,7 @@ class ErrorDetectionEngine:
         except Exception as e:
             logger.error(f"Failed to update error patterns: {e}")
 
-    async def _add_training_example(self, execution_data: Dict[str, Any], result: DetectionResult):
+    async def _add_training_example(self, execution_data: dict[str, Any], result: DetectionResult):
         """Add training example for model training"""
         try:
             training_example = {

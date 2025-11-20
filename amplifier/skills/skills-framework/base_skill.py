@@ -5,12 +5,13 @@ Core framework for all amplifier skills with standardized interfaces
 and Agent Lightning integration capabilities.
 """
 
-from abc import ABC, abstractmethod
-from typing import Dict, List, Any, Optional, Union
-from dataclasses import dataclass
-from enum import Enum
 import asyncio
 import logging
+from abc import ABC
+from abc import abstractmethod
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +30,9 @@ class SkillStatus(Enum):
 class SkillContext:
     """Context for skill execution"""
 
-    user_id: Optional[str] = None
-    session_id: Optional[str] = None
-    metadata: Dict[str, Any] = None
+    user_id: str | None = None
+    session_id: str | None = None
+    metadata: dict[str, Any] = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -44,10 +45,10 @@ class SkillResult:
 
     success: bool
     data: Any = None
-    error: Optional[str] = None
+    error: str | None = None
     execution_time: float = 0.0
     tokens_used: int = 0
-    metadata: Dict[str, Any] = None
+    metadata: dict[str, Any] = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -63,7 +64,7 @@ class SkillMetrics:
     average_execution_time: float = 0.0
     average_tokens_used: int = 0
     error_rate: float = 0.0
-    last_execution: Optional[str] = None
+    last_execution: str | None = None
 
     @property
     def success_rate(self) -> float:
@@ -82,7 +83,7 @@ class BaseSkill(ABC):
         self.description = description
         self.status = SkillStatus.IDLE
         self.metrics = SkillMetrics()
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
 
         # Agent Lightning integration
         self._optimization_enabled = True
@@ -117,7 +118,7 @@ class BaseSkill(ABC):
         pass
 
     @abstractmethod
-    def get_capabilities(self) -> List[str]:
+    def get_capabilities(self) -> list[str]:
         """
         Get list of skill capabilities
 
@@ -172,7 +173,7 @@ class BaseSkill(ABC):
 
             return error_result
 
-    def configure(self, config: Dict[str, Any]):
+    def configure(self, config: dict[str, Any]):
         """
         Configure the skill with provided settings
 
@@ -253,8 +254,8 @@ class SkillRegistry:
     """Registry for managing amplifier skills"""
 
     def __init__(self):
-        self._skills: Dict[str, BaseSkill] = {}
-        self._categories: Dict[str, List[str]] = {}
+        self._skills: dict[str, BaseSkill] = {}
+        self._categories: dict[str, list[str]] = {}
 
     def register_skill(self, skill: BaseSkill, category: str = "general"):
         """
@@ -274,11 +275,11 @@ class SkillRegistry:
 
         logger.info(f"Registered skill: {skill.skill_id} in category: {category}")
 
-    def get_skill(self, skill_id: str) -> Optional[BaseSkill]:
+    def get_skill(self, skill_id: str) -> BaseSkill | None:
         """Get a skill by ID"""
         return self._skills.get(skill_id)
 
-    def list_skills(self, category: str = None) -> List[BaseSkill]:
+    def list_skills(self, category: str = None) -> list[BaseSkill]:
         """List skills, optionally filtered by category"""
         if category:
             skill_ids = self._categories.get(category, [])
@@ -286,11 +287,11 @@ class SkillRegistry:
 
         return list(self._skills.values())
 
-    def get_categories(self) -> List[str]:
+    def get_categories(self) -> list[str]:
         """Get all available categories"""
         return list(self._categories.keys())
 
-    def get_skill_metrics(self, skill_id: str) -> Optional[SkillMetrics]:
+    def get_skill_metrics(self, skill_id: str) -> SkillMetrics | None:
         """Get metrics for a specific skill"""
         skill = self.get_skill(skill_id)
         return skill.get_metrics() if skill else None

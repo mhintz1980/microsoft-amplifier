@@ -15,24 +15,19 @@ Features:
 
 import asyncio
 import json
-from dataclasses import dataclass, field
+import uuid
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
-import uuid
+from typing import Any
 
-from ...mcp.persistent_storage import (
-    DockerPersistentStorage,
-    AgentDefinition,
-    SkillDefinition,
-    AgentStatus,
-    SkillStatus,
-    get_persistent_storage,
-    store_result,
-    load_session_results,
-    retrieve_result,
-)
+from ...mcp.persistent_storage import SkillDefinition
+from ...mcp.persistent_storage import SkillStatus
+from ...mcp.persistent_storage import get_persistent_storage
+from ...mcp.persistent_storage import load_session_results
+from ...mcp.persistent_storage import retrieve_result
+from ...mcp.persistent_storage import store_result
 from ...utils.logger import get_logger
 from ...utils.token_utils import estimate_tokens
 
@@ -60,9 +55,9 @@ class SkillMetadata:
     updated_at: datetime
     token_count: int
     compression_level: ContextCompressionLevel
-    performance_metrics: Dict[str, Any] = field(default_factory=dict)
-    usage_stats: Dict[str, Any] = field(default_factory=dict)
-    tags: List[str] = field(default_factory=list)
+    performance_metrics: dict[str, Any] = field(default_factory=dict)
+    usage_stats: dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -73,9 +68,9 @@ class PipelineCheckpoint:
     pipeline_stage: str
     session_id: str
     timestamp: datetime
-    context_data: Dict[str, Any]
-    artifact_summaries: Dict[str, Any]
-    recovery_instructions: List[str]
+    context_data: dict[str, Any]
+    artifact_summaries: dict[str, Any]
+    recovery_instructions: list[str]
     compression_savings: int = 0
 
 
@@ -96,7 +91,7 @@ class MCPSkillManager:
         self.context_compressor = ContextCompressor()
         self.checkpoint_manager = CheckpointManager()
         self.performance_monitor = PerformanceMonitor()
-        self.skill_cache: Dict[str, SkillMetadata] = {}
+        self.skill_cache: dict[str, SkillMetadata] = {}
 
     async def initialize(self) -> bool:
         """Initialize MCP integration components."""
@@ -126,7 +121,7 @@ class MCPSkillManager:
         skill_code: str,
         documentation: str = None,
         test_code: str = None,
-        metadata: Dict[str, Any] = None,
+        metadata: dict[str, Any] = None,
     ) -> bool:
         """
         Store a complete skill in persistent storage.
@@ -195,7 +190,7 @@ class MCPSkillManager:
 
     async def load_skill(
         self, skill_id: str, compression_level: ContextCompressionLevel = ContextCompressionLevel.FULL
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """
         Load a skill from persistent storage.
 
@@ -236,8 +231,8 @@ class MCPSkillManager:
         self,
         session_id: str,
         pipeline_stage: str,
-        context_data: Dict[str, Any],
-        artifact_summaries: Dict[str, Any] = None,
+        context_data: dict[str, Any],
+        artifact_summaries: dict[str, Any] = None,
     ) -> str:
         """
         Create a pipeline checkpoint for recovery.
@@ -282,7 +277,7 @@ class MCPSkillManager:
             logger.error(f"Failed to create checkpoint: {e}")
             raise
 
-    async def load_checkpoint(self, session_id: str, checkpoint_id: str) -> Optional[PipelineCheckpoint]:
+    async def load_checkpoint(self, session_id: str, checkpoint_id: str) -> PipelineCheckpoint | None:
         """Load a checkpoint for recovery."""
         try:
             checkpoint_data = await retrieve_result(f"checkpoint_{session_id}_{checkpoint_id}", "checkpoint")
@@ -311,8 +306,8 @@ class MCPSkillManager:
             return None
 
     async def optimize_context(
-        self, context_data: Dict[str, Any], target_tokens: int = None, preserve_keys: List[str] = None
-    ) -> Dict[str, Any]:
+        self, context_data: dict[str, Any], target_tokens: int = None, preserve_keys: list[str] = None
+    ) -> dict[str, Any]:
         """
         Optimize context for token efficiency.
 
@@ -356,7 +351,7 @@ class MCPSkillManager:
             logger.error(f"Failed to optimize context: {e}")
             return {"optimized_data": context_data, "error": str(e)}
 
-    async def get_skill_usage_stats(self, skill_id: str) -> Dict[str, Any]:
+    async def get_skill_usage_stats(self, skill_id: str) -> dict[str, Any]:
         """Get usage statistics for a skill."""
         try:
             skill_metadata = self.skill_cache.get(skill_id)
@@ -390,7 +385,7 @@ class MCPSkillManager:
 
     async def list_skills(
         self, category_filter: str = None, status_filter: SkillStatus = None, limit: int = 100
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """List skills with optional filtering."""
         try:
             skill_ids = await self.persistent_storage.list_skills(category_filter)
@@ -407,16 +402,16 @@ class MCPSkillManager:
             logger.error(f"Failed to list skills: {e}")
             return []
 
-    def _store_skill_artifacts(self, skill_id: str, artifacts: Dict[str, Any]) -> None:
+    def _store_skill_artifacts(self, skill_id: str, artifacts: dict[str, Any]) -> None:
         """Store additional skill artifacts in MCP."""
         asyncio.create_task(store_result(f"skill_artifacts_{skill_id}", artifacts))
 
-    async def _load_skill_artifacts(self, skill_id: str) -> Dict[str, Any]:
+    async def _load_skill_artifacts(self, skill_id: str) -> dict[str, Any]:
         """Load additional skill artifacts from MCP."""
         result = await retrieve_result(f"skill_artifacts_{skill_id}")
         return result or {}
 
-    def _generate_recovery_instructions(self, pipeline_stage: str) -> List[str]:
+    def _generate_recovery_instructions(self, pipeline_stage: str) -> list[str]:
         """Generate recovery instructions for a pipeline stage."""
         instructions = [
             "Recover pipeline context from checkpoint",
@@ -443,7 +438,7 @@ class ContextCompressor:
     """Context compression and optimization engine."""
 
     def __init__(self):
-        self.compression_history: Dict[str, Any] = {}
+        self.compression_history: dict[str, Any] = {}
         self.optimization_rules = self._load_optimization_rules()
 
     async def initialize(self) -> None:
@@ -485,8 +480,8 @@ class ContextCompressor:
         return compressed_def
 
     def compress_artifacts(
-        self, artifacts: Dict[str, Any], compression_level: ContextCompressionLevel
-    ) -> Dict[str, Any]:
+        self, artifacts: dict[str, Any], compression_level: ContextCompressionLevel
+    ) -> dict[str, Any]:
         """Compress artifacts based on level."""
         if compression_level == ContextCompressionLevel.FULL:
             return artifacts
@@ -515,7 +510,7 @@ class ContextCompressor:
 
         return compressed
 
-    def compress_checkpoint(self, checkpoint: PipelineCheckpoint) -> Dict[str, Any]:
+    def compress_checkpoint(self, checkpoint: PipelineCheckpoint) -> dict[str, Any]:
         """Compress checkpoint data for storage."""
         compressed_data = {
             "checkpoint_id": checkpoint.checkpoint_id,
@@ -537,8 +532,8 @@ class ContextCompressor:
         return compressed_data
 
     def optimize_context(
-        self, context_data: Dict[str, Any], target_tokens: int, preserve_keys: List[str] = None
-    ) -> Dict[str, Any]:
+        self, context_data: dict[str, Any], target_tokens: int, preserve_keys: list[str] = None
+    ) -> dict[str, Any]:
         """Optimize context data to meet token target."""
         preserve_keys = preserve_keys or []
 
@@ -623,33 +618,29 @@ class ContextCompressor:
                 else:
                     compressed[key] = self._compress_data(value, compression_level)
             return compressed
-        elif isinstance(data, list):
+        if isinstance(data, list):
             # Compress lists by taking first few items
             if compression_level == ContextCompressionLevel.SUMMARY:
                 return data[:5] if data else []
-            elif compression_level == ContextCompressionLevel.ESSENTIAL:
+            if compression_level == ContextCompressionLevel.ESSENTIAL:
                 return data[:2] if data else []
-            elif compression_level == ContextCompressionLevel.METADATA:
+            if compression_level == ContextCompressionLevel.METADATA:
                 return data[:1] if data else []
-            else:
-                return [self._compress_data(item, compression_level) for item in data]
-        else:
-            return data
+            return [self._compress_data(item, compression_level) for item in data]
+        return data
 
-    def _remove_verbose_fields(self, data: Dict[str, Any], preserve_keys: List[str]) -> Dict[str, Any]:
+    def _remove_verbose_fields(self, data: dict[str, Any], preserve_keys: list[str]) -> dict[str, Any]:
         """Remove verbose fields from data."""
         verbose_patterns = ["description", "details", "full_", "verbose_", "debug_"]
 
         filtered = {}
         for key, value in data.items():
-            if key in preserve_keys:
-                filtered[key] = value
-            elif not any(pattern in key.lower() for pattern in verbose_patterns):
+            if key in preserve_keys or not any(pattern in key.lower() for pattern in verbose_patterns):
                 filtered[key] = value
 
         return filtered
 
-    def _summarize_long_strings(self, data: Dict[str, Any], preserve_keys: List[str]) -> Dict[str, Any]:
+    def _summarize_long_strings(self, data: dict[str, Any], preserve_keys: list[str]) -> dict[str, Any]:
         """Summarize long string values."""
         max_string_length = 100  # characters
 
@@ -662,7 +653,7 @@ class ContextCompressor:
 
         return data
 
-    def _compress_nested_structures(self, data: Dict[str, Any], preserve_keys: List[str]) -> Dict[str, Any]:
+    def _compress_nested_structures(self, data: dict[str, Any], preserve_keys: list[str]) -> dict[str, Any]:
         """Compress nested data structures."""
         for key, value in data.items():
             if key in preserve_keys:
@@ -678,8 +669,8 @@ class ContextCompressor:
         return data
 
     def _apply_targeted_compression(
-        self, data: Dict[str, Any], preserve_keys: List[str], target_tokens: int
-    ) -> Dict[str, Any]:
+        self, data: dict[str, Any], preserve_keys: list[str], target_tokens: int
+    ) -> dict[str, Any]:
         """Apply targeted compression to meet token target."""
         # Remove less important keys
         priority_keys = ["id", "name", "status", "timestamp", "result"]
@@ -691,7 +682,7 @@ class ContextCompressor:
 
         return filtered
 
-    def _load_optimization_rules(self) -> Dict[str, Any]:
+    def _load_optimization_rules(self) -> dict[str, Any]:
         """Load context optimization rules."""
         return {
             "preserve_patterns": [
@@ -713,7 +704,7 @@ class ContextCompressor:
             },
         }
 
-    def get_compression_stats(self, skill_id: str) -> Dict[str, Any]:
+    def get_compression_stats(self, skill_id: str) -> dict[str, Any]:
         """Get compression statistics for a skill."""
         return self.compression_history.get(
             skill_id, {"total_compressions": 0, "average_compression_ratio": 0.0, "total_tokens_saved": 0}
@@ -724,8 +715,8 @@ class CheckpointManager:
     """Manages pipeline checkpoints for recovery."""
 
     def __init__(self):
-        self.checkpoints: Dict[str, PipelineCheckpoint] = {}
-        self.recovery_history: List[Dict[str, Any]] = []
+        self.checkpoints: dict[str, PipelineCheckpoint] = {}
+        self.recovery_history: list[dict[str, Any]] = []
 
     async def initialize(self) -> None:
         """Initialize checkpoint manager."""
@@ -733,7 +724,7 @@ class CheckpointManager:
         self.checkpoints = {}
         self.recovery_history = []
 
-    async def create_checkpoint(self, session_id: str, pipeline_stage: str, context_data: Dict[str, Any]) -> str:
+    async def create_checkpoint(self, session_id: str, pipeline_stage: str, context_data: dict[str, Any]) -> str:
         """Create a new checkpoint."""
         checkpoint_id = str(uuid.uuid4())
 
@@ -754,7 +745,7 @@ class CheckpointManager:
 
         return checkpoint_id
 
-    async def load_latest_checkpoint(self, session_id: str) -> Optional[PipelineCheckpoint]:
+    async def load_latest_checkpoint(self, session_id: str) -> PipelineCheckpoint | None:
         """Load latest checkpoint for a session."""
         session_checkpoints = [cp for cp in self.checkpoints.values() if cp.session_id == session_id]
 
@@ -789,8 +780,8 @@ class PerformanceMonitor:
     """Monitors performance of skill operations."""
 
     def __init__(self):
-        self.metrics: Dict[str, Any] = {}
-        self.performance_history: List[Dict[str, Any]] = []
+        self.metrics: dict[str, Any] = {}
+        self.performance_history: list[dict[str, Any]] = []
 
     async def initialize(self) -> None:
         """Initialize performance monitor."""
@@ -805,11 +796,11 @@ class PerformanceMonitor:
 
         self.metrics[skill_id][metric_name] = {"value": value, "timestamp": datetime.now().isoformat()}
 
-    async def get_skill_metrics(self, skill_id: str) -> Dict[str, Any]:
+    async def get_skill_metrics(self, skill_id: str) -> dict[str, Any]:
         """Get all metrics for a skill."""
         return self.metrics.get(skill_id, {})
 
-    async def get_global_metrics(self) -> Dict[str, Any]:
+    async def get_global_metrics(self) -> dict[str, Any]:
         """Get global performance metrics."""
         return {
             "total_skills": len(self.metrics),

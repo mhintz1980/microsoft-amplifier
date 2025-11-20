@@ -3,10 +3,10 @@ Validation utilities for documentation system.
 """
 
 import re
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 
-def validate_skill_name(skill_name: str) -> List[str]:
+def validate_skill_name(skill_name: str) -> list[str]:
     """
     Validate skill name format.
 
@@ -45,7 +45,7 @@ def validate_skill_name(skill_name: str) -> List[str]:
     return errors
 
 
-def validate_documentation_structure(documentation: Dict[str, Any]) -> List[str]:
+def validate_documentation_structure(documentation: dict[str, Any]) -> list[str]:
     """
     Validate documentation structure.
 
@@ -76,13 +76,13 @@ def validate_documentation_structure(documentation: Dict[str, Any]) -> List[str]
     return errors
 
 
-def _validate_documentation_level(level: str, content: Any) -> List[str]:
+def _validate_documentation_level(level: str, content: Any) -> list[str]:
     """Validate a specific documentation level."""
 
     errors = []
 
     if content is None:
-        return [f"Content cannot be None"]
+        return ["Content cannot be None"]
 
     if isinstance(content, dict):
         # Check for sections
@@ -103,7 +103,7 @@ def _validate_documentation_level(level: str, content: Any) -> List[str]:
     return errors
 
 
-def _validate_section_content(section_name: str, content: Any) -> List[str]:
+def _validate_section_content(section_name: str, content: Any) -> list[str]:
     """Validate content of a documentation section."""
 
     errors = []
@@ -117,7 +117,7 @@ def _validate_section_content(section_name: str, content: Any) -> List[str]:
     return errors
 
 
-def validate_tags(tags: List[str]) -> List[str]:
+def validate_tags(tags: list[str]) -> list[str]:
     """
     Validate skill tags.
 
@@ -163,7 +163,7 @@ def validate_tags(tags: List[str]) -> List[str]:
     return errors
 
 
-def validate_examples(examples: List[Dict[str, Any]]) -> List[str]:
+def validate_examples(examples: list[dict[str, Any]]) -> list[str]:
     """
     Validate code examples.
 
@@ -186,7 +186,7 @@ def validate_examples(examples: List[Dict[str, Any]]) -> List[str]:
     return errors
 
 
-def _validate_single_example(example: Dict[str, Any], index: int) -> List[str]:
+def _validate_single_example(example: dict[str, Any], index: int) -> list[str]:
     """Validate a single example."""
 
     errors = []
@@ -229,7 +229,7 @@ def _validate_single_example(example: Dict[str, Any], index: int) -> List[str]:
     return errors
 
 
-def validate_cross_references(references: Dict[str, Any]) -> List[str]:
+def validate_cross_references(references: dict[str, Any]) -> list[str]:
     """
     Validate cross-references in documentation.
 
@@ -262,7 +262,7 @@ def validate_cross_references(references: Dict[str, Any]) -> List[str]:
     return errors
 
 
-def validate_version_info(version_info: Dict[str, Any]) -> List[str]:
+def validate_version_info(version_info: dict[str, Any]) -> list[str]:
     """
     Validate version information.
 

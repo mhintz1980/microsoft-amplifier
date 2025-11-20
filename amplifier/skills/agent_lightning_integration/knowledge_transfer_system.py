@@ -10,16 +10,17 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, asdict
-from enum import Enum
 from collections import defaultdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 try:
     # Try to import Agent Lightning components
@@ -34,8 +35,10 @@ except ImportError:
     AGENT_LIGHTNING_AVAILABLE = False
 
 from .config import KnowledgeTransferConfig
-from .skill_performance_tracker import SkillPerformanceTracker, SkillPerformanceSummary
-from .continuous_optimizer import ContinuousOptimizer, OptimizationResult
+from .continuous_optimizer import ContinuousOptimizer
+from .continuous_optimizer import OptimizationResult
+from .skill_performance_tracker import SkillPerformanceSummary
+from .skill_performance_tracker import SkillPerformanceTracker
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +72,7 @@ class SkillPattern:
     source_skill_id: str
     pattern_type: PatternType
     description: str
-    implementation_details: Dict[str, Any]
+    implementation_details: dict[str, Any]
     performance_impact: float
     success_rate: float
     complexity_score: float
@@ -88,7 +91,7 @@ class TransferProposal:
     target_skill_id: str
     similarity_score: float
     expected_benefit: float
-    adaptation_requirements: List[str]
+    adaptation_requirements: list[str]
     confidence: float
     created_at: datetime
     status: str = "proposed"  # "proposed", "accepted", "implemented", "rejected"
@@ -100,11 +103,11 @@ class TransferResult:
 
     proposal_id: str
     implemented_at: datetime
-    pre_transfer_metrics: Dict[str, float]
-    post_transfer_metrics: Dict[str, float]
+    pre_transfer_metrics: dict[str, float]
+    post_transfer_metrics: dict[str, float]
     actual_benefit: float
     adaptation_success: bool
-    lessons_learned: List[str]
+    lessons_learned: list[str]
     transfer_result: TransferResult
 
 
@@ -127,20 +130,20 @@ class KnowledgeTransferSystem:
         self.optimizer = optimizer
 
         # Knowledge base
-        self.skill_patterns: Dict[str, SkillPattern] = {}
-        self.transfer_proposals: Dict[str, TransferProposal] = {}
-        self.transfer_history: Dict[str, List[TransferResult]] = defaultdict(list)
+        self.skill_patterns: dict[str, SkillPattern] = {}
+        self.transfer_proposals: dict[str, TransferProposal] = {}
+        self.transfer_history: dict[str, list[TransferResult]] = defaultdict(list)
 
         # Pattern matching
         self.vectorizer = TfidfVectorizer(max_features=1000, stop_words="english")
-        self.skill_embeddings: Dict[str, np.ndarray] = {}
+        self.skill_embeddings: dict[str, np.ndarray] = {}
 
         # Agent Lightning components for transfer learning
         self.transfer_optimizer = None
 
         # Background tasks
-        self._pattern_mining_task: Optional[asyncio.Task] = None
-        self._transfer_evaluation_task: Optional[asyncio.Task] = None
+        self._pattern_mining_task: asyncio.Task | None = None
+        self._transfer_evaluation_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -178,7 +181,7 @@ class KnowledgeTransferSystem:
         # Save knowledge base
         await self._save_knowledge_base()
 
-    async def extract_patterns_from_skill(self, skill_id: str, force_extraction: bool = False) -> List[SkillPattern]:
+    async def extract_patterns_from_skill(self, skill_id: str, force_extraction: bool = False) -> list[SkillPattern]:
         """Extract successful patterns from a skill"""
         try:
             logger.info(f"Extracting patterns from skill {skill_id}")
@@ -230,8 +233,8 @@ class KnowledgeTransferSystem:
             return []
 
     async def find_transfer_opportunities(
-        self, skill_id: str, pattern_types: Optional[List[PatternType]] = None
-    ) -> List[TransferProposal]:
+        self, skill_id: str, pattern_types: list[PatternType] | None = None
+    ) -> list[TransferProposal]:
         """Find knowledge transfer opportunities for a skill"""
         try:
             logger.info(f"Finding transfer opportunities for skill {skill_id}")
@@ -347,7 +350,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to implement transfer {proposal_id}: {e}")
             raise
 
-    async def get_knowledge_base_stats(self) -> Dict[str, Any]:
+    async def get_knowledge_base_stats(self) -> dict[str, Any]:
         """Get knowledge base statistics"""
         try:
             total_patterns = len(self.skill_patterns)
@@ -385,7 +388,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to get knowledge base stats: {e}")
             return {"error": str(e)}
 
-    async def recommend_patterns_for_skill(self, skill_id: str) -> Dict[str, Any]:
+    async def recommend_patterns_for_skill(self, skill_id: str) -> dict[str, Any]:
         """Get pattern recommendations for a specific skill"""
         try:
             # Get skill's current issues and opportunities
@@ -496,8 +499,8 @@ class KnowledgeTransferSystem:
                 await asyncio.sleep(600)
 
     async def _extract_performance_patterns(
-        self, skill_id: str, performance: SkillPerformanceSummary, optimization_history: List[OptimizationResult]
-    ) -> List[SkillPattern]:
+        self, skill_id: str, performance: SkillPerformanceSummary, optimization_history: list[OptimizationResult]
+    ) -> list[SkillPattern]:
         """Extract performance optimization patterns"""
         patterns = []
 
@@ -550,7 +553,7 @@ class KnowledgeTransferSystem:
 
     async def _extract_error_handling_patterns(
         self, skill_id: str, performance: SkillPerformanceSummary
-    ) -> List[SkillPattern]:
+    ) -> list[SkillPattern]:
         """Extract error handling patterns"""
         patterns = []
 
@@ -580,8 +583,8 @@ class KnowledgeTransferSystem:
         return patterns
 
     async def _extract_accuracy_patterns(
-        self, skill_id: str, performance: SkillPerformanceSummary, optimization_history: List[OptimizationResult]
-    ) -> List[SkillPattern]:
+        self, skill_id: str, performance: SkillPerformanceSummary, optimization_history: list[OptimizationResult]
+    ) -> list[SkillPattern]:
         """Extract accuracy improvement patterns"""
         patterns = []
 
@@ -610,7 +613,7 @@ class KnowledgeTransferSystem:
 
         return patterns
 
-    async def _extract_code_structure_patterns(self, skill_id: str) -> List[SkillPattern]:
+    async def _extract_code_structure_patterns(self, skill_id: str) -> list[SkillPattern]:
         """Extract code structure patterns"""
         patterns = []
 
@@ -661,7 +664,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to calculate transferability score: {e}")
             return 0.5
 
-    async def _find_similar_skills(self, skill_id: str, top_k: int = 10) -> List[Tuple[str, float]]:
+    async def _find_similar_skills(self, skill_id: str, top_k: int = 10) -> list[tuple[str, float]]:
         """Find skills similar to the given skill"""
         try:
             # This would use skill embeddings for similarity
@@ -699,10 +702,10 @@ class KnowledgeTransferSystem:
             if pattern.pattern_type == PatternType.PERFORMANCE_OPTIMIZATION:
                 return target_performance.avg_execution_time > 3.0  # Needs performance improvement
 
-            elif pattern.pattern_type == PatternType.ERROR_HANDLING:
+            if pattern.pattern_type == PatternType.ERROR_HANDLING:
                 return target_performance.success_rate < 0.95  # Needs error handling improvement
 
-            elif pattern.pattern_type == PatternType.ACCURACY_IMPROVEMENT:
+            if pattern.pattern_type == PatternType.ACCURACY_IMPROVEMENT:
                 return target_performance.avg_accuracy_score < 0.9  # Needs accuracy improvement
 
             # For other pattern types, assume applicable
@@ -743,7 +746,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to create transfer proposal: {e}")
             raise
 
-    async def _identify_adaptation_requirements(self, pattern: SkillPattern, target_skill_id: str) -> List[str]:
+    async def _identify_adaptation_requirements(self, pattern: SkillPattern, target_skill_id: str) -> list[str]:
         """Identify requirements for adapting a pattern to a target skill"""
         requirements = []
 
@@ -791,7 +794,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to identify adaptation requirements: {e}")
             return ["Manual adaptation required"]
 
-    async def _adapt_pattern(self, pattern: SkillPattern, target_skill_id: str) -> Dict[str, Any]:
+    async def _adapt_pattern(self, pattern: SkillPattern, target_skill_id: str) -> dict[str, Any]:
         """Adapt a pattern for the target skill"""
         try:
             # Start with original implementation details
@@ -816,25 +819,25 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to adapt pattern: {e}")
             return pattern.implementation_details
 
-    async def _adapt_performance_pattern(self, pattern_details: Dict[str, Any], target_skill_id: str) -> Dict[str, Any]:
+    async def _adapt_performance_pattern(self, pattern_details: dict[str, Any], target_skill_id: str) -> dict[str, Any]:
         """Adapt performance optimization pattern"""
         # This would contain specific adaptation logic
         pattern_details["cache_config"] = {"target_specific": True, "cache_size": "adaptive"}
         return pattern_details
 
     async def _adapt_error_handling_pattern(
-        self, pattern_details: Dict[str, Any], target_skill_id: str
-    ) -> Dict[str, Any]:
+        self, pattern_details: dict[str, Any], target_skill_id: str
+    ) -> dict[str, Any]:
         """Adapt error handling pattern"""
         pattern_details["error_mapping"] = {"target_specific": True, "error_types": "adaptive"}
         return pattern_details
 
-    async def _adapt_accuracy_pattern(self, pattern_details: Dict[str, Any], target_skill_id: str) -> Dict[str, Any]:
+    async def _adapt_accuracy_pattern(self, pattern_details: dict[str, Any], target_skill_id: str) -> dict[str, Any]:
         """Adapt accuracy improvement pattern"""
         pattern_details["validation_config"] = {"target_specific": True, "thresholds": "adaptive"}
         return pattern_details
 
-    async def _implement_adapted_pattern(self, adapted_pattern: Dict[str, Any], target_skill_id: str) -> bool:
+    async def _implement_adapted_pattern(self, adapted_pattern: dict[str, Any], target_skill_id: str) -> bool:
         """Implement the adapted pattern in the target skill"""
         try:
             logger.info(f"Implementing adapted pattern in skill {target_skill_id}")
@@ -856,7 +859,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to implement adapted pattern: {e}")
             return False
 
-    async def _get_skill_metrics(self, skill_id: str) -> Dict[str, float]:
+    async def _get_skill_metrics(self, skill_id: str) -> dict[str, float]:
         """Get current metrics for a skill"""
         try:
             performance_summary = await self.performance_tracker.get_skill_summary(skill_id)
@@ -875,7 +878,7 @@ class KnowledgeTransferSystem:
             return {}
 
     async def _calculate_transfer_benefit(
-        self, pattern_type: PatternType, pre_metrics: Dict[str, float], post_metrics: Dict[str, float]
+        self, pattern_type: PatternType, pre_metrics: dict[str, float], post_metrics: dict[str, float]
     ) -> float:
         """Calculate the actual benefit from a transfer"""
         try:
@@ -901,7 +904,7 @@ class KnowledgeTransferSystem:
             logger.error(f"Failed to calculate transfer benefit: {e}")
             return 0.0
 
-    async def _generate_transfer_lessons(self, proposal: TransferProposal, actual_benefit: float) -> List[str]:
+    async def _generate_transfer_lessons(self, proposal: TransferProposal, actual_benefit: float) -> list[str]:
         """Generate lessons learned from a transfer"""
         lessons = []
 
@@ -970,7 +973,7 @@ class KnowledgeTransferSystem:
             # Load patterns
             patterns_file = self.knowledge_path / "skill_patterns.json"
             if patterns_file.exists():
-                with open(patterns_file, "r") as f:
+                with open(patterns_file) as f:
                     data = json.load(f)
                     for pattern_data in data:
                         pattern = SkillPattern(**pattern_data)
@@ -980,7 +983,7 @@ class KnowledgeTransferSystem:
             # Load transfer history
             history_file = self.knowledge_path / "transfer_history.json"
             if history_file.exists():
-                with open(history_file, "r") as f:
+                with open(history_file) as f:
                     data = json.load(f)
                     for skill_id, transfers_data in data.items():
                         for transfer_data in transfers_data:

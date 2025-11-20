@@ -6,18 +6,15 @@ Provides expert-level knowledge of Supabase fundamentals, PostgreSQL database,
 authentication, real-time features, storage, CDN, and edge functions.
 """
 
-import json
-import re
-import asyncio
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, asdict
-from pathlib import Path
+from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
-from ..skills_framework.base_skill import BaseSkill, SkillContext, SkillResult
-from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
 from ..agent_lightning_integration.performance_monitor import PerformanceMonitor
+from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 
 
 class SupabaseVersion(Enum):
@@ -56,12 +53,12 @@ class SupabaseFeature:
     name: str
     category: FeatureCategory
     description: str
-    api_endpoints: List[str]
-    configuration_options: Dict[str, Any]
-    common_patterns: List[str]
-    performance_considerations: List[str]
-    security_considerations: List[str]
-    examples: List[Dict[str, Any]]
+    api_endpoints: list[str]
+    configuration_options: dict[str, Any]
+    common_patterns: list[str]
+    performance_considerations: list[str]
+    security_considerations: list[str]
+    examples: list[dict[str, Any]]
 
 
 @dataclass
@@ -69,25 +66,25 @@ class DatabaseSchema:
     """PostgreSQL database schema definition."""
 
     name: str
-    tables: List[Dict[str, Any]]
-    relationships: List[Dict[str, Any]]
-    constraints: List[Dict[str, Any]]
-    indexes: List[Dict[str, Any]]
-    rls_policies: List[Dict[str, Any]]
-    functions: List[Dict[str, Any]]
-    triggers: List[Dict[str, Any]]
+    tables: list[dict[str, Any]]
+    relationships: list[dict[str, Any]]
+    constraints: list[dict[str, Any]]
+    indexes: list[dict[str, Any]]
+    rls_policies: list[dict[str, Any]]
+    functions: list[dict[str, Any]]
+    triggers: list[dict[str, Any]]
 
 
 @dataclass
 class AuthConfiguration:
     """Authentication configuration."""
 
-    providers: List[str]
+    providers: list[str]
     rls_enabled: bool
-    custom_claims: Dict[str, Any]
-    redirect_urls: List[str]
-    session_settings: Dict[str, Any]
-    security_settings: Dict[str, Any]
+    custom_claims: dict[str, Any]
+    redirect_urls: list[str]
+    session_settings: dict[str, Any]
+    security_settings: dict[str, Any]
 
 
 @dataclass
@@ -95,10 +92,10 @@ class RealtimeSubscription:
     """Real-time subscription configuration."""
 
     table: str
-    events: List[str]
-    filter: Optional[Dict[str, Any]]
-    jwt_token: Optional[str]
-    channel_config: Dict[str, Any]
+    events: list[str]
+    filter: dict[str, Any] | None
+    jwt_token: str | None
+    channel_config: dict[str, Any]
 
 
 @dataclass
@@ -107,10 +104,10 @@ class StorageBucket:
 
     name: str
     public: bool
-    allowed_mime_types: List[str]
+    allowed_mime_types: list[str]
     file_size_limit: int
-    transformations: Dict[str, Any]
-    cdn_config: Dict[str, Any]
+    transformations: dict[str, Any]
+    cdn_config: dict[str, Any]
 
 
 class SupabaseExpert(BaseSkill):
@@ -1340,7 +1337,7 @@ class SupabaseExpert(BaseSkill):
         required_fields = ["query"]
         return all(field in input_data for field in required_fields)
 
-    def get_capabilities(self) -> List[str]:
+    def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities."""
         return [
             "Supabase platform fundamentals and architecture",
@@ -1420,101 +1417,95 @@ class SupabaseExpert(BaseSkill):
                 },
             )
 
-    async def _handle_database_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_database_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle database-related queries."""
         query = input_data.get("query", "").lower()
 
         if "schema" in query or "design" in query:
             return self._get_database_design_guidance(level)
-        elif "migration" in query:
+        if "migration" in query:
             return self._get_migration_guidance(level)
-        elif "query" in query or "sql" in query:
+        if "query" in query or "sql" in query:
             return self._get_query_optimization_guidance(level)
-        elif "index" in query:
+        if "index" in query:
             return self._get_indexing_guidance(level)
-        elif "performance" in query:
+        if "performance" in query:
             return self._get_database_performance_guidance(level)
-        else:
-            return self._get_database_fundamentals(level)
+        return self._get_database_fundamentals(level)
 
-    async def _handle_authentication_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_authentication_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle authentication-related queries."""
         query = input_data.get("query", "").lower()
 
         if "row level security" in query or "rls" in query:
             return self._get_rls_guidance(level)
-        elif "provider" in query or "oauth" in query:
+        if "provider" in query or "oauth" in query:
             return self._get_auth_provider_guidance(level)
-        elif "jwt" in query or "token" in query:
+        if "jwt" in query or "token" in query:
             return self._get_jwt_guidance(level)
-        elif "session" in query:
+        if "session" in query:
             return self._get_session_management_guidance(level)
-        else:
-            return self._get_authentication_fundamentals(level)
+        return self._get_authentication_fundamentals(level)
 
-    async def _handle_realtime_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_realtime_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle real-time feature queries."""
         query = input_data.get("query", "").lower()
 
         if "presence" in query:
             return self._get_presence_guidance(level)
-        elif "broadcast" in query:
+        if "broadcast" in query:
             return self._get_broadcast_guidance(level)
-        elif "subscription" in query or "subscribe" in query:
+        if "subscription" in query or "subscribe" in query:
             return self._get_subscription_guidance(level)
-        elif "performance" in query:
+        if "performance" in query:
             return self._get_realtime_performance_guidance(level)
-        else:
-            return self._get_realtime_fundamentals(level)
+        return self._get_realtime_fundamentals(level)
 
-    async def _handle_storage_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_storage_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle storage-related queries."""
         query = input_data.get("query", "").lower()
 
         if "upload" in query or "file" in query:
             return self._get_upload_guidance(level)
-        elif "cdn" in query or "transform" in query:
+        if "cdn" in query or "transform" in query:
             return self._get_cdn_guidance(level)
-        elif "bucket" in query or "policy" in query:
+        if "bucket" in query or "policy" in query:
             return self._get_bucket_guidance(level)
-        elif "security" in query:
+        if "security" in query:
             return self._get_storage_security_guidance(level)
-        else:
-            return self._get_storage_fundamentals(level)
+        return self._get_storage_fundamentals(level)
 
-    async def _handle_edge_function_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_edge_function_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle edge function queries."""
         query = input_data.get("query", "").lower()
 
         if "webhook" in query:
             return self._get_webhook_guidance(level)
-        elif "cache" in query or "performance" in query:
+        if "cache" in query or "performance" in query:
             return self._get_edge_function_performance_guidance(level)
-        elif "error" in query or "handling" in query:
+        if "error" in query or "handling" in query:
             return self._get_error_handling_guidance(level)
-        elif "deno" in query:
+        if "deno" in query:
             return self._get_deno_guidance(level)
-        else:
-            return self._get_edge_function_fundamentals(level)
+        return self._get_edge_function_fundamentals(level)
 
-    async def _handle_setup_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_setup_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle setup and installation queries."""
         return self._get_setup_guidance(level)
 
-    async def _handle_optimization_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_optimization_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle optimization queries."""
         query = input_data.get("query", "").lower()
 
         if "security" in query:
             return self._get_security_guidance(level)
-        elif "performance" in query:
+        if "performance" in query:
             return self._get_performance_guidance(level)
-        elif "best practices" in query:
+        if "best practices" in query:
             return self._get_best_practices_guidance(level)
-        else:
-            return self._get_optimization_guidance(level)
+        return self._get_optimization_guidance(level)
 
-    async def _handle_general_expertise(self, input_data: Dict[str, Any], level: str) -> str:
+    async def _handle_general_expertise(self, input_data: dict[str, Any], level: str) -> str:
         """Handle general Supabase queries."""
         return self._get_supabase_overview(level)
 
@@ -1524,16 +1515,15 @@ class SupabaseExpert(BaseSkill):
 
         if any(term in query_lower for term in ["database", "sql", "postgres"]):
             return "database"
-        elif any(term in query_lower for term in ["auth", "authentication", "user"]):
+        if any(term in query_lower for term in ["auth", "authentication", "user"]):
             return "authentication"
-        elif any(term in query_lower for term in ["realtime", "subscribe", "presence"]):
+        if any(term in query_lower for term in ["realtime", "subscribe", "presence"]):
             return "realtime"
-        elif any(term in query_lower for term in ["storage", "upload", "cdn"]):
+        if any(term in query_lower for term in ["storage", "upload", "cdn"]):
             return "storage"
-        elif any(term in query_lower for term in ["edge function", "serverless"]):
+        if any(term in query_lower for term in ["edge function", "serverless"]):
             return "edge_functions"
-        else:
-            return "general"
+        return "general"
 
     # Guidance method implementations would continue here...
     # (Truncated for brevity, but would include all the specific guidance methods)
@@ -1542,7 +1532,7 @@ class SupabaseExpert(BaseSkill):
         """Get Supabase platform overview."""
         if level == "metadata":
             return "Supabase platform overview and architecture"
-        elif level == "summary":
+        if level == "summary":
             return """
 # Supabase Platform Overview
 
@@ -1563,8 +1553,8 @@ Open-source Firebase alternative built on PostgreSQL.
 - Real-time capabilities
 - Global CDN
             """
-        else:  # full
-            return """
+        # full
+        return """
 # Complete Supabase Platform Guide
 
 ## Architecture Overview
@@ -1728,8 +1718,8 @@ This comprehensive guide provides everything needed to understand and leverage t
         """Get database migration guidance."""
         if level == "metadata":
             return "Database migrations and schema management"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Database Migrations with Supabase
 
 ## Migration Types
@@ -1750,8 +1740,7 @@ supabase db reset
 - Include rollback scripts
 - Version control all migrations
             """
-        else:
-            return """
+        return """
 # Comprehensive Database Migration Guide
 
 ## Migration Management
@@ -2094,8 +2083,8 @@ This comprehensive migration guide ensures safe, reliable database schema change
         """Get query optimization guidance."""
         if level == "metadata":
             return "PostgreSQL query optimization techniques"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Query Optimization with Supabase
 
 ## Key Techniques
@@ -2115,8 +2104,7 @@ This comprehensive migration guide ensures safe, reliable database schema change
 - Optimize JOIN operations
 - Monitor slow queries
             """
-        else:
-            return """
+        return """
 # PostgreSQL Query Optimization Guide for Supabase
 
 ## Query Analysis and Monitoring
@@ -2510,8 +2498,8 @@ This comprehensive optimization guide ensures high-performance database operatio
         """Get indexing guidance."""
         if level == "metadata":
             return "Database indexing strategies for performance"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Database Indexing Guide
 
 ## Index Types
@@ -2533,8 +2521,7 @@ CREATE INDEX idx_users_email_lower ON users(LOWER(email));
 CREATE INDEX idx_published_posts ON posts(created_at) WHERE status = 'published';
 ```
             """
-        else:
-            return """
+        return """
 # Comprehensive Database Indexing Guide
 
 ## Understanding Index Types
@@ -2975,8 +2962,8 @@ This comprehensive indexing guide ensures optimal database performance through s
         """Get database performance guidance."""
         if level == "metadata":
             return "Database performance monitoring and optimization"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Database Performance Guide
 
 ## Key Areas
@@ -2996,8 +2983,7 @@ This comprehensive indexing guide ensures optimal database performance through s
 - Implement caching layers
 - Regular performance audits
             """
-        else:
-            return """
+        return """
 # Database Performance Optimization Guide
 
 ## Performance Monitoring
@@ -3598,7 +3584,7 @@ This comprehensive performance guide ensures optimal database operation and scal
         """Get authentication fundamentals."""
         if level == "metadata":
             return "Supabase authentication system fundamentals"
-        elif level == "summary":
+        if level == "summary":
             return f"""
 # Supabase Authentication
 
@@ -3621,8 +3607,7 @@ const supabase = createClient(url, key)
 - Token refresh management
 - User session handling
             """
-        else:
-            return """
+        return """
 # Complete Supabase Authentication Guide
 
 ## Authentication Architecture
@@ -3972,8 +3957,8 @@ This comprehensive authentication guide covers all aspects of secure user manage
         """Get Row-Level Security guidance."""
         if level == "metadata":
             return "Row-Level Security implementation and best practices"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Row-Level Security (RLS)
 
 ## Key Concepts
@@ -3996,8 +3981,7 @@ CREATE POLICY "Users can view own data" ON sensitive_data
 - Test policies thoroughly
 - Consider performance implications
             """
-        else:
-            return """
+        return """
 # Comprehensive Row-Level Security (RLS) Guide
 
 ## Understanding RLS
@@ -4409,7 +4393,7 @@ This comprehensive RLS guide ensures secure, performant, and maintainable row-le
         """Get real-time fundamentals."""
         if level == "metadata":
             return "Supabase real-time subscription and presence fundamentals"
-        elif level == "summary":
+        if level == "summary":
             return f"""
 # Supabase Real-time Features
 
@@ -4433,8 +4417,7 @@ const subscription = supabase
 - Server-to-client broadcasting
 - Efficient data filtering
             """
-        else:
-            return """
+        return """
 # Complete Supabase Real-time Guide
 
 ## Real-time Architecture
@@ -4988,7 +4971,7 @@ This comprehensive real-time guide enables building sophisticated, real-time app
         """Get storage fundamentals."""
         if level == "metadata":
             return "Supabase storage, CDN, and file management fundamentals"
-        elif level == "summary":
+        if level == "summary":
             return f"""
 # Supabase Storage
 
@@ -5016,8 +4999,7 @@ const {data} = supabase.storage
 - Global CDN delivery
 - Secure access controls
             """
-        else:
-            return """
+        return """
 # Complete Supabase Storage Guide
 
 ## Storage Architecture
@@ -5486,7 +5468,7 @@ This comprehensive storage guide enables building robust, secure file management
         """Get edge function fundamentals."""
         if level == "metadata":
             return "Supabase edge functions and serverless computing fundamentals"
-        elif level == "summary":
+        if level == "summary":
             return """
 # Supabase Edge Functions
 
@@ -5512,8 +5494,7 @@ serve(async (req) => {
 - Global CDN deployment
 - Database integration
             """
-        else:
-            return """
+        return """
 # Complete Supabase Edge Functions Guide
 
 ## Edge Functions Architecture
@@ -5928,8 +5909,8 @@ This comprehensive edge functions guide enables building powerful, scalable serv
         """Get setup guidance."""
         if level == "metadata":
             return "Supabase project setup and configuration"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Supabase Setup Guide
 
 ## Project Creation
@@ -5957,8 +5938,7 @@ supabase functions deploy
 - Database settings
 - Authentication providers
             """
-        else:
-            return """
+        return """
 # Complete Supabase Setup and Configuration Guide
 
 ## 1. Project Creation and Setup
@@ -6422,8 +6402,8 @@ This comprehensive setup guide provides everything needed to get started with Su
         """Get best practices guidance."""
         if level == "metadata":
             return "Supabase best practices and optimization strategies"
-        elif level == "summary":
-            return f"""
+        if level == "summary":
+            return """
 # Supabase Best Practices
 
 ## Security
@@ -6444,8 +6424,7 @@ This comprehensive setup guide provides everything needed to get started with Su
 - Structure code in modular components
 - Use environment-specific configurations
             """
-        else:
-            return """
+        return """
 # Supabase Best Practices and Production Guidelines
 
 ## Security Best Practices

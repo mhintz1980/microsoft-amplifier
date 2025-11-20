@@ -5,25 +5,17 @@ Provides comprehensive TypeScript definitions for React 19 features
 with zero hallucination guarantee and complete type coverage.
 """
 
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Union,
-    Callable,
-    Awaitable,
-    TypeVar,
-    Generic,
-    Literal,
-    TypeAlias,
-    Protocol,
-    runtime_checkable,
-)
+import json
+from collections.abc import Awaitable
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-import json
-
+from typing import Any
+from typing import Generic
+from typing import Literal
+from typing import TypeAlias
+from typing import TypeVar
+from typing import Union
 
 # Core React 19 Type Variables
 T = TypeVar("T")
@@ -68,8 +60,11 @@ class UseActionStateReturn(Generic[State, Payload]):
         self.is_pending = is_pending
 
 
+# FormData type definition (for browser FormData API)
+FormData: TypeAlias = dict[str, str]
+
 # Server Action Types
-ServerAction: TypeAlias = Callable[..., Awaitable[Union[Any, None, void]]]
+ServerAction: TypeAlias = Callable[..., Awaitable[Union[Any, None]]]
 FormDataAction: TypeAlias = Callable[[], Awaitable[Any]]
 FormAction: TypeAlias = Callable[[FormData], Awaitable[Any]]
 
@@ -115,12 +110,12 @@ class ScriptType(Enum):
 class MetaProps:
     """Props for meta components in React 19."""
 
-    name: Optional[str] = None
-    property: Optional[Union[str, MetaProperty]] = None
+    name: str | None = None
+    property: Union[str, MetaProperty] | None = None
     content: str = ""
-    charset: Optional[str] = None
-    http_equiv: Optional[str] = None
-    scheme: Optional[str] = None
+    charset: str | None = None
+    http_equiv: str | None = None
+    scheme: str | None = None
 
 
 @dataclass
@@ -128,33 +123,33 @@ class LinkProps:
     """Props for link components in React 19."""
 
     rel: Union[str, LinkRel]
-    href: Optional[str] = None
-    as_: Optional[str] = None  # as is reserved keyword
-    cross_origin: Optional[Literal["anonymous", "use-credentials"]] = None
-    fetch_priority: Optional[Literal["high", "low", "auto"]] = None
-    href_lang: Optional[str] = None
-    integrity: Optional[str] = None
-    media: Optional[str] = None
-    referrer_policy: Optional[str] = None
-    sizes: Optional[str] = None
-    type: Optional[str] = None
+    href: str | None = None
+    as_: str | None = None  # as is reserved keyword
+    cross_origin: Literal["anonymous", "use-credentials"] | None = None
+    fetch_priority: Literal["high", "low", "auto"] | None = None
+    href_lang: str | None = None
+    integrity: str | None = None
+    media: str | None = None
+    referrer_policy: str | None = None
+    sizes: str | None = None
+    type: str | None = None
 
 
 @dataclass
 class ScriptProps:
     """Props for script components in React 19."""
 
-    async_: Optional[bool] = None  # async is reserved keyword
-    cross_origin: Optional[Literal["anonymous", "use-credentials"]] = None
-    defer: Optional[bool] = None
-    fetch_priority: Optional[Literal["high", "low", "auto"]] = None
-    integrity: Optional[str] = None
-    no_module: Optional[bool] = None
-    nonce: Optional[str] = None
-    referrer_policy: Optional[str] = None
-    src: Optional[str] = None
-    type: Optional[Union[str, ScriptType]] = None
-    children: Optional[str] = None
+    async_: bool | None = None  # async is reserved keyword
+    cross_origin: Literal["anonymous", "use-credentials"] | None = None
+    defer: bool | None = None
+    fetch_priority: Literal["high", "low", "auto"] | None = None
+    integrity: str | None = None
+    no_module: bool | None = None
+    nonce: str | None = None
+    referrer_policy: str | None = None
+    src: str | None = None
+    type: Union[str, ScriptType] | None = None
+    children: str | None = None
 
 
 @dataclass
@@ -164,14 +159,14 @@ class SEOConfig:
     title: str
     description: str
     url: str
-    image_url: Optional[str] = None
-    site_name: Optional[str] = None
+    image_url: str | None = None
+    site_name: str | None = None
     locale: str = "en_US"
     type: Literal["website", "article", "product"] = "website"
-    author: Optional[str] = None
-    published_time: Optional[str] = None
-    modified_time: Optional[str] = None
-    tags: Optional[List[str]] = None
+    author: str | None = None
+    published_time: str | None = None
+    modified_time: str | None = None
+    tags: list[str] | None = None
 
 
 @dataclass
@@ -181,7 +176,7 @@ class OptimisticConfig:
     initial_state: Any
     update_function: Callable[[Any, Any], Any]
     rollback_on_error: bool = True
-    timeout_ms: Optional[int] = None
+    timeout_ms: int | None = None
     visual_indicator: bool = True
 
 
@@ -320,7 +315,7 @@ async function createPost(data: CreatePostData): Promise<Post> {
             if type_name not in self.type_definitions:
                 raise ValueError(f"Missing required type definition: {type_name}")
 
-    def generate_types_for_component(self, specification: Dict[str, Any]) -> str:
+    def generate_types_for_component(self, specification: dict[str, Any]) -> str:
         """
         Generate TypeScript types for a React component specification.
 
@@ -354,7 +349,7 @@ async function createPost(data: CreatePostData): Promise<Post> {
 
         return "\n\n".join(types)
 
-    def _generate_props_interface(self, component_name: str, props: Dict[str, Any]) -> str:
+    def _generate_props_interface(self, component_name: str, props: dict[str, Any]) -> str:
         """Generate TypeScript interface for component props."""
         interface_name = f"{component_name}Props"
 
@@ -446,7 +441,7 @@ export interface {component_name}OpenGraph {{
 }}
         """
 
-    def validate_typescript_code(self, code: str) -> Dict[str, Any]:
+    def validate_typescript_code(self, code: str) -> dict[str, Any]:
         """
         Validate TypeScript code for React 19 compliance.
 
@@ -474,7 +469,7 @@ export interface {component_name}OpenGraph {{
 
         return validation_result
 
-    def _check_type_safety(self, code: str, result: Dict[str, Any]):
+    def _check_type_safety(self, code: str, result: dict[str, Any]):
         """Check for type safety issues."""
         # Check for any types
         if "any" in code and "any[" not in code and "any)" not in code:
@@ -490,7 +485,7 @@ export interface {component_name}OpenGraph {{
             if re.search(pattern, code) and ": " not in code[code.find("{") :]:
                 result["recommendations"].append("Add explicit return types for better type safety")
 
-    def _check_react_19_patterns(self, code: str, result: Dict[str, Any]):
+    def _check_react_19_patterns(self, code: str, result: dict[str, Any]):
         """Check for React 19 specific type patterns."""
         # Check useOptimistic typing
         if "useOptimistic" in code:
@@ -502,7 +497,7 @@ export interface {component_name}OpenGraph {{
             if "useActionState<" not in code:
                 result["warnings"].append("useActionState should use explicit generics for better type safety")
 
-    def _check_generic_usage(self, code: str, result: Dict[str, Any]):
+    def _check_generic_usage(self, code: str, result: dict[str, Any]):
         """Check generic type usage."""
         # Look for properly parameterized generics
         generic_patterns = [
@@ -542,7 +537,7 @@ export interface {component_name}OpenGraph {{
 
         return min(100, max(0, score))
 
-    def get_type_recommendations(self, code: str) -> List[str]:
+    def get_type_recommendations(self, code: str) -> list[str]:
         """
         Get TypeScript type improvement recommendations.
 
@@ -581,7 +576,7 @@ class TypeSafePatterns:
     def __init__(self):
         self.patterns = self._init_patterns()
 
-    def _init_patterns(self) -> Dict[str, str]:
+    def _init_patterns(self) -> dict[str, str]:
         """Initialize type-safe patterns."""
         return {
             "optimistic_list": """
@@ -753,10 +748,10 @@ function ContactForm() {
             """,
         }
 
-    def get_pattern(self, pattern_name: str) -> Optional[str]:
+    def get_pattern(self, pattern_name: str) -> str | None:
         """Get a type-safe pattern by name."""
         return self.patterns.get(pattern_name)
 
-    def list_patterns(self) -> List[str]:
+    def list_patterns(self) -> list[str]:
         """List all available type-safe patterns."""
         return list(self.patterns.keys())

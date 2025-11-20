@@ -11,13 +11,11 @@ Demonstrates the complete skill creation pipeline functionality:
 """
 
 import asyncio
-import json
 from datetime import datetime
-from typing import Dict, Any, List
 
-from .pipeline import SkillCreationPipeline, PipelineConfig
-from .orchestrator import create_skill_request
 from ...utils.logger import get_logger
+from .pipeline import PipelineConfig
+from .pipeline import SkillCreationPipeline
 
 logger = get_logger(__name__)
 
@@ -187,7 +185,7 @@ async def demonstrate_parallel_processing():
     total_efficiency = 0
 
     print("🔄 Parallel Processing Results:")
-    for i, (spec, result) in enumerate(zip(skill_specs, results), 1):
+    for i, (spec, result) in enumerate(zip(skill_specs, results, strict=False), 1):
         if isinstance(result, Exception):
             print(f"  {i}. {spec['skill_name']}: ❌ {str(result)}")
         else:
@@ -198,7 +196,7 @@ async def demonstrate_parallel_processing():
 
     if successful_skills > 0:
         avg_efficiency = total_efficiency / successful_skills
-        print(f"\n📈 Parallel Processing Stats:")
+        print("\n📈 Parallel Processing Stats:")
         print(f"  • Success Rate: {successful_skills}/{len(skill_specs)} ({successful_skills / len(skill_specs):.1%})")
         print(f"  • Average Token Efficiency: {avg_efficiency:.1%}")
         print(f"  • Total Time: {total_time:.2f}s")
@@ -259,7 +257,7 @@ async def demonstrate_mcp_integration():
 
         optimization_result = await mcp_manager.optimize_context(test_context, target_tokens=100)
 
-        print(f"🎯 Context Optimization Results:")
+        print("🎯 Context Optimization Results:")
         print(f"  • Original Tokens: {optimization_result['original_tokens']}")
         print(f"  • Optimized Tokens: {optimization_result['optimized_tokens']}")
         print(f"  • Compression Ratio: {optimization_result['compression_ratio']:.1%}")
@@ -391,7 +389,7 @@ async def run_comprehensive_demonstration():
                     f"  • {demo_name.title()}: ✅ Good Score: {good.overall_score:.2f}, Bad Score: {bad.overall_score:.2f}"
                 )
 
-        print(f"\n🎯 Pipeline Performance Metrics:")
+        print("\n🎯 Pipeline Performance Metrics:")
 
         # Calculate overall metrics
         successful_results = [r for r in demo_results.values() if isinstance(r, dict) and r.get("success", False)]
@@ -408,7 +406,7 @@ async def run_comprehensive_demonstration():
             print(f"  • Average Execution Time: {avg_time:.2f}s")
             print(f"  • Total Efficiency Gain: ~{(1 - avg_efficiency + avg_mcp_reduction) / 2:.1%}")
 
-        print(f"\n🚀 Pipeline Status: READY FOR PRODUCTION")
+        print("\n🚀 Pipeline Status: READY FOR PRODUCTION")
         print("   All core components validated and functioning correctly")
         print("   Ready for integration with enhanced SDK capabilities")
 

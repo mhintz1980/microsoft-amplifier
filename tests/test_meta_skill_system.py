@@ -24,43 +24,33 @@ Key Benefits:
 - Automated validation of compound multiplier benefits
 """
 
-import asyncio
-import json
-import pytest
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
+from amplifier.skills.meta_skills.agent_coordination import AgentCapability
+from amplifier.skills.meta_skills.agent_coordination import AgentCoordinator
+from amplifier.skills.meta_skills.agent_coordination import AgentProfile
+from amplifier.skills.meta_skills.agent_coordination import CoordinationContext
+from amplifier.skills.meta_skills.agent_coordination import Task
+from amplifier.skills.meta_skills.agent_coordination import TaskPriority
+from amplifier.skills.meta_skills.performance_optimizer import OptimizationContext
+from amplifier.skills.meta_skills.performance_optimizer import OptimizationLevel
+from amplifier.skills.meta_skills.performance_optimizer import PerformanceOptimizer
+from amplifier.skills.meta_skills.quality_assurance import ValidationContext
+from amplifier.skills.meta_skills.quality_assurance import ValidationLevel
+from amplifier.skills.meta_skills.quality_assurance import ValidationResult
+from amplifier.skills.meta_skills.quality_assurance import ZeroHallucinationQA
+from amplifier.skills.meta_skills.skill_creation_methodology import SkillCreationContext
 
 # Import meta-skill components
-from amplifier.skills.meta_skills.skill_creation_methodology import (
-    SkillCreationMethodology,
-    SkillCreationContext,
-    ValidationStage,
-    SkillRequirement,
-)
-from amplifier.skills.meta_skills.template_library import TemplateLibrary, SkillTemplate, TemplateCategory
-from amplifier.skills.meta_skills.quality_assurance import (
-    ZeroHallucinationQA,
-    ValidationContext,
-    ValidationLevel,
-    ValidationResult,
-)
-from amplifier.skills.meta_skills.performance_optimizer import (
-    PerformanceOptimizer,
-    OptimizationContext,
-    OptimizationLevel,
-    PerformanceMetrics,
-)
-from amplifier.skills.meta_skills.agent_coordination import (
-    AgentCoordinator,
-    CoordinationContext,
-    Task,
-    TaskPriority,
-    AgentProfile,
-    AgentCapability,
-)
+from amplifier.skills.meta_skills.skill_creation_methodology import SkillCreationMethodology
+from amplifier.skills.meta_skills.skill_creation_methodology import SkillRequirement
+from amplifier.skills.meta_skills.skill_creation_methodology import ValidationStage
+from amplifier.skills.meta_skills.template_library import SkillTemplate
+from amplifier.skills.meta_skills.template_library import TemplateLibrary
 
 
 class TestMetaSkillSystem:

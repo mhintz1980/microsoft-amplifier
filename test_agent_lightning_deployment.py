@@ -27,8 +27,9 @@ async def test_agent_lightning_deployment():
         logger.info("🔧 Testing imports...")
 
         try:
+            from amplifier.skills.agent_lightning_integration.config import PerformanceTrackingConfig
+            from amplifier.skills.agent_lightning_integration.config import RLTrainingConfig
             from amplifier.skills.agent_lightning_integration.frontend_skill_monitor import FrontendSkillMonitor
-            from amplifier.skills.agent_lightning_integration.config import RLTrainingConfig, PerformanceTrackingConfig
             from amplifier.skills.quality_assurance.validators.zero_hallucination_validator import (
                 ZeroHallucinationValidator,
             )

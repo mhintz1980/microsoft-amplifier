@@ -18,12 +18,9 @@ Created: 2025-11-17
 Methodology: Skill Creation Framework with Testing Focus
 """
 
-from typing import Dict, List, Optional, Any, Tuple, Union
 from dataclasses import dataclass
 from enum import Enum
-import json
-import re
-from pathlib import Path
+from typing import Any
 
 
 class TestingLevel(Enum):
@@ -56,8 +53,8 @@ class TestingPattern:
     level: TestingLevel
     test_type: TestType
     code_example: str
-    best_practices: List[str]
-    common_pitfalls: List[str]
+    best_practices: list[str]
+    common_pitfalls: list[str]
     execution_time_ms: int
     coverage_value: float
     reliability_score: float  # 0.0 to 1.0
@@ -68,12 +65,12 @@ class JestConfiguration:
     """Optimized Jest configuration for different project types."""
 
     preset: str
-    setup_files: List[str]
-    test_match: List[str]
-    collect_coverage_from: List[str]
-    coverage_threshold: Dict[str, float]
-    transform: Dict[str, str]
-    module_file_extensions: List[str]
+    setup_files: list[str]
+    test_match: list[str]
+    collect_coverage_from: list[str]
+    coverage_threshold: dict[str, float]
+    transform: dict[str, str]
+    module_file_extensions: list[str]
 
 
 class JestRTLExpert:
@@ -962,19 +959,19 @@ describe('Visual Regression Testing', () => {
             ],
         }
 
-    def get_test_pattern(self, pattern_name: str) -> Optional[TestingPattern]:
+    def get_test_pattern(self, pattern_name: str) -> TestingPattern | None:
         """Get a specific testing pattern by name."""
         return self.patterns.get(pattern_name)
 
-    def get_patterns_by_level(self, level: TestingLevel) -> List[TestingPattern]:
+    def get_patterns_by_level(self, level: TestingLevel) -> list[TestingPattern]:
         """Get all patterns for a specific experience level."""
         return [pattern for pattern in self.patterns.values() if pattern.level == level]
 
-    def get_patterns_by_type(self, test_type: TestType) -> List[TestingPattern]:
+    def get_patterns_by_type(self, test_type: TestType) -> list[TestingPattern]:
         """Get all patterns for a specific test type."""
         return [pattern for pattern in self.patterns.values() if pattern.test_type == test_type]
 
-    def get_configuration(self, config_type: str) -> Optional[JestConfiguration]:
+    def get_configuration(self, config_type: str) -> JestConfiguration | None:
         """Get Jest configuration for specific project type."""
         return self.configurations.get(config_type)
 
@@ -1044,7 +1041,7 @@ describe('{component_name}', () => {{
   }});
 }});
 """
-        elif test_type == "hook_test":
+        if test_type == "hook_test":
             return f"""
 import {{ renderHook, act }} from '@testing-library/react';
 import {{ use{component_name} }} from './use{component_name}';
@@ -1074,10 +1071,9 @@ describe('use{component_name}', () => {{
   }});
 }});
 """
-        else:
-            raise ValueError(f"Unknown test type: {test_type}")
+        raise ValueError(f"Unknown test type: {test_type}")
 
-    def validate_test_quality(self, test_code: str) -> Dict[str, Any]:
+    def validate_test_quality(self, test_code: str) -> dict[str, Any]:
         """Validate test code quality and provide feedback."""
         feedback = {"score": 0, "issues": [], "suggestions": [], "best_practices": [], "anti_patterns": []}
 
@@ -1137,7 +1133,7 @@ describe('use{component_name}', () => {{
 
         return feedback
 
-    def get_coverage_recommendations(self, coverage_report: Dict[str, Any]) -> List[str]:
+    def get_coverage_recommendations(self, coverage_report: dict[str, Any]) -> list[str]:
         """Provide recommendations based on coverage report."""
         recommendations = []
 
@@ -1155,7 +1151,7 @@ describe('use{component_name}', () => {{
 
         return recommendations
 
-    def optimize_test_performance(self, test_patterns: List[str]) -> Dict[str, Any]:
+    def optimize_test_performance(self, test_patterns: list[str]) -> dict[str, Any]:
         """Optimize test patterns for better performance using Agent Lightning."""
         optimizations = {
             "parallel_execution": [],
@@ -1215,7 +1211,7 @@ class AgentLightningIntegration:
         else:
             metrics["failures"] += 1
 
-    def identify_optimal_patterns(self) -> Dict[str, float]:
+    def identify_optimal_patterns(self) -> dict[str, float]:
         """Identify the most reliable and efficient testing patterns."""
         optimal_patterns = {}
 
@@ -1230,11 +1226,11 @@ class AgentLightningIntegration:
 
         return sorted(optimal_patterns.items(), key=lambda x: x[1], reverse=True)
 
-    def get_common_errors(self) -> Dict[str, int]:
+    def get_common_errors(self) -> dict[str, int]:
         """Get the most common testing errors and their frequency."""
         return dict(sorted(self.error_patterns.items(), key=lambda x: x[1], reverse=True))
 
-    def suggest_optimizations(self) -> List[str]:
+    def suggest_optimizations(self) -> list[str]:
         """Suggest optimizations based on performance data."""
         suggestions = []
 

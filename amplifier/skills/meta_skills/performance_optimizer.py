@@ -22,19 +22,22 @@ Key Benefits:
 - Automated resource management and scaling
 """
 
-import asyncio
 import json
 import logging
 import time
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from datetime import timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from dataclasses import dataclass, field
-from pydantic import BaseModel, Field
+from typing import Any
 
-from ...mcp.persistent_storage import PersistentStorage
+from pydantic import BaseModel
+from pydantic import Field
+
 from ...mcp.code_execution import CodeExecutor
+from ...mcp.persistent_storage import PersistentStorage
 
 logger = logging.getLogger(__name__)
 
@@ -81,8 +84,8 @@ class CacheEntry(BaseModel):
     accessed_at: datetime = Field(default_factory=datetime.now)
     access_count: int = 0
     size_bytes: int = 0
-    ttl_seconds: Optional[int] = None
-    tags: Set[str] = Field(default_factory=set)
+    ttl_seconds: int | None = None
+    tags: set[str] = Field(default_factory=set)
 
     @property
     def is_expired(self) -> bool:
@@ -104,8 +107,8 @@ class OptimizationStrategy(BaseModel):
     description: str
     enabled: bool = True
     priority: int = 1
-    conditions: Dict[str, Any] = {}
-    parameters: Dict[str, Any] = {}
+    conditions: dict[str, Any] = {}
+    parameters: dict[str, Any] = {}
     expected_improvement: float = 0.0
 
 
@@ -118,9 +121,9 @@ class OptimizationContext:
     input_size: int
     target_efficiency: float = 0.828  # 82.8% target
     optimization_level: OptimizationLevel = OptimizationLevel.BALANCED
-    deadline: Optional[datetime] = None
-    constraints: Dict[str, Any] = field(default_factory=dict)
-    previous_performance: Optional[PerformanceMetrics] = None
+    deadline: datetime | None = None
+    constraints: dict[str, Any] = field(default_factory=dict)
+    previous_performance: PerformanceMetrics | None = None
 
 
 class PerformanceOptimizer:
@@ -131,7 +134,7 @@ class PerformanceOptimizer:
     intelligent caching, and real-time performance monitoring.
     """
 
-    def __init__(self, storage: Optional[PersistentStorage] = None, code_executor: Optional[CodeExecutor] = None):
+    def __init__(self, storage: PersistentStorage | None = None, code_executor: CodeExecutor | None = None):
         """
         Initialize performance optimizer.
 
@@ -147,7 +150,7 @@ class PerformanceOptimizer:
 
         # Performance metrics tracking
         self.metrics = PerformanceMetrics()
-        self.operation_history: List[Dict[str, Any]] = []
+        self.operation_history: list[dict[str, Any]] = []
 
         # Optimization strategies
         self.optimization_strategies = self._initialize_strategies()
@@ -165,7 +168,7 @@ class PerformanceOptimizer:
 
         logger.info("PerformanceOptimizer initialized")
 
-    def _initialize_strategies(self) -> Dict[str, OptimizationStrategy]:
+    def _initialize_strategies(self) -> dict[str, OptimizationStrategy]:
         """Initialize available optimization strategies."""
         return {
             "context_compression": OptimizationStrategy(
@@ -217,7 +220,7 @@ class PerformanceOptimizer:
 
     async def optimize_operation(
         self, context: OptimizationContext, operation_func: callable, *args, **kwargs
-    ) -> Tuple[Any, PerformanceMetrics]:
+    ) -> tuple[Any, PerformanceMetrics]:
         """
         Optimize an operation with performance enhancements.
 
@@ -282,7 +285,7 @@ class PerformanceOptimizer:
             result = await operation_func(*args, **kwargs)
             return result, PerformanceMetrics()
 
-    async def _apply_optimizations(self, context: OptimizationContext, args: tuple, kwargs: dict) -> Tuple[tuple, dict]:
+    async def _apply_optimizations(self, context: OptimizationContext, args: tuple, kwargs: dict) -> tuple[tuple, dict]:
         """Apply relevant optimization strategies."""
         optimized_args = list(args)
         optimized_kwargs = dict(kwargs)
@@ -301,7 +304,7 @@ class PerformanceOptimizer:
 
         return tuple(optimized_args), optimized_kwargs
 
-    async def _compress_context(self, args: list, kwargs: dict) -> Tuple[list, dict]:
+    async def _compress_context(self, args: list, kwargs: dict) -> tuple[list, dict]:
         """Compress context to reduce token usage."""
         compressed_kwargs = {}
 
@@ -373,7 +376,7 @@ class PerformanceOptimizer:
 
         return compressed
 
-    async def _optimize_batch_processing(self, args: list, kwargs: dict) -> Tuple[list, dict]:
+    async def _optimize_batch_processing(self, args: list, kwargs: dict) -> tuple[list, dict]:
         """Optimize for batch processing."""
         # This would implement batch-specific optimizations
         return args, kwargs
@@ -413,7 +416,7 @@ class PerformanceOptimizer:
         # For now, execute normally
         return await operation_func(*args, **kwargs)
 
-    async def _get_from_cache(self, key: str) -> Optional[Any]:
+    async def _get_from_cache(self, key: str) -> Any | None:
         """Get value from multi-level cache."""
         # Check L1 memory cache first
         if key in self.caches[CacheLevel.L1_MEMORY]:
@@ -454,19 +457,18 @@ class PerformanceOptimizer:
         """Check if key exists in cache level."""
         if level == CacheLevel.L1_MEMORY:
             return key in self.caches[level]
-        elif level == CacheLevel.L2_DISK:
+        if level == CacheLevel.L2_DISK:
             # Check disk cache
             cache_file = Path(f".cache/{level.value}/{key}.json")
             return cache_file.exists()
-        else:
-            # Check MCP/CDN caches
-            return await self.storage.exists(f"cache/{level.value}/{key}") if self.storage else False
+        # Check MCP/CDN caches
+        return await self.storage.exists(f"cache/{level.value}/{key}") if self.storage else False
 
-    async def _load_from_cache_level(self, level: CacheLevel, key: str) -> Optional[Dict]:
+    async def _load_from_cache_level(self, level: CacheLevel, key: str) -> dict | None:
         """Load cache entry from specific level."""
         if level == CacheLevel.L1_MEMORY:
             return self.caches[level][key].dict()
-        elif level == CacheLevel.L2_DISK:
+        if level == CacheLevel.L2_DISK:
             cache_file = Path(f".cache/{level.value}/{key}.json")
             if cache_file.exists():
                 with open(cache_file) as f:
@@ -604,8 +606,8 @@ class PerformanceOptimizer:
         return alpha * new_rate + (1 - alpha) * current_rate
 
     async def get_performance_report(
-        self, skill_name: Optional[str] = None, time_window: Optional[timedelta] = None
-    ) -> Dict[str, Any]:
+        self, skill_name: str | None = None, time_window: timedelta | None = None
+    ) -> dict[str, Any]:
         """
         Generate comprehensive performance report.
 
@@ -685,8 +687,8 @@ class PerformanceOptimizer:
         }
 
     def _generate_performance_recommendations(
-        self, token_efficiency: float, throughput: float, strategy_effectiveness: Dict[str, float]
-    ) -> List[str]:
+        self, token_efficiency: float, throughput: float, strategy_effectiveness: dict[str, float]
+    ) -> list[str]:
         """Generate performance optimization recommendations."""
         recommendations = []
 
@@ -724,7 +726,7 @@ class PerformanceOptimizer:
 
         logger.info("Performance metrics reset")
 
-    async def export_performance_data(self, skill_name: Optional[str] = None, format: str = "json") -> str:
+    async def export_performance_data(self, skill_name: str | None = None, format: str = "json") -> str:
         """
         Export performance data for analysis.
 
@@ -740,7 +742,7 @@ class PerformanceOptimizer:
 
         if format == "json":
             return json.dumps(report_data, indent=2, default=str)
-        elif format == "csv":
+        if format == "csv":
             # Convert to CSV format
             import csv
             import io
@@ -776,8 +778,7 @@ class PerformanceOptimizer:
                     )
 
             return output.getvalue()
-        else:
-            raise ValueError(f"Unsupported format: {format}")
+        raise ValueError(f"Unsupported format: {format}")
 
 
 # Export main class

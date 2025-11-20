@@ -194,8 +194,7 @@ class DistributedStorageCoordinator:
                         if replica.checksum and self._verify_checksum(skill_data, replica.checksum):
                             logger.info(f"Loaded skill {skill_id} from replica {replica.replica_id}")
                             return skill_data
-                        else:
-                            logger.warning(f"Checksum verification failed for replica {replica.replica_id}")
+                        logger.warning(f"Checksum verification failed for replica {replica.replica_id}")
 
                 except Exception as e:
                     logger.warning(f"Failed to load from replica {replica.replica_id}: {e}")
@@ -482,10 +481,9 @@ class DistributedStorageCoordinator:
                 # Local file system check
                 return self.local_storage.exists()
 
-            else:
-                # Remote node health check (mock implementation)
-                # In a full implementation, this would ping the actual remote storage
-                return node.reliability_score > 0.95
+            # Remote node health check (mock implementation)
+            # In a full implementation, this would ping the actual remote storage
+            return node.reliability_score > 0.95
 
         except Exception as e:
             logger.warning(f"Health check failed for node {node.node_id}: {e}")
@@ -542,10 +540,9 @@ class DistributedStorageCoordinator:
                 # Store in local filesystem
                 return await self._store_locally(replica, skill_data)
 
-            else:
-                # Store in remote storage (mock implementation)
-                await asyncio.sleep(0.1)  # Simulate network latency
-                return True
+            # Store in remote storage (mock implementation)
+            await asyncio.sleep(0.1)  # Simulate network latency
+            return True
 
         except Exception as e:
             logger.error(f"Failed to store replica {replica.replica_id}: {e}")
@@ -594,10 +591,9 @@ class DistributedStorageCoordinator:
             if replica.node_id == "local_primary":
                 return await self._load_locally(replica)
 
-            else:
-                # Load from remote storage (mock implementation)
-                await asyncio.sleep(0.05)  # Simulate network latency
-                return {}  # Mock data
+            # Load from remote storage (mock implementation)
+            await asyncio.sleep(0.05)  # Simulate network latency
+            return {}  # Mock data
 
         except Exception as e:
             logger.error(f"Failed to load from replica {replica.replica_id}: {e}")
@@ -625,10 +621,9 @@ class DistributedStorageCoordinator:
             if replica.node_id == "local_primary":
                 return await self._delete_locally(replica)
 
-            else:
-                # Delete from remote storage (mock implementation)
-                await asyncio.sleep(0.05)
-                return True
+            # Delete from remote storage (mock implementation)
+            await asyncio.sleep(0.05)
+            return True
 
         except Exception as e:
             logger.error(f"Failed to delete from replica {replica.replica_id}: {e}")

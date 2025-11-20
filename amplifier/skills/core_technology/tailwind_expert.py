@@ -6,18 +6,17 @@ Provides utility-first CSS development expertise with advanced patterns,
 performance optimization, and production-tested solutions.
 """
 
-import json
 import re
-from typing import Dict, List, Any, Optional, Tuple, Union
 from dataclasses import dataclass
-from pathlib import Path
 from enum import Enum
-import subprocess
-import sys
+from typing import Any
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillResult, SkillLevel
-from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
 from ..agent_lightning_integration.performance_monitor import PerformanceMonitor
+from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
+from ..skills_framework.skill_template import BaseSkill
+from ..skills_framework.skill_template import SkillContext
+from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.skill_template import SkillResult
 
 
 class TailwindVersion(Enum):
@@ -42,9 +41,9 @@ class TailwindClassInfo:
 
     class_name: str
     category: str
-    properties: Dict[str, str]
-    responsive_variants: List[str]
-    pseudo_variants: List[str]
+    properties: dict[str, str]
+    responsive_variants: list[str]
+    pseudo_variants: list[str]
     since_version: str
     description: str
 
@@ -59,9 +58,9 @@ class ComponentPattern:
     html_structure: str
     tailwind_classes: str
     responsive_design: bool
-    accessibility_features: List[str]
+    accessibility_features: list[str]
     performance_score: int
-    custom_css_needed: Optional[str] = None
+    custom_css_needed: str | None = None
 
 
 @dataclass
@@ -69,10 +68,10 @@ class PerformanceMetrics:
     """Performance metrics for Tailwind CSS usage."""
 
     bundle_size_impact: int  # bytes
-    unused_classes: List[str]
+    unused_classes: list[str]
     purged_classes: int
     render_performance: str  # excellent/good/poor
-    optimization_suggestions: List[str]
+    optimization_suggestions: list[str]
 
 
 class TailwindCSSExpert(BaseSkill):
@@ -676,7 +675,7 @@ class TailwindCSSExpert(BaseSkill):
 
         return any(re.match(pattern, base_class) for pattern in patterns)
 
-    def _suggest_class_correction(self, invalid_class: str) -> Optional[str]:
+    def _suggest_class_correction(self, invalid_class: str) -> str | None:
         """Suggest correction for invalid Tailwind class."""
         # Remove variants first
         base_class = re.sub(r"^(sm|md|lg|xl|2xl|hover|focus|active):", "", invalid_class)
@@ -701,7 +700,7 @@ class TailwindCSSExpert(BaseSkill):
 
         return None
 
-    def _format_validation_result(self, validation_result: Dict[str, Any]) -> str:
+    def _format_validation_result(self, validation_result: dict[str, Any]) -> str:
         """Format validation result for display."""
         content = ["# Tailwind CSS Validation Results\n"]
 
@@ -792,7 +791,7 @@ class TailwindCSSExpert(BaseSkill):
 - Edge 90+
         """
 
-    def _calculate_performance_improvements(self, recommendations: List[str]) -> Dict[str, float]:
+    def _calculate_performance_improvements(self, recommendations: list[str]) -> dict[str, float]:
         """Calculate estimated performance improvements."""
         improvements = {"bundle_reduction": 0, "runtime_improvement": 0}
 
@@ -812,7 +811,7 @@ class TailwindCSSExpert(BaseSkill):
             "runtime_improvement": min(improvements["runtime_improvement"], 60),
         }
 
-    def _generate_full_performance_guide(self, recommendations: List[str], improvements: Dict[str, float]) -> str:
+    def _generate_full_performance_guide(self, recommendations: list[str], improvements: dict[str, float]) -> str:
         """Generate comprehensive performance optimization guide."""
         return f"""
 # Tailwind CSS Performance Optimization Guide
@@ -894,7 +893,7 @@ module.exports = {
 
     def _generate_full_configuration_guide(self) -> str:
         """Generate comprehensive configuration guide."""
-        return """
+        return r"""
 # Tailwind CSS Complete Configuration Guide
 
 ## Installation
@@ -1164,7 +1163,7 @@ npx tailwindcss --help
         """Get responsive design expertise."""
         if level == SkillLevel.METADATA:
             return "Responsive design with Tailwind CSS breakpoints"
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             return """
 # Responsive Design with Tailwind
 
@@ -1182,8 +1181,7 @@ npx tailwindcss --help
 </div>
 ```
             """
-        else:
-            return """
+        return """
 # Advanced Responsive Design with Tailwind CSS
 
 ## Breakpoint System
@@ -1285,7 +1283,7 @@ npx tailwindcss --help
         """Get dark mode expertise."""
         if level == SkillLevel.METADATA:
             return "Dark mode implementation with Tailwind CSS"
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             return """
 # Dark Mode with Tailwind CSS
 
@@ -1308,8 +1306,7 @@ module.exports = {
 </div>
 ```
             """
-        else:
-            return """
+        return """
 # Complete Dark Mode Implementation Guide
 
 ## Configuration Options
@@ -1515,7 +1512,7 @@ module.exports = {
         """Get customization expertise."""
         if level == SkillLevel.METADATA:
             return "Custom Tailwind CSS configuration and theming"
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             return """
 # Custom Tailwind CSS Configuration
 
@@ -1535,8 +1532,7 @@ theme: {
 - @tailwindcss/typography
 - @tailwindcss/aspect-ratio
             """
-        else:
-            return """
+        return """
 # Advanced Tailwind CSS Customization Guide
 
 ## Theme Extension
@@ -1872,7 +1868,7 @@ theme: {
         """Get general Tailwind CSS expertise."""
         if level == SkillLevel.METADATA:
             return "Tailwind CSS utility-first framework expertise"
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             return """
 # Tailwind CSS Overview
 
@@ -1892,8 +1888,7 @@ Utility-first CSS framework for rapid UI development
 - Dark mode
 - Custom configuration
         """
-        else:
-            return """
+        return """
 # Complete Tailwind CSS Expertise Guide
 
 ## Introduction to Tailwind CSS
@@ -2232,7 +2227,7 @@ This comprehensive guide covers all aspects of Tailwind CSS from basics to advan
         # Rough estimation: 1 token ≈ 4 characters
         return len(text) // 4
 
-    def get_skill_metrics(self) -> Dict[str, Any]:
+    def get_skill_metrics(self) -> dict[str, Any]:
         """Get comprehensive skill performance metrics."""
         return {
             "metrics": self.metrics,

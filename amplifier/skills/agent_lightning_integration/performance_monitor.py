@@ -6,14 +6,14 @@ Creates comprehensive dashboards and alerts for system health and performance me
 """
 
 import asyncio
-import json
 import logging
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict
-from collections import defaultdict, deque
-import time
+from collections import defaultdict
+from collections import deque
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ class Alert:
     metric_value: float
     threshold: float
     resolved: bool = False
-    resolved_at: Optional[datetime] = None
+    resolved_at: datetime | None = None
 
 
 class PerformanceMonitor:
@@ -71,20 +71,20 @@ class PerformanceMonitor:
 
         # Metrics storage
         self.metrics_history: deque = deque(maxlen=10000)  # Store last 10k metrics
-        self.current_metrics: Optional[PerformanceMetrics] = None
+        self.current_metrics: PerformanceMetrics | None = None
 
         # Alerting
         self.alert_rules = self._initialize_alert_rules()
-        self.active_alerts: Dict[str, Alert] = {}
+        self.active_alerts: dict[str, Alert] = {}
 
         # Dashboard data
         self.dashboard_cache = {}
         self.cache_ttl = timedelta(minutes=5)
 
         # Background tasks
-        self._monitoring_task: Optional[asyncio.Task] = None
-        self._dashboard_task: Optional[asyncio.Task] = None
-        self._alert_task: Optional[asyncio.Task] = None
+        self._monitoring_task: asyncio.Task | None = None
+        self._dashboard_task: asyncio.Task | None = None
+        self._alert_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -116,7 +116,7 @@ class PerformanceMonitor:
         if self._alert_task:
             self._alert_task.cancel()
 
-    async def get_dashboard_data(self, dashboard_type: str = "overview") -> Dict[str, Any]:
+    async def get_dashboard_data(self, dashboard_type: str = "overview") -> dict[str, Any]:
         """Get dashboard data"""
         try:
             # Check cache
@@ -148,7 +148,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to get dashboard data: {e}")
             return {"error": str(e)}
 
-    async def get_statistics(self) -> Dict[str, Any]:
+    async def get_statistics(self) -> dict[str, Any]:
         """Get performance statistics"""
         try:
             if not self.metrics_history:
@@ -215,7 +215,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to create alert rule: {e}")
             raise
 
-    async def get_active_alerts(self) -> List[Dict[str, Any]]:
+    async def get_active_alerts(self) -> list[dict[str, Any]]:
         """Get active alerts"""
         try:
             return [
@@ -239,7 +239,7 @@ class PerformanceMonitor:
 
     # Private methods
 
-    def _initialize_alert_rules(self) -> Dict[str, AlertRule]:
+    def _initialize_alert_rules(self) -> dict[str, AlertRule]:
         """Initialize default alert rules"""
         return {
             "high_cpu": AlertRule(
@@ -481,7 +481,7 @@ class PerformanceMonitor:
         except Exception as e:
             logger.error(f"Failed to check alert resolution: {e}")
 
-    async def _generate_overview_dashboard(self) -> Dict[str, Any]:
+    async def _generate_overview_dashboard(self) -> dict[str, Any]:
         """Generate overview dashboard"""
         try:
             if not self.current_metrics:
@@ -525,7 +525,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to generate overview dashboard: {e}")
             return {"error": str(e)}
 
-    async def _generate_performance_dashboard(self) -> Dict[str, Any]:
+    async def _generate_performance_dashboard(self) -> dict[str, Any]:
         """Generate performance dashboard"""
         try:
             if not self.metrics_history:
@@ -571,7 +571,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to generate performance dashboard: {e}")
             return {"error": str(e)}
 
-    async def _generate_optimizations_dashboard(self) -> Dict[str, Any]:
+    async def _generate_optimizations_dashboard(self) -> dict[str, Any]:
         """Generate optimizations dashboard"""
         try:
             # Get optimization data from storage
@@ -594,7 +594,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to generate optimizations dashboard: {e}")
             return {"error": str(e)}
 
-    async def _generate_quality_dashboard(self) -> Dict[str, Any]:
+    async def _generate_quality_dashboard(self) -> dict[str, Any]:
         """Generate quality dashboard"""
         try:
             # Get quality gate data
@@ -617,7 +617,7 @@ class PerformanceMonitor:
             logger.error(f"Failed to generate quality dashboard: {e}")
             return {"error": str(e)}
 
-    async def _generate_alerts_dashboard(self) -> Dict[str, Any]:
+    async def _generate_alerts_dashboard(self) -> dict[str, Any]:
         """Generate alerts dashboard"""
         try:
             active_alerts = await self.get_active_alerts()
@@ -716,7 +716,7 @@ class PerformanceMonitor:
 
         return random.uniform(0.5, 5.0)
 
-    async def _get_component_health(self) -> Dict[str, bool]:
+    async def _get_component_health(self) -> dict[str, bool]:
         """Get health status of all components"""
         return {
             "storage": True,
@@ -727,12 +727,12 @@ class PerformanceMonitor:
             "knowledge_transfer": True,
         }
 
-    async def _get_recent_optimizations(self) -> List[Dict[str, Any]]:
+    async def _get_recent_optimizations(self) -> list[dict[str, Any]]:
         """Get recent optimization results"""
         # This would query storage for recent optimizations
         return []  # Placeholder
 
-    async def _get_recent_quality_evaluations(self) -> List[Dict[str, Any]]:
+    async def _get_recent_quality_evaluations(self) -> list[dict[str, Any]]:
         """Get recent quality gate evaluations"""
         # This would query storage for recent evaluations
         return []  # Placeholder

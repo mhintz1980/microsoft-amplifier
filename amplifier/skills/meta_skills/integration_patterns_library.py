@@ -6,13 +6,13 @@ Each pattern is optimized for specific use cases and provides
 pre-defined execution plans and dependency management.
 """
 
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
-import json
-from datetime import datetime
+from typing import Any
 
-from .skill_integration_patterns_specialist import IntegrationPattern, IntegrationPatternType, SkillDependency
+from .skill_integration_patterns_specialist import IntegrationPattern
+from .skill_integration_patterns_specialist import IntegrationPatternType
+from .skill_integration_patterns_specialist import SkillDependency
 
 
 class PatternCategory(Enum):
@@ -36,12 +36,12 @@ class PatternTemplate:
     name: str
     description: str
     pattern_type: IntegrationPatternType
-    execution_plan: Dict[str, Any]
-    required_skill_types: List[str]
-    optional_skill_types: List[str]
+    execution_plan: dict[str, Any]
+    required_skill_types: list[str]
+    optional_skill_types: list[str]
     performance_notes: str
-    use_cases: List[str]
-    examples: List[Dict[str, Any]]
+    use_cases: list[str]
+    examples: list[dict[str, Any]]
 
 
 class StandardPatternLibrary:
@@ -51,11 +51,11 @@ class StandardPatternLibrary:
         self.patterns = {}
         self._initialize_patterns()
 
-    def get_pattern(self, pattern_id: str) -> Optional[IntegrationPattern]:
+    def get_pattern(self, pattern_id: str) -> IntegrationPattern | None:
         """Get a pattern by ID."""
         return self.patterns.get(pattern_id)
 
-    def find_patterns_for_skills(self, skill_types: List[str]) -> List[IntegrationPattern]:
+    def find_patterns_for_skills(self, skill_types: list[str]) -> list[IntegrationPattern]:
         """Find patterns that match given skill types."""
         matching_patterns = []
 
@@ -65,7 +65,7 @@ class StandardPatternLibrary:
 
         return matching_patterns
 
-    def _skills_match_pattern(self, skill_types: List[str], pattern: IntegrationPattern) -> bool:
+    def _skills_match_pattern(self, skill_types: list[str], pattern: IntegrationPattern) -> bool:
         """Check if skills match a pattern's requirements."""
         # This would implement intelligent matching logic
         # For now, return True for demonstration

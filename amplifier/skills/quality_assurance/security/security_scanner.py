@@ -6,22 +6,17 @@ security risks, and compliance issues in skill code and configurations.
 """
 
 import ast
-import re
-import hashlib
 import json
+import re
 import subprocess
 import sys
-import tempfile
-import os
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
-import secrets
-import string
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
-from amplifier.mcp.code_execution import execute_in_docker
 from amplifier.mcp.persistent_storage import store_result
 
 
@@ -64,10 +59,10 @@ class Vulnerability:
     file_path: str
     line_number: int
     code_snippet: str
-    cwe_id: Optional[str] = None
+    cwe_id: str | None = None
     recommendation: str = ""
     confidence: float = 1.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -76,13 +71,13 @@ class SecurityReport:
 
     skill_path: str
     scan_timestamp: datetime
-    vulnerabilities: List[Vulnerability]
-    severity_counts: Dict[SeverityLevel, int]
+    vulnerabilities: list[Vulnerability]
+    severity_counts: dict[SeverityLevel, int]
     risk_score: float
-    compliance_status: Dict[str, bool]
-    recommendations: List[str]
-    passed_checks: List[str]
-    failed_checks: List[str]
+    compliance_status: dict[str, bool]
+    recommendations: list[str]
+    passed_checks: list[str]
+    failed_checks: list[str]
 
 
 class SecurityPattern:
@@ -92,10 +87,10 @@ class SecurityPattern:
         self,
         vulnerability_type: VulnerabilityType,
         severity: SeverityLevel,
-        patterns: List[str],
+        patterns: list[str],
         description: str,
         recommendation: str,
-        cwe_id: Optional[str] = None,
+        cwe_id: str | None = None,
     ):
         self.vulnerability_type = vulnerability_type
         self.severity = severity
@@ -112,7 +107,7 @@ class SecurityScanner:
         self,
         enable_dependency_scanning: bool = True,
         enable_severity_threshold: SeverityLevel = SeverityLevel.LOW,
-        custom_patterns: List[SecurityPattern] = None,
+        custom_patterns: list[SecurityPattern] = None,
     ):
         """
         Initialize security scanner.
@@ -150,7 +145,7 @@ class SecurityScanner:
             except subprocess.CalledProcessError:
                 print(f"Warning: Failed to install {tool}")
 
-    def _initialize_security_patterns(self) -> List[SecurityPattern]:
+    def _initialize_security_patterns(self) -> list[SecurityPattern]:
         """Initialize security vulnerability detection patterns."""
         patterns = [
             # SQL Injection
@@ -252,7 +247,7 @@ class SecurityScanner:
 
         return patterns
 
-    def _initialize_sensitive_patterns(self) -> List[str]:
+    def _initialize_sensitive_patterns(self) -> list[str]:
         """Initialize patterns for detecting sensitive data."""
         return [
             r"\b[A-Za-z0-9+/]{40,}\={0,2}\b",  # Base64 encoded secrets
@@ -330,7 +325,7 @@ class SecurityScanner:
             ],
         )
 
-    def _collect_files(self, path: Path) -> List[Path]:
+    def _collect_files(self, path: Path) -> list[Path]:
         """Collect all relevant files for security scanning."""
         file_extensions = {".py", ".json", ".yaml", ".yml", ".toml", ".cfg", ".ini"}
         files_to_scan = []
@@ -344,7 +339,7 @@ class SecurityScanner:
 
         return files_to_scan
 
-    async def _perform_static_analysis(self, files: List[Path]) -> List[Vulnerability]:
+    async def _perform_static_analysis(self, files: list[Path]) -> list[Vulnerability]:
         """Perform static code analysis for security vulnerabilities."""
         vulnerabilities = []
 
@@ -353,7 +348,7 @@ class SecurityScanner:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 # Apply security patterns
@@ -383,7 +378,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _apply_pattern(self, pattern: SecurityPattern, content: str, file_path: Path) -> List[Vulnerability]:
+    def _apply_pattern(self, pattern: SecurityPattern, content: str, file_path: Path) -> list[Vulnerability]:
         """Apply a security pattern to file content."""
         vulnerabilities = []
         lines = content.split("\n")
@@ -415,7 +410,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _analyze_ast(self, content: str, file_path: Path) -> List[Vulnerability]:
+    def _analyze_ast(self, content: str, file_path: Path) -> list[Vulnerability]:
         """Analyze AST for security vulnerabilities."""
         vulnerabilities = []
 
@@ -442,7 +437,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _check_function_calls(self, node: ast.Call, file_path: Path) -> List[Vulnerability]:
+    def _check_function_calls(self, node: ast.Call, file_path: Path) -> list[Vulnerability]:
         """Check for dangerous function calls."""
         vulnerabilities = []
 
@@ -501,7 +496,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _check_imports(self, node: ast.Import, file_path: Path) -> List[Vulnerability]:
+    def _check_imports(self, node: ast.Import, file_path: Path) -> list[Vulnerability]:
         """Check for potentially unsafe imports."""
         vulnerabilities = []
 
@@ -531,7 +526,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _check_string_concatenation(self, node: ast.BinOp, file_path: Path) -> List[Vulnerability]:
+    def _check_string_concatenation(self, node: ast.BinOp, file_path: Path) -> list[Vulnerability]:
         """Check for unsafe string concatenation."""
         vulnerabilities = []
 
@@ -540,13 +535,13 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    def _scan_for_secrets(self, files: List[Path]) -> List[Vulnerability]:
+    def _scan_for_secrets(self, files: list[Path]) -> list[Vulnerability]:
         """Scan files for hardcoded secrets and sensitive data."""
         vulnerabilities = []
 
         for file_path in files:
             try:
-                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                with open(file_path, encoding="utf-8", errors="ignore") as f:
                     content = f.read()
 
                 for pattern in self.sensitive_patterns:
@@ -573,7 +568,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    async def _scan_dependencies(self, skill_path: Path) -> List[Vulnerability]:
+    async def _scan_dependencies(self, skill_path: Path) -> list[Vulnerability]:
         """Scan dependencies for known vulnerabilities."""
         vulnerabilities = []
 
@@ -603,7 +598,7 @@ class SecurityScanner:
 
         return vulnerabilities
 
-    async def _run_dependency_scan(self, req_file: Path) -> List[Vulnerability]:
+    async def _run_dependency_scan(self, req_file: Path) -> list[Vulnerability]:
         """Run dependency vulnerability scanning tool."""
         vulnerabilities = []
 
@@ -649,7 +644,7 @@ class SecurityScanner:
         # In practice, you'd use a CVE database to get actual severity
         return SeverityLevel.HIGH
 
-    async def _perform_quality_checks(self, files: List[Path]) -> List[Vulnerability]:
+    async def _perform_quality_checks(self, files: list[Path]) -> list[Vulnerability]:
         """Perform code quality security checks."""
         vulnerabilities = []
 
@@ -715,7 +710,7 @@ class SecurityScanner:
         }
         return severity_mapping.get(bandit_severity.lower(), SeverityLevel.MEDIUM)
 
-    def _filter_by_severity(self, vulnerabilities: List[Vulnerability]) -> List[Vulnerability]:
+    def _filter_by_severity(self, vulnerabilities: list[Vulnerability]) -> list[Vulnerability]:
         """Filter vulnerabilities by severity threshold."""
         severity_order = {
             SeverityLevel.CRITICAL: 5,
@@ -729,16 +724,16 @@ class SecurityScanner:
 
         return [vuln for vuln in vulnerabilities if severity_order.get(vuln.severity, 0) >= threshold_value]
 
-    def _count_by_severity(self, vulnerabilities: List[Vulnerability]) -> Dict[SeverityLevel, int]:
+    def _count_by_severity(self, vulnerabilities: list[Vulnerability]) -> dict[SeverityLevel, int]:
         """Count vulnerabilities by severity level."""
-        counts = {level: 0 for level in SeverityLevel}
+        counts = dict.fromkeys(SeverityLevel, 0)
 
         for vuln in vulnerabilities:
             counts[vuln.severity] += 1
 
         return counts
 
-    def _calculate_risk_score(self, severity_counts: Dict[SeverityLevel, int]) -> float:
+    def _calculate_risk_score(self, severity_counts: dict[SeverityLevel, int]) -> float:
         """Calculate overall risk score (0-10)."""
         weights = {
             SeverityLevel.CRITICAL: 10,
@@ -760,7 +755,7 @@ class SecurityScanner:
         # Normalize to 0-10 scale
         return min(total_score / (total_vulns * 2), 10.0)
 
-    def _generate_security_recommendations(self, vulnerabilities: List[Vulnerability]) -> List[str]:
+    def _generate_security_recommendations(self, vulnerabilities: list[Vulnerability]) -> list[str]:
         """Generate security improvement recommendations."""
         recommendations = []
         vulnerability_types = set(vuln.vulnerability_type for vuln in vulnerabilities)
@@ -790,7 +785,7 @@ class SecurityScanner:
 
         return list(set(recommendations))  # Remove duplicates
 
-    def _check_compliance(self, vulnerabilities: List[Vulnerability]) -> Dict[str, bool]:
+    def _check_compliance(self, vulnerabilities: list[Vulnerability]) -> dict[str, bool]:
         """Check security compliance status."""
         compliance_status = {
             "no_critical_vulnerabilities": True,

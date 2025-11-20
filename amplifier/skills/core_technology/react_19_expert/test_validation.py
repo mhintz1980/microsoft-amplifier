@@ -5,19 +5,21 @@ Comprehensive testing to ensure zero hallucination guarantee and
 validate all React 19 features work correctly.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Add the skill to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from core import React19Expert
-from api import React19APIs, ActionsAPI, OptimisticAPI
-from typescript import TypeScriptDefinitions
-from examples import BasicExamples, AdvancedExamples, ProductionExamples
-from validation import QualityAssurance
-from agent_lightning import AgentLightning
+from .agent_lightning import AgentLightning
+from .api import React19APIs
+from .core import React19Expert
+from .examples import AdvancedExamples
+from .examples import BasicExamples
+from .examples import ProductionExamples
+from .typescript import TypeScriptDefinitions
+from .validation import QualityAssurance
 
 
 def test_api_accuracy():
@@ -449,10 +451,7 @@ def run_comprehensive_test():
         passed_tests = 0
 
         for suite_name, suite_results in test_results.items():
-            if suite_name == "api_accuracy":
-                total_tests += len(suite_results)
-                passed_tests += sum(1 for r in suite_results if r["passed"])
-            elif suite_name == "typescript_definitions":
+            if suite_name == "api_accuracy" or suite_name == "typescript_definitions":
                 total_tests += len(suite_results)
                 passed_tests += sum(1 for r in suite_results if r["passed"])
             elif suite_name == "examples_quality":

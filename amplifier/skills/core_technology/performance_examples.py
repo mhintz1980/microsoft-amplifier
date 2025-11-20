@@ -6,15 +6,13 @@ with zero-hallucination validated results.
 """
 
 import asyncio
-import json
 import statistics
 import time
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from performance_tools_integration import PerformanceToolsManager
 from agent_lightning_performance_patterns import AgentLightningPerformancePatterns
+from performance_tools_integration import PerformanceToolsManager
 
 
 @dataclass
@@ -24,13 +22,13 @@ class PerformanceExample:
     title: str
     description: str
     category: str
-    before_metrics: Dict[str, float]
-    after_metrics: Dict[str, float]
-    implementation_code: List[Dict[str, str]]
-    tools_used: List[str]
-    expected_improvements: Dict[str, float]
-    actual_improvements: Dict[str, float]
-    lessons_learned: List[str]
+    before_metrics: dict[str, float]
+    after_metrics: dict[str, float]
+    implementation_code: list[dict[str, str]]
+    tools_used: list[str]
+    expected_improvements: dict[str, float]
+    actual_improvements: dict[str, float]
+    lessons_learned: list[str]
 
 
 class PerformanceOptimizationExamples:
@@ -40,7 +38,7 @@ class PerformanceOptimizationExamples:
         self.examples = self._load_validated_examples()
         self.patterns = AgentLightningPerformancePatterns()
 
-    def _load_validated_examples(self) -> List[PerformanceExample]:
+    def _load_validated_examples(self) -> list[PerformanceExample]:
         """Load validated performance optimization examples."""
         return [
             # E-commerce Site Optimization
@@ -572,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     {
                         "language": "nginx",
-                        "code": """# Nginx configuration for news site optimization
+                        "code": r"""# Nginx configuration for news site optimization
 server {
     listen 443 ssl http2;
     server_name news.example.com;
@@ -647,11 +645,11 @@ server {
             ),
         ]
 
-    def get_example_by_category(self, category: str) -> List[PerformanceExample]:
+    def get_example_by_category(self, category: str) -> list[PerformanceExample]:
         """Get examples filtered by category."""
         return [example for example in self.examples if example.category == category]
 
-    def get_top_improvements(self, metric: str, limit: int = 5) -> List[PerformanceExample]:
+    def get_top_improvements(self, metric: str, limit: int = 5) -> list[PerformanceExample]:
         """Get top examples with highest improvements for a specific metric."""
         improvements = []
         for example in self.examples:
@@ -660,7 +658,7 @@ server {
 
         return [example for example, _ in sorted(improvements, key=lambda x: x[1], reverse=True)][:limit]
 
-    def calculate_roi(self, example: PerformanceExample) -> Dict[str, float]:
+    def calculate_roi(self, example: PerformanceExample) -> dict[str, float]:
         """Calculate return on investment for performance optimization."""
         # Simplified ROI calculation
         traffic_improvement = example.actual_improvements.get("bounce_rate_reduction", 0) * 0.5
@@ -688,7 +686,7 @@ class PerformanceDemoRunner:
         self.tools_manager = PerformanceToolsManager()
         self.patterns = AgentLightningPerformancePatterns()
 
-    async def run_performance_demo(self, url: str) -> Dict[str, Any]:
+    async def run_performance_demo(self, url: str) -> dict[str, Any]:
         """Run complete performance analysis demo on a URL."""
         print(f"🚀 Starting comprehensive performance analysis for: {url}")
 
@@ -732,7 +730,7 @@ class PerformanceDemoRunner:
             print(f"❌ Performance analysis failed: {str(e)}")
             return {"error": str(e), "url": url, "timestamp": time.time()}
 
-    def _get_relevant_examples(self, analysis_results: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _get_relevant_examples(self, analysis_results: dict[str, Any]) -> list[dict[str, Any]]:
         """Get relevant optimization examples based on analysis results."""
         relevant_examples = []
 
@@ -776,7 +774,7 @@ class PerformanceDemoRunner:
 
         return relevant_examples
 
-    def _generate_next_steps(self, analysis_results: Dict[str, Any], recommendations: List) -> List[Dict[str, str]]:
+    def _generate_next_steps(self, analysis_results: dict[str, Any], recommendations: list) -> list[dict[str, str]]:
         """Generate actionable next steps based on analysis."""
         next_steps = []
 
@@ -896,7 +894,7 @@ class PerformanceDemoRunner:
         # Show recommendations
         recommendations = demo_results.get("recommendations", [])
         if recommendations:
-            print(f"\n💡 Top Recommendations:")
+            print("\n💡 Top Recommendations:")
             for i, rec in enumerate(recommendations[:3], 1):
                 print(f"  {i}. {rec['title']}")
                 print(f"     Success Rate: {rec['success_rate']:.1%}")
@@ -905,7 +903,7 @@ class PerformanceDemoRunner:
         # Show next steps
         next_steps = demo_results.get("next_steps", [])
         if next_steps:
-            print(f"\n🚀 Next Steps:")
+            print("\n🚀 Next Steps:")
             for step in next_steps:
                 priority_icon = "🔥" if step["priority"] == "high" else "⚡" if step["priority"] == "medium" else "💡"
                 print(f"  {priority_icon} {step['action']}")

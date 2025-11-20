@@ -5,41 +5,34 @@ Tests cover all components including pattern matching, dependency resolution,
 conflict management, workflow orchestration, and the learning system.
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, patch
-from datetime import datetime, timedelta
 import uuid
+from datetime import datetime
+from datetime import timedelta
+from unittest.mock import Mock
+from unittest.mock import patch
 
-from amplifier.skills.meta_skills.skill_integration_patterns_specialist import (
-    SkillIntegrationPatternsSpecialist,
-    IntegrationPattern,
-    IntegrationPatternType,
-    SkillDependency,
-    SkillConflict,
-    ConflictType,
-    DependencyResolver,
-    ConflictManager,
-    PatternMatcher,
-    PerformanceOptimizer,
-    SkillWorkflow,
-)
+import pytest
+
 from amplifier.skills.meta_skills.integration_patterns_library import StandardPatternLibrary
-from amplifier.skills.meta_skills.workflow_orchestrator import (
-    WorkflowOrchestrator,
-    WorkflowTask,
-    WorkflowExecution,
-    ExecutionStatus,
-    TaskPriority,
-)
-from amplifier.skills.meta_skills.pattern_learning_system import (
-    PatternLearningSystem,
-    PatternPerformanceMetrics,
-    PatternExecutionRecord,
-    PatternAnalytics,
-    PatternOptimizer,
-)
-from amplifier.skills.skill_base import Skill, SkillContext, SkillResult
+from amplifier.skills.meta_skills.pattern_learning_system import PatternAnalytics
+from amplifier.skills.meta_skills.pattern_learning_system import PatternExecutionRecord
+from amplifier.skills.meta_skills.pattern_learning_system import PatternLearningSystem
+from amplifier.skills.meta_skills.pattern_learning_system import PatternOptimizer
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import ConflictManager
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import ConflictType
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import DependencyResolver
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import IntegrationPattern
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import IntegrationPatternType
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import PatternMatcher
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import SkillConflict
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import SkillIntegrationPatternsSpecialist
+from amplifier.skills.meta_skills.skill_integration_patterns_specialist import SkillWorkflow
+from amplifier.skills.meta_skills.workflow_orchestrator import ExecutionStatus
+from amplifier.skills.meta_skills.workflow_orchestrator import WorkflowOrchestrator
+from amplifier.skills.skill_base import Skill
+from amplifier.skills.skill_base import SkillContext
+from amplifier.skills.skill_base import SkillResult
 
 
 class MockSkill(Skill):
@@ -49,7 +42,7 @@ class MockSkill(Skill):
         super().__init__(
             id=skill_id,
             name=f"Mock Skill {skill_id}",
-            description=f"Mock skill for testing",
+            description="Mock skill for testing",
             version="1.0.0",
             category="test",
             required_skills=[],
@@ -70,8 +63,7 @@ class MockSkill(Skill):
                 message=f"Mock skill {self.id} executed successfully",
                 data={"skill_id": self.id, "timestamp": datetime.now()},
             )
-        else:
-            return SkillResult(success=False, message=f"Mock skill {self.id} failed", error="Simulated failure")
+        return SkillResult(success=False, message=f"Mock skill {self.id} failed", error="Simulated failure")
 
 
 class MockSkillRegistry:

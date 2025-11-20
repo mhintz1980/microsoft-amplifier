@@ -10,13 +10,12 @@ Implements comprehensive validation for generated skills to ensure:
 """
 
 import ast
-import json
 import re
-from dataclasses import dataclass, field
-from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
+from enum import Enum
+from typing import Any
 
 from ...utils.logger import get_logger
 from ...utils.token_utils import estimate_tokens
@@ -56,9 +55,9 @@ class ValidationIssue:
     severity: ValidationSeverity
     title: str
     description: str
-    location: Optional[str] = None  # File:line reference
-    code_snippet: Optional[str] = None
-    suggestion: Optional[str] = None
+    location: str | None = None  # File:line reference
+    code_snippet: str | None = None
+    suggestion: str | None = None
     false_positive_risk: float = 0.0  # Risk that this is a false positive
     confidence: float = 1.0  # Confidence in issue detection
 
@@ -70,20 +69,20 @@ class ValidationResult:
     skill_name: str
     overall_score: float  # 0.0 to 1.0
     hallucination_detected: bool
-    issues: List[ValidationIssue] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
-    recommendations: List[str] = field(default_factory=list)
+    issues: list[ValidationIssue] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    recommendations: list[str] = field(default_factory=list)
     validation_timestamp: datetime = field(default_factory=datetime.now)
 
-    def get_issues_by_category(self, category: IssueCategory) -> List[ValidationIssue]:
+    def get_issues_by_category(self, category: IssueCategory) -> list[ValidationIssue]:
         """Get issues filtered by category."""
         return [issue for issue in self.issues if issue.category == category]
 
-    def get_issues_by_severity(self, severity: ValidationSeverity) -> List[ValidationIssue]:
+    def get_issues_by_severity(self, severity: ValidationSeverity) -> list[ValidationIssue]:
         """Get issues filtered by severity."""
         return [issue for issue in self.issues if issue.severity == severity]
 
-    def get_critical_issues(self) -> List[ValidationIssue]:
+    def get_critical_issues(self) -> list[ValidationIssue]:
         """Get critical and high severity issues."""
         return [
             issue for issue in self.issues if issue.severity in [ValidationSeverity.CRITICAL, ValidationSeverity.HIGH]
@@ -114,7 +113,7 @@ class ZeroHallucinationValidator:
         self.standard_library = self._load_standard_library()
         self.common_patterns = self._load_common_patterns()
 
-    def validate(self, skill_code: str, skill_name: str, context: Dict[str, Any] = None) -> List[ValidationIssue]:
+    def validate(self, skill_code: str, skill_name: str, context: dict[str, Any] = None) -> list[ValidationIssue]:
         """
         Validate code for hallucinations.
 
@@ -176,7 +175,7 @@ class ZeroHallucinationValidator:
 
         return issues
 
-    def _check_syntax_errors(self, code: str) -> List[ValidationIssue]:
+    def _check_syntax_errors(self, code: str) -> list[ValidationIssue]:
         """Check for syntax errors in generated code."""
         issues = []
 
@@ -199,7 +198,7 @@ class ZeroHallucinationValidator:
 
         return issues
 
-    def _validate_imports(self, tree: ast.AST) -> List[ValidationIssue]:
+    def _validate_imports(self, tree: ast.AST) -> list[ValidationIssue]:
         """Validate import statements for non-existent modules."""
         issues = []
 
@@ -235,7 +234,7 @@ class ZeroHallucinationValidator:
 
         return issues
 
-    def _check_undefined_references(self, tree: ast.AST, code: str) -> List[ValidationIssue]:
+    def _check_undefined_references(self, tree: ast.AST, code: str) -> list[ValidationIssue]:
         """Check for undefined variables and function calls."""
         issues = []
         defined_names = set()
@@ -245,10 +244,7 @@ class ZeroHallucinationValidator:
         for node in ast.walk(tree):
             if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Param)):
                 defined_names.add(node.id)
-            elif isinstance(node, ast.Import):
-                for alias in node.names:
-                    imported_names.add(alias.asname or alias.name)
-            elif isinstance(node, ast.ImportFrom):
+            elif isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
                 for alias in node.names:
                     imported_names.add(alias.asname or alias.name)
 
@@ -278,7 +274,7 @@ class ZeroHallucinationValidator:
 
         return issues
 
-    def _validate_api_calls(self, tree: ast.AST, code: str) -> List[ValidationIssue]:
+    def _validate_api_calls(self, tree: ast.AST, code: str) -> list[ValidationIssue]:
         """Validate API calls for non-existent methods."""
         issues = []
 
@@ -298,14 +294,14 @@ class ZeroHallucinationValidator:
                                 title="Invalid Method Call",
                                 description=f"Method '{method_name}' may not exist on {obj_name}",
                                 location=self._get_node_location(tree, node),
-                                suggestion=f"Verify method signature and availability",
+                                suggestion="Verify method signature and availability",
                                 confidence=0.6,
                             )
                         )
 
         return issues
 
-    def _check_logic_consistency(self, tree: ast.AST, code: str) -> List[ValidationIssue]:
+    def _check_logic_consistency(self, tree: ast.AST, code: str) -> list[ValidationIssue]:
         """Check for logical inconsistencies and potential bugs."""
         issues = []
 
@@ -350,14 +346,14 @@ class ZeroHallucinationValidator:
                         severity=ValidationSeverity.LOW,
                         title="Unused Variable",
                         description=f"Variable '{name}' is defined but never used",
-                        suggestion=f"Remove unused variable or prefix with underscore",
+                        suggestion="Remove unused variable or prefix with underscore",
                         confidence=0.8,
                     )
                 )
 
         return issues
 
-    def _validate_documentation(self, tree: ast.AST, code: str) -> List[ValidationIssue]:
+    def _validate_documentation(self, tree: ast.AST, code: str) -> list[ValidationIssue]:
         """Validate docstrings and comments for consistency."""
         issues = []
 
@@ -380,7 +376,7 @@ class ZeroHallucinationValidator:
 
         return issues
 
-    def _check_fabricated_functions(self, tree: ast.AST, code: str) -> List[ValidationIssue]:
+    def _check_fabricated_functions(self, tree: ast.AST, code: str) -> list[ValidationIssue]:
         """Check for potentially fabricated or non-standard functions."""
         issues = []
 
@@ -560,21 +556,21 @@ class ZeroHallucinationValidator:
             return f"Line {node.lineno}"
         return "Unknown location"
 
-    def _get_parent_node(self, tree: ast.AST, node: ast.AST) -> Optional[ast.AST]:
+    def _get_parent_node(self, tree: ast.AST, node: ast.AST) -> ast.AST | None:
         """Get parent node of given node (simplified implementation)."""
         # This is a simplified version - a proper implementation would need
         # to track parent relationships during tree traversal
         return None
 
-    def _get_object_name(self, attribute_node: ast.Attribute) -> Optional[str]:
+    def _get_object_name(self, attribute_node: ast.Attribute) -> str | None:
         """Extract object name from attribute node."""
         if isinstance(attribute_node.value, ast.Name):
             return attribute_node.value.id
-        elif isinstance(attribute_node.value, ast.Attribute):
+        if isinstance(attribute_node.value, ast.Attribute):
             return self._get_object_name(attribute_node.value)
         return None
 
-    def _load_known_apis(self) -> Dict[str, Set[str]]:
+    def _load_known_apis(self) -> dict[str, set[str]]:
         """Load known API methods for common libraries."""
         return {
             "requests": {"get", "post", "put", "delete", "head", "options"},
@@ -584,7 +580,7 @@ class ZeroHallucinationValidator:
             "aiohttp": {"ClientSession", "get", "post", "put", "delete"},
         }
 
-    def _load_standard_library(self) -> Set[str]:
+    def _load_standard_library(self) -> set[str]:
         """Load Python standard library module names."""
         return {
             "os",
@@ -623,7 +619,6 @@ class ZeroHallucinationValidator:
             "secrets",
             "decimal",
             "fractions",
-            "statistics",
             "enum",
             "dataclasses",
             "typing",
@@ -632,7 +627,7 @@ class ZeroHallucinationValidator:
             "pkgutil",
         }
 
-    def _load_common_patterns(self) -> Dict[str, Any]:
+    def _load_common_patterns(self) -> dict[str, Any]:
         """Load common code patterns for validation."""
         return {
             "function_definition": r"def\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(",
@@ -645,7 +640,7 @@ class ZeroHallucinationValidator:
 class SecurityValidator:
     """Validates code for security vulnerabilities."""
 
-    def validate(self, skill_code: str, skill_name: str) -> List[ValidationIssue]:
+    def validate(self, skill_code: str, skill_name: str) -> list[ValidationIssue]:
         """Validate code for security issues."""
         issues = []
 
@@ -659,7 +654,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_insecure_functions(self, code: str) -> List[ValidationIssue]:
+    def _check_insecure_functions(self, code: str) -> list[ValidationIssue]:
         """Check for use of insecure functions."""
         insecure_functions = {
             "eval": "Use of eval() can execute arbitrary code",
@@ -694,7 +689,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_hardcoded_secrets(self, code: str) -> List[ValidationIssue]:
+    def _check_hardcoded_secrets(self, code: str) -> list[ValidationIssue]:
         """Check for hardcoded secrets and credentials."""
         secret_patterns = [
             (r'password\s*=\s*["\'][^"\']+["\']', "Hardcoded password"),
@@ -726,7 +721,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_sql_injection(self, code: str) -> List[ValidationIssue]:
+    def _check_sql_injection(self, code: str) -> list[ValidationIssue]:
         """Check for potential SQL injection vulnerabilities."""
         issues = []
         lines = code.split("\n")
@@ -756,7 +751,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_command_injection(self, code: str) -> List[ValidationIssue]:
+    def _check_command_injection(self, code: str) -> list[ValidationIssue]:
         """Check for command injection vulnerabilities."""
         issues = []
         lines = code.split("\n")
@@ -780,7 +775,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_path_traversal(self, code: str) -> List[ValidationIssue]:
+    def _check_path_traversal(self, code: str) -> list[ValidationIssue]:
         """Check for path traversal vulnerabilities."""
         issues = []
         lines = code.split("\n")
@@ -804,7 +799,7 @@ class SecurityValidator:
 
         return issues
 
-    def _check_deserialization(self, code: str) -> List[ValidationIssue]:
+    def _check_deserialization(self, code: str) -> list[ValidationIssue]:
         """Check for unsafe deserialization."""
         issues = []
         lines = code.split("\n")
@@ -834,7 +829,7 @@ class SecurityValidator:
 class PerformanceValidator:
     """Validates code for performance issues."""
 
-    def validate(self, skill_code: str, skill_name: str) -> List[ValidationIssue]:
+    def validate(self, skill_code: str, skill_name: str) -> list[ValidationIssue]:
         """Validate code for performance issues."""
         issues = []
 
@@ -846,7 +841,7 @@ class PerformanceValidator:
 
         return issues
 
-    def _check_inefficient_loops(self, code: str) -> List[ValidationIssue]:
+    def _check_inefficient_loops(self, code: str) -> list[ValidationIssue]:
         """Check for inefficient loop patterns."""
         issues = []
         lines = code.split("\n")
@@ -870,13 +865,13 @@ class PerformanceValidator:
 
         return issues
 
-    def _check_memory_leaks(self, code: str) -> List[ValidationIssue]:
+    def _check_memory_leaks(self, code: str) -> list[ValidationIssue]:
         """Check for potential memory leaks."""
         issues = []
         # Simplified check - real implementation would be more sophisticated
         return issues
 
-    def _check_slow_operations(self, code: str) -> List[ValidationIssue]:
+    def _check_slow_operations(self, code: str) -> list[ValidationIssue]:
         """Check for potentially slow operations."""
         issues = []
 
@@ -906,7 +901,7 @@ class PerformanceValidator:
 
         return issues
 
-    def _check_blocking_calls(self, code: str) -> List[ValidationIssue]:
+    def _check_blocking_calls(self, code: str) -> list[ValidationIssue]:
         """Check for blocking calls in async code."""
         issues = []
 
@@ -957,9 +952,9 @@ class QualityValidator:
     async def validate_skill(
         self,
         skill_code: str,
-        requirements: List[str],
-        examples: List[Dict[str, Any]] = None,
-        context: Dict[str, Any] = None,
+        requirements: list[str],
+        examples: list[dict[str, Any]] = None,
+        context: dict[str, Any] = None,
     ) -> ValidationResult:
         """
         Perform comprehensive validation of generated skill.
@@ -973,7 +968,7 @@ class QualityValidator:
         Returns:
             Complete validation result with scores and recommendations
         """
-        logger.info(f"Starting comprehensive validation for skill")
+        logger.info("Starting comprehensive validation for skill")
 
         skill_name = context.get("skill_name", "unknown_skill") if context else "unknown_skill"
 
@@ -1032,7 +1027,7 @@ class QualityValidator:
         logger.info(f"Validation completed - Score: {result.overall_score:.2f}, Issues: {len(result.issues)}")
         return result
 
-    def _assess_code_quality(self, skill_code: str, skill_name: str) -> List[ValidationIssue]:
+    def _assess_code_quality(self, skill_code: str, skill_name: str) -> list[ValidationIssue]:
         """Assess general code quality."""
         issues = []
 
@@ -1061,7 +1056,7 @@ class QualityValidator:
 
         return issues
 
-    def _check_complexity(self, tree: ast.AST) -> List[ValidationIssue]:
+    def _check_complexity(self, tree: ast.AST) -> list[ValidationIssue]:
         """Check for code complexity issues."""
         issues = []
 
@@ -1086,7 +1081,7 @@ class QualityValidator:
 
         return issues
 
-    def _check_naming_conventions(self, tree: ast.AST) -> List[ValidationIssue]:
+    def _check_naming_conventions(self, tree: ast.AST) -> list[ValidationIssue]:
         """Check for naming convention violations."""
         issues = []
 
@@ -1123,7 +1118,7 @@ class QualityValidator:
 
         return issues
 
-    def _check_documentation(self, tree: ast.AST) -> List[ValidationIssue]:
+    def _check_documentation(self, tree: ast.AST) -> list[ValidationIssue]:
         """Check for documentation completeness."""
         issues = []
 
@@ -1160,7 +1155,7 @@ class QualityValidator:
 
         return issues
 
-    def _check_error_handling(self, tree: ast.AST) -> List[ValidationIssue]:
+    def _check_error_handling(self, tree: ast.AST) -> list[ValidationIssue]:
         """Check for proper error handling."""
         issues = []
 
@@ -1185,8 +1180,8 @@ class QualityValidator:
         return issues
 
     def _validate_requirements(
-        self, skill_code: str, requirements: List[str], examples: List[Dict[str, Any]] = None
-    ) -> List[ValidationIssue]:
+        self, skill_code: str, requirements: list[str], examples: list[dict[str, Any]] = None
+    ) -> list[ValidationIssue]:
         """Validate that code meets specified requirements."""
         issues = []
 
@@ -1232,7 +1227,7 @@ class QualityValidator:
 
         return issues
 
-    def _calculate_metrics(self, skill_code: str, issues: List[ValidationIssue]) -> Dict[str, Any]:
+    def _calculate_metrics(self, skill_code: str, issues: list[ValidationIssue]) -> dict[str, Any]:
         """Calculate validation metrics."""
         lines = len(skill_code.split("\n"))
         tokens = estimate_tokens(skill_code)
@@ -1280,7 +1275,7 @@ class QualityValidator:
         # Ensure score is within bounds
         return max(0.0, min(1.0, base_score))
 
-    def _generate_recommendations(self, issues: List[ValidationIssue]) -> List[str]:
+    def _generate_recommendations(self, issues: list[ValidationIssue]) -> list[str]:
         """Generate actionable recommendations based on issues."""
         recommendations = []
 
@@ -1325,20 +1320,20 @@ class QualityValidator:
         complexity = 1  # Base complexity
 
         for child in ast.walk(node):
-            if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)):
-                complexity += 1
-            elif isinstance(child, (ast.And, ast.Or)):
-                complexity += 1
-            elif isinstance(child, ast.ExceptHandler):
+            if (
+                isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor))
+                or isinstance(child, (ast.And, ast.Or))
+                or isinstance(child, ast.ExceptHandler)
+            ):
                 complexity += 1
 
         return complexity
 
-    def get_validation_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_validation_history(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent validation history."""
         return self.validation_history[-limit:]
 
-    def get_validation_stats(self) -> Dict[str, Any]:
+    def get_validation_stats(self) -> dict[str, Any]:
         """Get validation statistics."""
         if not self.validation_history:
             return {"message": "No validation history available"}

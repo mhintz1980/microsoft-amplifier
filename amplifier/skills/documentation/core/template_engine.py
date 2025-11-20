@@ -5,12 +5,12 @@ Creates standardized, consistent documentation templates for all skill types.
 Follows ruthless simplicity principles with agent-optimized structure.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set
-from pathlib import Path
 import json
-import re
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
 from ..utils.token_utils import estimate_tokens
 
@@ -37,8 +37,8 @@ class DocumentationSection:
     metadata_template: str = ""
     summary_template: str = ""
     full_template: str = ""
-    token_budget: Dict[str, int] = field(default_factory=lambda: {"metadata": 50, "summary": 200, "full": 800})
-    validation_rules: List[str] = field(default_factory=list)
+    token_budget: dict[str, int] = field(default_factory=lambda: {"metadata": 50, "summary": 200, "full": 800})
+    validation_rules: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -49,19 +49,19 @@ class SkillDocumentationSpec:
     category: SkillCategory
     skill_class: str
     description: str
-    tags: List[str]
-    inputs: List[Dict[str, Any]]
-    outputs: List[Dict[str, Any]]
-    dependencies: List[str] = field(default_factory=list)
-    examples: List[Dict[str, Any]] = field(default_factory=list)
-    related_skills: List[str] = field(default_factory=list)
-    custom_sections: List[DocumentationSection] = field(default_factory=list)
+    tags: list[str]
+    inputs: list[dict[str, Any]]
+    outputs: list[dict[str, Any]]
+    dependencies: list[str] = field(default_factory=list)
+    examples: list[dict[str, Any]] = field(default_factory=list)
+    related_skills: list[str] = field(default_factory=list)
+    custom_sections: list[DocumentationSection] = field(default_factory=list)
 
 
 class DocumentationTemplate:
     """Template engine for consistent skill documentation."""
 
-    def __init__(self, templates_dir: Optional[Path] = None):
+    def __init__(self, templates_dir: Path | None = None):
         self.templates_dir = templates_dir or Path(__file__).parent.parent / "templates"
         self.templates_dir.mkdir(exist_ok=True)
         self._load_templates()
@@ -71,7 +71,7 @@ class DocumentationTemplate:
         self.category_templates = self._initialize_category_templates()
         self.base_sections = self._initialize_base_sections()
 
-    def _initialize_category_templates(self) -> Dict[SkillCategory, Dict[str, str]]:
+    def _initialize_category_templates(self) -> dict[SkillCategory, dict[str, str]]:
         """Initialize templates for each skill category."""
         return {
             SkillCategory.CONTEXT_MANAGEMENT: {
@@ -97,7 +97,7 @@ class DocumentationTemplate:
             },
         }
 
-    def _initialize_base_sections(self) -> List[DocumentationSection]:
+    def _initialize_base_sections(self) -> list[DocumentationSection]:
         """Initialize base documentation sections for all skills."""
         return [
             DocumentationSection(
@@ -129,7 +129,7 @@ class DocumentationTemplate:
             ),
         ]
 
-    def generate_documentation(self, spec: SkillDocumentationSpec, level: str = "full") -> Dict[str, Any]:
+    def generate_documentation(self, spec: SkillDocumentationSpec, level: str = "full") -> dict[str, Any]:
         """Generate documentation for a skill at the specified level."""
 
         if level not in ["metadata", "summary", "full"]:
@@ -166,7 +166,7 @@ class DocumentationTemplate:
         }
 
     def _generate_section_content(
-        self, section: DocumentationSection, spec: SkillDocumentationSpec, level: str, category_template: Dict[str, str]
+        self, section: DocumentationSection, spec: SkillDocumentationSpec, level: str, category_template: dict[str, str]
     ) -> str:
         """Generate content for a specific section."""
 
@@ -201,7 +201,7 @@ class DocumentationTemplate:
         except KeyError:
             return template
 
-    def _prepare_template_variables(self, spec: SkillDocumentationSpec) -> Dict[str, str]:
+    def _prepare_template_variables(self, spec: SkillDocumentationSpec) -> dict[str, str]:
         """Prepare variables for template substitution."""
 
         return {
@@ -220,7 +220,7 @@ class DocumentationTemplate:
             "related_skills": ", ".join(spec.related_skills) if spec.related_skills else "None",
         }
 
-    def _format_inputs_summary(self, inputs: List[Dict[str, Any]]) -> str:
+    def _format_inputs_summary(self, inputs: list[dict[str, Any]]) -> str:
         """Format inputs for summary level."""
         if not inputs:
             return "None"
@@ -232,7 +232,7 @@ class DocumentationTemplate:
             ]
         )
 
-    def _format_outputs_summary(self, outputs: List[Dict[str, Any]]) -> str:
+    def _format_outputs_summary(self, outputs: list[dict[str, Any]]) -> str:
         """Format outputs for summary level."""
         if not outputs:
             return "None"
@@ -244,7 +244,7 @@ class DocumentationTemplate:
             ]
         )
 
-    def _format_inputs_detailed(self, inputs: List[Dict[str, Any]]) -> str:
+    def _format_inputs_detailed(self, inputs: list[dict[str, Any]]) -> str:
         """Format inputs for detailed level."""
         if not inputs:
             return "No inputs required"
@@ -260,7 +260,7 @@ class DocumentationTemplate:
 
         return "\n".join(formatted)
 
-    def _format_outputs_detailed(self, outputs: List[Dict[str, Any]]) -> str:
+    def _format_outputs_detailed(self, outputs: list[dict[str, Any]]) -> str:
         """Format outputs for detailed level."""
         if not outputs:
             return "No outputs"
@@ -274,7 +274,7 @@ class DocumentationTemplate:
 
         return "\n".join(formatted)
 
-    def _format_examples(self, examples: List[Dict[str, Any]]) -> str:
+    def _format_examples(self, examples: list[dict[str, Any]]) -> str:
         """Format examples for documentation."""
         if not examples:
             return "No examples available"
@@ -287,7 +287,7 @@ class DocumentationTemplate:
 
         return "\n\n".join(formatted)
 
-    def _validate_token_budgets(self, sections: Dict[str, str], level: str):
+    def _validate_token_budgets(self, sections: dict[str, str], level: str):
         """Validate that sections stay within token budgets."""
         for section_name, content in sections.items():
             tokens = estimate_tokens(content)
@@ -304,7 +304,7 @@ class DocumentationTemplate:
                     f"Warning: Section '{section_name}' exceeds token budget ({tokens} > {section_def.token_budget[level]})"
                 )
 
-    def _extract_metadata(self, spec: SkillDocumentationSpec) -> Dict[str, Any]:
+    def _extract_metadata(self, spec: SkillDocumentationSpec) -> dict[str, Any]:
         """Extract metadata for indexing and discovery."""
         return {
             "name": spec.skill_name,
@@ -319,7 +319,7 @@ class DocumentationTemplate:
         }
 
     def create_skill_spec(
-        self, skill_class: type, category: SkillCategory, custom_data: Optional[Dict[str, Any]] = None
+        self, skill_class: type, category: SkillCategory, custom_data: dict[str, Any] | None = None
     ) -> SkillDocumentationSpec:
         """Create a documentation specification from a skill class."""
 
@@ -364,7 +364,7 @@ class DocumentationTemplate:
             **(custom_data or {}),
         )
 
-    def save_template(self, category: SkillCategory, templates: Dict[str, str]):
+    def save_template(self, category: SkillCategory, templates: dict[str, str]):
         """Save custom templates for a category."""
         self.category_templates[category] = templates
 
@@ -373,12 +373,12 @@ class DocumentationTemplate:
         with open(template_file, "w") as f:
             json.dump(templates, f, indent=2)
 
-    def load_template(self, category: SkillCategory) -> Dict[str, str]:
+    def load_template(self, category: SkillCategory) -> dict[str, str]:
         """Load custom templates for a category."""
         template_file = self.templates_dir / f"{category.value}_templates.json"
 
         if template_file.exists():
-            with open(template_file, "r") as f:
+            with open(template_file) as f:
                 return json.load(f)
 
         return self.category_templates.get(category, {})

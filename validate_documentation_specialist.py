@@ -4,11 +4,10 @@ Simple validation script for Documentation Packaging Specialist.
 Tests core functionality without complex dependencies.
 """
 
-import asyncio
+import json
 import sys
 import time
 from pathlib import Path
-import json
 
 
 def test_file_structure():
@@ -317,9 +316,8 @@ def run_validation_tests():
         print("\n🎉 ALL TESTS PASSED - Ready for deployment!")
         deployment_report = generate_deployment_report()
         return True
-    else:
-        print(f"\n⚠️  {total - passed} test(s) failed - Review before deployment")
-        return False
+    print(f"\n⚠️  {total - passed} test(s) failed - Review before deployment")
+    return False
 
 
 if __name__ == "__main__":

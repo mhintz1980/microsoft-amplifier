@@ -6,12 +6,10 @@ API accuracy, and production-ready code generation.
 """
 
 import re
-import ast
-import json
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
-from pathlib import Path
+from typing import Any
 
 
 class ValidationLevel(Enum):
@@ -41,9 +39,9 @@ class ValidationResult:
     category: ValidationCategory
     level: ValidationLevel
     message: str
-    line_number: Optional[int] = None
-    suggestion: Optional[str] = None
-    code_snippet: Optional[str] = None
+    line_number: int | None = None
+    suggestion: str | None = None
+    code_snippet: str | None = None
 
 
 @dataclass
@@ -52,10 +50,10 @@ class ValidationReport:
 
     is_valid: bool
     overall_score: float
-    results: List[ValidationResult] = field(default_factory=list)
-    metrics: Dict[str, float] = field(default_factory=dict)
-    recommendations: List[str] = field(default_factory=list)
-    api_compliance: Dict[str, bool] = field(default_factory=dict)
+    results: list[ValidationResult] = field(default_factory=list)
+    metrics: dict[str, float] = field(default_factory=dict)
+    recommendations: list[str] = field(default_factory=list)
+    api_compliance: dict[str, bool] = field(default_factory=dict)
 
 
 class QualityAssurance:
@@ -275,7 +273,7 @@ class QualityAssurance:
             },
         }
 
-    def validate_react_19_code(self, code: str, context: Optional[Dict[str, Any]] = None) -> ValidationReport:
+    def validate_react_19_code(self, code: str, context: dict[str, Any] | None = None) -> ValidationReport:
         """
         Comprehensive validation of React 19 code.
 
@@ -314,8 +312,8 @@ class QualityAssurance:
         return report
 
     def _validate_category(
-        self, code: str, category: ValidationCategory, context: Optional[Dict[str, Any]]
-    ) -> List[ValidationResult]:
+        self, code: str, category: ValidationCategory, context: dict[str, Any] | None
+    ) -> list[ValidationResult]:
         """Validate a specific category of rules."""
         results = []
         rules = self.validation_rules.get(category, [])
@@ -328,8 +326,8 @@ class QualityAssurance:
         return results
 
     def _apply_validation_rule(
-        self, code: str, rule: Dict[str, Any], category: ValidationCategory, context: Optional[Dict[str, Any]]
-    ) -> Optional[ValidationResult]:
+        self, code: str, rule: dict[str, Any], category: ValidationCategory, context: dict[str, Any] | None
+    ) -> ValidationResult | None:
         """Apply a single validation rule to code."""
         pattern = rule.get("pattern", "")
 
@@ -395,7 +393,7 @@ class QualityAssurance:
 
         return "\n".join(numbered_lines)
 
-    def _calculate_metrics(self, results: List[ValidationResult]) -> Dict[str, float]:
+    def _calculate_metrics(self, results: list[ValidationResult]) -> dict[str, float]:
         """Calculate validation metrics."""
         metrics = {}
 
@@ -406,7 +404,7 @@ class QualityAssurance:
 
         total_results = len(results)
         if total_results == 0:
-            return {level: 100.0 for level in ValidationLevel}
+            return dict.fromkeys(ValidationLevel, 100.0)
 
         # Calculate percentages
         for level in ValidationLevel:
@@ -424,7 +422,7 @@ class QualityAssurance:
 
         return metrics
 
-    def _calculate_overall_score(self, metrics: Dict[str, float]) -> float:
+    def _calculate_overall_score(self, metrics: dict[str, float]) -> float:
         """Calculate overall validation score."""
         score_components = [
             metrics.get("success_percentage", 0),
@@ -437,7 +435,7 @@ class QualityAssurance:
 
         return sum(score_components) / len(score_components)
 
-    def _generate_recommendations(self, results: List[ValidationResult]) -> List[str]:
+    def _generate_recommendations(self, results: list[ValidationResult]) -> list[str]:
         """Generate recommendations based on validation results."""
         recommendations = []
 
@@ -468,7 +466,7 @@ class QualityAssurance:
 
         return recommendations[:10]  # Limit to top 10 recommendations
 
-    def _check_api_compliance(self, code: str) -> Dict[str, bool]:
+    def _check_api_compliance(self, code: str) -> dict[str, bool]:
         """Check compliance with React 19 APIs."""
         compliance = {}
 
@@ -489,7 +487,7 @@ class QualityAssurance:
 
         return compliance
 
-    def _validate_hook_usage(self, code: str, hook_name: str, hook_def: Dict[str, Any]) -> bool:
+    def _validate_hook_usage(self, code: str, hook_name: str, hook_def: dict[str, Any]) -> bool:
         """Validate specific hook usage."""
         # Check for proper destructuring
         if hook_name == "useActionState":
@@ -502,12 +500,12 @@ class QualityAssurance:
 
         return True
 
-    def _validate_component_usage(self, code: str, component_name: str, component_def: Dict[str, Any]) -> bool:
+    def _validate_component_usage(self, code: str, component_name: str, component_def: dict[str, Any]) -> bool:
         """Validate specific component usage."""
         # Basic validation - could be expanded
         return True
 
-    def validate_zero_hallucination(self, code: str, expected_features: List[str]) -> Dict[str, Any]:
+    def validate_zero_hallucination(self, code: str, expected_features: list[str]) -> dict[str, Any]:
         """
         Validate code for zero hallucination compliance.
 
@@ -564,7 +562,7 @@ class QualityAssurance:
 
         return validation_result
 
-    def generate_fixes(self, validation_report: ValidationReport) -> List[Dict[str, Any]]:
+    def generate_fixes(self, validation_report: ValidationReport) -> list[dict[str, Any]]:
         """
         Generate automated fixes for validation issues.
 
@@ -585,7 +583,7 @@ class QualityAssurance:
 
         return fixes
 
-    def _generate_fix_for_result(self, result: ValidationResult) -> Optional[Dict[str, Any]]:
+    def _generate_fix_for_result(self, result: ValidationResult) -> dict[str, Any] | None:
         """Generate fix for a specific validation result."""
         fix_patterns = {
             "server_action_directive": {
@@ -618,7 +616,7 @@ class QualityAssurance:
 
         return None
 
-    def benchmark_performance(self, code: str) -> Dict[str, float]:
+    def benchmark_performance(self, code: str) -> dict[str, float]:
         """
         Benchmark performance characteristics of React 19 code.
 

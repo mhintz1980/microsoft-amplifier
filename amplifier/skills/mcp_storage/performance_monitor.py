@@ -759,18 +759,17 @@ class PerformanceMonitor:
         try:
             if condition == ">=":
                 return value >= threshold
-            elif condition == "<=":
+            if condition == "<=":
                 return value <= threshold
-            elif condition == ">":
+            if condition == ">":
                 return value > threshold
-            elif condition == "<":
+            if condition == "<":
                 return value < threshold
-            elif condition == "==":
+            if condition == "==":
                 return value == threshold
-            elif condition == "!=":
+            if condition == "!=":
                 return value != threshold
-            else:
-                return False
+            return False
 
         except Exception:
             return False
@@ -795,10 +794,9 @@ class PerformanceMonitor:
 
         if recent_avg > older_avg * 1.05:
             return "increasing"
-        elif recent_avg < older_avg * 0.95:
+        if recent_avg < older_avg * 0.95:
             return "decreasing"
-        else:
-            return "stable"
+        return "stable"
 
     async def _monitoring_loop(self) -> None:
         """Main performance monitoring loop."""
@@ -820,8 +818,9 @@ class PerformanceMonitor:
     async def _collect_system_metrics(self) -> None:
         """Collect system performance metrics."""
         try:
-            import psutil
             import shutil
+
+            import psutil
 
             # CPU utilization
             cpu_percent = psutil.cpu_percent(interval=1)
@@ -983,7 +982,7 @@ class PerformanceMonitor:
                     if metric_data["trend"] == "increasing" and "duration_ms" in metric_name:
                         insights.append(f"Response times are trending upward for {metric_name}")
                     elif metric_data["trend"] == "decreasing" and "hit_rate" in metric_name:
-                        insights.append(f"Cache performance is degrading")
+                        insights.append("Cache performance is degrading")
 
             return insights
 

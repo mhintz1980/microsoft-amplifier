@@ -5,7 +5,6 @@ Simple validation test for Custom Agent Development Specialist
 Tests basic functionality without external dependencies.
 """
 
-import json
 import sys
 from pathlib import Path
 
@@ -39,7 +38,7 @@ def test_class_definitions():
 
     # Read the file and check for key class definitions
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -76,7 +75,7 @@ def test_enums_and_constants():
     print("\n📋 Testing Enums and Constants")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -103,7 +102,7 @@ def test_template_definitions():
     print("\n📚 Testing Template Definitions")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -116,8 +115,7 @@ def test_template_definitions():
         if indicator not in content:
             print(f"❌ Missing template indicator: {indicator}")
             return False
-        else:
-            print(f"✅ Found template indicator: {indicator}")
+        print(f"✅ Found template indicator: {indicator}")
 
     # Count template instances
     template_count = content.count("AgentTemplate(")
@@ -134,7 +132,7 @@ def test_method_definitions():
     print("\n⚙️ Testing Method Definitions")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -170,7 +168,7 @@ def test_quality_assurance_features():
     print("\n🛡️ Testing Quality Assurance Features")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -188,8 +186,7 @@ def test_quality_assurance_features():
         if feature.replace(" ", "_") not in content and feature not in content:
             print(f"❌ Missing QA feature: {feature}")
             return False
-        else:
-            print(f"✅ Found QA feature: {feature}")
+        print(f"✅ Found QA feature: {feature}")
 
     return True
 
@@ -199,7 +196,7 @@ def test_performance_monitoring():
     print("\n📊 Testing Performance Monitoring")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -217,8 +214,7 @@ def test_performance_monitoring():
         if feature not in content:
             print(f"❌ Missing monitoring feature: {feature}")
             return False
-        else:
-            print(f"✅ Found monitoring feature: {feature}")
+        print(f"✅ Found monitoring feature: {feature}")
 
     return True
 
@@ -228,7 +224,7 @@ def test_integration_patterns():
     print("\n🔗 Testing Integration Patterns")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -246,8 +242,7 @@ def test_integration_patterns():
         if feature not in content:
             print(f"❌ Missing integration feature: {feature}")
             return False
-        else:
-            print(f"✅ Found integration feature: {feature}")
+        print(f"✅ Found integration feature: {feature}")
 
     return True
 
@@ -257,7 +252,7 @@ def test_documentation_quality():
     print("\n📖 Testing Documentation Quality")
 
     try:
-        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py", "r") as f:
+        with open("amplifier/skills/meta_skills/custom_agent_development_specialist.py") as f:
             content = f.read()
     except FileNotFoundError:
         print("❌ Could not read meta-skill file")
@@ -284,8 +279,7 @@ def test_documentation_quality():
         if target not in content:
             print(f"❌ Missing performance target documentation: {target}")
             return False
-        else:
-            print(f"✅ Found performance target: {target}")
+        print(f"✅ Found performance target: {target}")
 
     return True
 

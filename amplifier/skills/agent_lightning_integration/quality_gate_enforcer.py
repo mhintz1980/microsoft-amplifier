@@ -10,12 +10,14 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, asdict
-from enum import Enum
 from collections import defaultdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -33,8 +35,9 @@ except ImportError:
     AGENT_LIGHTNING_AVAILABLE = False
 
 from .config import QualityGateConfig
-from .skill_performance_tracker import SkillPerformanceTracker, SkillExecutionMetrics
-from .error_detection_engine import ErrorDetectionEngine, DetectionResult
+from .error_detection_engine import ErrorDetectionEngine
+from .skill_performance_tracker import SkillExecutionMetrics
+from .skill_performance_tracker import SkillPerformanceTracker
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +71,7 @@ class QualityMetric:
     threshold: float
     passed: bool
     weight: float
-    details: Dict[str, Any]
+    details: dict[str, Any]
 
 
 @dataclass
@@ -80,10 +83,10 @@ class QualityGateEvaluation:
     evaluation_timestamp: datetime
     overall_result: QualityGateResult
     overall_score: float
-    metrics: List[QualityMetric]
-    critical_issues: List[str]
-    recommendations: List[str]
-    required_improvements: List[Dict[str, Any]]
+    metrics: list[QualityMetric]
+    critical_issues: list[str]
+    recommendations: list[str]
+    required_improvements: list[dict[str, Any]]
     evaluation_duration: float
 
 
@@ -94,12 +97,12 @@ class SafetyTrainingSession:
     session_id: str
     skill_id: str
     start_time: datetime
-    end_time: Optional[datetime] = None
+    end_time: datetime | None = None
     training_type: str
     initial_score: float
     target_score: float
-    final_score: Optional[float] = None
-    improvement: Optional[float] = None
+    final_score: float | None = None
+    improvement: float | None = None
     status: str = "in_progress"
     iterations: int = 0
     convergence_achieved: bool = False
@@ -124,16 +127,16 @@ class QualityGateEnforcer:
         self.error_detector = error_detector
 
         # Quality gate state
-        self.evaluation_history: Dict[str, List[QualityGateEvaluation]] = defaultdict(list)
-        self.active_training_sessions: Dict[str, SafetyTrainingSession] = {}
+        self.evaluation_history: dict[str, list[QualityGateEvaluation]] = defaultdict(list)
+        self.active_training_sessions: dict[str, SafetyTrainingSession] = {}
 
         # Agent Lightning safety training components
         self.safety_trainer = None
         self.verl_optimizer = None
 
         # Background tasks
-        self._training_task: Optional[asyncio.Task] = None
-        self._monitoring_task: Optional[asyncio.Task] = None
+        self._training_task: asyncio.Task | None = None
+        self._monitoring_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -175,7 +178,7 @@ class QualityGateEnforcer:
         self,
         skill_id: str,
         skill_version: str,
-        execution_metrics: Optional[List[SkillExecutionMetrics]] = None,
+        execution_metrics: list[SkillExecutionMetrics] | None = None,
         force_evaluation: bool = False,
     ) -> QualityGateEvaluation:
         """Evaluate a skill against all quality gates"""
@@ -310,7 +313,7 @@ class QualityGateEnforcer:
                 self.active_training_sessions[session_id].status = "failed"
             raise
 
-    async def get_quality_status(self, skill_id: str) -> Dict[str, Any]:
+    async def get_quality_status(self, skill_id: str) -> dict[str, Any]:
         """Get comprehensive quality status for a skill"""
         try:
             latest_evaluation = await self._get_latest_evaluation(skill_id)
@@ -331,7 +334,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to get quality status for {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def enforce_production_deployment(self, skill_id: str, skill_version: str) -> Tuple[bool, List[str]]:
+    async def enforce_production_deployment(self, skill_id: str, skill_version: str) -> tuple[bool, list[str]]:
         """Enforce quality gates for production deployment"""
         try:
             logger.info(f"Enforcing production deployment quality gates for {skill_id} v{skill_version}")
@@ -414,7 +417,7 @@ class QualityGateEnforcer:
         except Exception as e:
             logger.error(f"Failed to initialize safety training: {e}")
 
-    async def _collect_execution_metrics(self, skill_id: str, count: int = 50) -> List[SkillExecutionMetrics]:
+    async def _collect_execution_metrics(self, skill_id: str, count: int = 50) -> list[SkillExecutionMetrics]:
         """Collect execution metrics for quality evaluation"""
         try:
             # This would integrate with the actual skill execution system
@@ -430,7 +433,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to collect execution metrics for {skill_id}: {e}")
             return []
 
-    async def _evaluate_accuracy(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_accuracy(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate accuracy quality dimension"""
         try:
             if not metrics:
@@ -475,7 +478,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _evaluate_reliability(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_reliability(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate reliability quality dimension"""
         try:
             if not metrics:
@@ -521,7 +524,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _evaluate_performance(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_performance(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate performance quality dimension"""
         try:
             if not metrics:
@@ -575,7 +578,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _evaluate_security(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_security(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate security quality dimension"""
         try:
             # Analyze security vulnerabilities
@@ -624,7 +627,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _evaluate_maintainability(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_maintainability(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate maintainability quality dimension"""
         try:
             # This would analyze code quality, documentation, etc.
@@ -675,7 +678,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _evaluate_hallucination_free(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> QualityMetric:
+    async def _evaluate_hallucination_free(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> QualityMetric:
         """Evaluate hallucination-free quality dimension (CRITICAL)"""
         try:
             hallucination_detections = 0
@@ -734,7 +737,7 @@ class QualityGateEnforcer:
                 details={"error": str(e)},
             )
 
-    async def _calculate_overall_score(self, metrics: List[QualityMetric]) -> float:
+    async def _calculate_overall_score(self, metrics: list[QualityMetric]) -> float:
         """Calculate overall quality score from individual metrics"""
         try:
             if not metrics:
@@ -749,7 +752,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to calculate overall score: {e}")
             return 0.0
 
-    async def _determine_overall_result(self, metrics: List[QualityMetric], overall_score: float) -> QualityGateResult:
+    async def _determine_overall_result(self, metrics: list[QualityMetric], overall_score: float) -> QualityGateResult:
         """Determine overall quality gate result"""
         try:
             # Check for critical failures
@@ -768,16 +771,15 @@ class QualityGateEnforcer:
             # Check overall score
             if overall_score >= 0.9:
                 return QualityGateResult.PASS
-            elif overall_score >= 0.8:
+            if overall_score >= 0.8:
                 return QualityGateResult.WARNING
-            else:
-                return QualityGateResult.FAIL
+            return QualityGateResult.FAIL
 
         except Exception as e:
             logger.error(f"Failed to determine overall result: {e}")
             return QualityGateResult.FAIL
 
-    async def _identify_critical_issues(self, metrics: List[QualityMetric]) -> List[str]:
+    async def _identify_critical_issues(self, metrics: list[QualityMetric]) -> list[str]:
         """Identify critical quality issues"""
         critical_issues = []
 
@@ -786,7 +788,7 @@ class QualityGateEnforcer:
                 if metric.dimension == QualityDimension.HALLUCINATION_FREE:
                     critical_issues.append(f"CRITICAL: Hallucination detected ({metric.value:.2%} hallucination-free)")
                 elif metric.dimension == QualityDimension.SECURITY:
-                    critical_issues.append(f"CRITICAL: Security vulnerability found")
+                    critical_issues.append("CRITICAL: Security vulnerability found")
                 elif metric.dimension == QualityDimension.RELIABILITY and metric.value < 0.9:
                     critical_issues.append(f"CRITICAL: Low reliability ({metric.value:.2%})")
                 elif metric.dimension == QualityDimension.ACCURACY and metric.value < 0.8:
@@ -794,7 +796,7 @@ class QualityGateEnforcer:
 
         return critical_issues
 
-    async def _generate_recommendations(self, metrics: List[QualityMetric]) -> List[str]:
+    async def _generate_recommendations(self, metrics: list[QualityMetric]) -> list[str]:
         """Generate quality improvement recommendations"""
         recommendations = []
 
@@ -815,7 +817,7 @@ class QualityGateEnforcer:
 
         return recommendations
 
-    async def _identify_required_improvements(self, metrics: List[QualityMetric]) -> List[Dict[str, Any]]:
+    async def _identify_required_improvements(self, metrics: list[QualityMetric]) -> list[dict[str, Any]]:
         """Identify specific required improvements"""
         required_improvements = []
 
@@ -907,7 +909,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to execute mock safety training: {e}")
             return False
 
-    async def _get_recent_evaluation(self, skill_id: str, skill_version: str) -> Optional[QualityGateEvaluation]:
+    async def _get_recent_evaluation(self, skill_id: str, skill_version: str) -> QualityGateEvaluation | None:
         """Get recent evaluation for skill/version"""
         try:
             if skill_id not in self.evaluation_history:
@@ -924,7 +926,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to get recent evaluation: {e}")
             return None
 
-    async def _get_latest_evaluation(self, skill_id: str) -> Optional[QualityGateEvaluation]:
+    async def _get_latest_evaluation(self, skill_id: str) -> QualityGateEvaluation | None:
         """Get latest evaluation for skill"""
         try:
             if skill_id not in self.evaluation_history:
@@ -936,7 +938,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to get latest evaluation: {e}")
             return None
 
-    async def _get_active_training(self, skill_id: str) -> Optional[SafetyTrainingSession]:
+    async def _get_active_training(self, skill_id: str) -> SafetyTrainingSession | None:
         """Get active training session for skill"""
         try:
             active_sessions = [
@@ -951,7 +953,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to get active training: {e}")
             return None
 
-    async def _calculate_quality_trend(self, skill_id: str) -> Dict[str, Any]:
+    async def _calculate_quality_trend(self, skill_id: str) -> dict[str, Any]:
         """Calculate quality trend for a skill"""
         try:
             if skill_id not in self.evaluation_history:
@@ -989,7 +991,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to calculate quality trend: {e}")
             return {"trend": "error"}
 
-    async def _check_compliance_status(self, skill_id: str) -> Dict[str, Any]:
+    async def _check_compliance_status(self, skill_id: str) -> dict[str, Any]:
         """Check compliance status for a skill"""
         try:
             latest_evaluation = await self._get_latest_evaluation(skill_id)
@@ -1018,7 +1020,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to check compliance status: {e}")
             return {"compliant": False, "reason": str(e)}
 
-    async def _prioritize_recommendations(self, skill_id: str) -> List[Dict[str, Any]]:
+    async def _prioritize_recommendations(self, skill_id: str) -> list[dict[str, Any]]:
         """Prioritize quality improvement recommendations"""
         try:
             latest_evaluation = await self._get_latest_evaluation(skill_id)
@@ -1040,7 +1042,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to prioritize recommendations: {e}")
             return []
 
-    async def _run_production_checks(self, skill_id: str, skill_version: str) -> Dict[str, Any]:
+    async def _run_production_checks(self, skill_id: str, skill_version: str) -> dict[str, Any]:
         """Run additional production-specific checks"""
         try:
             issues = []
@@ -1087,7 +1089,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to get current quality score: {e}")
             return 0.0
 
-    async def _analyze_error_patterns(self, metrics: List[SkillExecutionMetrics]) -> Dict[str, Any]:
+    async def _analyze_error_patterns(self, metrics: list[SkillExecutionMetrics]) -> dict[str, Any]:
         """Analyze error patterns in execution metrics"""
         try:
             error_types = defaultdict(int)
@@ -1105,7 +1107,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to analyze error patterns: {e}")
             return {"error": str(e)}
 
-    async def _analyze_hallucination_patterns(self, metrics: List[SkillExecutionMetrics]) -> Dict[str, Any]:
+    async def _analyze_hallucination_patterns(self, metrics: list[SkillExecutionMetrics]) -> dict[str, Any]:
         """Analyze hallucination patterns"""
         try:
             hallucination_count = sum(1 for m in metrics if m.hallucination_detected)
@@ -1122,7 +1124,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to analyze hallucination patterns: {e}")
             return {"error": str(e)}
 
-    async def _run_security_scan(self, skill_id: str) -> Dict[str, Any]:
+    async def _run_security_scan(self, skill_id: str) -> dict[str, Any]:
         """Run security scan for a skill"""
         try:
             # This would integrate with security scanning tools
@@ -1133,7 +1135,7 @@ class QualityGateEnforcer:
             logger.error(f"Failed to run security scan: {e}")
             return {"error": str(e)}
 
-    async def _analyze_code_quality(self, skill_id: str) -> Dict[str, Any]:
+    async def _analyze_code_quality(self, skill_id: str) -> dict[str, Any]:
         """Analyze code quality metrics"""
         try:
             # This would integrate with code analysis tools
@@ -1190,7 +1192,7 @@ class QualityGateEnforcer:
                 logger.error(f"Error in quality monitoring loop: {e}")
                 await asyncio.sleep(300)
 
-    async def _identify_skills_needing_training(self) -> List[str]:
+    async def _identify_skills_needing_training(self) -> list[str]:
         """Identify skills that need safety training"""
         skills_needing_training = []
 
@@ -1249,7 +1251,7 @@ class QualityGateEnforcer:
             # Load evaluation history
             history_file = self.quality_gates_path / "evaluation_history.json"
             if history_file.exists():
-                with open(history_file, "r") as f:
+                with open(history_file) as f:
                     data = json.load(f)
                     for skill_id, evaluations_data in data.items():
                         for eval_data in evaluations_data:

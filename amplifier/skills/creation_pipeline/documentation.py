@@ -14,15 +14,12 @@ Features:
 """
 
 import ast
-import inspect
 import json
-from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Any
 
 from ...utils.logger import get_logger
-from ...utils.token_utils import estimate_tokens
 
 logger = get_logger(__name__)
 
@@ -33,8 +30,8 @@ class DocumentationSection:
 
     title: str
     content: str
-    subsections: List["DocumentationSection"] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    subsections: list["DocumentationSection"] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -63,7 +60,7 @@ class DocumentationGenerator:
     - Installation and setup guides
     """
 
-    def __init__(self, config: Optional[DocumentationConfig] = None):
+    def __init__(self, config: DocumentationConfig | None = None):
         self.config = config or DocumentationConfig()
         self.templates = self._load_templates()
 
@@ -71,10 +68,10 @@ class DocumentationGenerator:
         self,
         skill_name: str,
         description: str,
-        artifacts: Dict[str, Any],
-        test_results: Dict[str, Any] = None,
-        examples: List[Dict[str, Any]] = None,
-    ) -> Dict[str, str]:
+        artifacts: dict[str, Any],
+        test_results: dict[str, Any] = None,
+        examples: list[dict[str, Any]] = None,
+    ) -> dict[str, str]:
         """
         Generate comprehensive documentation for a skill.
 
@@ -129,7 +126,7 @@ class DocumentationGenerator:
         return documentation
 
     async def _generate_readme(
-        self, skill_name: str, description: str, artifacts: Dict[str, Any], examples: List[Dict[str, Any]] = None
+        self, skill_name: str, description: str, artifacts: dict[str, Any], examples: list[dict[str, Any]] = None
     ) -> str:
         """Generate README.md file."""
         # Extract key information from artifacts
@@ -259,7 +256,7 @@ class DocumentationGenerator:
         return "\n".join(sections)
 
     async def _generate_examples(
-        self, skill_name: str, examples: List[Dict[str, Any]], artifacts: Dict[str, Any]
+        self, skill_name: str, examples: list[dict[str, Any]], artifacts: dict[str, Any]
     ) -> str:
         """Generate examples documentation."""
         sections = [f"# {skill_name} Examples\n"]
@@ -287,14 +284,14 @@ class DocumentationGenerator:
 
                 if "input" in example:
                     sections.append("```python")
-                    sections.append(f"# Input:")
+                    sections.append("# Input:")
                     sections.append(json.dumps(example["input"], indent=2))
                     sections.append("```")
                     sections.append("")
 
                 if "expected_output" in example:
                     sections.append("```python")
-                    sections.append(f"# Expected output:")
+                    sections.append("# Expected output:")
                     sections.append(json.dumps(example["expected_output"], indent=2))
                     sections.append("```")
                     sections.append("")
@@ -309,7 +306,7 @@ class DocumentationGenerator:
         return "\n".join(sections)
 
     async def _generate_performance_documentation(
-        self, skill_name: str, artifacts: Dict[str, Any], test_results: Dict[str, Any] = None
+        self, skill_name: str, artifacts: dict[str, Any], test_results: dict[str, Any] = None
     ) -> str:
         """Generate performance documentation."""
         sections = [f"# {skill_name} Performance\n"]
@@ -366,7 +363,7 @@ class DocumentationGenerator:
 
         return "\n".join(sections)
 
-    async def _generate_testing_documentation(self, skill_name: str, test_results: Dict[str, Any]) -> str:
+    async def _generate_testing_documentation(self, skill_name: str, test_results: dict[str, Any]) -> str:
         """Generate testing documentation."""
         sections = [f"# {skill_name} Testing\n"]
         sections.append("This document describes the testing approach and results.")
@@ -422,7 +419,7 @@ class DocumentationGenerator:
 
         return "\n".join(sections)
 
-    async def _generate_changelog(self, skill_name: str, artifacts: Dict[str, Any]) -> str:
+    async def _generate_changelog(self, skill_name: str, artifacts: dict[str, Any]) -> str:
         """Generate changelog."""
         sections = [f"# {skill_name} Changelog\n"]
         sections.append("All notable changes to this project will be documented in this file.")
@@ -454,7 +451,7 @@ class DocumentationGenerator:
 
         return "\n".join(sections)
 
-    async def _generate_installation_guide(self, skill_name: str, artifacts: Dict[str, Any]) -> str:
+    async def _generate_installation_guide(self, skill_name: str, artifacts: dict[str, Any]) -> str:
         """Generate installation guide."""
         sections = [f"# {skill_name} Installation Guide\n"]
         sections.append("This guide covers installation and setup instructions.")
@@ -509,7 +506,7 @@ class DocumentationGenerator:
         return "\n".join(sections)
 
     def _generate_quick_start(
-        self, skill_name: str, functions: List[str], examples: List[Dict[str, Any]] = None
+        self, skill_name: str, functions: list[str], examples: list[dict[str, Any]] = None
     ) -> str:
         """Generate quick start section."""
         if examples:
@@ -526,9 +523,9 @@ class DocumentationGenerator:
                 if functions:
                     func_name = functions[0]
                     quick_start.append("")
-                    quick_start.append(f"# Quick example")
+                    quick_start.append("# Quick example")
                     quick_start.append(f"result = {func_name}({json.dumps(example['input'], indent=8)})")
-                    quick_start.append(f"print(result)")
+                    quick_start.append("print(result)")
 
                 quick_start.append("```")
             else:
@@ -569,7 +566,7 @@ class DocumentationGenerator:
         return "\n".join(quick_start)
 
     def _generate_usage_examples(
-        self, skill_name: str, functions: List[str], classes: List[str], examples: List[Dict[str, Any]] = None
+        self, skill_name: str, functions: list[str], classes: list[str], examples: list[dict[str, Any]] = None
     ) -> str:
         """Generate usage examples."""
         usage = []
@@ -580,7 +577,7 @@ class DocumentationGenerator:
             usage.append("```python")
             usage.append(f"from {skill_name.lower().replace(' ', '_')} import {classes[0]}")
             usage.append("")
-            usage.append(f"# Create instance")
+            usage.append("# Create instance")
             usage.append(f"instance = {classes[0]}()")
             usage.append("")
             usage.append("# Use the instance")
@@ -605,7 +602,7 @@ class DocumentationGenerator:
 
         return "\n".join(usage)
 
-    def _generate_basic_usage_example(self, skill_name: str, artifacts: Dict[str, Any]) -> str:
+    def _generate_basic_usage_example(self, skill_name: str, artifacts: dict[str, Any]) -> str:
         """Generate basic usage example."""
         skill_code = artifacts.get("code", "")
         functions = self._extract_functions(skill_code)
@@ -659,7 +656,7 @@ class DocumentationGenerator:
 
         return "\n".join(example)
 
-    def _generate_advanced_usage_example(self, skill_name: str, artifacts: Dict[str, Any]) -> str:
+    def _generate_advanced_usage_example(self, skill_name: str, artifacts: dict[str, Any]) -> str:
         """Generate advanced usage example."""
         return f"""
 # Advanced Usage Example
@@ -687,7 +684,7 @@ print("Advanced processing completed")
 print(f"Result: {{result}}")
 """
 
-    def _extract_imports(self, code: str) -> List[str]:
+    def _extract_imports(self, code: str) -> list[str]:
         """Extract import statements from code."""
         imports = set()
 
@@ -708,7 +705,7 @@ print(f"Result: {{result}}")
         stdlib = {"os", "sys", "json", "re", "datetime", "time", "typing", "collections"}
         return [imp for imp in imports if imp not in stdlib]
 
-    def _extract_functions(self, code: str) -> List[str]:
+    def _extract_functions(self, code: str) -> list[str]:
         """Extract public function names from code."""
         functions = []
 
@@ -722,7 +719,7 @@ print(f"Result: {{result}}")
 
         return functions
 
-    def _extract_classes(self, code: str) -> List[str]:
+    def _extract_classes(self, code: str) -> list[str]:
         """Extract public class names from code."""
         classes = []
 
@@ -736,7 +733,7 @@ print(f"Result: {{result}}")
 
         return classes
 
-    def _extract_features(self, code: str, functions: List[str], classes: List[str]) -> List[str]:
+    def _extract_features(self, code: str, functions: list[str], classes: list[str]) -> list[str]:
         """Extract feature list from code."""
         features = []
 
@@ -764,7 +761,7 @@ print(f"Result: {{result}}")
 
         return features
 
-    def _analyze_performance_characteristics(self, code: str) -> List[str]:
+    def _analyze_performance_characteristics(self, code: str) -> list[str]:
         """Analyze performance characteristics from code."""
         characteristics = []
 
@@ -786,10 +783,9 @@ print(f"Result: {{result}}")
 
         if characteristics:
             return characteristics
-        else:
-            return ["Efficient single-threaded processing", "Low memory footprint", "Fast startup time"]
+        return ["Efficient single-threaded processing", "Low memory footprint", "Fast startup time"]
 
-    def _document_class(self, cls: ast.ClassDef) -> List[str]:
+    def _document_class(self, cls: ast.ClassDef) -> list[str]:
         """Document a class."""
         doc = [f"### {cls.name}"]
         doc.append("")
@@ -817,7 +813,7 @@ print(f"Result: {{result}}")
 
         return doc
 
-    def _document_function(self, func: ast.FunctionDef, is_method: bool = False) -> List[str]:
+    def _document_function(self, func: ast.FunctionDef, is_method: bool = False) -> list[str]:
         """Document a function."""
         doc = []
 
@@ -862,7 +858,7 @@ print(f"Result: {{result}}")
 
         return doc
 
-    def _load_templates(self) -> Dict[str, str]:
+    def _load_templates(self) -> dict[str, str]:
         """Load documentation templates."""
         return {
             "readme": self.templates.get("readme", ""),

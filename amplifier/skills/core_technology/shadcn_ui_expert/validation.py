@@ -5,12 +5,11 @@ Comprehensive validation system for ShadCN/ui components with zero-hallucination
 Ensures production-ready code quality and best practices compliance.
 """
 
-import re
 import ast
-from typing import Dict, List, Any, Optional, Tuple, Union
+import re
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
+from typing import Any
 
 
 class ValidationSeverity(Enum):
@@ -41,11 +40,11 @@ class ValidationIssue:
     severity: ValidationSeverity
     category: ValidationCategory
     message: str
-    line_number: Optional[int] = None
-    column_number: Optional[int] = None
+    line_number: int | None = None
+    column_number: int | None = None
     rule_id: str = ""
     fix_suggestion: str = ""
-    automated_fix: Optional[str] = None
+    automated_fix: str | None = None
 
 
 @dataclass
@@ -53,11 +52,11 @@ class ValidationReport:
     """Comprehensive validation report for component analysis."""
 
     component_name: str
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     score: int  # 0-100 quality score
     is_production_ready: bool
-    recommendations: List[str]
-    fixes_applied: List[str]
+    recommendations: list[str]
+    fixes_applied: list[str]
 
 
 class ValidationEngine:
@@ -80,7 +79,7 @@ class ValidationEngine:
         self.security_rules = self._init_security_rules()
         self.performance_rules = self._init_performance_rules()
 
-    def _init_validation_rules(self) -> Dict[str, Dict[str, Any]]:
+    def _init_validation_rules(self) -> dict[str, dict[str, Any]]:
         """Initialize comprehensive validation rules."""
         return {
             "imports": {
@@ -125,7 +124,7 @@ class ValidationEngine:
             },
         }
 
-    def _init_shadcn_patterns(self) -> Dict[str, Any]:
+    def _init_shadcn_patterns(self) -> dict[str, Any]:
         """Initialize ShadCN/ui specific patterns."""
         return {
             "component_structure": {
@@ -146,7 +145,7 @@ class ValidationEngine:
             },
         }
 
-    def _init_security_rules(self) -> Dict[str, Any]:
+    def _init_security_rules(self) -> dict[str, Any]:
         """Initialize security validation rules."""
         return {
             "xss_prevention": {
@@ -166,7 +165,7 @@ class ValidationEngine:
             },
         }
 
-    def _init_performance_rules(self) -> Dict[str, Any]:
+    def _init_performance_rules(self) -> dict[str, Any]:
         """Initialize performance validation rules."""
         return {
             "render_optimization": {
@@ -247,7 +246,7 @@ class ValidationEngine:
             fixes_applied=fixes_applied,
         )
 
-    def _validate_syntax(self, code: str) -> List[ValidationIssue]:
+    def _validate_syntax(self, code: str) -> list[ValidationIssue]:
         """Validate JavaScript/TypeScript syntax."""
         issues = []
 
@@ -292,7 +291,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_imports(self, code: str, component_name: str) -> List[ValidationIssue]:
+    def _validate_imports(self, code: str, component_name: str) -> list[ValidationIssue]:
         """Validate import statements and dependencies."""
         issues = []
 
@@ -343,7 +342,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_typescript(self, code: str) -> List[ValidationIssue]:
+    def _validate_typescript(self, code: str) -> list[ValidationIssue]:
         """Validate TypeScript types and interfaces."""
         issues = []
 
@@ -378,7 +377,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_accessibility(self, code: str) -> List[ValidationIssue]:
+    def _validate_accessibility(self, code: str) -> list[ValidationIssue]:
         """Validate accessibility compliance."""
         issues = []
 
@@ -423,7 +422,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_performance(self, code: str) -> List[ValidationIssue]:
+    def _validate_performance(self, code: str) -> list[ValidationIssue]:
         """Validate performance implications."""
         issues = []
 
@@ -474,7 +473,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_security(self, code: str) -> List[ValidationIssue]:
+    def _validate_security(self, code: str) -> list[ValidationIssue]:
         """Validate security implications."""
         issues = []
 
@@ -506,7 +505,7 @@ class ValidationEngine:
 
         return issues
 
-    def _validate_best_practices(self, code: str, component_name: str) -> List[ValidationIssue]:
+    def _validate_best_practices(self, code: str, component_name: str) -> list[ValidationIssue]:
         """Validate ShadCN/ui best practices."""
         issues = []
 
@@ -561,7 +560,7 @@ class ValidationEngine:
         text_matches = re.findall(r">([^<\s][^<]*[^<\s])<", code)
         return len(text_matches) > 0
 
-    def _is_consecutive(self, indices: List[int]) -> bool:
+    def _is_consecutive(self, indices: list[int]) -> bool:
         """Check if list contains consecutive numbers."""
         if len(indices) <= 1:
             return True
@@ -572,7 +571,7 @@ class ValidationEngine:
                 return False
         return True
 
-    def _calculate_quality_score(self, issues: List[ValidationIssue]) -> int:
+    def _calculate_quality_score(self, issues: list[ValidationIssue]) -> int:
         """Calculate quality score based on validation issues."""
         if not issues:
             return 100
@@ -588,7 +587,7 @@ class ValidationEngine:
 
         return max(0, score)
 
-    def _generate_recommendations(self, issues: List[ValidationIssue]) -> List[str]:
+    def _generate_recommendations(self, issues: list[ValidationIssue]) -> list[str]:
         """Generate improvement recommendations based on issues."""
         recommendations = []
 
@@ -614,7 +613,7 @@ class ValidationEngine:
 
         return recommendations
 
-    def _is_production_ready(self, issues: List[ValidationIssue]) -> bool:
+    def _is_production_ready(self, issues: list[ValidationIssue]) -> bool:
         """Determine if component is production ready."""
         # Component is not production ready if it has any errors
         has_errors = any(issue.severity == ValidationSeverity.ERROR for issue in issues)
@@ -624,7 +623,7 @@ class ValidationEngine:
 
         return not has_errors and warning_count <= 5
 
-    def get_validation_summary(self, reports: List[ValidationReport]) -> Dict[str, Any]:
+    def get_validation_summary(self, reports: list[ValidationReport]) -> dict[str, Any]:
         """Get summary statistics for multiple validation reports."""
         if not reports:
             return {"total_components": 0, "average_score": 0, "production_ready": 0, "common_issues": []}
@@ -653,7 +652,7 @@ class ValidationEngine:
             "issue_categories": self._get_issue_categories(all_issues),
         }
 
-    def _get_issue_categories(self, issues: List[ValidationIssue]) -> Dict[str, int]:
+    def _get_issue_categories(self, issues: list[ValidationIssue]) -> dict[str, int]:
         """Count issues by category."""
         category_count = {}
         for issue in issues:

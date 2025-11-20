@@ -5,11 +5,11 @@ Optimizes documentation for agent consumption with minimal token usage.
 Implements multi-level compression while preserving information content.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
 import re
-import json
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from typing import Any
 
 from ..utils.token_utils import estimate_tokens
 
@@ -32,7 +32,7 @@ class CompressionRule:
     replacement: str
     priority: int = 1
     token_savings: int = 0
-    applies_to: List[DisclosureLevel] = field(default_factory=lambda: list(DisclosureLevel))
+    applies_to: list[DisclosureLevel] = field(default_factory=lambda: list(DisclosureLevel))
 
 
 @dataclass
@@ -44,9 +44,9 @@ class FormattedContent:
     original_tokens: int
     compressed_tokens: int
     compression_ratio: float
-    applied_rules: List[str] = field(default_factory=list)
+    applied_rules: list[str] = field(default_factory=list)
     next_level_available: bool = True
-    expansion_points: List[str] = field(default_factory=list)
+    expansion_points: list[str] = field(default_factory=list)
 
 
 class ProgressiveFormatter:
@@ -56,7 +56,7 @@ class ProgressiveFormatter:
         self.compression_rules = self._initialize_compression_rules()
         self.format_patterns = self._initialize_format_patterns()
 
-    def _initialize_compression_rules(self) -> List[CompressionRule]:
+    def _initialize_compression_rules(self) -> list[CompressionRule]:
         """Initialize rules for content compression."""
         return [
             # Metadata level rules
@@ -115,7 +115,7 @@ class ProgressiveFormatter:
             ),
         ]
 
-    def _initialize_format_patterns(self) -> Dict[str, str]:
+    def _initialize_format_patterns(self) -> dict[str, str]:
         """Initialize formatting patterns for different content types."""
         return {
             "skill_name": r"^# (.+)$",
@@ -129,7 +129,7 @@ class ProgressiveFormatter:
         }
 
     def format_content(
-        self, content: str, level: DisclosureLevel, context: Optional[Dict[str, Any]] = None
+        self, content: str, level: DisclosureLevel, context: dict[str, Any] | None = None
     ) -> FormattedContent:
         """Format content for the specified disclosure level."""
 
@@ -170,12 +170,12 @@ class ProgressiveFormatter:
 
         if level == DisclosureLevel.METADATA:
             return self._format_metadata(content)
-        elif level == DisclosureLevel.SUMMARY:
+        if level == DisclosureLevel.SUMMARY:
             return self._format_summary(content)
-        elif level == DisclosureLevel.DETAILED:
+        if level == DisclosureLevel.DETAILED:
             return self._format_detailed(content)
-        else:  # FULL
-            return self._format_full(content)
+        # FULL
+        return self._format_full(content)
 
     def _format_metadata(self, content: str) -> str:
         """Format for metadata level - essential info only."""
@@ -185,11 +185,12 @@ class ProgressiveFormatter:
 
         # Keep skill name and basic description
         for line in lines:
-            if re.match(r"^# .+", line):  # Skill name
-                essential_lines.append(line)
-            elif "**Purpose**:" in line or "**Category**:" in line:
-                essential_lines.append(line)
-            elif line.strip().startswith("**Tags**:"):
+            if (
+                re.match(r"^# .+", line)
+                or "**Purpose**:" in line
+                or "**Category**:" in line
+                or line.strip().startswith("**Tags**:")
+            ):  # Skill name
                 essential_lines.append(line)
 
         # Compress tags
@@ -257,8 +258,7 @@ class ProgressiveFormatter:
 
         if callable(rule.replacement):
             return re.sub(rule.pattern, rule.replacement, content, flags=re.DOTALL)
-        else:
-            return re.sub(rule.pattern, rule.replacement, content, flags=re.DOTALL)
+        return re.sub(rule.pattern, rule.replacement, content, flags=re.DOTALL)
 
     def _section_compressor(self, match) -> str:
         """Compress section content while preserving key info."""
@@ -276,8 +276,7 @@ class ProgressiveFormatter:
 
         if key_lines:
             return f"\n### {section_title}\n" + "\n".join(key_lines[:3])
-        else:
-            return f"\n### {section_title}\n{section_content[:100]}..."
+        return f"\n### {section_title}\n{section_content[:100]}..."
 
     def _code_optimizer(self, match) -> str:
         """Optimize code blocks for token efficiency."""
@@ -309,7 +308,7 @@ class ProgressiveFormatter:
 
         return match.group(0)
 
-    def _extract_sections(self, content: str) -> Dict[str, str]:
+    def _extract_sections(self, content: str) -> dict[str, str]:
         """Extract sections from documentation content."""
         sections = {}
         current_section = "intro"
@@ -349,10 +348,7 @@ class ProgressiveFormatter:
 
             stripped = line.strip()
             if stripped:
-                if stripped.startswith("-") or stripped.startswith("**"):
-                    summarized_lines.append(line)
-                    item_count += 1
-                elif len(stripped) < 80:  # Short descriptive lines
+                if stripped.startswith("-") or stripped.startswith("**") or len(stripped) < 80:
                     summarized_lines.append(line)
                     item_count += 1
 
@@ -389,7 +385,7 @@ class ProgressiveFormatter:
 
         return content.strip()
 
-    def _identify_expansion_points(self, content: str, level: DisclosureLevel) -> List[str]:
+    def _identify_expansion_points(self, content: str, level: DisclosureLevel) -> list[str]:
         """Identify points where content can be expanded for next level."""
 
         expansion_points = []
@@ -418,7 +414,7 @@ class ProgressiveFormatter:
         return expansion_points
 
     def expand_content(
-        self, content: FormattedContent, expansion_points: List[str], next_level_content: Optional[str] = None
+        self, content: FormattedContent, expansion_points: list[str], next_level_content: str | None = None
     ) -> FormattedContent:
         """Expand content to include specified expansion points."""
 
@@ -456,7 +452,7 @@ class ProgressiveFormatter:
             expansion_points=[],  # Expanded points are now included
         )
 
-    def get_content_summary(self, content: FormattedContent) -> Dict[str, Any]:
+    def get_content_summary(self, content: FormattedContent) -> dict[str, Any]:
         """Get a summary of the formatted content for indexing."""
 
         return {
@@ -468,7 +464,7 @@ class ProgressiveFormatter:
             "complexity": self._assess_complexity(content.content),
         }
 
-    def _extract_key_topics(self, content: str) -> List[str]:
+    def _extract_key_topics(self, content: str) -> list[str]:
         """Extract key topics from content for indexing."""
         topics = []
 
@@ -493,7 +489,6 @@ class ProgressiveFormatter:
 
         if code_blocks > 5 or sections > 8 or length > 2000:
             return "high"
-        elif code_blocks > 2 or sections > 4 or length > 800:
+        if code_blocks > 2 or sections > 4 or length > 800:
             return "medium"
-        else:
-            return "low"
+        return "low"

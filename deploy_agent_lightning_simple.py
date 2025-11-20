@@ -6,15 +6,13 @@ Direct deployment without complex dependencies for immediate activation.
 """
 
 import asyncio
-import json
 import logging
 import sys
-import time
+from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple
-from dataclasses import dataclass, asdict
 from enum import Enum
+from pathlib import Path
+from typing import Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -53,7 +51,7 @@ class AgentLightningFrontendMonitor:
 
     def __init__(self, frontend_skills_dir: Path = None):
         self.frontend_skills_dir = frontend_skills_dir or Path("scenarios/industrial_agents/frontend_assistant")
-        self.skill_metrics: Dict[str, SkillMetrics] = {}
+        self.skill_metrics: dict[str, SkillMetrics] = {}
         self._running = False
 
     async def start(self):
@@ -150,7 +148,7 @@ class AgentLightningFrontendMonitor:
         except Exception:
             return FrontendTechnology.REACT_19
 
-    def get_status_report(self) -> Dict[str, Any]:
+    def get_status_report(self) -> dict[str, Any]:
         """Get comprehensive status report"""
         if not self.skill_metrics:
             return {"status": "No skills monitored"}
@@ -214,15 +212,15 @@ async def deploy_agent_lightning_frontend():
             f"   🔍 Zero-hallucination: {'ENFORCED' if report['zero_hallucination_enforced'] else 'NEEDS_ATTENTION'}"
         )
 
-        logger.info(f"\n🎯 TECHNOLOGY BREAKDOWN:")
+        logger.info("\n🎯 TECHNOLOGY BREAKDOWN:")
         for tech, count in report["technology_distribution"].items():
             logger.info(f"   {tech}: {count} skills")
 
-        logger.info(f"\n📈 PERFORMANCE GRADES:")
+        logger.info("\n📈 PERFORMANCE GRADES:")
         for grade, count in report["grade_distribution"].items():
             logger.info(f"   Grade {grade}: {count} skills")
 
-        logger.info(f"\n🚀 AGENT LIGHTNING FEATURES ACTIVE:")
+        logger.info("\n🚀 AGENT LIGHTNING FEATURES ACTIVE:")
         logger.info("   ✅ Real-time monitoring and error detection")
         logger.info("   ✅ Zero-hallucination enforcement (99% accuracy)")
         logger.info("   ✅ Performance optimization (5-10x improvement)")
@@ -230,14 +228,14 @@ async def deploy_agent_lightning_frontend():
         logger.info("   ✅ Automated fixes for common issues")
         logger.info("   ✅ React 19, TypeScript, and Vite specialization")
 
-        logger.info(f"\n🛡️ ZERO-HALLUCINATION VALIDATION:")
+        logger.info("\n🛡️ ZERO-HALLUCINATION VALIDATION:")
         logger.info("   ✅ Multi-layer validation system")
         logger.info("   ✅ API reference verification")
         logger.info("   ✅ TypeScript type checking")
         logger.info("   ✅ React 19 pattern validation")
         logger.info("   ✅ Real-time hallucination detection")
 
-        logger.info(f"\n⚡ CONTINUOUS OPTIMIZATION:")
+        logger.info("\n⚡ CONTINUOUS OPTIMIZATION:")
         logger.info("   ✅ APO (Algorithmic Performance Optimization)")
         logger.info("   ✅ GPU acceleration ready")
         logger.info("   ✅ Multi-objective optimization")
@@ -257,12 +255,12 @@ async def main():
         report = await deploy_agent_lightning_frontend()
 
         if report["total_skills_monitored"] > 0:
-            logger.info(f"\n🎉 DEPLOYMENT SUCCESSFUL")
+            logger.info("\n🎉 DEPLOYMENT SUCCESSFUL")
             logger.info(f"Agent Lightning is actively optimizing {report['total_skills_monitored']} frontend skills")
-            logger.info(f"System is operational and continuously monitoring for improvements")
+            logger.info("System is operational and continuously monitoring for improvements")
         else:
-            logger.warning(f"\n⚠️ DEPLOYMENT COMPLETE - NO SKILLS FOUND")
-            logger.info(f"Agent Lightning is ready and waiting for frontend skills to monitor")
+            logger.warning("\n⚠️ DEPLOYMENT COMPLETE - NO SKILLS FOUND")
+            logger.info("Agent Lightning is ready and waiting for frontend skills to monitor")
 
     except KeyboardInterrupt:
         logger.info("\n🛑 Deployment interrupted by user")

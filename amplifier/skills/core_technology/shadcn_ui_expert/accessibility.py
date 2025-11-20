@@ -6,9 +6,9 @@ Ensures WCAG 2.1 AA compliance with proper ARIA attributes and keyboard navigati
 """
 
 import re
-from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 
 class WCAGLevel(Enum):
@@ -64,9 +64,9 @@ class AccessibilityIssue:
     description: str
     wcag_criterion: str  # e.g., "1.1.1 Non-text Content"
     component: str
-    line_number: Optional[int] = None
+    line_number: int | None = None
     fix_suggestion: str = ""
-    automated_fix: Optional[str] = None
+    automated_fix: str | None = None
 
 
 @dataclass
@@ -105,7 +105,7 @@ class AccessibilityExpert:
         self.aria_patterns = self._init_aria_patterns()
         self.test_cases = self._init_test_cases()
 
-    def _init_wcag_guidelines(self) -> Dict[str, Any]:
+    def _init_wcag_guidelines(self) -> dict[str, Any]:
         """Initialize WCAG 2.1 guidelines."""
         return {
             "1.1.1": {
@@ -218,7 +218,7 @@ class AccessibilityExpert:
             },
         }
 
-    def _init_color_contrast_ratios(self) -> Dict[str, float]:
+    def _init_color_contrast_ratios(self) -> dict[str, float]:
         """Initialize required color contrast ratios."""
         return {
             "AA_normal": 4.5,
@@ -228,7 +228,7 @@ class AccessibilityExpert:
             "AA_graphical": 3.0,
         }
 
-    def _init_keyboard_patterns(self) -> Dict[str, List[str]]:
+    def _init_keyboard_patterns(self) -> dict[str, list[str]]:
         """Initialize keyboard interaction patterns."""
         return {
             "button": ["Enter", "Space"],
@@ -245,7 +245,7 @@ class AccessibilityExpert:
             "grid": ["Arrow keys", "Tab", "Enter", "Space"],
         }
 
-    def _init_aria_patterns(self) -> Dict[str, Dict[str, Any]]:
+    def _init_aria_patterns(self) -> dict[str, dict[str, Any]]:
         """Initialize ARIA attribute patterns."""
         return {
             "required": {
@@ -286,7 +286,7 @@ class AccessibilityExpert:
             "modal": {"attributes": ["aria-modal"], "description": "For modal dialogs", "values": ["true", "false"]},
         }
 
-    def _init_test_cases(self) -> Dict[str, List[Dict[str, Any]]]:
+    def _init_test_cases(self) -> dict[str, list[dict[str, Any]]]:
         """Initialize accessibility test cases."""
         return {
             "button": [
@@ -377,7 +377,7 @@ class AccessibilityExpert:
 
         return max(0, min(100, score))
 
-    def validate_wcag_compliance(self, code: str) -> List[AccessibilityIssue]:
+    def validate_wcag_compliance(self, code: str) -> list[AccessibilityIssue]:
         """
         Validate WCAG 2.1 AA compliance for component code.
 
@@ -486,7 +486,7 @@ class AccessibilityExpert:
 
     def generate_accessibility_markup(
         self, component_code: str, compliance_level: WCAGLevel = WCAGLevel.AA
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate accessibility markup for a component.
 
@@ -548,7 +548,7 @@ class AccessibilityExpert:
 
         return False
 
-    def get_keyboard_navigation_guide(self) -> Dict[str, Any]:
+    def get_keyboard_navigation_guide(self) -> dict[str, Any]:
         """Get comprehensive keyboard navigation guide."""
         return {
             "patterns": self.keyboard_patterns,
@@ -576,7 +576,7 @@ class AccessibilityExpert:
             ],
         }
 
-    def get_screen_reader_guide(self) -> Dict[str, Any]:
+    def get_screen_reader_guide(self) -> dict[str, Any]:
         """Get screen reader compatibility guide."""
         return {
             "requirements": [
@@ -609,7 +609,7 @@ class AccessibilityExpert:
             ],
         }
 
-    def get_color_contrast_requirements(self) -> Dict[str, Any]:
+    def get_color_contrast_requirements(self) -> dict[str, Any]:
         """Get color contrast requirements and guidelines."""
         return {
             "wcag_aa": {"normal_text": 4.5, "large_text": 3.0, "graphical_objects": 3.0},
@@ -633,7 +633,7 @@ class AccessibilityExpert:
             ],
         }
 
-    def get_accessibility_checklist(self) -> Dict[str, List[str]]:
+    def get_accessibility_checklist(self) -> dict[str, list[str]]:
         """Get comprehensive accessibility checklist."""
         return {
             "structural": [

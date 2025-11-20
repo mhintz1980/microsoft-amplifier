@@ -15,22 +15,22 @@ Features:
 - Learning-based pattern improvement
 """
 
-import asyncio
-import json
 import uuid
-from datetime import datetime, timedelta
-from enum import Enum
-from typing import Dict, List, Optional, Set, Tuple, Any, Union, Callable
-from dataclasses import dataclass, field
 from collections import defaultdict
-import networkx as nx
-from pathlib import Path
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from typing import Any
 
-from ..skill_base import Skill, SkillContext, SkillResult, SkillRegistry
+import networkx as nx
+
 from ...mcp.persistent_storage import MCPStorageManager
-from ...utils.performance_monitor import PerformanceMonitor
-from ...sdk_enhancements.context_optimizer import ContextOptimizer
-from ...agents.coordination_system import AgentCoordinator
+from ..skill_base import Skill
+from ..skill_base import SkillContext
+from ..skill_base import SkillRegistry
+from ..skill_base import SkillResult
 
 
 class IntegrationPatternType(Enum):
@@ -77,8 +77,8 @@ class SkillDependency:
 
     skill_id: str
     dependency_type: str  # "data", "control", "resource"
-    required_output: Optional[str] = None
-    version_constraint: Optional[str] = None
+    required_output: str | None = None
+    version_constraint: str | None = None
     optional: bool = False
 
 
@@ -91,7 +91,7 @@ class SkillConflict:
     skill_2: str
     description: str
     severity: str  # "low", "medium", "high", "critical"
-    resolution_strategy: Optional[str] = None
+    resolution_strategy: str | None = None
 
 
 @dataclass
@@ -102,11 +102,11 @@ class IntegrationPattern:
     name: str
     description: str
     pattern_type: IntegrationPatternType
-    skill_ids: List[str]
-    execution_plan: Dict[str, Any]
-    dependencies: List[SkillDependency]
-    conflicts: List[SkillConflict] = field(default_factory=list)
-    performance_metrics: Dict[str, float] = field(default_factory=dict)
+    skill_ids: list[str]
+    execution_plan: dict[str, Any]
+    dependencies: list[SkillDependency]
+    conflicts: list[SkillConflict] = field(default_factory=list)
+    performance_metrics: dict[str, float] = field(default_factory=dict)
     success_rate: float = 1.0
     usage_count: int = 0
     created_at: datetime = field(default_factory=datetime.now)
@@ -120,13 +120,13 @@ class SkillWorkflow:
     id: str
     name: str
     description: str
-    pattern_ids: List[str]
-    skills: Dict[str, Skill]
+    pattern_ids: list[str]
+    skills: dict[str, Skill]
     execution_graph: nx.DiGraph
-    context_requirements: Dict[str, Any]
-    expected_outputs: List[str]
+    context_requirements: dict[str, Any]
+    expected_outputs: list[str]
     estimated_duration: timedelta
-    cost_estimate: Dict[str, float]
+    cost_estimate: dict[str, float]
 
 
 class PatternMatcher:
@@ -136,7 +136,7 @@ class PatternMatcher:
         self.pattern_cache = {}
         self.performance_cache = {}
 
-    async def match_pattern(self, skill_ids: List[str]) -> List[IntegrationPattern]:
+    async def match_pattern(self, skill_ids: list[str]) -> list[IntegrationPattern]:
         """Find matching integration patterns for given skills."""
         # Create skill signature for caching
         signature = tuple(sorted(skill_ids))
@@ -152,7 +152,7 @@ class PatternMatcher:
 
         return patterns
 
-    async def _find_matching_patterns(self, skill_ids: List[str]) -> List[IntegrationPattern]:
+    async def _find_matching_patterns(self, skill_ids: list[str]) -> list[IntegrationPattern]:
         """Internal pattern matching implementation."""
         # This would be implemented with actual pattern matching logic
         # For now, return empty list
@@ -166,7 +166,7 @@ class DependencyResolver:
         self.skill_registry = skill_registry
         self.dependency_graph = nx.DiGraph()
 
-    async def resolve_dependencies(self, skill_ids: List[str]) -> Tuple[List[SkillDependency], List[SkillConflict]]:
+    async def resolve_dependencies(self, skill_ids: list[str]) -> tuple[list[SkillDependency], list[SkillConflict]]:
         """Resolve all dependencies and detect conflicts."""
         dependencies = []
         conflicts = []
@@ -202,7 +202,7 @@ class DependencyResolver:
 
         return dependencies, conflicts
 
-    async def _build_dependency_graph(self, skill_ids: List[str]) -> None:
+    async def _build_dependency_graph(self, skill_ids: list[str]) -> None:
         """Build the dependency graph for skills."""
         self.dependency_graph.clear()
 
@@ -231,7 +231,7 @@ class ConflictManager:
             ConflictType.SIDE_EFFECT_CONFLICT: self._resolve_side_effect_conflict,
         }
 
-    async def detect_conflicts(self, skills: Dict[str, Skill]) -> List[SkillConflict]:
+    async def detect_conflicts(self, skills: dict[str, Skill]) -> list[SkillConflict]:
         """Detect all potential conflicts between skills."""
         conflicts = []
         skill_list = list(skills.values())
@@ -243,7 +243,7 @@ class ConflictManager:
 
         return conflicts
 
-    async def _check_skill_conflicts(self, skill_1: Skill, skill_2: Skill) -> List[SkillConflict]:
+    async def _check_skill_conflicts(self, skill_1: Skill, skill_2: Skill) -> list[SkillConflict]:
         """Check conflicts between two specific skills."""
         conflicts = []
 
@@ -273,7 +273,7 @@ class ConflictManager:
 
         return conflicts
 
-    async def resolve_conflicts(self, conflicts: List[SkillConflict]) -> List[SkillConflict]:
+    async def resolve_conflicts(self, conflicts: list[SkillConflict]) -> list[SkillConflict]:
         """Attempt to resolve detected conflicts."""
         resolved_conflicts = []
 
@@ -287,31 +287,31 @@ class ConflictManager:
 
         return resolved_conflicts
 
-    async def _resolve_resource_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_resource_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve resource conflicts through scheduling or serialization."""
         return "sequential_execution"
 
-    async def _resolve_data_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_data_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve data format conflicts through transformation."""
         return "add_transform_adapter"
 
-    async def _resolve_dependency_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_dependency_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve dependency conflicts through restructuring."""
         return "restructure_workflow"
 
-    async def _resolve_sequence_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_sequence_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve sequence conflicts through reordering."""
         return "reorder_execution"
 
-    async def _resolve_context_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_context_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve context conflicts through isolation."""
         return "context_isolation"
 
-    async def _resolve_output_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_output_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve output conflicts through merging."""
         return "output_merging"
 
-    async def _resolve_side_effect_conflict(self, conflict: SkillConflict) -> Optional[str]:
+    async def _resolve_side_effect_conflict(self, conflict: SkillConflict) -> str | None:
         """Resolve side effect conflicts through compensation."""
         return "compensation_actions"
 
@@ -371,7 +371,7 @@ class LearningSystem:
         self.storage = storage_manager
         self.performance_history = defaultdict(list)
 
-    async def record_execution(self, pattern_id: str, execution_metrics: Dict[str, Any]) -> None:
+    async def record_execution(self, pattern_id: str, execution_metrics: dict[str, Any]) -> None:
         """Record pattern execution metrics for learning."""
         self.performance_history[pattern_id].append({"timestamp": datetime.now(), "metrics": execution_metrics})
 
@@ -380,7 +380,7 @@ class LearningSystem:
             key=f"pattern_execution/{pattern_id}/{datetime.now().timestamp()}", data=execution_metrics
         )
 
-    async def improve_patterns(self) -> Dict[str, Any]:
+    async def improve_patterns(self) -> dict[str, Any]:
         """Analyze performance history and suggest improvements."""
         improvements = {}
 
@@ -392,7 +392,7 @@ class LearningSystem:
 
         return improvements
 
-    async def _analyze_pattern_performance(self, pattern_id: str, history: List[Dict]) -> Optional[Dict]:
+    async def _analyze_pattern_performance(self, pattern_id: str, history: list[dict]) -> dict | None:
         """Analyze performance history for a pattern."""
         # Calculate performance trends
         durations = [h["metrics"].get("duration", 0) for h in history]
@@ -498,7 +498,7 @@ class SkillIntegrationPatternsSpecialist(Skill):
         except Exception as e:
             return SkillResult(success=False, message=f"Integration analysis failed: {str(e)}", error=str(e))
 
-    async def _analyze_skill_integration(self, skill_ids: List[str], context: SkillContext) -> Dict[str, Any]:
+    async def _analyze_skill_integration(self, skill_ids: list[str], context: SkillContext) -> dict[str, Any]:
         """Analyze skill integration patterns and requirements."""
         # Get skills from registry
         skills = {}
@@ -530,7 +530,7 @@ class SkillIntegrationPatternsSpecialist(Skill):
             "optimization_opportunities": await self._identify_optimization_opportunities(skills),
         }
 
-    async def _generate_optimized_workflow(self, skill_ids: List[str], context: SkillContext) -> Dict[str, Any]:
+    async def _generate_optimized_workflow(self, skill_ids: list[str], context: SkillContext) -> dict[str, Any]:
         """Generate an optimized execution workflow."""
         # Create basic workflow
         workflow_id = str(uuid.uuid4())
@@ -557,7 +557,7 @@ class SkillIntegrationPatternsSpecialist(Skill):
             "cost_estimate": optimized_workflow.cost_estimate,
         }
 
-    async def _identify_optimization_opportunities(self, skills: Dict[str, Skill]) -> List[str]:
+    async def _identify_optimization_opportunities(self, skills: dict[str, Skill]) -> list[str]:
         """Identify potential optimization opportunities."""
         opportunities = []
 
@@ -579,7 +579,7 @@ class SkillIntegrationPatternsSpecialist(Skill):
 
         return opportunities
 
-    def _create_execution_plan(self, workflow: SkillWorkflow) -> Dict[str, Any]:
+    def _create_execution_plan(self, workflow: SkillWorkflow) -> dict[str, Any]:
         """Create detailed execution plan from workflow."""
         return {
             "steps": list(workflow.execution_graph.nodes()),
@@ -588,12 +588,12 @@ class SkillIntegrationPatternsSpecialist(Skill):
             "critical_path": self._find_critical_path(workflow.execution_graph),
         }
 
-    def _identify_parallel_groups(self, graph: nx.DiGraph) -> List[List[str]]:
+    def _identify_parallel_groups(self, graph: nx.DiGraph) -> list[list[str]]:
         """Identify groups of skills that can execute in parallel."""
         # Simplified implementation - would use topological analysis
         return [list(graph.nodes())]
 
-    def _find_critical_path(self, graph: nx.DiGraph) -> List[str]:
+    def _find_critical_path(self, graph: nx.DiGraph) -> list[str]:
         """Find the critical path in the execution graph."""
         # Simplified implementation - would use longest path algorithm
         return list(graph.nodes())

@@ -1,0 +1,7 @@
+{
+  "session_type": "session_end_fallback",
+  "timestamp": "2025-11-19T17:25:40.475885",
+  "summary": "Session ended with context usage: 49% (97k/200k tokens)",
+  "techniques_count": 6,
+  "files_created": 3
+}

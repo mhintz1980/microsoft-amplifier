@@ -7,14 +7,15 @@ Follows zero-hallucination principles with tested, production-ready patterns.
 """
 
 import json
-import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillLevel, SkillResult
-from ...utils.token_utils import count_tokens, estimate_tokens
+from ..utils.token_utils import estimate_tokens
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 
 
 @dataclass
@@ -23,9 +24,9 @@ class ViteConfig:
 
     config_path: str
     content: str
-    framework: Optional[str] = None
-    plugins: List[str] = None
-    optimizations: List[str] = None
+    framework: str | None = None
+    plugins: list[str] = None
+    optimizations: list[str] = None
 
 
 @dataclass
@@ -40,6 +41,33 @@ class BuildMetrics:
 
 
 class ViteExpertSkill(BaseSkill):
+
+    def __init__(self):
+        super().__init__(
+            skill_id="vite_expert",
+            name="Vite Expert",
+            description="Expert skill for Vite build tool and development server"
+        )
+        self._performance_cache: dict[str, BuildMetrics] = {}
+        self._config_patterns = self._load_config_patterns()
+        self._plugin_ecosystem = self._load_plugin_ecosystem()
+
+        # Required attributes for skill registration
+        self.tags = ["vite", "build-tools", "frontend", "development"]
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "viteexpert expertise",
+            "Best practices",
+            "Production solutions"
+        ]
+
+    
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        return isinstance(input_data, str) and len(input_data.strip()) > 0
+
+    
     """
     Comprehensive Vite expertise skill providing:
 
@@ -58,30 +86,9 @@ class ViteExpertSkill(BaseSkill):
     - Build optimizations production-tested
     """
 
-    def __init__(self):
-        super().__init__()
-        self._performance_cache: Dict[str, BuildMetrics] = {}
-        self._config_patterns = self._load_config_patterns()
-        self._plugin_ecosystem = self._load_plugin_ecosystem()
 
-    @property
-    def description(self) -> str:
-        return "Advanced Vite build tool expertise with configuration optimization, plugin development, and performance tuning"
 
-    @property
-    def tags(self) -> List[str]:
-        return [
-            "vite",
-            "build-tools",
-            "frontend",
-            "bundle",
-            "optimization",
-            "configuration",
-            "plugins",
-            "performance",
-            "esm",
-            "hmr",
-        ]
+
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the Vite-related query."""
@@ -133,7 +140,7 @@ class ViteExpertSkill(BaseSkill):
 
         return 0.1
 
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
+    async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
         """Execute the Vite skill at the specified disclosure level."""
         start_time = time.time()
 
@@ -148,25 +155,13 @@ class ViteExpertSkill(BaseSkill):
             execution_time = time.time() - start_time
             tokens_used = estimate_tokens(content)
 
-            return SkillResult(
-                skill_name=self.skill_name,
-                level=level,
-                content=content,
-                tokens_used=tokens_used,
-                execution_time=execution_time,
-                metadata={
-                    "query_type": self._classify_query(context.query),
-                    "has_config_files": self._detect_vite_files(),
-                    "framework_detected": self._detect_framework(),
-                },
-            )
+            return SkillResult(success=True, data=content, execution_time=execution_time, tokens_used=estimate_tokens(content))
 
         except Exception as e:
             execution_time = time.time() - start_time
             return SkillResult(
-                skill_name=self.skill_name,
-                level=level,
-                content=f"Error executing Vite skill: {str(e)}",
+                success=False,
+                data=None,
                 tokens_used=estimate_tokens(f"Error executing Vite skill: {str(e)}"),
                 execution_time=execution_time,
                 metadata={"error": str(e)},
@@ -184,14 +179,13 @@ Specialization: Zero-hallucination Vite patterns with production-tested optimiza
 
         if query_type == "configuration":
             return self._get_config_summary()
-        elif query_type == "optimization":
+        if query_type == "optimization":
             return self._get_optimization_summary()
-        elif query_type == "plugins":
+        if query_type == "plugins":
             return self._get_plugin_summary()
-        elif query_type == "performance":
+        if query_type == "performance":
             return self._get_performance_summary()
-        else:
-            return self._get_general_summary()
+        return self._get_general_summary()
 
     def _get_full_content(self, context: SkillContext) -> str:
         """Get comprehensive content for Vite expertise."""
@@ -199,16 +193,15 @@ Specialization: Zero-hallucination Vite patterns with production-tested optimiza
 
         if query_type == "configuration":
             return self._get_config_full_content(context)
-        elif query_type == "optimization":
+        if query_type == "optimization":
             return self._get_optimization_full_content()
-        elif query_type == "plugins":
+        if query_type == "plugins":
             return self._get_plugin_full_content()
-        elif query_type == "performance":
+        if query_type == "performance":
             return self._get_performance_full_content()
-        elif query_type == "troubleshooting":
+        if query_type == "troubleshooting":
             return self._get_troubleshooting_full_content()
-        else:
-            return self._get_comprehensive_guide()
+        return self._get_comprehensive_guide()
 
     def _classify_query(self, query: str) -> str:
         """Classify the type of Vite query."""
@@ -216,16 +209,15 @@ Specialization: Zero-hallucination Vite patterns with production-tested optimiza
 
         if any(term in query_lower for term in ["config", "configuration", "vite.config"]):
             return "configuration"
-        elif any(term in query_lower for term in ["optimization", "optimize", "bundle size", "performance"]):
+        if any(term in query_lower for term in ["optimization", "optimize", "bundle size", "performance"]):
             return "optimization"
-        elif any(term in query_lower for term in ["plugin", "plugins", "plugin development"]):
+        if any(term in query_lower for term in ["plugin", "plugins", "plugin development"]):
             return "plugins"
-        elif any(term in query_lower for term in ["performance", "build time", "slow", "fast"]):
+        if any(term in query_lower for term in ["performance", "build time", "slow", "fast"]):
             return "performance"
-        elif any(term in query_lower for term in ["error", "issue", "problem", "troubleshoot"]):
+        if any(term in query_lower for term in ["error", "issue", "problem", "troubleshoot"]):
             return "troubleshooting"
-        else:
-            return "general"
+        return "general"
 
     def _detect_vite_files(self) -> bool:
         """Detect if Vite configuration files exist in current project."""
@@ -242,7 +234,7 @@ Specialization: Zero-hallucination Vite patterns with production-tested optimiza
                 return True
         return False
 
-    def _detect_framework(self) -> Optional[str]:
+    def _detect_framework(self) -> str | None:
         """Detect which frontend framework is being used."""
         package_json_path = Path.cwd() / "package.json"
 
@@ -250,19 +242,19 @@ Specialization: Zero-hallucination Vite patterns with production-tested optimiza
             return None
 
         try:
-            with open(package_json_path, "r") as f:
+            with open(package_json_path) as f:
                 package_json = json.load(f)
                 deps = {**package_json.get("dependencies", {}), **package_json.get("devDependencies", {})}
 
                 if "react" in deps:
                     return "react"
-                elif "vue" in deps:
+                if "vue" in deps:
                     return "vue"
-                elif "svelte" in deps:
+                if "svelte" in deps:
                     return "svelte"
-                elif "solid-js" in deps:
+                if "solid-js" in deps:
                     return "solid"
-                elif "preact" in deps:
+                if "preact" in deps:
                     return "preact"
 
         except Exception:
@@ -2623,11 +2615,11 @@ analyzer.loadBundleData('./dist')
 
 const analysis = analyzer.analyzePerformance()
 
-console.log('📊 Bundle Analysis Results:')
+console.log(' Bundle Analysis Results:')
 console.log(`Score: ${analysis.score}/100`)
-console.log('\\n❌ Issues:')
+console.log('\\n Issues:')
 analysis.issues.forEach(issue => console.log(`  - ${issue}`))
-console.log('\\n💡 Recommendations:')
+console.log('\\n Recommendations:')
 analysis.recommendations.forEach(rec => console.log(`  - ${rec}`))
 
 process.exit(analysis.score >= 80 ? 0 : 1)
@@ -3399,7 +3391,7 @@ export class BuildMonitor {
 
     // Alert on performance degradation
     if (name === 'build-time' && value > 10000) { // 10 seconds
-      console.warn(`⚠️ Build time exceeded 10s: ${value}ms`)
+      console.warn(` Build time exceeded 10s: ${value}ms`)
     }
   }
 
@@ -3423,7 +3415,7 @@ export default defineConfig({
         const buildTime = Date.now() - monitor.metrics.get('build-start')![0]
         monitor.recordMetric('build-time', buildTime)
 
-        console.log(`📊 Build completed in ${buildTime}ms`)
+        console.log(` Build completed in ${buildTime}ms`)
       }
     }
   ]
@@ -3434,11 +3426,11 @@ export default defineConfig({
         """Get comprehensive Vite guide covering all aspects."""
         return """# Comprehensive Vite Expert Guide
 
-## 🚀 Vite Mastery Overview
+##  Vite Mastery Overview
 
 Vite is a modern build tool that provides lightning-fast development experiences through native ES modules and optimized production builds. This guide covers everything from basic setup to advanced optimization techniques.
 
-## 🏗️ Core Architecture
+##  Core Architecture
 
 ### 1. Development Server
 - **Native ES Modules**: No bundling during development
@@ -3458,7 +3450,7 @@ Vite is a modern build tool that provides lightning-fast development experiences
 - **Development Tools**: Hot reload, error overlay, source maps
 - **Production Optimizations**: Compression, minification, bundling
 
-## ⚙️ Configuration Deep Dive
+##  Configuration Deep Dive
 
 ### Essential Configuration Structure
 ```typescript
@@ -3511,7 +3503,7 @@ export default defineConfig({
 })
 ```
 
-## 🎯 Framework Integration
+##  Framework Integration
 
 ### React Setup
 ```typescript
@@ -3575,7 +3567,7 @@ export default defineConfig({
 })
 ```
 
-## 🚀 Performance Optimization
+##  Performance Optimization
 
 ### Development Performance
 - **HMR Optimization**: Fastest possible hot reload
@@ -3595,7 +3587,7 @@ export default defineConfig({
 - **Dependency Caching**: Persistent optimization cache
 - **Source Map Generation**: Optimized for production
 
-## 🔌 Plugin Development
+##  Plugin Development
 
 ### Plugin Structure
 ```typescript
@@ -3632,7 +3624,7 @@ export function myPlugin(options = {}): Plugin {
 - **Virtual Modules**: Generated content on demand
 - **Build Analysis**: Performance and size analysis
 
-## 📊 Monitoring and Analysis
+##  Monitoring and Analysis
 
 ### Bundle Analysis
 ```typescript
@@ -3678,7 +3670,7 @@ export default defineConfig({
 })
 ```
 
-## 🏗️ Production Deployment
+##  Production Deployment
 
 ### Build Optimization
 ```typescript
@@ -3706,7 +3698,7 @@ export default defineConfig({
 - **Container Deployment**: Docker, Kubernetes
 - **Server-Side Rendering**: Next.js, Nuxt.js
 
-## 🔧 Advanced Techniques
+##  Advanced Techniques
 
 ### Custom Resolvers
 ```typescript
@@ -3736,19 +3728,19 @@ export default defineConfig(({ mode }) => {
 })
 ```
 
-## 📚 Best Practices
+##  Best Practices
 
 ### 1. Project Structure
 ```
 src/
-├── assets/         # Static assets
-├── components/     # Reusable components
-├── pages/          # Route components
-├── hooks/          # Custom hooks
-├── utils/          # Utility functions
-├── styles/         # Global styles
-├── types/          # TypeScript types
-└── main.tsx        # Application entry
+ assets/         # Static assets
+ components/     # Reusable components
+ pages/          # Route components
+ hooks/          # Custom hooks
+ utils/          # Utility functions
+ styles/         # Global styles
+ types/          # TypeScript types
+ main.tsx        # Application entry
 ```
 
 ### 2. Configuration Organization
@@ -3769,7 +3761,7 @@ src/
 - Set up debugging tools
 - Implement error boundaries
 
-## 🚀 Next Steps
+##  Next Steps
 
 ### Master Vite by:
 1. **Learning Core Concepts**: ES modules, HMR, plugin system
@@ -3785,7 +3777,7 @@ src/
 - Performance monitoring at scale
 - Enterprise-grade configurations
 
-## 🔗 Resources
+##  Resources
 
 ### Official Documentation
 - [Vite Documentation](https://vitejs.dev/)
@@ -3807,7 +3799,7 @@ src/
 
 This guide provides comprehensive coverage of Vite from beginner to expert level. Each section includes production-tested patterns and zero-hallucination guarantees for all configurations and recommendations."""
 
-    def _load_config_patterns(self) -> Dict[str, Any]:
+    def _load_config_patterns(self) -> dict[str, Any]:
         """Load validated Vite configuration patterns."""
         return {
             "basic_setup": {
@@ -3824,7 +3816,7 @@ This guide provides comprehensive coverage of Vite from beginner to expert level
             },
         }
 
-    def _load_plugin_ecosystem(self) -> Dict[str, Any]:
+    def _load_plugin_ecosystem(self) -> dict[str, Any]:
         """Load plugin ecosystem information."""
         return {
             "framework_plugins": {

@@ -15,7 +15,6 @@ Version: 1.0.0
 """
 
 import asyncio
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -23,18 +22,16 @@ from pathlib import Path
 # Add amplifier to path for testing
 sys.path.insert(0, str(Path(__file__).parent))
 
-from amplifier.skills.skills_framework.skill_template import SkillContext, SkillLevel
-from amplifier.skills.meta_skills.custom_agent_development_specialist import (
-    CustomAgentDevelopmentSpecialist,
-    AgentTemplate,
-    AgentType,
-    AgentComplexity,
-    AgentSpecification,
-    AgentPerformanceTracker,
-    AgentQualityAssurance,
-    AgentIntegrationCoordinator,
-    AgentTemplateLibrary,
-)
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentComplexity
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentIntegrationCoordinator
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentPerformanceTracker
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentQualityAssurance
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentSpecification
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentTemplateLibrary
+from amplifier.skills.meta_skills.custom_agent_development_specialist import AgentType
+from amplifier.skills.meta_skills.custom_agent_development_specialist import CustomAgentDevelopmentSpecialist
+from amplifier.skills.skills_framework.skill_template import SkillContext
+from amplifier.skills.skills_framework.skill_template import SkillLevel
 
 
 class TestCustomAgentDevelopmentSpecialist:
@@ -365,7 +362,7 @@ class TestCustomAgentDevelopmentSpecialist:
             result = await self.specialist.execute(context, SkillLevel.FULL)
 
             # Validate comprehensive response
-            assert len(result.content) > 1000, f"Complex query should generate detailed response"
+            assert len(result.content) > 1000, "Complex query should generate detailed response"
             assert "agent_id" in result.content.lower() or "specification" in result.content.lower(), (
                 "Should include agent details"
             )
@@ -416,10 +413,10 @@ class TestCustomAgentDevelopmentSpecialist:
             print(f"\n⚠️  {len(failed_suites)} test suite(s) failed. Review errors above.")
 
         # Performance metrics
-        print(f"\n📊 Performance Metrics:")
+        print("\n📊 Performance Metrics:")
         print(f"  • Average execution time: {duration / total_suites:.2f}s per suite")
         print(f"  • Tests per second: {total_tests / duration:.1f}")
-        print(f"  • Memory efficiency: Optimized token usage across all tests")
+        print("  • Memory efficiency: Optimized token usage across all tests")
 
 
 async def main():

@@ -8,15 +8,16 @@ capabilities to identify patterns, detect issues, and provide optimization insig
 import asyncio
 import json
 import logging
-import time
-from datetime import datetime, timedelta
+from collections import defaultdict
+from collections import deque
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-from collections import defaultdict, deque
+from typing import Any
 
 import numpy as np
-from dataclasses import dataclass
 
 from .config import PerformanceTrackingConfig
 
@@ -35,12 +36,12 @@ class SkillExecutionMetrics:
     # Performance metrics
     execution_time: float  # seconds
     success: bool
-    error_type: Optional[str] = None
-    error_message: Optional[str] = None
+    error_type: str | None = None
+    error_message: str | None = None
 
     # Quality metrics
     accuracy_score: float  # 0-1
-    user_satisfaction: Optional[float] = None  # 0-1
+    user_satisfaction: float | None = None  # 0-1
     hallucination_detected: bool = False
     hallucination_score: float = 0.0  # 0-1
 
@@ -54,7 +55,7 @@ class SkillExecutionMetrics:
     response_size_tokens: int = 0
 
     # Additional metadata
-    user_feedback: Optional[str] = None
+    user_feedback: str | None = None
     optimization_version: int = 1
 
 
@@ -90,7 +91,7 @@ class SkillPerformanceSummary:
 
     # Quality assessment
     quality_grade: str  # "A", "B", "C", "D", "F"
-    optimization_recommendations: List[str]
+    optimization_recommendations: list[str]
 
 
 class SkillPerformanceTracker:
@@ -103,16 +104,16 @@ class SkillPerformanceTracker:
         self.metrics_path.mkdir(parents=True, exist_ok=True)
 
         # In-memory storage for recent metrics
-        self.recent_metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=config.history_window_size))
-        self.skill_summaries: Dict[str, SkillPerformanceSummary] = {}
+        self.recent_metrics: dict[str, deque] = defaultdict(lambda: deque(maxlen=config.history_window_size))
+        self.skill_summaries: dict[str, SkillPerformanceSummary] = {}
 
         # Performance patterns for RL training
-        self.performance_patterns: Dict[str, List[Dict]] = defaultdict(list)
-        self.error_patterns: Dict[str, List[Dict]] = defaultdict(list)
+        self.performance_patterns: dict[str, list[dict]] = defaultdict(list)
+        self.error_patterns: dict[str, list[dict]] = defaultdict(list)
 
         # Background tasks
-        self._collection_task: Optional[asyncio.Task] = None
-        self._analysis_task: Optional[asyncio.Task] = None
+        self._collection_task: asyncio.Task | None = None
+        self._analysis_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -165,7 +166,7 @@ class SkillPerformanceTracker:
         except Exception as e:
             logger.error(f"Failed to record execution metrics: {e}")
 
-    async def get_skill_summary(self, skill_id: str, period_hours: int = 24) -> Optional[SkillPerformanceSummary]:
+    async def get_skill_summary(self, skill_id: str, period_hours: int = 24) -> SkillPerformanceSummary | None:
         """Get performance summary for a skill over a time period"""
         try:
             if skill_id not in self.recent_metrics:
@@ -192,7 +193,7 @@ class SkillPerformanceTracker:
             logger.error(f"Failed to get skill summary for {skill_id}: {e}")
             return None
 
-    async def get_performance_trends(self, skill_id: str, days: int = 7) -> Dict[str, Any]:
+    async def get_performance_trends(self, skill_id: str, days: int = 7) -> dict[str, Any]:
         """Analyze performance trends for a skill"""
         try:
             if skill_id not in self.recent_metrics:
@@ -222,7 +223,7 @@ class SkillPerformanceTracker:
             logger.error(f"Failed to analyze performance trends for {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def detect_performance_anomalies(self, skill_id: str) -> List[Dict[str, Any]]:
+    async def detect_performance_anomalies(self, skill_id: str) -> list[dict[str, Any]]:
         """Detect performance anomalies using RL-powered pattern recognition"""
         try:
             if skill_id not in self.recent_metrics:
@@ -257,7 +258,7 @@ class SkillPerformanceTracker:
             logger.error(f"Failed to detect performance anomalies for {skill_id}: {e}")
             return []
 
-    async def get_optimization_insights(self, skill_id: str) -> Dict[str, Any]:
+    async def get_optimization_insights(self, skill_id: str) -> dict[str, Any]:
         """Get optimization insights using RL-powered analysis"""
         try:
             summary = await self.get_skill_summary(skill_id)
@@ -351,7 +352,7 @@ class SkillPerformanceTracker:
         except Exception as e:
             logger.error(f"Failed to save metrics: {e}")
 
-    async def _calculate_summary(self, skill_id: str, metrics: List[SkillExecutionMetrics]) -> SkillPerformanceSummary:
+    async def _calculate_summary(self, skill_id: str, metrics: list[SkillExecutionMetrics]) -> SkillPerformanceSummary:
         """Calculate performance summary from metrics"""
         if not metrics:
             raise ValueError("No metrics provided")
@@ -414,7 +415,7 @@ class SkillPerformanceTracker:
             optimization_recommendations=recommendations,
         )
 
-    def _calculate_trend(self, values: List[float]) -> Dict[str, float]:
+    def _calculate_trend(self, values: list[float]) -> dict[str, float]:
         """Calculate trend for a series of values"""
         if len(values) < 2:
             return {"slope": 0.0, "direction": "stable", "confidence": 0.0}
@@ -442,7 +443,7 @@ class SkillPerformanceTracker:
 
         return {"slope": float(slope), "direction": direction, "confidence": float(abs(correlation))}
 
-    def _calculate_anomaly_score(self, metric: SkillExecutionMetrics, baseline: List[SkillExecutionMetrics]) -> float:
+    def _calculate_anomaly_score(self, metric: SkillExecutionMetrics, baseline: list[SkillExecutionMetrics]) -> float:
         """Calculate anomaly score for a metric compared to baseline"""
         if len(baseline) < 5:
             return 0.0
@@ -465,7 +466,7 @@ class SkillPerformanceTracker:
 
         return min(anomaly_score, 10.0)  # Cap at 10
 
-    def _classify_anomaly(self, metric: SkillExecutionMetrics, baseline: List[SkillExecutionMetrics]) -> str:
+    def _classify_anomaly(self, metric: SkillExecutionMetrics, baseline: list[SkillExecutionMetrics]) -> str:
         """Classify the type of anomaly"""
         if not metric.success:
             return "execution_failure"
@@ -482,7 +483,7 @@ class SkillPerformanceTracker:
 
         return "other"
 
-    def _analyze_performance_trend(self, metrics: List[SkillExecutionMetrics]) -> Tuple[str, float]:
+    def _analyze_performance_trend(self, metrics: list[SkillExecutionMetrics]) -> tuple[str, float]:
         """Analyze performance trend from metrics"""
         if len(metrics) < 10:
             return "stable", 0.0
@@ -507,10 +508,9 @@ class SkillPerformanceTracker:
 
         if abs(diff) < 0.05:
             return "stable", 1.0 - abs(diff) * 20
-        elif diff > 0:
+        if diff > 0:
             return "improving", min(diff * 10, 1.0)
-        else:
-            return "degrading", min(abs(diff) * 10, 1.0)
+        return "degrading", min(abs(diff) * 10, 1.0)
 
     def _calculate_quality_grade(self, success_rate: float, accuracy: float, hallucination_rate: float) -> str:
         """Calculate overall quality grade"""
@@ -518,18 +518,17 @@ class SkillPerformanceTracker:
 
         if score >= 0.95:
             return "A"
-        elif score >= 0.90:
+        if score >= 0.90:
             return "B"
-        elif score >= 0.80:
+        if score >= 0.80:
             return "C"
-        elif score >= 0.70:
+        if score >= 0.70:
             return "D"
-        else:
-            return "F"
+        return "F"
 
     def _generate_summary_recommendations(
         self, success_rate: float, accuracy: float, hallucination_rate: float, execution_time: float
-    ) -> List[str]:
+    ) -> list[str]:
         """Generate optimization recommendations"""
         recommendations = []
 
@@ -551,8 +550,8 @@ class SkillPerformanceTracker:
         return recommendations
 
     def _generate_optimization_recommendations(
-        self, summary: SkillPerformanceSummary, trends: Dict[str, Any], anomalies: List[Dict]
-    ) -> List[str]:
+        self, summary: SkillPerformanceSummary, trends: dict[str, Any], anomalies: list[dict]
+    ) -> list[str]:
         """Generate comprehensive optimization recommendations"""
         recommendations = summary.optimization_recommendations.copy()
 
@@ -573,18 +572,17 @@ class SkillPerformanceTracker:
 
         return recommendations
 
-    def _calculate_optimization_priority(self, summary: SkillPerformanceSummary, anomalies: List[Dict]) -> str:
+    def _calculate_optimization_priority(self, summary: SkillPerformanceSummary, anomalies: list[dict]) -> str:
         """Calculate optimization priority level"""
         if summary.quality_grade in ["D", "F"] or len(anomalies) > 3:
             return "critical"
-        elif summary.quality_grade == "C" or len(anomalies) > 1:
+        if summary.quality_grade == "C" or len(anomalies) > 1:
             return "high"
-        elif summary.quality_grade == "B" or summary.performance_trend == "degrading":
+        if summary.quality_grade == "B" or summary.performance_trend == "degrading":
             return "medium"
-        else:
-            return "low"
+        return "low"
 
-    def _estimate_optimization_impact(self, recommendations: List[str]) -> Dict[str, float]:
+    def _estimate_optimization_impact(self, recommendations: list[str]) -> dict[str, float]:
         """Estimate potential impact of optimizations"""
         impact = {
             "success_rate_improvement": 0.0,
@@ -648,7 +646,7 @@ class SkillPerformanceTracker:
         except Exception as e:
             logger.error(f"Failed to analyze performance patterns: {e}")
 
-    def _extract_performance_patterns(self, metrics: List[SkillExecutionMetrics]) -> List[Dict]:
+    def _extract_performance_patterns(self, metrics: list[SkillExecutionMetrics]) -> list[dict]:
         """Extract performance patterns for RL training"""
         patterns = []
 
@@ -679,7 +677,7 @@ class SkillPerformanceTracker:
 
         return patterns
 
-    def _extract_error_patterns(self, metrics: List[SkillExecutionMetrics]) -> List[Dict]:
+    def _extract_error_patterns(self, metrics: list[SkillExecutionMetrics]) -> list[dict]:
         """Extract error patterns for analysis"""
         error_metrics = [m for m in metrics if not m.success]
         if not error_metrics:
@@ -706,7 +704,7 @@ class SkillPerformanceTracker:
 
         return error_patterns
 
-    def _find_common_errors(self, failed_metrics: List[SkillExecutionMetrics]) -> List[str]:
+    def _find_common_errors(self, failed_metrics: list[SkillExecutionMetrics]) -> list[str]:
         """Find common error messages"""
         error_messages = [m.error_message for m in failed_metrics if m.error_message]
         if not error_messages:

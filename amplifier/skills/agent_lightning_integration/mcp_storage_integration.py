@@ -7,22 +7,23 @@ automatic backup, compression, and disaster recovery capabilities.
 """
 
 import asyncio
+import gzip
+import hashlib
 import json
 import logging
-import gzip
 import pickle
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, asdict
-from enum import Enum
-import hashlib
 import uuid
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from typing import Any
 
 # Try to import MCP storage components
 try:
-    from amplifier.mcp.persistent_storage import MCPStorageManager
     from amplifier.mcp.code_execution import execute_in_docker
+    from amplifier.mcp.persistent_storage import MCPStorageManager
 
     MCP_AVAILABLE = True
 except ImportError:
@@ -30,11 +31,11 @@ except ImportError:
     MCP_AVAILABLE = False
 
 from .config import AgentLightningIntegrationConfig
-from .skill_performance_tracker import SkillExecutionMetrics, SkillPerformanceSummary
-from .error_detection_engine import DetectionResult, ErrorPattern
-from .continuous_optimizer import OptimizationResult, OptimizationProposal
+from .continuous_optimizer import OptimizationResult
+from .error_detection_engine import DetectionResult
+from .knowledge_transfer_system import SkillPattern
 from .quality_gate_enforcer import QualityGateEvaluation
-from .knowledge_transfer_system import SkillPattern, TransferResult
+from .skill_performance_tracker import SkillExecutionMetrics
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class StorageStats:
     storage_size_bytes: int
     compression_ratio: float
     backup_count: int
-    last_backup: Optional[datetime]
+    last_backup: datetime | None
     retrieval_count: int
     average_retrieval_time_ms: float
 
@@ -79,8 +80,8 @@ class StorageRecord:
     category: DataCategory
     skill_id: str
     timestamp: datetime
-    data: Dict[str, Any]
-    metadata: Dict[str, Any]
+    data: dict[str, Any]
+    metadata: dict[str, Any]
     checksum: str
     compressed_size: int
     original_size: int
@@ -96,18 +97,18 @@ class MCPStorageIntegration:
 
         # Storage backend
         self.backend = StorageBackend.MCP_DOCKER if MCP_AVAILABLE else StorageBackend.LOCAL_FILE
-        self.mcp_storage: Optional[Any] = None
+        self.mcp_storage: Any | None = None
 
         # Local cache for performance
-        self.cache: Dict[str, Tuple[datetime, Any]] = {}
+        self.cache: dict[str, tuple[datetime, Any]] = {}
         self.cache_ttl = timedelta(minutes=15)
 
         # Storage statistics
         self.stats = {"writes": 0, "reads": 0, "compressions": 0, "cache_hits": 0, "cache_misses": 0}
 
         # Background tasks
-        self._backup_task: Optional[asyncio.Task] = None
-        self._cleanup_task: Optional[asyncio.Task] = None
+        self._backup_task: asyncio.Task | None = None
+        self._cleanup_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -305,9 +306,9 @@ class MCPStorageIntegration:
         self,
         skill_id: str,
         limit: int = 100,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-    ) -> List[SkillExecutionMetrics]:
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+    ) -> list[SkillExecutionMetrics]:
         """Retrieve performance metrics for a skill"""
         try:
             records = await self._retrieve_records(
@@ -353,8 +354,8 @@ class MCPStorageIntegration:
             return []
 
     async def retrieve_error_detections(
-        self, skill_id: str, limit: int = 50, start_time: Optional[datetime] = None
-    ) -> List[Dict[str, Any]]:
+        self, skill_id: str, limit: int = 50, start_time: datetime | None = None
+    ) -> list[dict[str, Any]]:
         """Retrieve error detection results for a skill"""
         try:
             records = await self._retrieve_records(
@@ -368,7 +369,7 @@ class MCPStorageIntegration:
             logger.error(f"Failed to retrieve error detections: {e}")
             return []
 
-    async def retrieve_optimization_history(self, skill_id: str, limit: int = 50) -> List[Dict[str, Any]]:
+    async def retrieve_optimization_history(self, skill_id: str, limit: int = 50) -> list[dict[str, Any]]:
         """Retrieve optimization history for a skill"""
         try:
             records = await self._retrieve_records(category=DataCategory.OPTIMIZATION, skill_id=skill_id, limit=limit)
@@ -416,7 +417,7 @@ class MCPStorageIntegration:
             logger.error(f"Failed to get storage statistics: {e}")
             return StorageStats(0, 0, 0, 0, None, 0, 0)
 
-    async def create_backup(self, backup_name: Optional[str] = None) -> str:
+    async def create_backup(self, backup_name: str | None = None) -> str:
         """Create a backup of all stored data"""
         try:
             if not backup_name:
@@ -517,7 +518,7 @@ class MCPStorageIntegration:
             raise
 
     async def _store_record(
-        self, record_id: str, category: DataCategory, skill_id: str, data: Dict[str, Any], metadata: Dict[str, Any]
+        self, record_id: str, category: DataCategory, skill_id: str, data: dict[str, Any], metadata: dict[str, Any]
     ) -> None:
         """Store a record in the selected backend"""
         try:
@@ -587,9 +588,9 @@ class MCPStorageIntegration:
         category: DataCategory,
         skill_id: str,
         limit: int = 100,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-    ) -> List[Dict[str, Any]]:
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+    ) -> list[dict[str, Any]]:
         """Retrieve records based on criteria"""
         try:
             # Check cache first
@@ -622,9 +623,9 @@ class MCPStorageIntegration:
         category: DataCategory,
         skill_id: str,
         limit: int,
-        start_time: Optional[datetime],
-        end_time: Optional[datetime],
-    ) -> List[Dict[str, Any]]:
+        start_time: datetime | None,
+        end_time: datetime | None,
+    ) -> list[dict[str, Any]]:
         """Retrieve records using MCP Docker storage"""
         try:
             # This would implement MCP-specific retrieval
@@ -639,9 +640,9 @@ class MCPStorageIntegration:
         category: DataCategory,
         skill_id: str,
         limit: int,
-        start_time: Optional[datetime],
-        end_time: Optional[datetime],
-    ) -> List[Dict[str, Any]]:
+        start_time: datetime | None,
+        end_time: datetime | None,
+    ) -> list[dict[str, Any]]:
         """Retrieve records using local file storage"""
         try:
             category_path = self.storage_path / category.value
@@ -676,7 +677,7 @@ class MCPStorageIntegration:
             logger.error(f"Failed to retrieve local records: {e}")
             return []
 
-    def _calculate_checksum(self, data: Dict[str, Any]) -> str:
+    def _calculate_checksum(self, data: dict[str, Any]) -> str:
         """Calculate SHA-256 checksum for data"""
         data_str = json.dumps(data, sort_keys=True, default=str)
         return hashlib.sha256(data_str.encode("utf-8")).hexdigest()
@@ -706,7 +707,7 @@ class MCPStorageIntegration:
         except Exception as e:
             logger.error(f"Failed to save cache: {e}")
 
-    def _get_last_backup_time(self) -> Optional[datetime]:
+    def _get_last_backup_time(self) -> datetime | None:
         """Get the timestamp of the last backup"""
         try:
             backups_path = self.storage_path / "backups"

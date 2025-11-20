@@ -6,13 +6,11 @@ and eliminate hallucinations in component generation and recommendations.
 """
 
 import re
-import json
-import hashlib
 import time
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
-from pathlib import Path
+from typing import Any
 
 
 class ConfidenceLevel(Enum):
@@ -40,9 +38,9 @@ class SourceReference:
     """Reference to source material for verification."""
 
     source: str  # URL, file path, or documentation reference
-    section: Optional[str] = None
-    excerpt: Optional[str] = None
-    last_verified: Optional[str] = None
+    section: str | None = None
+    excerpt: str | None = None
+    last_verified: str | None = None
     confidence: float = 1.0
 
 
@@ -55,9 +53,9 @@ class QualityCheck:
     status: ValidationStatus
     confidence: ConfidenceLevel
     description: str
-    source_references: List[SourceReference] = field(default_factory=list)
-    issues: List[str] = field(default_factory=list)
-    fixes_applied: List[str] = field(default_factory=list)
+    source_references: list[SourceReference] = field(default_factory=list)
+    issues: list[str] = field(default_factory=list)
+    fixes_applied: list[str] = field(default_factory=list)
 
 
 class ZeroHallucinationQA:
@@ -83,7 +81,7 @@ class ZeroHallucinationQA:
         self.validation_rules = self._init_validation_rules()
         self.check_history = []
 
-    def _init_verified_sources(self) -> Dict[str, SourceReference]:
+    def _init_verified_sources(self) -> dict[str, SourceReference]:
         """Initialize verified sources for ShadCN/ui information."""
         return {
             "shadcn_docs": SourceReference(
@@ -104,7 +102,7 @@ class ZeroHallucinationQA:
             ),
         }
 
-    def _init_component_specs(self) -> Dict[str, Dict[str, Any]]:
+    def _init_component_specs(self) -> dict[str, dict[str, Any]]:
         """Initialize verified component specifications."""
         return {
             "Button": {
@@ -171,7 +169,7 @@ class ZeroHallucinationQA:
             },
         }
 
-    def _init_type_definitions(self) -> Dict[str, str]:
+    def _init_type_definitions(self) -> dict[str, str]:
         """Initialize verified TypeScript type definitions."""
         return {
             "Button": """interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -193,7 +191,7 @@ class ZeroHallucinationQA:
 }""",
         }
 
-    def _init_accessibility_standards(self) -> Dict[str, Any]:
+    def _init_accessibility_standards(self) -> dict[str, Any]:
         """Initialize accessibility standards."""
         return {
             "wcag_21_aa": {
@@ -204,7 +202,7 @@ class ZeroHallucinationQA:
             }
         }
 
-    def _init_performance_benchmarks(self) -> Dict[str, Any]:
+    def _init_performance_benchmarks(self) -> dict[str, Any]:
         """Initialize performance benchmarks."""
         return {
             "component_rendering": {
@@ -221,7 +219,7 @@ class ZeroHallucinationQA:
             },
         }
 
-    def _init_validation_rules(self) -> Dict[str, List[Dict[str, Any]]]:
+    def _init_validation_rules(self) -> dict[str, list[dict[str, Any]]]:
         """Initialize comprehensive validation rules."""
         return {
             "component_api": [
@@ -368,7 +366,7 @@ class ZeroHallucinationQA:
         self.check_history.append(check)
         return check
 
-    def _validate_import_statement(self, code: str, component_name: str, spec: Dict[str, Any]) -> List[str]:
+    def _validate_import_statement(self, code: str, component_name: str, spec: dict[str, Any]) -> list[str]:
         """Validate import statement matches specification."""
         issues = []
         expected_import = spec["import"]
@@ -389,7 +387,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _validate_props_usage(self, code: str, component_name: str, spec: Dict[str, Any]) -> List[str]:
+    def _validate_props_usage(self, code: str, component_name: str, spec: dict[str, Any]) -> list[str]:
         """Validate props usage against specification."""
         issues = []
         spec_props = spec.get("props", {})
@@ -404,7 +402,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _validate_typescript_usage(self, code: str, component_name: str) -> List[str]:
+    def _validate_typescript_usage(self, code: str, component_name: str) -> list[str]:
         """Validate TypeScript usage."""
         issues = []
 
@@ -423,7 +421,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _validate_accessibility_implementation(self, code: str, component_name: str) -> List[str]:
+    def _validate_accessibility_implementation(self, code: str, component_name: str) -> list[str]:
         """Validate accessibility implementation."""
         issues = []
         spec = self.component_specs.get(component_name, {})
@@ -449,7 +447,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _validate_dependencies(self, code: str, component_name: str, spec: Dict[str, Any]) -> List[str]:
+    def _validate_dependencies(self, code: str, component_name: str, spec: dict[str, Any]) -> list[str]:
         """Validate component dependencies."""
         issues = []
         required_deps = spec.get("dependencies", [])
@@ -463,7 +461,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def verify_recommendation(self, recommendation: str, context: Dict[str, Any]) -> QualityCheck:
+    def verify_recommendation(self, recommendation: str, context: dict[str, Any]) -> QualityCheck:
         """
         Verify a recommendation against verified sources and best practices.
 
@@ -513,7 +511,7 @@ class ZeroHallucinationQA:
             issues=issues,
         )
 
-    def _verify_performance_claim(self, recommendation: str) -> List[str]:
+    def _verify_performance_claim(self, recommendation: str) -> list[str]:
         """Verify performance-related claims."""
         issues = []
 
@@ -532,7 +530,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _verify_accessibility_claim(self, recommendation: str) -> List[str]:
+    def _verify_accessibility_claim(self, recommendation: str) -> list[str]:
         """Verify accessibility-related claims."""
         issues = []
 
@@ -549,7 +547,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def _verify_typescript_claim(self, recommendation: str) -> List[str]:
+    def _verify_typescript_claim(self, recommendation: str) -> list[str]:
         """Verify TypeScript-related claims."""
         issues = []
 
@@ -563,7 +561,7 @@ class ZeroHallucinationQA:
 
         return issues
 
-    def get_quality_report(self) -> Dict[str, Any]:
+    def get_quality_report(self) -> dict[str, Any]:
         """Get comprehensive quality assurance report."""
         if not self.check_history:
             return {
@@ -610,7 +608,7 @@ class ZeroHallucinationQA:
             "last_updated": "2024-11-17",
         }
 
-    def export_verification_data(self) -> Dict[str, Any]:
+    def export_verification_data(self) -> dict[str, Any]:
         """Export verification data for audit and analysis."""
         return {
             "verified_sources": {

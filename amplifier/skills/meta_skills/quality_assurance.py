@@ -21,20 +21,21 @@ Key Benefits:
 - Comprehensive validation reporting and metrics
 """
 
-import asyncio
 import json
 import logging
 import re
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from dataclasses import dataclass, field
-from pydantic import BaseModel, Field, validator
+from typing import Any
 
-from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
-from ...mcp.persistent_storage import PersistentStorage
+from pydantic import BaseModel
+from pydantic import Field
+
 from ...mcp.code_execution import CodeExecutor
+from ...mcp.persistent_storage import PersistentStorage
+from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +64,10 @@ class ValidationResult(BaseModel):
 
     is_valid: bool = Field(description="Whether the content passed validation")
     confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in validation result")
-    issues: List[Dict[str, Any]] = Field(default_factory=list, description="Validation issues found")
-    warnings: List[Dict[str, Any]] = Field(default_factory=list, description="Validation warnings")
-    fact_checks: List[Dict[str, Any]] = Field(default_factory=list, description="Fact-checking results")
-    suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
+    issues: list[dict[str, Any]] = Field(default_factory=list, description="Validation issues found")
+    warnings: list[dict[str, Any]] = Field(default_factory=list, description="Validation warnings")
+    fact_checks: list[dict[str, Any]] = Field(default_factory=list, description="Fact-checking results")
+    suggestions: list[str] = Field(default_factory=list, description="Improvement suggestions")
     validation_time: datetime = Field(default_factory=datetime.now)
 
     class Config:
@@ -106,7 +107,7 @@ class FactCheckResult(BaseModel):
     statement: str
     is_factual: bool
     confidence: float
-    sources: List[str] = []
+    sources: list[str] = []
     explanation: str = ""
     category: str = "general"
 
@@ -117,8 +118,8 @@ class QualityGate(BaseModel):
     stage: ValidationStage
     required_confidence: float = Field(ge=0.0, le=1.0)
     max_hallucination_risk: float = Field(ge=0.0, le=1.0)
-    required_checks: List[str] = []
-    optional_checks: List[str] = []
+    required_checks: list[str] = []
+    optional_checks: list[str] = []
 
 
 @dataclass
@@ -127,12 +128,12 @@ class ValidationContext:
 
     skill_name: str
     stage: ValidationStage
-    content: Dict[str, Any]
-    requirements: Dict[str, Any] = field(default_factory=dict)
-    knowledge_base: Optional[str] = None
+    content: dict[str, Any]
+    requirements: dict[str, Any] = field(default_factory=dict)
+    knowledge_base: str | None = None
     validation_level: ValidationLevel = ValidationLevel.STANDARD
-    sources: List[str] = field(default_factory=list)
-    previous_results: List[ValidationResult] = field(default_factory=list)
+    sources: list[str] = field(default_factory=list)
+    previous_results: list[ValidationResult] = field(default_factory=list)
 
 
 class ZeroHallucinationQA:
@@ -143,7 +144,7 @@ class ZeroHallucinationQA:
     hallucinated content across all skill creation stages.
     """
 
-    def __init__(self, storage: Optional[PersistentStorage] = None, code_executor: Optional[CodeExecutor] = None):
+    def __init__(self, storage: PersistentStorage | None = None, code_executor: CodeExecutor | None = None):
         """
         Initialize zero-hallucination QA system.
 
@@ -419,7 +420,7 @@ class ZeroHallucinationQA:
 
         return result
 
-    async def _extract_factual_claims(self, content: Dict[str, Any]) -> List[str]:
+    async def _extract_factual_claims(self, content: dict[str, Any]) -> list[str]:
         """Extract factual claims from content."""
         claims = []
 
@@ -451,7 +452,7 @@ class ZeroHallucinationQA:
             category="general",
         )
 
-    async def _detect_contradictions(self, content: Dict[str, Any]) -> List[Dict[str, Any]]:
+    async def _detect_contradictions(self, content: dict[str, Any]) -> list[dict[str, Any]]:
         """Detect logical contradictions in content."""
         contradictions = []
 
@@ -479,7 +480,7 @@ class ZeroHallucinationQA:
 
         return contradictions
 
-    async def _check_completeness(self, content: Dict[str, Any], requirements: Dict[str, Any]) -> List[str]:
+    async def _check_completeness(self, content: dict[str, Any], requirements: dict[str, Any]) -> list[str]:
         """Check if content meets all requirements."""
         missing = []
 
@@ -506,8 +507,8 @@ class ZeroHallucinationQA:
             return False
 
     async def _validate_semantic_match(
-        self, implementation: Dict[str, Any], requirements: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, implementation: dict[str, Any], requirements: dict[str, Any]
+    ) -> dict[str, Any]:
         """Validate semantic match between implementation and requirements."""
         # Simple keyword overlap for semantic matching
         impl_text = json.dumps(implementation, case_sensitive=False).lower()
@@ -528,7 +529,7 @@ class ZeroHallucinationQA:
             "differences": list(req_words - impl_words)[:10],  # Show first 10 missing
         }
 
-    async def _query_knowledge_base(self, content: Dict[str, Any], knowledge_base: str) -> Dict[str, Any]:
+    async def _query_knowledge_base(self, content: dict[str, Any], knowledge_base: str) -> dict[str, Any]:
         """Query knowledge base for validation information."""
         # Placeholder for knowledge base validation
         return {"conflicts": [], "supporting_evidence": [], "confidence": 1.0}
@@ -605,7 +606,7 @@ class ZeroHallucinationQA:
 
         await self.storage.store(storage_key, validation_data)
 
-    async def get_validation_report(self, skill_name: str, include_metrics: bool = True) -> Dict[str, Any]:
+    async def get_validation_report(self, skill_name: str, include_metrics: bool = True) -> dict[str, Any]:
         """
         Get comprehensive validation report for a skill.
 
@@ -676,7 +677,7 @@ class ZeroHallucinationQA:
 
         return report
 
-    def _generate_recommendations(self, common_issues: Dict[str, int], success_rate: float) -> List[str]:
+    def _generate_recommendations(self, common_issues: dict[str, int], success_rate: float) -> list[str]:
         """Generate recommendations based on validation results."""
         recommendations = []
 
@@ -703,7 +704,7 @@ class ZeroHallucinationQA:
 
         return recommendations
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get current validation metrics."""
         return {
             "total_validations": self.metrics.total_validations,
@@ -723,7 +724,7 @@ class ZeroHallucinationQA:
         self.metrics = ValidationMetrics()
         logger.info("Validation metrics reset")
 
-    async def export_validation_data(self, skill_name: Optional[str] = None, format: str = "json") -> str:
+    async def export_validation_data(self, skill_name: str | None = None, format: str = "json") -> str:
         """
         Export validation data for analysis.
 
@@ -743,7 +744,7 @@ class ZeroHallucinationQA:
 
         if format == "json":
             return json.dumps(validation_data, indent=2, default=str)
-        elif format == "csv":
+        if format == "csv":
             # Convert to CSV format
             import csv
             import io
@@ -769,8 +770,7 @@ class ZeroHallucinationQA:
                     )
 
             return output.getvalue()
-        else:
-            raise ValueError(f"Unsupported format: {format}")
+        raise ValueError(f"Unsupported format: {format}")
 
 
 # Export main class

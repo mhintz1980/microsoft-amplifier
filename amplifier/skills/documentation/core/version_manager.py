@@ -5,14 +5,16 @@ Tracks skill evolution and maintains documentation consistency across versions.
 Handles version control integration and documentation evolution.
 """
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
-from pathlib import Path
-import json
 import difflib
 import hashlib
+import json
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any
+
 from semver import VersionInfo
 
 from ..utils.token_utils import estimate_tokens
@@ -37,12 +39,12 @@ class DocumentationChange:
     version_to: str
     change_type: ChangeType
     description: str
-    affected_sections: List[str] = field(default_factory=list)
+    affected_sections: list[str] = field(default_factory=list)
     breaking_change: bool = False
-    migration_notes: Optional[str] = None
+    migration_notes: str | None = None
     timestamp: datetime = field(default_factory=datetime.now)
-    author: Optional[str] = None
-    commit_hash: Optional[str] = None
+    author: str | None = None
+    commit_hash: str | None = None
 
 
 @dataclass
@@ -53,32 +55,32 @@ class VersionInfo:
     skill_name: str
     timestamp: datetime
     content_hash: str
-    documentation: Dict[str, Any]
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    changelog: List[DocumentationChange] = field(default_factory=list)
-    dependencies: Dict[str, str] = field(default_factory=dict)  # skill_name -> version
-    compatibility_matrix: Dict[str, bool] = field(default_factory=dict)  # version -> compatible
+    documentation: dict[str, Any]
+    metadata: dict[str, Any] = field(default_factory=dict)
+    changelog: list[DocumentationChange] = field(default_factory=list)
+    dependencies: dict[str, str] = field(default_factory=dict)  # skill_name -> version
+    compatibility_matrix: dict[str, bool] = field(default_factory=dict)  # version -> compatible
 
 
 class DocumentationVersionManager:
     """Manages versioning and evolution of skill documentation."""
 
-    def __init__(self, storage_path: Optional[Path] = None):
+    def __init__(self, storage_path: Path | None = None):
         self.storage_path = storage_path or Path(__file__).parent.parent / "data" / "versions"
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.versions: Dict[str, Dict[str, VersionInfo]] = {}  # skill_name -> version -> info
-        self.current_versions: Dict[str, str] = {}  # skill_name -> current version
+        self.versions: dict[str, dict[str, VersionInfo]] = {}  # skill_name -> version -> info
+        self.current_versions: dict[str, str] = {}  # skill_name -> current version
 
         self._load_versions()
 
     def create_version(
         self,
         skill_name: str,
-        documentation: Dict[str, Any],
+        documentation: dict[str, Any],
         version_type: str = "patch",
-        changes: Optional[List[DocumentationChange]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        changes: list[DocumentationChange] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> VersionInfo:
         """Create a new version of skill documentation."""
 
@@ -115,7 +117,7 @@ class DocumentationVersionManager:
 
         return version_info
 
-    def get_version(self, skill_name: str, version: Optional[str] = None) -> Optional[VersionInfo]:
+    def get_version(self, skill_name: str, version: str | None = None) -> VersionInfo | None:
         """Get documentation for a specific version."""
 
         if skill_name not in self.versions:
@@ -128,7 +130,7 @@ class DocumentationVersionManager:
 
         return self.versions[skill_name].get(version)
 
-    def list_versions(self, skill_name: str) -> List[VersionInfo]:
+    def list_versions(self, skill_name: str) -> list[VersionInfo]:
         """List all versions for a skill."""
 
         if skill_name not in self.versions:
@@ -139,7 +141,7 @@ class DocumentationVersionManager:
 
         return versions
 
-    def compare_versions(self, skill_name: str, version_from: str, version_to: str) -> Dict[str, Any]:
+    def compare_versions(self, skill_name: str, version_from: str, version_to: str) -> dict[str, Any]:
         """Compare two versions of documentation."""
 
         from_version = self.get_version(skill_name, version_from)
@@ -161,8 +163,8 @@ class DocumentationVersionManager:
         return comparison
 
     def generate_changelog(
-        self, skill_name: str, from_version: Optional[str] = None, to_version: Optional[str] = None
-    ) -> List[DocumentationChange]:
+        self, skill_name: str, from_version: str | None = None, to_version: str | None = None
+    ) -> list[DocumentationChange]:
         """Generate changelog between versions."""
 
         if from_version is None:
@@ -209,7 +211,7 @@ class DocumentationVersionManager:
 
     def upgrade_documentation(
         self, skill_name: str, from_version: str, to_version: str
-    ) -> Tuple[Dict[str, Any], List[str]]:
+    ) -> tuple[dict[str, Any], list[str]]:
         """Upgrade documentation from one version to another."""
 
         from_info = self.get_version(skill_name, from_version)
@@ -267,7 +269,7 @@ class DocumentationVersionManager:
 
     def merge_versions(
         self, skill_name: str, base_version: str, version1: str, version2: str
-    ) -> Tuple[Dict[str, Any], List[str]]:
+    ) -> tuple[dict[str, Any], list[str]]:
         """Merge two divergent versions of documentation."""
 
         base_info = self.get_version(skill_name, base_version)
@@ -313,14 +315,14 @@ class DocumentationVersionManager:
             # If parsing fails, start with 1.0.0
             return "1.0.0"
 
-    def _generate_content_hash(self, documentation: Dict[str, Any]) -> str:
+    def _generate_content_hash(self, documentation: dict[str, Any]) -> str:
         """Generate hash for documentation content."""
 
         # Create deterministic string representation
         content_str = json.dumps(documentation, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(content_str.encode()).hexdigest()[:16]
 
-    def _detect_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> List[Dict[str, Any]]:
+    def _detect_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> list[dict[str, Any]]:
         """Detect changes between two versions."""
 
         changes = []
@@ -362,7 +364,7 @@ class DocumentationVersionManager:
 
         return changes
 
-    def _calculate_token_diff(self, from_version: VersionInfo, to_version: VersionInfo) -> Dict[str, int]:
+    def _calculate_token_diff(self, from_version: VersionInfo, to_version: VersionInfo) -> dict[str, int]:
         """Calculate token count differences between versions."""
 
         from_tokens = self._count_tokens(from_version.documentation)
@@ -379,7 +381,7 @@ class DocumentationVersionManager:
             },
         }
 
-    def _analyze_section_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> Dict[str, Any]:
+    def _analyze_section_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> dict[str, Any]:
         """Analyze detailed changes in sections."""
 
         from_sections = from_version.documentation.get("sections", {})
@@ -411,7 +413,7 @@ class DocumentationVersionManager:
 
         return analysis
 
-    def _analyze_metadata_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> Dict[str, Any]:
+    def _analyze_metadata_changes(self, from_version: VersionInfo, to_version: VersionInfo) -> dict[str, Any]:
         """Analyze changes in metadata."""
 
         from_meta = from_version.metadata
@@ -465,8 +467,8 @@ class DocumentationVersionManager:
                 existing_vinfo.compatibility_matrix[new_version] = True
 
     def _apply_automatic_upgrades(
-        self, documentation: Dict[str, Any], changes: List[DocumentationChange]
-    ) -> Dict[str, Any]:
+        self, documentation: dict[str, Any], changes: list[DocumentationChange]
+    ) -> dict[str, Any]:
         """Apply automatic upgrades to documentation."""
 
         upgraded_docs = documentation.copy()
@@ -478,14 +480,14 @@ class DocumentationVersionManager:
 
         return upgraded_docs
 
-    def _apply_patch_change(self, documentation: Dict[str, Any], change: DocumentationChange) -> None:
+    def _apply_patch_change(self, documentation: dict[str, Any], change: DocumentationChange) -> None:
         """Apply a patch change to documentation."""
 
         # This would contain logic for automatic patch application
         # For now, just mark that the change was considered
         pass
 
-    def _detect_merge_conflicts(self, base_info: VersionInfo, v1_info: VersionInfo, v2_info: VersionInfo) -> List[str]:
+    def _detect_merge_conflicts(self, base_info: VersionInfo, v1_info: VersionInfo, v2_info: VersionInfo) -> list[str]:
         """Detect conflicts between two divergent versions."""
 
         conflicts = []
@@ -507,8 +509,8 @@ class DocumentationVersionManager:
         return conflicts
 
     def _merge_documentations(
-        self, base_docs: Dict[str, Any], v1_docs: Dict[str, Any], v2_docs: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, base_docs: dict[str, Any], v1_docs: dict[str, Any], v2_docs: dict[str, Any]
+    ) -> dict[str, Any]:
         """Attempt to merge three-way documentation."""
 
         merged = base_docs.copy()
@@ -530,9 +532,7 @@ class DocumentationVersionManager:
             # Simple merge strategy: prefer non-base content
             if v1_content == base_content:
                 merged_sections[section] = v2_content
-            elif v2_content == base_content:
-                merged_sections[section] = v1_content
-            elif v1_content == v2_content:
+            elif v2_content == base_content or v1_content == v2_content:
                 merged_sections[section] = v1_content
             else:
                 # Conflict - use v1 content with conflict marker
@@ -547,7 +547,7 @@ class DocumentationVersionManager:
 
         return merged
 
-    def _count_tokens(self, documentation: Dict[str, Any]) -> Dict[str, int]:
+    def _count_tokens(self, documentation: dict[str, Any]) -> dict[str, int]:
         """Count tokens in documentation by section."""
 
         counts = {}
@@ -569,7 +569,7 @@ class DocumentationVersionManager:
 
         if versions_file.exists():
             try:
-                with open(versions_file, "r") as f:
+                with open(versions_file) as f:
                     data = json.load(f)
 
                 for skill_name, versions_data in data.get("skills", {}).items():
@@ -649,7 +649,7 @@ class DocumentationVersionManager:
         with open(self.storage_path / "versions.json", "w") as f:
             json.dump(data, f, indent=2)
 
-    def get_version_statistics(self) -> Dict[str, Any]:
+    def get_version_statistics(self) -> dict[str, Any]:
         """Get statistics about version management."""
 
         stats = {

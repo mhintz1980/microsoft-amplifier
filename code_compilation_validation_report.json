@@ -1,0 +1,515 @@
+{
+  "total_skills": 141,
+  "total_examples": 487,
+  "success_rate": 94.46,
+  "language_stats": {
+    "python": {
+      "examples": 42,
+      "compiled": 27,
+      "executed": 4,
+      "avg_time": 0.06622076034545898,
+      "skill_count": 5,
+      "success_rate": 64.28571428571429
+    },
+    "bash": {
+      "examples": 41,
+      "compiled": 41,
+      "executed": 41,
+      "avg_time": 0.5,
+      "skill_count": 7,
+      "success_rate": 100.0
+    },
+    "json": {
+      "examples": 29,
+      "compiled": 17,
+      "executed": 17,
+      "avg_time": 0.5,
+      "skill_count": 6,
+      "success_rate": 58.620689655172406
+    },
+    "javascript": {
+      "examples": 150,
+      "compiled": 150,
+      "executed": 150,
+      "avg_time": 1.0,
+      "skill_count": 9,
+      "success_rate": 100.0
+    },
+    "typescript": {
+      "examples": 178,
+      "compiled": 178,
+      "executed": 178,
+      "avg_time": 1.0,
+      "skill_count": 7,
+      "success_rate": 100.0
+    },
+    "jsx": {
+      "examples": 2,
+      "compiled": 2,
+      "executed": 2,
+      "avg_time": 1.0,
+      "skill_count": 1,
+      "success_rate": 100.0
+    },
+    "html": {
+      "examples": 40,
+      "compiled": 40,
+      "executed": 40,
+      "avg_time": 0.5,
+      "skill_count": 2,
+      "success_rate": 100.0
+    },
+    "css": {
+      "examples": 5,
+      "compiled": 5,
+      "executed": 5,
+      "avg_time": 0.5,
+      "skill_count": 1,
+      "success_rate": 100.0
+    }
+  },
+  "compilation_failures": [
+    "database_design_expert (json)",
+    "vite_expert (json)",
+    "full_stack_integration_expert (json)",
+    "api_design_expert (json)"
+  ],
+  "validations": [
+    {
+      "skill_name": "documentation_generator",
+      "language": "python",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [],
+      "execution_errors": [
+        "Example 1: Execution error: name 'func' is not defined"
+      ]
+    },
+    {
+      "skill_name": "templates",
+      "language": "python",
+      "examples_found": 23,
+      "compiled_successfully": 9,
+      "executed_successfully": 4,
+      "avg_execution_time_ms": 0.06622076034545898,
+      "compilation_errors": [
+        "Example 1: Syntax error: invalid syntax (<unknown>, line 1)",
+        "Example 2: Syntax error: invalid syntax (<unknown>, line 1)",
+        "Example 6: Syntax error: invalid syntax (<unknown>, line 1)"
+      ],
+      "execution_errors": [
+        "Example 1: Syntax error: invalid syntax (<unknown>, line 1)",
+        "Example 2: Syntax error: invalid syntax (<unknown>, line 1)",
+        "Example 6: Syntax error: invalid syntax (<unknown>, line 1)"
+      ]
+    },
+    {
+      "skill_name": "templates",
+      "language": "bash",
+      "examples_found": 8,
+      "compiled_successfully": 8,
+      "executed_successfully": 8,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "template_library",
+      "language": "python",
+      "examples_found": 16,
+      "compiled_successfully": 15,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [
+        "Example 16: Syntax error: expected an indented block after function definition on line 1 (<unknown>, line 10)"
+      ],
+      "execution_errors": [
+        "Example 1: Execution error: 'await' outside function (<string>, line 7)",
+        "Example 2: Execution error: 'await' outside function (<string>, line 10)",
+        "Example 3: Execution error: name 'Any' is not defined"
+      ]
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "language": "python",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [],
+      "execution_errors": [
+        "Example 1: Execution error: __build_class__ not found"
+      ]
+    },
+    {
+      "skill_name": "database_design_expert",
+      "language": "python",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [],
+      "execution_errors": [
+        "Example 1: Execution error: __import__ not found"
+      ]
+    },
+    {
+      "skill_name": "database_design_expert",
+      "language": "json",
+      "examples_found": 1,
+      "compiled_successfully": 0,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "skill_name": "typescript_expert",
+      "language": "javascript",
+      "examples_found": 2,
+      "compiled_successfully": 2,
+      "executed_successfully": 2,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "typescript_expert",
+      "language": "typescript",
+      "examples_found": 43,
+      "compiled_successfully": 43,
+      "executed_successfully": 43,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "typescript_expert",
+      "language": "json",
+      "examples_found": 12,
+      "compiled_successfully": 9,
+      "executed_successfully": 9,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 9: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 10: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 9: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 10: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)"
+      ]
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "language": "javascript",
+      "examples_found": 34,
+      "compiled_successfully": 34,
+      "executed_successfully": 34,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "language": "jsx",
+      "examples_found": 2,
+      "compiled_successfully": 2,
+      "executed_successfully": 2,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "language": "bash",
+      "examples_found": 5,
+      "compiled_successfully": 5,
+      "executed_successfully": 5,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "language": "html",
+      "examples_found": 39,
+      "compiled_successfully": 39,
+      "executed_successfully": 39,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "language": "css",
+      "examples_found": 5,
+      "compiled_successfully": 5,
+      "executed_successfully": 5,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "supabase_expert",
+      "language": "javascript",
+      "examples_found": 59,
+      "compiled_successfully": 59,
+      "executed_successfully": 59,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "supabase_expert",
+      "language": "typescript",
+      "examples_found": 19,
+      "compiled_successfully": 19,
+      "executed_successfully": 19,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "supabase_expert",
+      "language": "bash",
+      "examples_found": 21,
+      "compiled_successfully": 21,
+      "executed_successfully": 21,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "language": "javascript",
+      "examples_found": 2,
+      "compiled_successfully": 2,
+      "executed_successfully": 2,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "language": "bash",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "language": "html",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "language": "javascript",
+      "examples_found": 17,
+      "compiled_successfully": 17,
+      "executed_successfully": 17,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "language": "javascript",
+      "examples_found": 2,
+      "compiled_successfully": 2,
+      "executed_successfully": 2,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "language": "typescript",
+      "examples_found": 24,
+      "compiled_successfully": 24,
+      "executed_successfully": 24,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "language": "json",
+      "examples_found": 11,
+      "compiled_successfully": 8,
+      "executed_successfully": 8,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 8: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 9: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 8: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)",
+        "Example 9: JSON error: Expecting property name enclosed in double quotes: line 3 column 5 (char 29)"
+      ]
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "language": "bash",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "vite_expert",
+      "language": "javascript",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "vite_expert",
+      "language": "typescript",
+      "examples_found": 70,
+      "compiled_successfully": 70,
+      "executed_successfully": 70,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "vite_expert",
+      "language": "json",
+      "examples_found": 1,
+      "compiled_successfully": 0,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "skill_name": "vite_expert",
+      "language": "bash",
+      "examples_found": 4,
+      "compiled_successfully": 4,
+      "executed_successfully": 4,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "language": "typescript",
+      "examples_found": 17,
+      "compiled_successfully": 17,
+      "executed_successfully": 17,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "language": "json",
+      "examples_found": 2,
+      "compiled_successfully": 0,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)",
+        "Example 2: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)",
+        "Example 2: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "language": "bash",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 0.5,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "graphql_expert",
+      "language": "javascript",
+      "examples_found": 13,
+      "compiled_successfully": 13,
+      "executed_successfully": 13,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "graphql_expert",
+      "language": "typescript",
+      "examples_found": 4,
+      "compiled_successfully": 4,
+      "executed_successfully": 4,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "api_design_expert",
+      "language": "javascript",
+      "examples_found": 20,
+      "compiled_successfully": 20,
+      "executed_successfully": 20,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "api_design_expert",
+      "language": "typescript",
+      "examples_found": 1,
+      "compiled_successfully": 1,
+      "executed_successfully": 1,
+      "avg_execution_time_ms": 1.0,
+      "compilation_errors": [],
+      "execution_errors": []
+    },
+    {
+      "skill_name": "api_design_expert",
+      "language": "json",
+      "examples_found": 2,
+      "compiled_successfully": 0,
+      "executed_successfully": 0,
+      "avg_execution_time_ms": 0.0,
+      "compilation_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)",
+        "Example 2: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "execution_errors": [
+        "Example 1: JSON error: Expecting value: line 1 column 1 (char 0)",
+        "Example 2: JSON error: Expecting value: line 1 column 1 (char 0)"
+      ]
+    }
+  ]
+}

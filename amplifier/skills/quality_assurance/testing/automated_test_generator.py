@@ -6,19 +6,17 @@ to ensure functionality, correctness, and robustness.
 """
 
 import ast
-import importlib
-import inspect
+import asyncio
 import json
-import sys
+import shutil
 import subprocess
+import sys
+import tempfile
 import traceback
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Callable, Union
 from dataclasses import dataclass
 from enum import Enum
-import asyncio
-import tempfile
-import shutil
+from pathlib import Path
+from typing import Any
 
 from amplifier.mcp.code_execution import execute_in_docker
 from amplifier.mcp.persistent_storage import store_result
@@ -54,10 +52,10 @@ class TestCase:
     name: str
     test_type: TestType
     function_name: str
-    input_data: Dict[str, Any]
+    input_data: dict[str, Any]
     expected_output: Any
     description: str
-    tags: List[str]
+    tags: list[str]
     timeout: int = 30
 
 
@@ -69,9 +67,9 @@ class TestResult:
     status: TestStatus
     actual_output: Any
     execution_time: float
-    error_message: Optional[str]
-    traceback_info: Optional[str]
-    memory_usage: Optional[int]
+    error_message: str | None
+    traceback_info: str | None
+    memory_usage: int | None
 
 
 @dataclass
@@ -79,8 +77,8 @@ class TestSuite:
     """Collection of test cases for a skill."""
 
     skill_path: str
-    test_cases: List[TestCase]
-    test_results: List[TestResult]
+    test_cases: list[TestCase]
+    test_results: list[TestResult]
     coverage_percentage: float
     total_time: float
     passed_count: int
@@ -171,7 +169,7 @@ class AutomatedTestGenerator:
             failed_count=0,
         )
 
-    def _analyze_skill(self, skill_path: Path) -> Dict[str, Any]:
+    def _analyze_skill(self, skill_path: Path) -> dict[str, Any]:
         """Analyze skill structure and extract testable components."""
         analysis = {
             "functions": [],
@@ -186,7 +184,7 @@ class AutomatedTestGenerator:
 
         for py_file in python_files:
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     content = f.read()
 
                 tree = ast.parse(content)
@@ -221,13 +219,13 @@ class AutomatedTestGenerator:
 
         return analysis
 
-    def _collect_python_files(self, path: Path) -> List[Path]:
+    def _collect_python_files(self, path: Path) -> list[Path]:
         """Collect all Python files in the given path."""
         if path.is_file() and path.suffix == ".py":
             return [path]
         return list(path.rglob("*.py"))
 
-    def _generate_unit_tests(self, analysis: Dict[str, Any]) -> List[TestCase]:
+    def _generate_unit_tests(self, analysis: dict[str, Any]) -> list[TestCase]:
         """Generate unit tests for all functions."""
         test_cases = []
 
@@ -241,7 +239,7 @@ class AutomatedTestGenerator:
 
         return test_cases
 
-    def _create_function_test_cases(self, func_info: Dict[str, Any]) -> List[TestCase]:
+    def _create_function_test_cases(self, func_info: dict[str, Any]) -> list[TestCase]:
         """Create test cases for a specific function."""
         test_cases = []
         func_name = func_info["name"]
@@ -289,7 +287,7 @@ class AutomatedTestGenerator:
 
         return test_cases
 
-    def _generate_test_input(self, args: List[str], test_type: str) -> Dict[str, Any]:
+    def _generate_test_input(self, args: list[str], test_type: str) -> dict[str, Any]:
         """Generate test input data based on argument types."""
         input_data = {}
 
@@ -310,20 +308,19 @@ class AutomatedTestGenerator:
 
         if "path" in arg_lower or "file" in arg_lower:
             return "/tmp/test_file.txt"
-        elif "url" in arg_lower:
+        if "url" in arg_lower:
             return "https://example.com"
-        elif "text" in arg_lower or "string" in arg_lower or "content" in arg_lower:
+        if "text" in arg_lower or "string" in arg_lower or "content" in arg_lower:
             return "test string"
-        elif "number" in arg_lower or "count" in arg_lower or "length" in arg_lower:
+        if "number" in arg_lower or "count" in arg_lower or "length" in arg_lower:
             return 42
-        elif "list" in arg_lower or "items" in arg_lower or "array" in arg_lower:
+        if "list" in arg_lower or "items" in arg_lower or "array" in arg_lower:
             return [1, 2, 3]
-        elif "dict" in arg_lower or "config" in arg_lower or "settings" in arg_lower:
+        if "dict" in arg_lower or "config" in arg_lower or "settings" in arg_lower:
             return {"key": "value"}
-        elif "bool" in arg_lower or "flag" in arg_lower:
+        if "bool" in arg_lower or "flag" in arg_lower:
             return True
-        else:
-            return "default_value"
+        return "default_value"
 
     def _get_edge_case_value(self, arg_name: str) -> Any:
         """Get edge case test values."""
@@ -331,23 +328,22 @@ class AutomatedTestGenerator:
 
         if "path" in arg_lower:
             return ""  # Empty path
-        elif "text" in arg_lower:
+        if "text" in arg_lower:
             return ""  # Empty string
-        elif "number" in arg_lower:
+        if "number" in arg_lower:
             return 0  # Zero
-        elif "list" in arg_lower:
+        if "list" in arg_lower:
             return []  # Empty list
-        elif "dict" in arg_lower:
+        if "dict" in arg_lower:
             return {}  # Empty dict
-        else:
-            return None  # None value
+        return None  # None value
 
     def _get_invalid_value(self, arg_name: str) -> Any:
         """Get invalid test values."""
         # Return a value that's likely to cause validation errors
         return object()
 
-    def _generate_integration_tests(self, analysis: Dict[str, Any]) -> List[TestCase]:
+    def _generate_integration_tests(self, analysis: dict[str, Any]) -> list[TestCase]:
         """Generate integration tests for skill components."""
         test_cases = []
 
@@ -380,7 +376,7 @@ class AutomatedTestGenerator:
 
         return test_cases
 
-    def _generate_error_handling_tests(self, analysis: Dict[str, Any]) -> List[TestCase]:
+    def _generate_error_handling_tests(self, analysis: dict[str, Any]) -> list[TestCase]:
         """Generate error handling tests."""
         test_cases = []
 
@@ -412,7 +408,7 @@ class AutomatedTestGenerator:
 
         return test_cases
 
-    def _generate_edge_case_tests(self, analysis: Dict[str, Any]) -> List[TestCase]:
+    def _generate_edge_case_tests(self, analysis: dict[str, Any]) -> list[TestCase]:
         """Generate edge case tests."""
         test_cases = []
 
@@ -444,7 +440,7 @@ class AutomatedTestGenerator:
 
         return test_cases
 
-    def _generate_performance_tests(self, analysis: Dict[str, Any]) -> List[TestCase]:
+    def _generate_performance_tests(self, analysis: dict[str, Any]) -> list[TestCase]:
         """Generate performance tests."""
         test_cases = []
 
@@ -541,18 +537,17 @@ class AutomatedTestGenerator:
                     traceback_info=None,
                     memory_usage=peak,
                 )
-            else:
-                return TestResult(
-                    test_case=test_case,
-                    status=TestStatus.FAILED,
-                    actual_output=result.get("output"),
-                    execution_time=execution_time,
-                    error_message=result.get("error"),
-                    traceback_info=result.get("traceback"),
-                    memory_usage=peak,
-                )
+            return TestResult(
+                test_case=test_case,
+                status=TestStatus.FAILED,
+                actual_output=result.get("output"),
+                execution_time=execution_time,
+                error_message=result.get("error"),
+                traceback_info=result.get("traceback"),
+                memory_usage=peak,
+            )
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return TestResult(
                 test_case=test_case,
                 status=TestStatus.FAILED,
@@ -637,11 +632,11 @@ except Exception as e:
             if isinstance(child, ast.Return) and child.value:
                 if isinstance(child.value, ast.Constant):
                     return type(child.value.value).__name__
-                elif isinstance(child.value, ast.List):
+                if isinstance(child.value, ast.List):
                     return "list"
-                elif isinstance(child.value, ast.Dict):
+                if isinstance(child.value, ast.Dict):
                     return "dict"
-                elif isinstance(child.value, ast.NameConstant):
+                if isinstance(child.value, ast.NameConstant):
                     return type(child.value.value).__name__
 
         return "unknown"
@@ -651,9 +646,7 @@ except Exception as e:
         complexity = 1  # Base complexity
 
         for child in ast.walk(node):
-            if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)):
-                complexity += 1
-            elif isinstance(child, ast.ExceptHandler):
+            if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)) or isinstance(child, ast.ExceptHandler):
                 complexity += 1
             elif isinstance(child, ast.BoolOp):
                 complexity += len(child.values) - 1

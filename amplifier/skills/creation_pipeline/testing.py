@@ -16,16 +16,14 @@ Features:
 import asyncio
 import json
 import time
-import traceback
-from dataclasses import dataclass, field
-from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
+from enum import Enum
+from typing import Any
 
 from ...mcp.code_execution import execute_in_docker
 from ...utils.logger import get_logger
-from ...utils.token_utils import estimate_tokens
 
 logger = get_logger(__name__)
 
@@ -65,9 +63,9 @@ class TestCase:
     teardown_code: str
     expected_result: Any
     timeout: float = 30.0
-    dependencies: List[str] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -79,12 +77,12 @@ class TestResult:
     status: TestStatus
     duration: float
     output: str
-    error: Optional[str] = None
+    error: str | None = None
     expected_result: Any = None
     actual_result: Any = None
     passed: bool = False
-    performance_metrics: Dict[str, Any] = field(default_factory=dict)
-    coverage_data: Optional[Dict[str, Any]] = None
+    performance_metrics: dict[str, Any] = field(default_factory=dict)
+    coverage_data: dict[str, Any] | None = None
     execution_timestamp: datetime = field(default_factory=datetime.now)
 
 
@@ -93,19 +91,19 @@ class TestSuite:
     """Collection of test cases with execution results."""
 
     suite_name: str
-    test_cases: List[TestCase] = field(default_factory=list)
-    results: List[TestResult] = field(default_factory=list)
-    suite_metadata: Dict[str, Any] = field(default_factory=dict)
+    test_cases: list[TestCase] = field(default_factory=list)
+    results: list[TestResult] = field(default_factory=list)
+    suite_metadata: dict[str, Any] = field(default_factory=dict)
 
     def add_test(self, test_case: TestCase) -> None:
         """Add a test case to the suite."""
         self.test_cases.append(test_case)
 
-    def get_tests_by_type(self, test_type: TestType) -> List[TestCase]:
+    def get_tests_by_type(self, test_type: TestType) -> list[TestCase]:
         """Get test cases filtered by type."""
         return [test for test in self.test_cases if test.test_type == test_type]
 
-    def get_results_by_status(self, status: TestStatus) -> List[TestResult]:
+    def get_results_by_status(self, status: TestStatus) -> list[TestResult]:
         """Get results filtered by status."""
         return [result for result in self.results if result.status == status]
 
@@ -134,8 +132,8 @@ class TestingFramework:
         self.testing_history = []
 
     async def run_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> dict[str, Any]:
         """
         Run comprehensive test suite for a skill.
 
@@ -166,7 +164,7 @@ class TestingFramework:
         return test_report
 
     async def _create_test_suite(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
     ) -> TestSuite:
         """Create comprehensive test suite for the skill."""
         logger.info("Creating test suite")
@@ -202,7 +200,7 @@ class TestingFramework:
         logger.info(f"Created test suite with {len(test_suite.test_cases)} total tests")
         return test_suite
 
-    async def _execute_test_suite(self, test_suite: TestSuite) -> List[TestResult]:
+    async def _execute_test_suite(self, test_suite: TestSuite) -> list[TestResult]:
         """Execute all tests in the suite with parallel execution."""
         logger.info(f"Executing {len(test_suite.test_cases)} tests")
 
@@ -396,8 +394,8 @@ class TestingFramework:
         return "\n".join(execution_parts)
 
     async def _generate_unit_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate unit tests for individual functions."""
         tests = []
 
@@ -419,8 +417,8 @@ class TestingFramework:
         return tests
 
     async def _generate_integration_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate integration tests for component interaction."""
         tests = []
 
@@ -477,8 +475,8 @@ result = skill.process(input_data) if hasattr(skill, 'process') else {{'status':
         return tests
 
     async def _generate_performance_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate performance tests."""
         tests = []
 
@@ -525,8 +523,8 @@ result['performance_metrics'] = performance_metrics
         return tests
 
     async def _generate_compound_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate compound interaction tests."""
         tests = []
 
@@ -578,8 +576,8 @@ workflow_result = {{
         return tests
 
     async def _generate_error_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate error handling tests."""
         tests = []
 
@@ -634,8 +632,8 @@ error_test_result = {{
         return tests
 
     async def _generate_edge_case_tests(
-        self, skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-    ) -> List[TestCase]:
+        self, skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+    ) -> list[TestCase]:
         """Generate edge case tests."""
         tests = []
 
@@ -692,7 +690,7 @@ edge_case_result = {{
 
         return tests
 
-    async def _parse_provided_tests(self, test_code: str, skill_name: str) -> List[TestCase]:
+    async def _parse_provided_tests(self, test_code: str, skill_name: str) -> list[TestCase]:
         """Parse user-provided test code into test cases."""
         tests = []
 
@@ -765,7 +763,7 @@ test_result = {{
 
         return test_case
 
-    def _generate_test_input(self, args: List[str]) -> str:
+    def _generate_test_input(self, args: list[str]) -> str:
         """Generate test input based on function arguments."""
         test_inputs = []
 
@@ -785,7 +783,7 @@ test_result = {{
 
         return ", ".join(test_inputs)
 
-    async def _analyze_test_results(self, results: List[TestResult]) -> Dict[str, Any]:
+    async def _analyze_test_results(self, results: list[TestResult]) -> dict[str, Any]:
         """Analyze test results and generate metrics."""
         total_tests = len(results)
         passed_tests = len([r for r in results if r.passed])
@@ -843,8 +841,8 @@ test_result = {{
         }
 
     async def _generate_test_report(
-        self, skill_name: str, test_suite: TestSuite, results: List[TestResult], metrics: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, skill_name: str, test_suite: TestSuite, results: list[TestResult], metrics: dict[str, Any]
+    ) -> dict[str, Any]:
         """Generate comprehensive test report."""
         report = {
             "skill_name": skill_name,
@@ -879,7 +877,7 @@ test_result = {{
 
         return report
 
-    def _generate_recommendations(self, results: List[TestResult], metrics: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(self, results: list[TestResult], metrics: dict[str, Any]) -> list[str]:
         """Generate recommendations based on test results."""
         recommendations = []
 
@@ -910,11 +908,11 @@ test_result = {{
 
         return recommendations
 
-    def get_testing_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_testing_history(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent testing history."""
         return self.testing_history[-limit:]
 
-    def get_testing_stats(self) -> Dict[str, Any]:
+    def get_testing_stats(self) -> dict[str, Any]:
         """Get testing statistics."""
         if not self.testing_history:
             return {"message": "No testing history available"}
@@ -941,8 +939,8 @@ def indent(text: str, spaces: int) -> str:
 
 # Convenience function for quick testing
 async def run_skill_tests(
-    skill_code: str, test_code: str, skill_name: str, examples: List[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    skill_code: str, test_code: str, skill_name: str, examples: list[dict[str, Any]] = None
+) -> dict[str, Any]:
     """
     Convenience function to run tests for a skill.
 

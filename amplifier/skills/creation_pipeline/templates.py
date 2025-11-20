@@ -12,11 +12,10 @@ Templates include:
 - Transformation skills
 """
 
-import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...utils.logger import get_logger
 
@@ -54,15 +53,15 @@ class SkillTemplate:
     description: str
     category: SkillCategory
     complexity: SkillComplexity
-    input_schema: Dict[str, Any]
-    output_schema: Dict[str, Any]
+    input_schema: dict[str, Any]
+    output_schema: dict[str, Any]
     code_template: str
     test_template: str
     documentation_template: str
-    dependencies: List[str] = field(default_factory=list)
-    requirements: List[str] = field(default_factory=list)
-    examples: List[Dict[str, Any]] = field(default_factory=list)
-    tags: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    requirements: list[str] = field(default_factory=list)
+    examples: list[dict[str, Any]] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     version: str = "1.0.0"
 
 
@@ -78,7 +77,7 @@ class SkillTemplateManager:
     """
 
     def __init__(self):
-        self.templates: Dict[str, SkillTemplate] = {}
+        self.templates: dict[str, SkillTemplate] = {}
         self._register_builtin_templates()
 
     def _register_builtin_templates(self) -> None:
@@ -285,13 +284,13 @@ class SkillTemplateManager:
         self.templates[template.template_id] = template
         logger.info(f"Registered template: {template.name} ({template.template_id})")
 
-    def get_template(self, template_id: str) -> Optional[SkillTemplate]:
+    def get_template(self, template_id: str) -> SkillTemplate | None:
         """Get a template by ID."""
         return self.templates.get(template_id)
 
     def list_templates(
-        self, category: Optional[SkillCategory] = None, complexity: Optional[SkillComplexity] = None
-    ) -> List[SkillTemplate]:
+        self, category: SkillCategory | None = None, complexity: SkillComplexity | None = None
+    ) -> list[SkillTemplate]:
         """List templates with optional filtering."""
         templates = list(self.templates.values())
 
@@ -303,7 +302,7 @@ class SkillTemplateManager:
 
         return templates
 
-    def search_templates(self, query: str) -> List[SkillTemplate]:
+    def search_templates(self, query: str) -> list[SkillTemplate]:
         """Search templates by name, description, or tags."""
         query_lower = query.lower()
         matching_templates = []
@@ -319,8 +318,8 @@ class SkillTemplateManager:
         return matching_templates
 
     def generate_skill_from_template(
-        self, template_id: str, skill_name: str, customizations: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+        self, template_id: str, skill_name: str, customizations: dict[str, Any] = None
+    ) -> dict[str, Any]:
         """Generate skill code from template with customizations."""
         template = self.get_template(template_id)
         if not template:
@@ -361,8 +360,8 @@ class SkillTemplateManager:
         description: str,
         category: SkillCategory,
         complexity: SkillComplexity,
-        input_schema: Dict[str, Any],
-        output_schema: Dict[str, Any],
+        input_schema: dict[str, Any],
+        output_schema: dict[str, Any],
         code_template: str,
         **kwargs,
     ) -> SkillTemplate:
@@ -2410,7 +2409,7 @@ MIT License
 
     def _get_validation_template(self) -> str:
         """Get validation code template."""
-        return '''
+        return r'''
 """
 {skill_name} - Data Validation Skill
 
@@ -2913,7 +2912,7 @@ def create_range_rule(field_path: str, min_val: float = None, max_val: float = N
 
     def _get_validation_test_template(self) -> str:
         """Get validation test template."""
-        return '''
+        return r'''
 """
 Tests for {skill_name}
 
@@ -3305,7 +3304,7 @@ if __name__ == "__main__":
 
     def _get_validation_doc_template(self) -> str:
         """Get validation documentation template."""
-        return """
+        return r"""
 # {skill_name}
 
 {description}

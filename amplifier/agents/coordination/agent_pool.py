@@ -17,10 +17,6 @@ from dataclasses import field
 from datetime import datetime
 from enum import Enum
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
 
 from ...utils.logger import get_logger
 from ..dynamic_loader import DynamicAgentLoader
@@ -44,9 +40,9 @@ class AgentCapability:
     """Agent capability definition for routing decisions."""
 
     name: str
-    tags: Set[str]
-    input_types: List[str]
-    output_types: List[str]
+    tags: set[str]
+    input_types: list[str]
+    output_types: list[str]
     max_concurrent_tasks: int = 1
     average_runtime_seconds: float = 10.0
     success_rate: float = 0.95
@@ -74,20 +70,20 @@ class AgentInfo:
 
     agent_id: str
     name: str
-    capabilities: List[AgentCapability]
+    capabilities: list[AgentCapability]
     status: AgentStatus
     current_task_count: int = 0
     max_concurrent_tasks: int = 1
-    last_health_check: Optional[datetime] = None
+    last_health_check: datetime | None = None
     total_tasks_completed: int = 0
     total_tasks_failed: int = 0
     average_task_time: float = 0.0
     memory_usage_mb: float = 0.0
     cpu_usage_percent: float = 0.0
     created_at: datetime = field(default_factory=datetime.now)
-    last_used: Optional[datetime] = None
+    last_used: datetime | None = None
     error_count: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class AgentPool:
@@ -95,11 +91,11 @@ class AgentPool:
 
     def __init__(self, config: PoolConfiguration):
         self.config = config
-        self.agents: Dict[str, AgentInfo] = {}
+        self.agents: dict[str, AgentInfo] = {}
         self.agent_loader = DynamicAgentLoader()
-        self.active_tasks: Dict[str, str] = {}  # task_id -> agent_id
+        self.active_tasks: dict[str, str] = {}  # task_id -> agent_id
         self._lock = asyncio.Lock()
-        self._health_check_task: Optional[asyncio.Task] = None
+        self._health_check_task: asyncio.Task | None = None
 
     async def initialize(self) -> None:
         """Initialize the agent pool and start health monitoring."""
@@ -166,7 +162,7 @@ class AgentPool:
                 logger.error(f"Error adding agent {agent_name}: {e}")
                 return False
 
-    def _extract_capabilities(self, agent_content: str) -> List[AgentCapability]:
+    def _extract_capabilities(self, agent_content: str) -> list[AgentCapability]:
         """Extract capabilities from agent content."""
         # This is a simplified extraction - in production, would parse agent definition
         capabilities = [
@@ -193,7 +189,7 @@ class AgentPool:
 
         return capabilities
 
-    async def get_available_agent(self, required_tags: Set[str]) -> Optional[AgentInfo]:
+    async def get_available_agent(self, required_tags: set[str]) -> AgentInfo | None:
         """Get an available agent that matches the required tags."""
         async with self._lock:
             # Find agents with matching capabilities
@@ -222,10 +218,10 @@ class AgentPool:
             # Select agent based on load balancing strategy
             if self.config.load_balancing_strategy == "least_busy":
                 return min(matching_agents, key=lambda a: a.current_task_count)
-            elif self.config.load_balancing_strategy == "fastest":
+            if self.config.load_balancing_strategy == "fastest":
                 return min(matching_agents, key=lambda a: a.average_task_time)
-            else:  # round_robin or default
-                return matching_agents[0]
+            # round_robin or default
+            return matching_agents[0]
 
     async def assign_task(self, agent_id: str, task_id: str) -> bool:
         """Assign a task to an agent."""
@@ -292,7 +288,7 @@ class AgentPool:
             logger.info(f"Removed agent {agent_info.name} from pool")
             return True
 
-    async def get_pool_status(self) -> Dict[str, Any]:
+    async def get_pool_status(self) -> dict[str, Any]:
         """Get current pool status and statistics."""
         async with self._lock:
             total_agents = len(self.agents)
@@ -391,7 +387,7 @@ class AgentPool:
 class AgentPoolManager:
     """High-level manager for agent pool operations."""
 
-    def __init__(self, config: Optional[PoolConfiguration] = None):
+    def __init__(self, config: PoolConfiguration | None = None):
         self.config = config or PoolConfiguration()
         self.pool = AgentPool(self.config)
         self._initialized = False
@@ -405,12 +401,12 @@ class AgentPoolManager:
         self._initialized = True
         logger.info("Agent pool manager initialized")
 
-    async def get_agent_for_task(self, required_tags: Set[str]) -> Optional[str]:
+    async def get_agent_for_task(self, required_tags: set[str]) -> str | None:
         """Get an agent ID for a task with required capabilities."""
         agent_info = await self.pool.get_available_agent(required_tags)
         return agent_info.agent_id if agent_info else None
 
-    async def ensure_agent_available(self, required_tags: Set[str]) -> bool:
+    async def ensure_agent_available(self, required_tags: set[str]) -> bool:
         """Ensure at least one agent is available for the given tags."""
         # Check if agent already available
         if await self.pool.get_available_agent(required_tags):
@@ -424,7 +420,7 @@ class AgentPoolManager:
 
         return False
 
-    async def _find_agents_by_tags(self, required_tags: Set[str]) -> List[str]:
+    async def _find_agents_by_tags(self, required_tags: set[str]) -> list[str]:
         """Find agents that match the required tags."""
         # This would query the agent registry
         # For now, return some common mappings
@@ -443,7 +439,7 @@ class AgentPoolManager:
 
         return list(potential_agents)
 
-    async def get_status(self) -> Dict[str, Any]:
+    async def get_status(self) -> dict[str, Any]:
         """Get pool manager status."""
         if not self._initialized:
             return {"status": "not_initialized"}

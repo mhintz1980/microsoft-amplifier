@@ -5,13 +5,12 @@ Provides comprehensive React 19 expertise with zero hallucinations.
 Integrates with Agent Lightning for continuous learning and optimization.
 """
 
-import json
 import re
-from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
-from pathlib import Path
+from typing import Any
 
-from api import React19APIs
+from .api import React19APIs
+
 # from patterns import ConcurrentPatterns, PerformancePatterns
 # from typescript import TypeScriptDefinitions
 # from validation import QualityAssurance
@@ -26,9 +25,9 @@ class React19Feature:
     description: str
     api_signature: str
     usage_example: str
-    best_practices: List[str]
-    common_pitfalls: List[str]
-    performance_considerations: List[str]
+    best_practices: list[str]
+    common_pitfalls: list[str]
+    performance_considerations: list[str]
     typescript_types: str
     since_version: str = "19.0.0"
 
@@ -376,7 +375,7 @@ function useActionState<State, Payload>(
             ),
         }
 
-    def get_feature_documentation(self, feature_name: str) -> Optional[React19Feature]:
+    def get_feature_documentation(self, feature_name: str) -> React19Feature | None:
         """
         Get comprehensive documentation for a React 19 feature.
 
@@ -388,7 +387,7 @@ function useActionState<State, Payload>(
         """
         return self.features.get(feature_name.lower())
 
-    def validate_react_19_code(self, code: str) -> Dict[str, Any]:
+    def validate_react_19_code(self, code: str) -> dict[str, Any]:
         """
         Validate React 19 code for best practices and potential issues.
 
@@ -434,7 +433,7 @@ function useActionState<State, Payload>(
 
         return validation_result
 
-    def _validate_actions(self, code: str, result: Dict[str, Any]):
+    def _validate_actions(self, code: str, result: dict[str, Any]):
         """Validate React 19 Actions usage."""
         if "action=" in code:
             # Check for server action patterns
@@ -445,21 +444,21 @@ function useActionState<State, Payload>(
             if "formData" not in code:
                 result["warnings"].append("Action should use FormData for form handling")
 
-    def _validate_optimistic_updates(self, code: str, result: Dict[str, Any]):
+    def _validate_optimistic_updates(self, code: str, result: dict[str, Any]):
         """Validate useOptimistic hook usage."""
         if "useOptimistic" in code:
             # Check for optimistic state indicators
             if "sending" not in code and "pending" not in code:
                 result["recommendations"].append("Add visual indicators for optimistic state changes")
 
-    def _validate_document_metadata(self, code: str, result: Dict[str, Any]):
+    def _validate_document_metadata(self, code: str, result: dict[str, Any]):
         """Validate document metadata usage."""
         if "<meta" in code:
             # Check for important SEO meta tags
             if 'name="description"' not in code:
                 result["recommendations"].append("Add meta description tag for better SEO")
 
-    def _validate_async_scripts(self, code: str, result: Dict[str, Any]):
+    def _validate_async_scripts(self, code: str, result: dict[str, Any]):
         """Validate async scripts usage."""
         if "<script" in code:
             # Check for async attribute
@@ -490,7 +489,7 @@ function useActionState<State, Payload>(
 
         return min(100, max(0, score))
 
-    def generate_optimized_component(self, specification: Dict[str, Any]) -> Dict[str, Any]:
+    def generate_optimized_component(self, specification: dict[str, Any]) -> dict[str, Any]:
         """
         Generate an optimized React 19 component based on specification.
 
@@ -523,7 +522,7 @@ function useActionState<State, Payload>(
             "performance_recommendations": self.performance_patterns.analyze_and_recommend(component_code),
         }
 
-    def _generate_component_code(self, specification: Dict[str, Any]) -> str:
+    def _generate_component_code(self, specification: dict[str, Any]) -> str:
         """Generate React 19 component code based on specification."""
         # This would contain the actual component generation logic
         # For now, return a template
@@ -547,7 +546,7 @@ function {component_name}() {{
 export default {component_name}
         """
 
-    def _generate_explanation(self, specification: Dict[str, Any]) -> str:
+    def _generate_explanation(self, specification: dict[str, Any]) -> str:
         """Generate explanation for the generated component."""
         comp_type = specification.get("type", "functional")
         features = ", ".join(specification.get("features", []))
@@ -563,7 +562,7 @@ Component generated based on specification:
   * Performance optimizations
         """
 
-    def get_performance_optimizations(self, component_code: str) -> List[str]:
+    def get_performance_optimizations(self, component_code: str) -> list[str]:
         """
         Get specific React 19 performance optimization recommendations.
 
@@ -597,7 +596,7 @@ Component generated based on specification:
         if action in self.performance_metrics:
             self.performance_metrics[action] += value
 
-    def get_skill_metrics(self) -> Dict[str, Any]:
+    def get_skill_metrics(self) -> dict[str, Any]:
         """Get comprehensive skill performance metrics."""
         return {
             "performance_metrics": self.performance_metrics,

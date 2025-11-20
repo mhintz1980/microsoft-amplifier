@@ -7,20 +7,16 @@ with zero-configuration setup and validated results.
 
 import asyncio
 import json
-import os
 import subprocess
 import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 @dataclass
@@ -29,9 +25,9 @@ class PerformanceToolConfig:
 
     tool_name: str
     available: bool = False
-    version: Optional[str] = None
-    setup_instructions: Optional[str] = None
-    dependencies: List[str] = None
+    version: str | None = None
+    setup_instructions: str | None = None
+    dependencies: list[str] = None
 
 
 class LighthouseIntegration:
@@ -56,7 +52,7 @@ class LighthouseIntegration:
                 tool_name="Lighthouse CLI", available=False, setup_instructions="npm install -g lighthouse"
             )
 
-    async def run_audit(self, url: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+    async def run_audit(self, url: str, output_path: str | None = None) -> dict[str, Any]:
         """Run Lighthouse audit for the given URL."""
         if not self.config.available:
             raise RuntimeError(f"Lighthouse CLI not available. Install with: {self.config.setup_instructions}")
@@ -83,7 +79,7 @@ class LighthouseIntegration:
                 raise RuntimeError(f"Lighthouse audit failed: {stderr.decode()}")
 
             # Read results
-            with open(output_path, "r") as f:
+            with open(output_path) as f:
                 results = json.load(f)
 
             return self._process_results(results)
@@ -91,7 +87,7 @@ class LighthouseIntegration:
         except Exception as e:
             raise RuntimeError(f"Failed to run Lighthouse audit: {str(e)}")
 
-    def _process_results(self, results: Dict[str, Any]) -> Dict[str, Any]:
+    def _process_results(self, results: dict[str, Any]) -> dict[str, Any]:
         """Process Lighthouse results for easier consumption."""
         audits = results.get("audits", {})
         categories = results.get("categories", {})
@@ -172,7 +168,7 @@ class LighthouseIntegration:
 class WebPageTestIntegration:
     """WebPageTest API integration."""
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         self.api_key = api_key
         self.base_url = "https://www.webpagetest.org"
         self.config = self._check_availability()
@@ -194,7 +190,7 @@ class WebPageTestIntegration:
                 setup_instructions="Check internet connection and API access",
             )
 
-    async def run_test(self, url: str, test_options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def run_test(self, url: str, test_options: dict[str, Any] | None = None) -> dict[str, Any]:
         """Run WebPageTest for the given URL."""
         if not self.config.available:
             raise RuntimeError("WebPageTest API not available")
@@ -231,7 +227,7 @@ class WebPageTestIntegration:
         except Exception as e:
             raise RuntimeError(f"WebPageTest failed: {str(e)}")
 
-    async def _wait_for_results(self, test_id: str, max_wait_time: int = 600) -> Dict[str, Any]:
+    async def _wait_for_results(self, test_id: str, max_wait_time: int = 600) -> dict[str, Any]:
         """Wait for test completion and retrieve results."""
         start_time = time.time()
 
@@ -249,22 +245,21 @@ class WebPageTestIntegration:
 
                     if status_code == 200:  # Test complete
                         return self._process_wpt_results(result)
-                    elif status_code in [100, 101]:  # Test running
+                    if status_code in [100, 101]:  # Test running
                         await asyncio.sleep(10)
                         continue
-                    else:  # Test failed
-                        raise RuntimeError(f"Test failed with status: {status_code}")
-                else:
-                    await asyncio.sleep(5)
-                    continue
+                    # Test failed
+                    raise RuntimeError(f"Test failed with status: {status_code}")
+                await asyncio.sleep(5)
+                continue
 
-            except Exception as e:
+            except Exception:
                 await asyncio.sleep(5)
                 continue
 
         raise TimeoutError(f"Test {test_id} did not complete within {max_wait_time} seconds")
 
-    def _process_wpt_results(self, results: Dict[str, Any]) -> Dict[str, Any]:
+    def _process_wpt_results(self, results: dict[str, Any]) -> dict[str, Any]:
         """Process WebPageTest results."""
         data = results["data"]
         runs = data["runs"]
@@ -329,14 +324,14 @@ class ChromeDevToolsIntegration:
                 available=True,
                 setup_instructions="Install ChromeDriver: https://sites.google.com/chromium.org/driver/",
             )
-        except Exception as e:
+        except Exception:
             return PerformanceToolConfig(
                 tool_name="Chrome DevTools",
                 available=False,
                 setup_instructions="Install ChromeDriver: https://sites.google.com/chromium.org/driver/",
             )
 
-    async def capture_performance_metrics(self, url: str, wait_time: int = 5) -> Dict[str, Any]:
+    async def capture_performance_metrics(self, url: str, wait_time: int = 5) -> dict[str, Any]:
         """Capture performance metrics using Chrome DevTools."""
         if not self.config.available:
             raise RuntimeError(f"Chrome WebDriver not available. {self.config.setup_instructions}")
@@ -385,7 +380,7 @@ class ChromeDevToolsIntegration:
             if driver:
                 driver.quit()
 
-    def _calculate_core_metrics(self, navigation: Dict, resources: List[Dict]) -> Dict[str, Any]:
+    def _calculate_core_metrics(self, navigation: dict, resources: list[dict]) -> dict[str, Any]:
         """Calculate core performance metrics from navigation timing."""
         return {
             "ttfb": navigation.get("responseStart", 0) - navigation.get("requestStart", 0),
@@ -404,7 +399,7 @@ class ChromeDevToolsIntegration:
             ),
         }
 
-    def _parse_performance_logs(self, logs: List[Dict]) -> List[Dict[str, Any]]:
+    def _parse_performance_logs(self, logs: list[dict]) -> list[dict[str, Any]]:
         """Parse performance logs for errors and warnings."""
         errors = []
         for log in logs:
@@ -445,7 +440,7 @@ class BundleAnalyzer:
             setup_instructions="\n".join(setup_instructions) if setup_instructions else None,
         )
 
-    async def analyze_bundle(self, bundle_path: str) -> Dict[str, Any]:
+    async def analyze_bundle(self, bundle_path: str) -> dict[str, Any]:
         """Analyze JavaScript bundle for optimization opportunities."""
         if not self.config.available:
             raise RuntimeError(f"Bundalyzer tools not available. Install with: {self.config.setup_instructions}")
@@ -470,7 +465,7 @@ class BundleAnalyzer:
             "optimization_suggestions": self._generate_optimization_suggestions(bundle_info, dependencies),
         }
 
-    def _get_file_info(self, file_path: str) -> Dict[str, Any]:
+    def _get_file_info(self, file_path: str) -> dict[str, Any]:
         """Get basic file information."""
         path = Path(file_path)
         return {
@@ -481,7 +476,7 @@ class BundleAnalyzer:
             "is_compressed": path.suffix in [".gz", ".br", ".zip"],
         }
 
-    async def _run_bundle_analyzer(self, bundle_path: str) -> Dict[str, Any]:
+    async def _run_bundle_analyzer(self, bundle_path: str) -> dict[str, Any]:
         """Run webpack-bundle-analyzer in JSON mode."""
         try:
             # Note: webpack-bundle-analyzer doesn't have native JSON output
@@ -499,11 +494,11 @@ class BundleAnalyzer:
         except Exception as e:
             return {"error": str(e)}
 
-    async def _analyze_dependencies(self, bundle_path: str) -> List[Dict[str, Any]]:
+    async def _analyze_dependencies(self, bundle_path: str) -> list[dict[str, Any]]:
         """Analyze dependencies in the bundle."""
         try:
             # Simple dependency detection by looking for common patterns
-            with open(bundle_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(bundle_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
             # Look for common library patterns
@@ -525,7 +520,7 @@ class BundleAnalyzer:
         except Exception as e:
             return [{"error": str(e)}]
 
-    def _generate_optimization_suggestions(self, bundle_info: Dict, dependencies: List[Dict]) -> List[Dict[str, Any]]:
+    def _generate_optimization_suggestions(self, bundle_info: dict, dependencies: list[dict]) -> list[dict[str, Any]]:
         """Generate optimization suggestions based on analysis."""
         suggestions = []
 
@@ -561,13 +556,13 @@ class BundleAnalyzer:
 class PerformanceToolsManager:
     """Manager class for all performance testing tools."""
 
-    def __init__(self, webpagetest_api_key: Optional[str] = None):
+    def __init__(self, webpagetest_api_key: str | None = None):
         self.lighthouse = LighthouseIntegration()
         self.webpagetest = WebPageTestIntegration(webpagetest_api_key)
         self.chrome_devtools = ChromeDevToolsIntegration()
         self.bundle_analyzer = BundleAnalyzer()
 
-    async def run_comprehensive_analysis(self, url: str, bundle_path: Optional[str] = None) -> Dict[str, Any]:
+    async def run_comprehensive_analysis(self, url: str, bundle_path: str | None = None) -> dict[str, Any]:
         """Run comprehensive performance analysis using all available tools."""
         results = {"url": url, "timestamp": time.time(), "tools_used": [], "errors": []}
 
@@ -612,7 +607,7 @@ class PerformanceToolsManager:
 
         return results
 
-    def _generate_unified_insights(self, results: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_unified_insights(self, results: dict[str, Any]) -> list[dict[str, Any]]:
         """Generate unified insights from multiple tool results."""
         insights = []
 
@@ -660,7 +655,7 @@ class PerformanceToolsManager:
 
         return insights
 
-    def get_tools_status(self) -> Dict[str, PerformanceToolConfig]:
+    def get_tools_status(self) -> dict[str, PerformanceToolConfig]:
         """Get status of all performance tools."""
         return {
             "lighthouse": self.lighthouse.config,

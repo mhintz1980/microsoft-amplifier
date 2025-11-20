@@ -6,19 +6,19 @@ continuously learn and improve quality standards, validation rules, and
 skill quality across the entire ecosystem.
 """
 
-import json
-import numpy as np
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass, field
-from enum import Enum
-from datetime import datetime, timedelta
-from collections import defaultdict, Counter
 import statistics
-import asyncio
-from pathlib import Path
+from collections import Counter
+from collections import defaultdict
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from typing import Any
 
-from amplifier.mcp.code_execution import execute_in_docker
-from amplifier.mcp.persistent_storage import store_result, retrieve_result
+import numpy as np
+
+from amplifier.mcp.persistent_storage import store_result
 
 
 class LearningType(Enum):
@@ -51,11 +51,11 @@ class LearningInsight:
     title: str
     description: str
     confidence: float
-    evidence: List[str]
+    evidence: list[str]
     recommendation: str
     impact_score: float
     timestamp: datetime
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -63,10 +63,10 @@ class QualityTrend:
     """Quality trend analysis over time."""
 
     metric_name: str
-    time_period: Tuple[datetime, datetime]
+    time_period: tuple[datetime, datetime]
     trend_direction: str  # "improving", "degrading", "stable"
     trend_strength: float
-    data_points: List[Tuple[datetime, float]]
+    data_points: list[tuple[datetime, float]]
     analysis_summary: str
 
 
@@ -79,8 +79,8 @@ class ImprovementAction:
     title: str
     description: str
     priority: str  # "high", "medium", "low"
-    target_skill_patterns: List[str]
-    implementation_steps: List[str]
+    target_skill_patterns: list[str]
+    implementation_steps: list[str]
     expected_impact: float
     status: str = "pending"  # "pending", "in_progress", "completed", "failed"
 
@@ -89,14 +89,14 @@ class ImprovementAction:
 class LearningReport:
     """Comprehensive learning and improvement report."""
 
-    report_period: Tuple[datetime, datetime]
-    insights: List[LearningInsight]
-    trends: List[QualityTrend]
-    improvement_actions: List[ImprovementAction]
+    report_period: tuple[datetime, datetime]
+    insights: list[LearningInsight]
+    trends: list[QualityTrend]
+    improvement_actions: list[ImprovementAction]
     quality_score_change: float
-    key_findings: List[str]
-    recommendations: List[str]
-    next_learning_focus: List[str]
+    key_findings: list[str]
+    recommendations: list[str]
+    next_learning_focus: list[str]
 
 
 class ContinuousImprovement:
@@ -121,10 +121,10 @@ class ContinuousImprovement:
         self.auto_apply_improvements = auto_apply_improvements
 
         # Learning data storage
-        self.quality_history: Dict[str, List[Tuple[datetime, float]]] = defaultdict(list)
-        self.validation_patterns: Dict[str, int] = defaultdict(int)
-        self.feedback_data: List[Dict[str, Any]] = []
-        self.performance_metrics: Dict[str, List[float]] = defaultdict(list)
+        self.quality_history: dict[str, list[tuple[datetime, float]]] = defaultdict(list)
+        self.validation_patterns: dict[str, int] = defaultdict(int)
+        self.feedback_data: list[dict[str, Any]] = []
+        self.performance_metrics: dict[str, list[float]] = defaultdict(list)
 
         # Learning models (simplified ML components)
         self.pattern_detector = PatternDetector()
@@ -132,8 +132,8 @@ class ContinuousImprovement:
         self.trend_analyzer = TrendAnalyzer()
 
         # Improvement tracking
-        self.active_improvements: List[ImprovementAction] = []
-        self.completed_improvements: List[ImprovementAction] = []
+        self.active_improvements: list[ImprovementAction] = []
+        self.completed_improvements: list[ImprovementAction] = []
 
     async def start_learning_cycle(self) -> LearningReport:
         """
@@ -189,7 +189,7 @@ class ContinuousImprovement:
 
         return report
 
-    async def _collect_recent_data(self, start_time: datetime, end_time: datetime) -> Dict[str, Any]:
+    async def _collect_recent_data(self, start_time: datetime, end_time: datetime) -> dict[str, Any]:
         """Collect recent quality data from all sources."""
         recent_data = {
             "validation_results": await self._collect_validation_data(start_time, end_time),
@@ -201,7 +201,7 @@ class ContinuousImprovement:
 
         return recent_data
 
-    async def _collect_validation_data(self, start_time: datetime, end_time: datetime) -> List[Dict]:
+    async def _collect_validation_data(self, start_time: datetime, end_time: datetime) -> list[dict]:
         """Collect validation data from MCP storage."""
         try:
             # In a real implementation, you'd query MCP storage
@@ -219,7 +219,7 @@ class ContinuousImprovement:
         except Exception:
             return []
 
-    async def _collect_performance_data(self, start_time: datetime, end_time: datetime) -> List[Dict]:
+    async def _collect_performance_data(self, start_time: datetime, end_time: datetime) -> list[dict]:
         """Collect performance metrics data."""
         return [
             {
@@ -232,7 +232,7 @@ class ContinuousImprovement:
             for i in range(10)
         ]
 
-    async def _collect_feedback_data(self, start_time: datetime, end_time: datetime) -> List[Dict]:
+    async def _collect_feedback_data(self, start_time: datetime, end_time: datetime) -> list[dict]:
         """Collect user feedback data."""
         return [
             {
@@ -245,7 +245,7 @@ class ContinuousImprovement:
             for i in range(5)
         ]
 
-    async def _collect_security_data(self, start_time: datetime, end_time: datetime) -> List[Dict]:
+    async def _collect_security_data(self, start_time: datetime, end_time: datetime) -> list[dict]:
         """Collect security scan data."""
         return [
             {
@@ -257,7 +257,7 @@ class ContinuousImprovement:
             for i in range(8)
         ]
 
-    async def _collect_compliance_data(self, start_time: datetime, end_time: datetime) -> List[Dict]:
+    async def _collect_compliance_data(self, start_time: datetime, end_time: datetime) -> list[dict]:
         """Collect compliance validation data."""
         return [
             {
@@ -269,7 +269,7 @@ class ContinuousImprovement:
             for i in range(8)
         ]
 
-    async def _generate_insights(self, data: Dict[str, Any]) -> List[LearningInsight]:
+    async def _generate_insights(self, data: dict[str, Any]) -> list[LearningInsight]:
         """Generate learning insights from collected data."""
         insights = []
 
@@ -298,7 +298,7 @@ class ContinuousImprovement:
 
         return filtered_insights
 
-    async def _analyze_quality_trends(self, data: Dict[str, Any]) -> List[QualityTrend]:
+    async def _analyze_quality_trends(self, data: dict[str, Any]) -> list[QualityTrend]:
         """Analyze quality trends over time."""
         trends = []
 
@@ -326,8 +326,8 @@ class ContinuousImprovement:
         return trends
 
     async def _determine_improvement_actions(
-        self, insights: List[LearningInsight], trends: List[QualityTrend]
-    ) -> List[ImprovementAction]:
+        self, insights: list[LearningInsight], trends: list[QualityTrend]
+    ) -> list[ImprovementAction]:
         """Determine improvement actions based on insights and trends."""
         actions = []
 
@@ -349,7 +349,7 @@ class ContinuousImprovement:
 
         return actions
 
-    def _create_action_from_insight(self, insight: LearningInsight) -> Optional[ImprovementAction]:
+    def _create_action_from_insight(self, insight: LearningInsight) -> ImprovementAction | None:
         """Create improvement action from learning insight."""
         if insight.learning_type == LearningType.PATTERN_RECOGNITION:
             return ImprovementAction(
@@ -366,7 +366,7 @@ class ContinuousImprovement:
                 ],
                 expected_impact=insight.impact_score,
             )
-        elif insight.learning_type == LearningType.PERFORMANCE_OPTIMIZATION:
+        if insight.learning_type == LearningType.PERFORMANCE_OPTIMIZATION:
             return ImprovementAction(
                 action_id=f"perf_{insight.insight_id}",
                 improvement_type=ImprovementType.PERFORMANCE_TUNING,
@@ -384,7 +384,7 @@ class ContinuousImprovement:
 
         return None
 
-    def _create_action_from_trend(self, trend: QualityTrend) -> Optional[ImprovementAction]:
+    def _create_action_from_trend(self, trend: QualityTrend) -> ImprovementAction | None:
         """Create improvement action from quality trend."""
         if trend.trend_direction == "degrading":
             return ImprovementAction(
@@ -404,13 +404,13 @@ class ContinuousImprovement:
 
         return None
 
-    def _prioritize_actions(self, actions: List[ImprovementAction]) -> List[ImprovementAction]:
+    def _prioritize_actions(self, actions: list[ImprovementAction]) -> list[ImprovementAction]:
         """Prioritize improvement actions."""
         priority_scores = {"high": 3, "medium": 2, "low": 1}
 
         return sorted(actions, key=lambda x: (priority_scores.get(x.priority, 0), x.expected_impact), reverse=True)
 
-    def _calculate_quality_score_change(self, data: Dict[str, Any]) -> float:
+    def _calculate_quality_score_change(self, data: dict[str, Any]) -> float:
         """Calculate overall quality score change."""
         # Simplified calculation - in practice would use weighted metrics
         validation_scores = [d.get("score", 0) for d in data.get("validation_results", [])]
@@ -428,7 +428,7 @@ class ContinuousImprovement:
 
         return current_avg - baseline_avg
 
-    def _extract_key_findings(self, insights: List[LearningInsight], trends: List[QualityTrend]) -> List[str]:
+    def _extract_key_findings(self, insights: list[LearningInsight], trends: list[QualityTrend]) -> list[str]:
         """Extract key findings from insights and trends."""
         findings = []
 
@@ -445,8 +445,8 @@ class ContinuousImprovement:
         return findings
 
     def _generate_recommendations(
-        self, insights: List[LearningInsight], trends: List[QualityTrend], actions: List[ImprovementAction]
-    ) -> List[str]:
+        self, insights: list[LearningInsight], trends: list[QualityTrend], actions: list[ImprovementAction]
+    ) -> list[str]:
         """Generate recommendations based on analysis."""
         recommendations = []
 
@@ -474,7 +474,7 @@ class ContinuousImprovement:
 
         return recommendations
 
-    def _determine_next_learning_focus(self, insights: List[LearningInsight], trends: List[QualityTrend]) -> List[str]:
+    def _determine_next_learning_focus(self, insights: list[LearningInsight], trends: list[QualityTrend]) -> list[str]:
         """Determine areas for next learning focus."""
         focus_areas = []
 
@@ -500,7 +500,7 @@ class ContinuousImprovement:
 
         return focus_areas
 
-    async def _apply_automatic_improvements(self, actions: List[ImprovementAction]):
+    async def _apply_automatic_improvements(self, actions: list[ImprovementAction]):
         """Apply automatic improvements where possible."""
         for action in actions:
             if action.priority == "high" and action.improvement_type in [
@@ -523,10 +523,10 @@ class ContinuousImprovement:
             if action.improvement_type == ImprovementType.THRESHOLD_ADJUSTMENT:
                 # Adjust validation thresholds
                 return await self._adjust_validation_thresholds(action)
-            elif action.improvement_type == ImprovementType.VALIDATION_RULE_UPDATE:
+            if action.improvement_type == ImprovementType.VALIDATION_RULE_UPDATE:
                 # Update validation rules
                 return await self._update_validation_rules(action)
-            elif action.improvement_type == ImprovementType.PERFORMANCE_TUNING:
+            if action.improvement_type == ImprovementType.PERFORMANCE_TUNING:
                 # Apply performance optimizations
                 return await self._apply_performance_optimizations(action)
         except Exception:
@@ -564,7 +564,7 @@ class ContinuousImprovement:
         )
         return True
 
-    def _analyze_performance_patterns(self, performance_data: List[Dict]) -> List[LearningInsight]:
+    def _analyze_performance_patterns(self, performance_data: list[dict]) -> list[LearningInsight]:
         """Analyze performance patterns for insights."""
         insights = []
 
@@ -593,7 +593,7 @@ class ContinuousImprovement:
 
         return insights
 
-    def _analyze_security_trends(self, security_data: List[Dict]) -> List[LearningInsight]:
+    def _analyze_security_trends(self, security_data: list[dict]) -> list[LearningInsight]:
         """Analyze security trends for insights."""
         insights = []
 
@@ -622,7 +622,7 @@ class ContinuousImprovement:
 
         return insights
 
-    def _analyze_compliance_evolution(self, compliance_data: List[Dict]) -> List[LearningInsight]:
+    def _analyze_compliance_evolution(self, compliance_data: list[dict]) -> list[LearningInsight]:
         """Analyze compliance evolution for insights."""
         insights = []
 
@@ -704,7 +704,7 @@ class ContinuousImprovement:
             data=serialized_report,
         )
 
-    async def _update_learning_models(self, data: Dict[str, Any]):
+    async def _update_learning_models(self, data: dict[str, Any]):
         """Update learning models with new data."""
         # Update pattern detector
         await self.pattern_detector.update_patterns(data)
@@ -731,7 +731,7 @@ class PatternDetector:
         self.patterns = {}
         self.pattern_counts = defaultdict(int)
 
-    async def detect_patterns(self, data: Dict[str, Any]) -> List[LearningInsight]:
+    async def detect_patterns(self, data: dict[str, Any]) -> list[LearningInsight]:
         """Detect patterns in validation and quality data."""
         insights = []
 
@@ -747,7 +747,7 @@ class PatternDetector:
 
         return insights
 
-    def _detect_validation_patterns(self, validation_data: List[Dict]) -> List[LearningInsight]:
+    def _detect_validation_patterns(self, validation_data: list[dict]) -> list[LearningInsight]:
         """Detect patterns in validation results."""
         insights = []
 
@@ -777,7 +777,7 @@ class PatternDetector:
 
         return insights
 
-    def _detect_performance_patterns(self, performance_data: List[Dict]) -> List[LearningInsight]:
+    def _detect_performance_patterns(self, performance_data: list[dict]) -> list[LearningInsight]:
         """Detect patterns in performance data."""
         insights = []
 
@@ -807,14 +807,14 @@ class PatternDetector:
 
         return insights
 
-    async def update_patterns(self, data: Dict[str, Any]):
+    async def update_patterns(self, data: dict[str, Any]):
         """Update pattern detection with new data."""
         # Update internal pattern counts
         for result in data.get("validation_results", []):
             skill_name = result.get("skill_name", "unknown")
             self.pattern_counts[skill_name] += 1
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """Get current pattern detector state."""
         return {"patterns": self.patterns, "pattern_counts": dict(self.pattern_counts)}
 
@@ -826,7 +826,7 @@ class FeedbackAnalyzer:
         self.feedback_history = []
         self.sentiment_patterns = {}
 
-    async def analyze_feedback(self, feedback_data: List[Dict]) -> List[LearningInsight]:
+    async def analyze_feedback(self, feedback_data: list[dict]) -> list[LearningInsight]:
         """Analyze user feedback for insights."""
         insights = []
 
@@ -876,12 +876,12 @@ class FeedbackAnalyzer:
 
         return insights
 
-    async def update_feedback_model(self, feedback_data: List[Dict]):
+    async def update_feedback_model(self, feedback_data: list[dict]):
         """Update feedback analysis model with new data."""
         self.feedback_history.extend(feedback_data)
         # In a more complex implementation, you'd update ML models here
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """Get current feedback analyzer state."""
         return {"feedback_count": len(self.feedback_history), "sentiment_patterns": self.sentiment_patterns}
 
@@ -889,7 +889,7 @@ class FeedbackAnalyzer:
 class TrendAnalyzer:
     """Simplified trend analysis for quality metrics."""
 
-    async def analyze_trend(self, data: List[Dict], metric_name: str, description: str) -> Optional[QualityTrend]:
+    async def analyze_trend(self, data: list[dict], metric_name: str, description: str) -> QualityTrend | None:
         """Analyze trend for a specific metric."""
         if not data or len(data) < 2:
             return None

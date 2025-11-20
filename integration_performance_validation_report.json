@@ -1,0 +1,5378 @@
+{
+  "total_skills": 141,
+  "avg_load_time_ms": 2.02,
+  "avg_memory_mb": 0.01,
+  "agent_lightning_compatible": 63,
+  "mcp_compatible": 37,
+  "critical_issues": [
+    "Integration: claude_code_integration (score: 15)",
+    "Integration: specification_processor (score: 15)",
+    "Integration: code_quality_expert_examples (score: 15)",
+    "Integration: basic_usage (score: 15)",
+    "Integration: token_utils (score: 0)",
+    "Integration: progressive_formatter (score: 0)",
+    "Integration: quality_assurance (score: 0)"
+  ],
+  "integration_tests": [
+    {
+      "skill_name": "context_optimization_examples",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.22
+    },
+    {
+      "skill_name": "context_optimization_examples",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "context_optimization_examples",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "context_optimization_examples",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "context_optimization",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.41
+    },
+    {
+      "skill_name": "context_optimization",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.24
+    },
+    {
+      "skill_name": "context_optimization",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "context_optimization",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_profiler",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "performance_profiler",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "performance_profiler",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_profiler",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "compilation_cache",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "compilation_cache",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "compilation_cache",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "compilation_cache",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "base_types",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "base_types",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "base_types",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "base_types",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "integration_layer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "integration_layer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "integration_layer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "integration_layer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "runtime_validation",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "runtime_validation",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "runtime_validation",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "runtime_validation",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "skill_signature",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "skill_signature",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "skill_signature",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_signature",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "orchestrator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "orchestrator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "orchestrator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "orchestrator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "pipeline",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "pipeline",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "pipeline",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "pipeline",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "pipeline_core",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.32
+    },
+    {
+      "skill_name": "pipeline_core",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.17
+    },
+    {
+      "skill_name": "pipeline_core",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "pipeline_core",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "progress_tracker",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.33
+    },
+    {
+      "skill_name": "progress_tracker",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "progress_tracker",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "progress_tracker",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.2
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "documentation",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "documentation",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "documentation",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "documentation",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "code_generator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "code_generator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "code_generator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "code_generator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "specification_processor",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "specification_processor",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "specification_processor",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "specification_processor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validators",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.12
+    },
+    {
+      "skill_name": "validators",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "validators",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "validators",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "documentation_generator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.27
+    },
+    {
+      "skill_name": "documentation_generator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "documentation_generator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "documentation_generator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "templates",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 1.97
+    },
+    {
+      "skill_name": "templates",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.69
+    },
+    {
+      "skill_name": "templates",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "templates",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "testing",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "testing",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "testing",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "testing",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "skill_matcher",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_matcher",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_matcher",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_matcher",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_template",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_template",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_template",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_template",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "base_skill",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "base_skill",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "base_skill",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "base_skill",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "agent_coordination",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "agent_coordination",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "agent_coordination",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "agent_coordination",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.11
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "template_library",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.33
+    },
+    {
+      "skill_name": "template_library",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.39
+    },
+    {
+      "skill_name": "template_library",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "template_library",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.14
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.34
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.13
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.31
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.54
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.21
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.47
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.17
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 1.23
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.53
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.11
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.46
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.26
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "database_design_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.22
+    },
+    {
+      "skill_name": "database_design_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.33
+    },
+    {
+      "skill_name": "database_design_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "database_design_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "typescript_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.45
+    },
+    {
+      "skill_name": "typescript_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.5
+    },
+    {
+      "skill_name": "typescript_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "typescript_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.86
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.34
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "supabase_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 2.46
+    },
+    {
+      "skill_name": "supabase_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 1.11
+    },
+    {
+      "skill_name": "supabase_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "supabase_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.18
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.22
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.44
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.33
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.2
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.94
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.57
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.14
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.45
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.21
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.45
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.25
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "performance_examples",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.36
+    },
+    {
+      "skill_name": "performance_examples",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.2
+    },
+    {
+      "skill_name": "performance_examples",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "performance_examples",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "vite_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 1.02
+    },
+    {
+      "skill_name": "vite_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.55
+    },
+    {
+      "skill_name": "vite_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "vite_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.11
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.41
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.86
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "graphql_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.73
+    },
+    {
+      "skill_name": "graphql_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.3
+    },
+    {
+      "skill_name": "graphql_expert",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.16
+    },
+    {
+      "skill_name": "graphql_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.37
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.19
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "api_design_expert",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.62
+    },
+    {
+      "skill_name": "api_design_expert",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.29
+    },
+    {
+      "skill_name": "api_design_expert",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.15
+    },
+    {
+      "skill_name": "api_design_expert",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.41
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.21
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "config",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "config",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "config",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "config",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "integration_manager",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "integration_manager",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "integration_manager",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "integration_manager",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.19
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.65
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "integration_connectors",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.12
+    },
+    {
+      "skill_name": "integration_connectors",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "integration_connectors",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "integration_connectors",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "backup_recovery",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.13
+    },
+    {
+      "skill_name": "backup_recovery",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "backup_recovery",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "backup_recovery",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "distributed_storage",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "distributed_storage",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "distributed_storage",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "distributed_storage",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.13
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.13
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "task_queue",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "task_queue",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "task_queue",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "task_queue",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "load_balancer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "load_balancer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "load_balancer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "load_balancer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "worker_pool",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "worker_pool",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "worker_pool",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "worker_pool",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "performance_validator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "performance_validator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "performance_validator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "performance_validator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.55
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.33
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.14
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "integration_tester",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.15
+    },
+    {
+      "skill_name": "integration_tester",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "integration_tester",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "integration_tester",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "metrics_collector",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "metrics_collector",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "metrics_collector",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "metrics_collector",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "arena_allocator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "arena_allocator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "arena_allocator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "arena_allocator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "memory_monitor",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "memory_monitor",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "memory_monitor",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "memory_monitor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "garbage_collector",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "garbage_collector",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "garbage_collector",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "garbage_collector",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "memory_pool",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "memory_pool",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "memory_pool",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "memory_pool",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "test_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_base_types",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "test_base_types",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_base_types",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "test_base_types",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "basic_usage",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validation_utils",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "validation_utils",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validation_utils",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validation_utils",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "file_utils",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "file_utils",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "file_utils",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "file_utils",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "token_utils",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "token_utils",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "token_utils",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "token_utils",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "mcp_integration",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "auto_generator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "auto_generator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "auto_generator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "auto_generator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "version_manager",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.28
+    },
+    {
+      "skill_name": "version_manager",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.14
+    },
+    {
+      "skill_name": "version_manager",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "version_manager",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "template_engine",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "template_engine",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "template_engine",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "template_engine",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "quality_validator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "quality_validator",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "quality_validator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "quality_validator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "simple_test",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "simple_test",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "simple_test",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "simple_test",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "examples",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.54
+    },
+    {
+      "skill_name": "examples",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.28
+    },
+    {
+      "skill_name": "examples",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.14
+    },
+    {
+      "skill_name": "examples",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "test_validation",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "test_validation",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "test_validation",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "test_validation",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "api",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "api",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "api",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "api",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "typescript",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.12
+    },
+    {
+      "skill_name": "typescript",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "typescript",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "typescript",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "accessibility",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.32
+    },
+    {
+      "skill_name": "accessibility",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.15
+    },
+    {
+      "skill_name": "accessibility",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "accessibility",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "agent_lightning",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Agent Lightning",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.11
+    },
+    {
+      "skill_name": "core",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.12
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.01
+    },
+    {
+      "skill_name": "validation",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "MCP",
+      "test_passed": false,
+      "error_message": "No MCP integration found",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Error Handling",
+      "test_passed": false,
+      "error_message": "No error handling patterns found",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "quality_assurance",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.08
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "performance_monitor",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.06
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.09
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "compliance_validator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.1
+    },
+    {
+      "skill_name": "compliance_validator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "compliance_validator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "compliance_validator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "security_scanner",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.07
+    },
+    {
+      "skill_name": "security_scanner",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "security_scanner",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "security_scanner",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.04
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.05
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "integration_type": "Agent Lightning",
+      "test_passed": false,
+      "error_message": "No Agent Lightning integration found",
+      "execution_time_ms": 0.11
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "integration_type": "MCP",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.02
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "integration_type": "Error Handling",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.0
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "integration_type": "Documentation",
+      "test_passed": true,
+      "error_message": "",
+      "execution_time_ms": 0.03
+    }
+  ],
+  "performance_metrics": [
+    {
+      "skill_name": "context_optimization_examples",
+      "load_time_ms": 21.04,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 97.9
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "load_time_ms": 1.99,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "context_optimization",
+      "load_time_ms": 1.57,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "load_time_ms": 1.49,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 15,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "load_time_ms": 1.97,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "load_time_ms": 1.58,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "performance_profiler",
+      "load_time_ms": 1.31,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.87
+    },
+    {
+      "skill_name": "compilation_cache",
+      "load_time_ms": 1.89,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "load_time_ms": 1.5,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "base_types",
+      "load_time_ms": 1.76,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "integration_layer",
+      "load_time_ms": 1.55,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "runtime_validation",
+      "load_time_ms": 1.81,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "skill_signature",
+      "load_time_ms": 1.98,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "load_time_ms": 1.66,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "load_time_ms": 1.73,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "orchestrator",
+      "load_time_ms": 1.9,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "pipeline",
+      "load_time_ms": 1.52,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "pipeline_core",
+      "load_time_ms": 1.57,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "progress_tracker",
+      "load_time_ms": 1.7,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "mcp_integration",
+      "load_time_ms": 2.14,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "load_time_ms": 1.46,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "documentation",
+      "load_time_ms": 1.87,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "quality_assurance",
+      "load_time_ms": 2.3,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.77
+    },
+    {
+      "skill_name": "code_generator",
+      "load_time_ms": 1.39,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.86
+    },
+    {
+      "skill_name": "specification_processor",
+      "load_time_ms": 1.69,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 15,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "validators",
+      "load_time_ms": 2.16,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "documentation_generator",
+      "load_time_ms": 1.98,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "templates",
+      "load_time_ms": 3.6,
+      "peak_memory_mb": 0.5,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.64
+    },
+    {
+      "skill_name": "testing",
+      "load_time_ms": 2.04,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "skill_matcher",
+      "load_time_ms": 1.72,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "skill_template",
+      "load_time_ms": 1.7,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "base_skill",
+      "load_time_ms": 1.63,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "load_time_ms": 1.71,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "load_time_ms": 1.58,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "agent_coordination",
+      "load_time_ms": 1.53,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "load_time_ms": 1.56,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "template_library",
+      "load_time_ms": 2.6,
+      "peak_memory_mb": 0.12,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.74
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "load_time_ms": 1.56,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "load_time_ms": 1.6,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "load_time_ms": 1.61,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "load_time_ms": 1.61,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "load_time_ms": 1.51,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "load_time_ms": 1.86,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "quality_assurance",
+      "load_time_ms": 2.02,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "load_time_ms": 2.39,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.76
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "load_time_ms": 2.1,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "load_time_ms": 1.84,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "database_design_expert",
+      "load_time_ms": 2.26,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.77
+    },
+    {
+      "skill_name": "typescript_expert",
+      "load_time_ms": 2.65,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.74
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "load_time_ms": 2.4,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.76
+    },
+    {
+      "skill_name": "supabase_expert",
+      "load_time_ms": 4.05,
+      "peak_memory_mb": 0.12,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.59
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "load_time_ms": 1.5,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "load_time_ms": 1.5,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "load_time_ms": 1.98,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "load_time_ms": 2.26,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.77
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "load_time_ms": 2.01,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "load_time_ms": 1.98,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 15,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "load_time_ms": 2.29,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.77
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "load_time_ms": 2.01,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 30,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "load_time_ms": 1.84,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "load_time_ms": 2.3,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.77
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "load_time_ms": 1.99,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "performance_examples",
+      "load_time_ms": 1.77,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "vite_expert",
+      "load_time_ms": 2.98,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.7
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "load_time_ms": 2.07,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "load_time_ms": 1.74,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "load_time_ms": 2.18,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "graphql_expert",
+      "load_time_ms": 2.37,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.76
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "load_time_ms": 1.8,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "load_time_ms": 1.78,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "load_time_ms": 2.0,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "api_design_expert",
+      "load_time_ms": 2.16,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "load_time_ms": 1.99,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "load_time_ms": 2.07,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "test_integration",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "load_time_ms": 2.06,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "config",
+      "load_time_ms": 1.69,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "load_time_ms": 2.04,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "load_time_ms": 1.75,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "integration_manager",
+      "load_time_ms": 1.81,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "load_time_ms": 1.86,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "load_time_ms": 1.66,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "performance_monitor",
+      "load_time_ms": 1.89,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 85,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "load_time_ms": 1.7,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "load_time_ms": 2.01,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "basic_usage",
+      "load_time_ms": 1.95,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 15,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "integration_connectors",
+      "load_time_ms": 1.73,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "backup_recovery",
+      "load_time_ms": 1.77,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "load_time_ms": 1.7,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "distributed_storage",
+      "load_time_ms": 1.76,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "performance_monitor",
+      "load_time_ms": 2.0,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "load_time_ms": 1.9,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 30,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "load_time_ms": 1.54,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "task_queue",
+      "load_time_ms": 1.93,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "load_balancer",
+      "load_time_ms": 1.87,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "load_time_ms": 2.06,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "worker_pool",
+      "load_time_ms": 1.79,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "performance_validator",
+      "load_time_ms": 2.17,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "load_time_ms": 2.22,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "quality_assurance",
+      "load_time_ms": 1.71,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "integration_tester",
+      "load_time_ms": 2.47,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.75
+    },
+    {
+      "skill_name": "metrics_collector",
+      "load_time_ms": 1.96,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "arena_allocator",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "memory_monitor",
+      "load_time_ms": 1.59,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "garbage_collector",
+      "load_time_ms": 1.72,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "memory_pool",
+      "load_time_ms": 1.57,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "test_integration",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "test_base_types",
+      "load_time_ms": 1.81,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "load_time_ms": 1.62,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "basic_usage",
+      "load_time_ms": 1.71,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "validation_utils",
+      "load_time_ms": 1.85,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "file_utils",
+      "load_time_ms": 1.76,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "token_utils",
+      "load_time_ms": 1.53,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 0,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "mcp_integration",
+      "load_time_ms": 1.87,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "auto_generator",
+      "load_time_ms": 1.84,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "load_time_ms": 1.8,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "load_time_ms": 1.74,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 0,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "load_time_ms": 1.85,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "version_manager",
+      "load_time_ms": 1.89,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "template_engine",
+      "load_time_ms": 2.08,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "quality_validator",
+      "load_time_ms": 2.05,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 40,
+      "performance_score": 99.79
+    },
+    {
+      "skill_name": "simple_test",
+      "load_time_ms": 1.76,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "examples",
+      "load_time_ms": 2.59,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.74
+    },
+    {
+      "skill_name": "agent_lightning",
+      "load_time_ms": 1.91,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "test_validation",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "core",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "api",
+      "load_time_ms": 1.44,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.86
+    },
+    {
+      "skill_name": "validation",
+      "load_time_ms": 1.64,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "typescript",
+      "load_time_ms": 1.72,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "accessibility",
+      "load_time_ms": 1.7,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.83
+    },
+    {
+      "skill_name": "agent_lightning",
+      "load_time_ms": 1.48,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 55,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "core",
+      "load_time_ms": 1.41,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 30,
+      "performance_score": 99.86
+    },
+    {
+      "skill_name": "validation",
+      "load_time_ms": 1.83,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": true,
+      "integration_score": 25,
+      "performance_score": 99.82
+    },
+    {
+      "skill_name": "quality_assurance",
+      "load_time_ms": 1.6,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": false,
+      "has_error_handling": false,
+      "integration_score": 0,
+      "performance_score": 99.84
+    },
+    {
+      "skill_name": "performance_monitor",
+      "load_time_ms": 1.53,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.85
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "load_time_ms": 1.89,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "load_time_ms": 2.16,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": true,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 100,
+      "performance_score": 99.78
+    },
+    {
+      "skill_name": "compliance_validator",
+      "load_time_ms": 2.04,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.8
+    },
+    {
+      "skill_name": "security_scanner",
+      "load_time_ms": 1.9,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "load_time_ms": 1.91,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.81
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "load_time_ms": 2.01,
+      "peak_memory_mb": 0,
+      "has_agent_lightning": false,
+      "has_mcp_integration": true,
+      "has_error_handling": true,
+      "integration_score": 70,
+      "performance_score": 99.8
+    }
+  ]
+}

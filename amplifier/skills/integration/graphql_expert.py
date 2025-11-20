@@ -7,12 +7,34 @@ Zero-hallucination enforcement with working examples and performance optimizatio
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillLevel, SkillResult
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 
 
 class GraphQLExpertSkill(BaseSkill):
+
+    def __init__(self):
+        super().__init__(
+            skill_id="graphqlexpert_",
+            name="GraphQLExpert Expert",
+            description="Expert skill for graphqlexpert"
+        )
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "graphqlexpert expertise",
+            "Best practices",
+            "Production solutions"
+        ]
+
+    
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        return isinstance(input_data, str) and len(input_data.strip()) > 0
+
+    
     """
     Expert-level GraphQL implementation patterns for building scalable APIs.
 
@@ -21,23 +43,9 @@ class GraphQLExpertSkill(BaseSkill):
     optimization techniques. All patterns are production-tested.
     """
 
-    @property
-    def description(self) -> str:
-        return "Production-tested GraphQL patterns including schema design, resolvers, Apollo Server, and federation"
 
-    @property
-    def tags(self) -> List[str]:
-        return [
-            "graphql",
-            "schema-design",
-            "resolvers",
-            "apollo-server",
-            "federation",
-            "subscriptions",
-            "performance",
-            "dataloader",
-            "testing",
-        ]
+
+
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the GraphQL query."""
@@ -80,7 +88,7 @@ class GraphQLExpertSkill(BaseSkill):
 
         return 0.2
 
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
+    async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
         """Execute the skill with progressive disclosure."""
         start_time = datetime.now()
 
@@ -94,11 +102,10 @@ class GraphQLExpertSkill(BaseSkill):
         execution_time = (datetime.now() - start_time).total_seconds()
 
         return SkillResult(
-            skill_name=self.skill_name,
-            level=level,
-            content=content,
-            tokens_used=len(content.split()) * 1.3,  # Rough token estimate
+            success=True,
+            data=content,
             execution_time=execution_time,
+            tokens_used=int(len(content) * 1.3),  # Rough token estimate
             metadata={
                 "focus_areas": self._extract_focus_areas(context.query),
                 "performance_optimized": True,
@@ -1154,7 +1161,7 @@ This summary provides the essential GraphQL patterns for building production API
         """Full content with comprehensive patterns and implementation details."""
         return (
             self._get_summary_content(context)
-            + """
+            + r"""
 
 # Complete GraphQL Implementation Guide
 
@@ -2212,7 +2219,7 @@ This comprehensive GraphQL implementation guide provides production-tested patte
 """
         )
 
-    def _extract_focus_areas(self, query: str) -> List[str]:
+    def _extract_focus_areas(self, query: str) -> list[str]:
         """Extract focus areas from the user's query."""
         query_lower = query.lower()
         focus_areas = []

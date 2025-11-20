@@ -6,7 +6,6 @@ system with automated scheduling, incremental backups, and disaster recovery.
 
 import asyncio
 import json
-import shutil
 import uuid
 import zipfile
 from dataclasses import dataclass
@@ -17,8 +16,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from ..utils.logger import get_logger
 from ...mcp.persistent_storage import get_persistent_storage
+from ..utils.logger import get_logger
 
 logger = get_logger(__name__)
 

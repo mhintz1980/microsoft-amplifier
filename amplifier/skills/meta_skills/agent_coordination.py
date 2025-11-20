@@ -23,18 +23,44 @@ Key Benefits:
 """
 
 import asyncio
-import json
 import logging
 import time
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union, Callable
-from dataclasses import dataclass, field
-from pydantic import BaseModel, Field, validator
+from typing import Any
+from typing import Union
 
-from ...mcp.persistent_storage import PersistentStorage
-from ...mcp.code_execution import CodeExecutor
+# Optional pydantic dependency
+try:
+    from pydantic import BaseModel
+    from pydantic import Field
+
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    # Fallback when pydantic is not available
+    def BaseModel(**kwargs):
+        return type("BaseModel", (), kwargs)
+
+    def Field(**kwargs):
+        return kwargs
+
+    PYDANTIC_AVAILABLE = False
+
+# MCP imports with fallbacks
+try:
+    from ...mcp.code_execution import MCPCodeExecutor as CodeExecutor
+except ImportError:
+    try:
+        from ...mcp.code_execution import CodeExecutor
+    except ImportError:
+        CodeExecutor = None
+
+try:
+    from ...mcp.persistent_storage import PersistentStorage
+except ImportError:
+    PersistentStorage = None
 
 logger = logging.getLogger(__name__)
 
@@ -90,8 +116,8 @@ class AgentProfile(BaseModel):
 
     agent_id: str
     agent_name: str
-    capabilities: List[AgentCapability]
-    specialization: Optional[str] = None
+    capabilities: list[AgentCapability]
+    specialization: str | None = None
     max_concurrent_tasks: int = 3
     average_task_time: float = 0.0
     success_rate: float = 1.0
@@ -99,7 +125,7 @@ class AgentProfile(BaseModel):
     current_load: int = 0
     status: AgentStatus = AgentStatus.IDLE
     last_active: datetime = Field(default_factory=datetime.now)
-    performance_history: List[Dict[str, Any]] = Field(default_factory=list)
+    performance_history: list[dict[str, Any]] = Field(default_factory=list)
 
     @property
     def availability(self) -> float:
@@ -122,19 +148,19 @@ class Task(BaseModel):
     task_id: str
     task_type: str
     description: str
-    required_capabilities: List[AgentCapability]
+    required_capabilities: list[AgentCapability]
     priority: TaskPriority = TaskPriority.NORMAL
     estimated_duration: float = 0.0
-    deadline: Optional[datetime] = None
-    dependencies: List[str] = Field(default_factory=list)
-    input_data: Dict[str, Any] = Field(default_factory=dict)
+    deadline: datetime | None = None
+    dependencies: list[str] = Field(default_factory=list)
+    input_data: dict[str, Any] = Field(default_factory=dict)
     status: TaskStatus = TaskStatus.PENDING
-    assigned_agent: Optional[str] = None
+    assigned_agent: str | None = None
     created_at: datetime = Field(default_factory=datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    result: Optional[Dict[str, Any]] = None
-    error_message: Optional[str] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+    result: dict[str, Any] | None = None
+    error_message: str | None = None
     retry_count: int = 0
     max_retries: int = 3
 
@@ -144,7 +170,7 @@ class Task(BaseModel):
         return self.status == TaskStatus.PENDING and len(self.dependencies) == 0
 
     @property
-    def execution_time(self) -> Optional[float]:
+    def execution_time(self) -> float | None:
         """Get actual execution time if completed"""
         if self.started_at and self.completed_at:
             return (self.completed_at - self.started_at).total_seconds()
@@ -185,9 +211,9 @@ class CoordinationContext:
     skill_name: str
     operation_id: str
     coordinator_name: str
-    objectives: List[str]
-    constraints: Dict[str, Any] = field(default_factory=dict)
-    deadline: Optional[datetime] = None
+    objectives: list[str]
+    constraints: dict[str, Any] = field(default_factory=dict)
+    deadline: datetime | None = None
     priority: TaskPriority = TaskPriority.NORMAL
     max_parallel_agents: int = 8
     communication_protocol: str = "mcp"
@@ -201,7 +227,7 @@ class AgentCoordinator:
     with specialized agent routing and real-time coordination monitoring.
     """
 
-    def __init__(self, storage: Optional[PersistentStorage] = None, code_executor: Optional[CodeExecutor] = None):
+    def __init__(self, storage: Union[PersistentStorage, None] = None, code_executor: Union[CodeExecutor, None] = None):
         """
         Initialize agent coordinator.
 
@@ -213,19 +239,19 @@ class AgentCoordinator:
         self.code_executor = code_executor or CodeExecutor()
 
         # Agent registry and management
-        self.registered_agents: Dict[str, AgentProfile] = {}
-        self.task_queue: List[Task] = []
-        self.active_tasks: Dict[str, Task] = {}
-        self.completed_tasks: Dict[str, Task] = {}
+        self.registered_agents: dict[str, AgentProfile] = {}
+        self.task_queue: list[Task] = []
+        self.active_tasks: dict[str, Task] = {}
+        self.completed_tasks: dict[str, Task] = {}
 
         # Coordination metrics
         self.metrics = CoordinationMetrics()
 
         # Communication channels
-        self.communication_channels: Dict[str, asyncio.Queue] = {}
+        self.communication_channels: dict[str, asyncio.Queue] = {}
 
         # Load balancing and routing
-        self.routing_table: Dict[AgentCapability, List[str]] = {}
+        self.routing_table: dict[AgentCapability, list[str]] = {}
         self.load_balancer = LoadBalancer()
 
         # Initialize with default agents
@@ -286,8 +312,8 @@ class AgentCoordinator:
         logger.info(f"Initialized {len(default_agents)} default agents")
 
     async def coordinate_parallel_execution(
-        self, context: CoordinationContext, tasks: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        self, context: CoordinationContext, tasks: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """
         Coordinate parallel execution of multiple tasks.
 
@@ -355,7 +381,7 @@ class AgentCoordinator:
             logger.error(f"Parallel coordination failed for {context.skill_name}: {e}")
             raise
 
-    async def _execute_coordinated_tasks(self, context: CoordinationContext, tasks: List[Task]) -> Dict[str, Any]:
+    async def _execute_coordinated_tasks(self, context: CoordinationContext, tasks: list[Task]) -> dict[str, Any]:
         """Execute tasks with coordination and load balancing."""
         results = {}
 
@@ -399,7 +425,7 @@ class AgentCoordinator:
 
         return results
 
-    def _group_tasks_by_dependencies(self, tasks: List[Task]) -> Dict[int, List[Task]]:
+    def _group_tasks_by_dependencies(self, tasks: list[Task]) -> dict[int, list[Task]]:
         """Group tasks by their dependencies."""
         groups = {}
         current_group = 0
@@ -427,7 +453,7 @@ class AgentCoordinator:
 
         return groups
 
-    async def _assign_tasks_to_agents(self, tasks: List[Task]) -> Dict[Task, str]:
+    async def _assign_tasks_to_agents(self, tasks: list[Task]) -> dict[Task, str]:
         """Assign tasks to best-suited agents using load balancing."""
         assignments = {}
 
@@ -453,7 +479,7 @@ class AgentCoordinator:
 
         return assignments
 
-    def _find_suitable_agents(self, task: Task) -> List[str]:
+    def _find_suitable_agents(self, task: Task) -> list[str]:
         """Find agents suitable for executing the task."""
         suitable_agents = []
 
@@ -479,7 +505,7 @@ class AgentCoordinator:
 
         return suitable_agents
 
-    async def _execute_task_with_agent(self, task: Task, agent_id: str) -> Dict[str, Any]:
+    async def _execute_task_with_agent(self, task: Task, agent_id: str) -> dict[str, Any]:
         """Execute a task using a specific agent."""
         logger.info(f"Executing task {task.task_id} with agent {agent_id}")
 
@@ -497,7 +523,7 @@ class AgentCoordinator:
 
             return result
 
-        except Exception as e:
+        except Exception:
             # Update agent metrics for failure
             execution_time = (datetime.now() - task.started_at).total_seconds()
             self._update_agent_metrics(agent, execution_time, False)
@@ -509,7 +535,7 @@ class AgentCoordinator:
             if agent.current_load == 0:
                 agent.status = AgentStatus.IDLE
 
-    async def _simulate_agent_execution(self, task: Task, agent: AgentProfile) -> Dict[str, Any]:
+    async def _simulate_agent_execution(self, task: Task, agent: AgentProfile) -> dict[str, Any]:
         """Simulate agent execution for demonstration."""
         # In practice, this would invoke the actual agent
         await asyncio.sleep(0.1 + len(task.input_data) * 0.01)  # Simulate processing time
@@ -598,7 +624,7 @@ class AgentCoordinator:
             if task.task_id in self.task_queue:
                 self.task_queue.remove(task)
 
-    def _calculate_parallel_efficiency(self, tasks: List[Task], coordination_time: float) -> float:
+    def _calculate_parallel_efficiency(self, tasks: list[Task], coordination_time: float) -> float:
         """Calculate parallel execution efficiency."""
         if len(tasks) <= 1:
             return 1.0
@@ -657,7 +683,7 @@ class AgentCoordinator:
 
         agent.last_active = datetime.now()
 
-    async def _update_coordination_metrics(self, new_metrics: Dict[str, Any]):
+    async def _update_coordination_metrics(self, new_metrics: dict[str, Any]):
         """Update coordination performance metrics."""
         self.metrics.completed_tasks += new_metrics["completed_tasks"]
         self.metrics.failed_tasks += new_metrics["failed_tasks"]
@@ -673,7 +699,7 @@ class AgentCoordinator:
                 + new_metrics["coordination_time"]
             ) / completed_count
 
-    async def get_coordination_report(self) -> Dict[str, Any]:
+    async def get_coordination_report(self) -> dict[str, Any]:
         """Generate comprehensive coordination report."""
         # Agent status summary
         agent_summary = {}
@@ -735,7 +761,7 @@ class AgentCoordinator:
             "recommendations": recommendations,
         }
 
-    def _generate_coordination_recommendations(self) -> List[str]:
+    def _generate_coordination_recommendations(self) -> list[str]:
         """Generate coordination optimization recommendations."""
         recommendations = []
 
@@ -793,8 +819,8 @@ class LoadBalancer:
     """Load balancer for agent task assignment."""
 
     def select_agent(
-        self, task: Task, suitable_agents: List[str], agent_profiles: Dict[str, AgentProfile]
-    ) -> Optional[str]:
+        self, task: Task, suitable_agents: list[str], agent_profiles: dict[str, AgentProfile]
+    ) -> str | None:
         """Select best agent for task using load balancing algorithm."""
         if not suitable_agents:
             return None

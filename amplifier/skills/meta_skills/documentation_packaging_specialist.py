@@ -9,26 +9,24 @@ accurate documentation across all skills with 70-95% token reduction while
 maintaining information content and zero hallucination accuracy.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from pathlib import Path
-import asyncio
-import json
 import time
-from datetime import datetime
-import hashlib
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from typing import Any
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillResult, SkillLevel
-from ..documentation.generation.auto_generator import (
-    AutomaticDocumentationGenerator,
-    GenerationConfig,
-    GenerationResult,
-)
-from ..documentation.core.progressive_formatter import ProgressiveFormatter, DisclosureLevel
+from ..documentation.core.progressive_formatter import DisclosureLevel
+from ..documentation.core.progressive_formatter import ProgressiveFormatter
 from ..documentation.core.quality_validator import DocumentationValidator
+from ..documentation.generation.auto_generator import AutomaticDocumentationGenerator
+from ..documentation.generation.auto_generator import GenerationConfig
 from ..documentation.storage.mcp_integration import MCPDocumentationStorage
-from ..documentation.utils.token_utils import estimate_tokens, optimize_for_tokens, analyze_token_efficiency
+from ..documentation.utils.token_utils import estimate_tokens
+from ..documentation.utils.token_utils import optimize_for_tokens
+from ..skills_framework.skill_template import BaseSkill
+from ..skills_framework.skill_template import SkillContext
+from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.skill_template import SkillResult
 
 
 class DocumentationMode(Enum):
@@ -51,7 +49,7 @@ class PackagingConfig:
     use_mcp_storage: bool = True  # Use persistent storage
     batch_size: int = 10  # Skills to process in parallel
     include_examples: bool = True
-    progressive_levels: List[DisclosureLevel] = field(
+    progressive_levels: list[DisclosureLevel] = field(
         default_factory=lambda: [
             DisclosureLevel.METADATA,
             DisclosureLevel.SUMMARY,
@@ -77,7 +75,7 @@ class PackagingResult:
     processing_time: float = 0.0
     issues_found: int = 0
     issues_fixed: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class DocumentationPackagingSpecialist(BaseSkill):
@@ -117,7 +115,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
         """Meta-skill for automated documentation generation and optimization with 70-95% token reduction."""
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         return [
             "documentation",
             "meta-skill",
@@ -240,23 +238,22 @@ class DocumentationPackagingSpecialist(BaseSkill):
 
         return config
 
-    async def _execute_operation(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _execute_operation(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Execute the configured documentation operation."""
 
         if config.mode == DocumentationMode.GENERATE:
             return await self._generate_documentation(config, context)
-        elif config.mode == DocumentationMode.OPTIMIZE:
+        if config.mode == DocumentationMode.OPTIMIZE:
             return await self._optimize_documentation(config, context)
-        elif config.mode == DocumentationMode.VALIDATE:
+        if config.mode == DocumentationMode.VALIDATE:
             return await self._validate_documentation(config, context)
-        elif config.mode == DocumentationMode.BATCH_PROCESS:
+        if config.mode == DocumentationMode.BATCH_PROCESS:
             return await self._batch_process_skills(config, context)
-        elif config.mode == DocumentationMode.UPDATE:
+        if config.mode == DocumentationMode.UPDATE:
             return await self._update_documentation(config, context)
-        else:
-            raise ValueError(f"Unsupported operation mode: {config.mode}")
+        raise ValueError(f"Unsupported operation mode: {config.mode}")
 
-    async def _generate_documentation(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _generate_documentation(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Generate new documentation for skills."""
 
         # Find skills to document
@@ -325,7 +322,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
             "operation": "generate",
         }
 
-    async def _optimize_documentation(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _optimize_documentation(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Optimize existing documentation for token reduction."""
 
         # Find existing documentation to optimize
@@ -408,7 +405,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
             "operation": "optimize",
         }
 
-    async def _validate_documentation(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _validate_documentation(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Validate documentation accuracy against actual code."""
 
         # Find documentation to validate
@@ -475,21 +472,20 @@ class DocumentationPackagingSpecialist(BaseSkill):
             "operation": "validate",
         }
 
-    async def _batch_process_skills(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _batch_process_skills(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Process multiple skills with configured operations."""
 
         # Determine operation from context
         if "generate" in context.query.lower():
             return await self._generate_documentation(config, context)
-        elif "optimize" in context.query.lower():
+        if "optimize" in context.query.lower():
             return await self._optimize_documentation(config, context)
-        elif "validate" in context.query.lower():
+        if "validate" in context.query.lower():
             return await self._validate_documentation(config, context)
-        else:
-            # Default to generation for batch processing
-            return await self._generate_documentation(config, context)
+        # Default to generation for batch processing
+        return await self._generate_documentation(config, context)
 
-    async def _update_documentation(self, config: PackagingConfig, context: SkillContext) -> Dict[str, Any]:
+    async def _update_documentation(self, config: PackagingConfig, context: SkillContext) -> dict[str, Any]:
         """Update existing documentation with changes."""
 
         # Parse skill names and updates from query
@@ -526,7 +522,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
 
         return {"results": [vars(r) for r in update_results], "operation": "update"}
 
-    def _format_result(self, operation_result: Dict[str, Any], level: SkillLevel) -> str:
+    def _format_result(self, operation_result: dict[str, Any], level: SkillLevel) -> str:
         """Format the operation result based on the requested level."""
 
         results = operation_result.get("results", [])
@@ -535,7 +531,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
         if level == SkillLevel.METADATA:
             return f"Documentation {operation} completed for {len(results)} skills"
 
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             total_tokens_saved = operation_result.get("total_tokens_saved", 0)
             average_compression = operation_result.get("average_compression", 0)
 
@@ -558,12 +554,12 @@ class DocumentationPackagingSpecialist(BaseSkill):
 
             return summary
 
-        elif level in [SkillLevel.FULL]:
+        if level in [SkillLevel.FULL]:
             # Detailed results
             detailed = f"# Documentation {operation.title()} Detailed Report\n\n"
 
             # Summary statistics
-            detailed += f"## Summary\n\n"
+            detailed += "## Summary\n\n"
             detailed += f"- **Operation**: {operation}\n"
             detailed += f"- **Total skills**: {len(results)}\n"
             detailed += f"- **Successful**: {len([r for r in results if r.get('success', False)])}\n"
@@ -572,7 +568,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
             detailed += f"- **Average compression**: {operation_result.get('average_compression', 0):.1%}\n\n"
 
             # Individual results
-            detailed += f"## Individual Results\n\n"
+            detailed += "## Individual Results\n\n"
 
             for result in results:
                 skill_name = result.get("skill_name", "Unknown")
@@ -602,7 +598,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
 
         return f"Documentation {operation} completed with {len(results)} results"
 
-    def _find_skills_to_document(self, query: str) -> List[type]:
+    def _find_skills_to_document(self, query: str) -> list[type]:
         """Find skill classes that need documentation."""
         # In a real implementation, this would scan the skills directory
         # For now, return common skill classes as examples
@@ -615,25 +611,25 @@ class DocumentationPackagingSpecialist(BaseSkill):
             # Add more skills as needed
         ]
 
-    def _find_documentation_to_optimize(self, query: str) -> Dict[str, Dict[str, Any]]:
+    def _find_documentation_to_optimize(self, query: str) -> dict[str, dict[str, Any]]:
         """Find existing documentation to optimize."""
         # In a real implementation, this would load from storage
         # For now, return empty dict
         return {}
 
-    def _find_documentation_to_validate(self, query: str) -> Dict[str, Dict[str, Any]]:
+    def _find_documentation_to_validate(self, query: str) -> dict[str, dict[str, Any]]:
         """Find existing documentation to validate."""
         # In a real implementation, this would load from storage
         # For now, return empty dict
         return {}
 
-    def _get_skill_class(self, skill_name: str) -> Optional[type]:
+    def _get_skill_class(self, skill_name: str) -> type | None:
         """Get skill class by name."""
         # In a real implementation, this would look up the class
         # For now, return None
         return None
 
-    def _parse_update_request(self, query: str) -> Dict[str, Dict[str, Any]]:
+    def _parse_update_request(self, query: str) -> dict[str, dict[str, Any]]:
         """Parse update requests from query."""
         # In a real implementation, this would parse update commands
         # For now, return empty dict
@@ -644,7 +640,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
         # Rough estimate based on typical skill documentation size
         return 2000  # Placeholder
 
-    def _calculate_documentation_tokens(self, documentation: Dict[str, Any]) -> int:
+    def _calculate_documentation_tokens(self, documentation: dict[str, Any]) -> int:
         """Calculate total tokens in documentation."""
         total_tokens = 0
 
@@ -658,7 +654,7 @@ class DocumentationPackagingSpecialist(BaseSkill):
 
         return total_tokens
 
-    def _update_stats(self, operation_result: Dict[str, Any]) -> None:
+    def _update_stats(self, operation_result: dict[str, Any]) -> None:
         """Update internal statistics."""
         results = operation_result.get("results", [])
 
@@ -672,6 +668,6 @@ class DocumentationPackagingSpecialist(BaseSkill):
             count = len(self._stats["accuracy_scores"]) + 1
             self._stats["average_compression"] = ((current_avg * (count - 1)) + new_avg) / count
 
-    def get_performance_stats(self) -> Dict[str, Any]:
+    def get_performance_stats(self) -> dict[str, Any]:
         """Get performance statistics for the specialist."""
         return self._stats.copy()

@@ -5,9 +5,9 @@ Comprehensive collection of production-tested UI patterns and
 design system components built with Tailwind CSS utility classes.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 
 class PatternCategory(Enum):
@@ -31,12 +31,12 @@ class UIComponent:
     category: PatternCategory
     html_structure: str
     tailwind_classes: str
-    variants: Dict[str, str]
-    accessibility_features: List[str]
-    responsive_modifications: Dict[str, str]
+    variants: dict[str, str]
+    accessibility_features: list[str]
+    responsive_modifications: dict[str, str]
     performance_score: int
-    custom_css_required: Optional[str] = None
-    dark_mode_classes: Optional[str] = None
+    custom_css_required: str | None = None
+    dark_mode_classes: str | None = None
 
 
 @dataclass
@@ -47,7 +47,7 @@ class DesignToken:
     css_property: str
     value: str
     description: str
-    usage_examples: List[str]
+    usage_examples: list[str]
 
 
 class TailwindPatternsLibrary:
@@ -726,15 +726,15 @@ class TailwindPatternsLibrary:
             },
         }
 
-    def get_component(self, component_name: str) -> Optional[UIComponent]:
+    def get_component(self, component_name: str) -> UIComponent | None:
         """Get a specific component by name."""
         return self.components.get(component_name)
 
-    def get_components_by_category(self, category: PatternCategory) -> List[UIComponent]:
+    def get_components_by_category(self, category: PatternCategory) -> list[UIComponent]:
         """Get all components in a specific category."""
         return [comp for comp in self.components.values() if comp.category == category]
 
-    def search_components(self, query: str) -> List[UIComponent]:
+    def search_components(self, query: str) -> list[UIComponent]:
         """Search components by name or description."""
         query_lower = query.lower()
         return [
@@ -743,15 +743,15 @@ class TailwindPatternsLibrary:
             if query_lower in comp.name.lower() or query_lower in comp.description.lower()
         ]
 
-    def get_design_token(self, token_name: str) -> Optional[DesignToken]:
+    def get_design_token(self, token_name: str) -> DesignToken | None:
         """Get a specific design token by name."""
         return self.design_tokens.get(token_name)
 
-    def get_tokens_by_property(self, property_name: str) -> List[DesignToken]:
+    def get_tokens_by_property(self, property_name: str) -> list[DesignToken]:
         """Get all design tokens for a specific CSS property."""
         return [token for token in self.design_tokens.values() if token.css_property == property_name]
 
-    def generate_component_code(self, component_name: str, variant: Optional[str] = None) -> str:
+    def generate_component_code(self, component_name: str, variant: str | None = None) -> str:
         """Generate complete HTML code for a component."""
         component = self.get_component(component_name)
         if not component:
@@ -787,7 +787,7 @@ class TailwindPatternsLibrary:
 
         return "\n\n".join(modifications)
 
-    def validate_component_accessibility(self, component_name: str) -> Dict[str, Any]:
+    def validate_component_accessibility(self, component_name: str) -> dict[str, Any]:
         """Validate component accessibility features."""
         component = self.get_component(component_name)
         if not component:
@@ -828,7 +828,7 @@ class TailwindPatternsLibrary:
 
         return validation_result
 
-    def get_performance_optimizations(self, component_name: str) -> List[str]:
+    def get_performance_optimizations(self, component_name: str) -> list[str]:
         """Get performance optimization recommendations for a component."""
         component = self.get_component(component_name)
         if not component:
@@ -882,7 +882,7 @@ class TailwindPatternsLibrary:
 
         return "\n".join(css_vars)
 
-    def export_design_system(self) -> Dict[str, Any]:
+    def export_design_system(self) -> dict[str, Any]:
         """Export complete design system for documentation."""
         return {
             "components": {

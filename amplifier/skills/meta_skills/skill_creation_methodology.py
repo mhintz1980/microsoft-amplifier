@@ -23,18 +23,16 @@ Core Benefits:
 """
 
 import asyncio
-import json
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from ...mcp.code_execution import execute_in_docker
-from ...mcp.persistent_storage import store_result, retrieve_result
+from ...mcp.persistent_storage import store_result
 from ...utils.logger import get_logger
-from ...utils.token_utils import estimate_tokens
 
 logger = get_logger(__name__)
 
@@ -68,10 +66,10 @@ class SkillRequirement:
     description: str
     category: str  # functional, performance, security, usability
     priority: str  # critical, high, medium, low
-    acceptance_criteria: List[str] = field(default_factory=list)
-    dependencies: List[str] = field(default_factory=list)
+    acceptance_criteria: list[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     validation_method: str = "automated"
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    metrics: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -82,11 +80,11 @@ class QualityGate:
     stage: SkillCreationStage
     name: str
     description: str
-    validation_criteria: List[str]
+    validation_criteria: list[str]
     status: QualityGateStatus = QualityGateStatus.PENDING
-    results: Dict[str, Any] = field(default_factory=dict)
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    results: dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
 
 
@@ -98,18 +96,18 @@ class SkillCreationContext:
     skill_name: str = ""
     skill_description: str = ""
     skill_category: str = ""
-    requirements: List[SkillRequirement] = field(default_factory=list)
+    requirements: list[SkillRequirement] = field(default_factory=list)
     current_stage: SkillCreationStage = SkillCreationStage.REQUIREMENTS_ANALYSIS
-    quality_gates: List[QualityGate] = field(default_factory=list)
-    artifacts: Dict[str, Any] = field(default_factory=dict)
-    metrics: Dict[str, Any] = field(default_factory=dict)
-    checkpoints: List[Dict[str, Any]] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    quality_gates: list[QualityGate] = field(default_factory=list)
+    artifacts: dict[str, Any] = field(default_factory=dict)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    checkpoints: list[dict[str, Any]] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     started_at: datetime = field(default_factory=datetime.now)
-    completed_at: Optional[datetime] = None
+    completed_at: datetime | None = None
 
-    def add_checkpoint(self, stage: str, data: Dict[str, Any]) -> None:
+    def add_checkpoint(self, stage: str, data: dict[str, Any]) -> None:
         """Add process checkpoint for recovery."""
         checkpoint = {
             "stage": stage,
@@ -162,7 +160,7 @@ class SkillCreationMethodology:
     """
 
     def __init__(self):
-        self.active_contexts: Dict[str, SkillCreationContext] = {}
+        self.active_contexts: dict[str, SkillCreationContext] = {}
         self.template_categories = self._initialize_template_categories()
         self.quality_gate_templates = self._initialize_quality_gates()
         self.performance_metrics = {
@@ -178,12 +176,12 @@ class SkillCreationMethodology:
         skill_name: str,
         skill_description: str,
         skill_category: str,
-        requirements: List[Dict[str, Any]] = None,
-        input_schema: Dict[str, Any] = None,
-        output_schema: Dict[str, Any] = None,
-        examples: List[Dict[str, Any]] = None,
-        constraints: List[str] = None,
-        performance_targets: Dict[str, Any] = None,
+        requirements: list[dict[str, Any]] = None,
+        input_schema: dict[str, Any] = None,
+        output_schema: dict[str, Any] = None,
+        examples: list[dict[str, Any]] = None,
+        constraints: list[str] = None,
+        performance_targets: dict[str, Any] = None,
     ) -> SkillCreationContext:
         """
         Execute complete 5-stage skill creation methodology.
@@ -245,12 +243,12 @@ class SkillCreationMethodology:
     async def _stage_1_requirements_analysis(
         self,
         context: SkillCreationContext,
-        requirements: List[Dict[str, Any]],
-        input_schema: Dict[str, Any],
-        output_schema: Dict[str, Any],
-        examples: List[Dict[str, Any]],
-        constraints: List[str],
-        performance_targets: Dict[str, Any],
+        requirements: list[dict[str, Any]],
+        input_schema: dict[str, Any],
+        output_schema: dict[str, Any],
+        examples: list[dict[str, Any]],
+        constraints: list[str],
+        performance_targets: dict[str, Any],
     ) -> SkillCreationContext:
         """Stage 1: Comprehensive requirements analysis and specification."""
         logger.info(f"Stage 1: Requirements Analysis for {context.skill_name}")
@@ -604,7 +602,7 @@ class SkillCreationMethodology:
         logger.info(f"Stage 5 completed: Deployment {'READY' if all_quality_gates_passed else 'NOT READY'}")
         return context
 
-    async def _generate_skill_code(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _generate_skill_code(self, context: SkillCreationContext) -> dict[str, Any]:
         """Generate skill code using MCP execution."""
         code_prompt = f"""
         Generate Python code for a skill with these specifications:
@@ -640,10 +638,9 @@ class SkillCreationMethodology:
                 "tokens_used": result.get("tokens_used", 0),
                 "generation_time": result.get("runtime_seconds", 0),
             }
-        else:
-            raise Exception(f"Code generation failed: {result['result']}")
+        raise Exception(f"Code generation failed: {result['result']}")
 
-    async def _generate_test_code(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _generate_test_code(self, context: SkillCreationContext) -> dict[str, Any]:
         """Generate comprehensive test code."""
         test_prompt = f"""
         Generate comprehensive pytest tests for skill:
@@ -676,10 +673,9 @@ class SkillCreationMethodology:
                 "tokens_used": result.get("tokens_used", 0),
                 "generation_time": result.get("runtime_seconds", 0),
             }
-        else:
-            raise Exception(f"Test generation failed: {result['result']}")
+        raise Exception(f"Test generation failed: {result['result']}")
 
-    async def _generate_documentation_outline(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _generate_documentation_outline(self, context: SkillCreationContext) -> dict[str, Any]:
         """Generate documentation outline."""
         return {
             "outline": {
@@ -700,7 +696,7 @@ class SkillCreationMethodology:
             }
         }
 
-    async def _generate_validation_criteria(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _generate_validation_criteria(self, context: SkillCreationContext) -> dict[str, Any]:
         """Generate validation criteria."""
         return {
             "criteria": {
@@ -1143,7 +1139,7 @@ if __name__ == "__main__":
     print(json.dumps({{"tests": generated_tests, "status": "success"}}))
 '''
 
-    async def _select_optimal_template(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _select_optimal_template(self, context: SkillCreationContext) -> dict[str, Any]:
         """Select optimal template based on skill category and requirements."""
         # Template selection logic
         templates = {
@@ -1179,7 +1175,7 @@ if __name__ == "__main__":
 
         return selected_template
 
-    async def _customize_template(self, template: Dict[str, Any], context: SkillCreationContext) -> Dict[str, Any]:
+    async def _customize_template(self, template: dict[str, Any], context: SkillCreationContext) -> dict[str, Any]:
         """Customize template based on specific requirements."""
         customizations = {}
 
@@ -1202,7 +1198,7 @@ if __name__ == "__main__":
             "skill_description": context.skill_description,
         }
 
-    async def _validate_requirements(self, requirements: List[SkillRequirement]) -> Dict[str, Any]:
+    async def _validate_requirements(self, requirements: list[SkillRequirement]) -> dict[str, Any]:
         """Validate requirements for completeness and quality."""
         validation_results = {
             "valid": True,
@@ -1228,8 +1224,8 @@ if __name__ == "__main__":
         return validation_results
 
     async def _validate_template_selection(
-        self, template: Dict[str, Any], context: SkillCreationContext
-    ) -> Dict[str, Any]:
+        self, template: dict[str, Any], context: SkillCreationContext
+    ) -> dict[str, Any]:
         """Validate template selection and customization."""
         validation_results = {
             "valid": True,
@@ -1249,8 +1245,8 @@ if __name__ == "__main__":
         return validation_results
 
     async def _validate_implementation(
-        self, skill_code: Dict[str, Any], context: SkillCreationContext
-    ) -> Dict[str, Any]:
+        self, skill_code: dict[str, Any], context: SkillCreationContext
+    ) -> dict[str, Any]:
         """Validate implementation quality and completeness."""
         if not skill_code:
             return {"valid": False, "issues": ["No skill code generated"], "warnings": [], "metrics": {}}
@@ -1277,7 +1273,7 @@ if __name__ == "__main__":
 
         return validation_results
 
-    async def _zero_hallucination_validation(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _zero_hallucination_validation(self, context: SkillCreationContext) -> dict[str, Any]:
         """Perform zero hallucination validation."""
         # This would implement comprehensive hallucination detection
         return {
@@ -1292,7 +1288,7 @@ if __name__ == "__main__":
             ],
         }
 
-    async def _functional_validation(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _functional_validation(self, context: SkillCreationContext) -> dict[str, Any]:
         """Perform functional validation."""
         # This would test that all functional requirements are met
         return {
@@ -1302,7 +1298,7 @@ if __name__ == "__main__":
             "test_coverage": 0.95,
         }
 
-    async def _performance_validation(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _performance_validation(self, context: SkillCreationContext) -> dict[str, Any]:
         """Perform performance validation."""
         # This would validate performance targets
         return {
@@ -1312,12 +1308,12 @@ if __name__ == "__main__":
             "memory_usage": "optimized",
         }
 
-    async def _security_validation(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _security_validation(self, context: SkillCreationContext) -> dict[str, Any]:
         """Perform security validation."""
         # This would check for security vulnerabilities
         return {"passed": True, "security_issues": [], "vulnerabilities_scanned": True, "safe_for_deployment": True}
 
-    async def _prepare_deployment_package(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _prepare_deployment_package(self, context: SkillCreationContext) -> dict[str, Any]:
         """Prepare deployment package."""
         return {
             "skill_info": {
@@ -1337,7 +1333,7 @@ if __name__ == "__main__":
             "deployment_ready": all(g.status == QualityGateStatus.PASSED for g in context.quality_gates),
         }
 
-    async def _generate_final_documentation(self, context: SkillCreationContext) -> Dict[str, Any]:
+    async def _generate_final_documentation(self, context: SkillCreationContext) -> dict[str, Any]:
         """Generate final comprehensive documentation."""
         return {
             "readme": f"# {context.skill_name}\n\n{context.skill_description}",
@@ -1348,7 +1344,7 @@ if __name__ == "__main__":
             "progressive_disclosure": True,
         }
 
-    def _initialize_template_categories(self) -> Dict[str, List[str]]:
+    def _initialize_template_categories(self) -> dict[str, list[str]]:
         """Initialize template categories."""
         return {
             "data_processing": ["validation", "transformation", "analysis"],
@@ -1358,7 +1354,7 @@ if __name__ == "__main__":
             "general": ["basic", "utility", "helper"],
         }
 
-    def _initialize_quality_gates(self) -> List[Dict[str, Any]]:
+    def _initialize_quality_gates(self) -> list[dict[str, Any]]:
         """Initialize quality gate templates."""
         return [
             {
@@ -1408,7 +1404,7 @@ if __name__ == "__main__":
             total = self.performance_metrics["total_skills_created"]
             self.performance_metrics["success_rate"] = (current_success_rate * (total - 1) + 1.0) / total
 
-    def get_methodology_stats(self) -> Dict[str, Any]:
+    def get_methodology_stats(self) -> dict[str, Any]:
         """Get methodology performance statistics."""
         return {
             **self.performance_metrics,
@@ -1417,7 +1413,7 @@ if __name__ == "__main__":
             "quality_gates_defined": len(self.quality_gate_templates),
         }
 
-    async def get_context_status(self, session_id: str) -> Optional[SkillCreationContext]:
+    async def get_context_status(self, session_id: str) -> SkillCreationContext | None:
         """Get status of skill creation by session ID."""
         return self.active_contexts.get(session_id)
 
@@ -1438,12 +1434,12 @@ async def create_skill_with_methodology(
     skill_name: str,
     skill_description: str,
     skill_category: str,
-    requirements: List[Dict[str, Any]] = None,
-    input_schema: Dict[str, Any] = None,
-    output_schema: Dict[str, Any] = None,
-    examples: List[Dict[str, Any]] = None,
-    constraints: List[str] = None,
-    performance_targets: Dict[str, Any] = None,
+    requirements: list[dict[str, Any]] = None,
+    input_schema: dict[str, Any] = None,
+    output_schema: dict[str, Any] = None,
+    examples: list[dict[str, Any]] = None,
+    constraints: list[str] = None,
+    performance_targets: dict[str, Any] = None,
 ) -> SkillCreationContext:
     """
     Convenient function to create a skill using the methodology.

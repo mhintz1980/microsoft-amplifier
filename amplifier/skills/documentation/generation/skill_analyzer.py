@@ -5,13 +5,13 @@ Analyzes skill classes to extract documentation-relevant information
 including patterns, dependencies, and usage characteristics.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
 import ast
 import inspect
 import re
-from pathlib import Path
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from typing import Any
 
 
 class AnalysisScope(Enum):
@@ -38,16 +38,16 @@ class AnalysisResult:
     skill_name: str
     complexity: ComplexityLevel
     lines_of_code: int
-    inputs: List[Dict[str, Any]] = field(default_factory=list)
-    outputs: List[Dict[str, Any]] = field(default_factory=list)
-    dependencies: List[str] = field(default_factory=list)
-    suggested_tags: List[str] = field(default_factory=list)
-    related_skills: List[str] = field(default_factory=list)
-    usage_patterns: List[str] = field(default_factory=list)
-    examples: List[Dict[str, Any]] = field(default_factory=list)
-    performance_characteristics: Dict[str, Any] = field(default_factory=dict)
-    error_handling: List[str] = field(default_factory=list)
-    integration_points: List[str] = field(default_factory=list)
+    inputs: list[dict[str, Any]] = field(default_factory=list)
+    outputs: list[dict[str, Any]] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    suggested_tags: list[str] = field(default_factory=list)
+    related_skills: list[str] = field(default_factory=list)
+    usage_patterns: list[str] = field(default_factory=list)
+    examples: list[dict[str, Any]] = field(default_factory=list)
+    performance_characteristics: dict[str, Any] = field(default_factory=dict)
+    error_handling: list[str] = field(default_factory=list)
+    integration_points: list[str] = field(default_factory=list)
 
 
 class SkillAnalyzer:
@@ -67,19 +67,19 @@ class SkillAnalyzer:
             "Union": "union",
         }
 
-    async def analyze_skill(self, skill_class: type, scope: AnalysisScope = AnalysisScope.DETAILED) -> Dict[str, Any]:
+    async def analyze_skill(self, skill_class: type, scope: AnalysisScope = AnalysisScope.DETAILED) -> dict[str, Any]:
         """Comprehensive analysis of a skill class."""
 
         if scope == AnalysisScope.BASIC:
             return await self._basic_analysis(skill_class)
-        elif scope == AnalysisScope.DETAILED:
+        if scope == AnalysisScope.DETAILED:
             return await self._detailed_analysis(skill_class)
-        elif scope == AnalysisScope.COMPREHENSIVE:
+        if scope == AnalysisScope.COMPREHENSIVE:
             return await self._comprehensive_analysis(skill_class)
 
         raise ValueError(f"Unknown analysis scope: {scope}")
 
-    async def _basic_analysis(self, skill_class: type) -> Dict[str, Any]:
+    async def _basic_analysis(self, skill_class: type) -> dict[str, Any]:
         """Basic interface analysis."""
 
         analysis = {
@@ -99,7 +99,7 @@ class SkillAnalyzer:
 
         return analysis
 
-    async def _detailed_analysis(self, skill_class: type) -> Dict[str, Any]:
+    async def _detailed_analysis(self, skill_class: type) -> dict[str, Any]:
         """Full code analysis."""
 
         # Start with basic analysis
@@ -119,7 +119,7 @@ class SkillAnalyzer:
 
         return analysis
 
-    async def _comprehensive_analysis(self, skill_class: type) -> Dict[str, Any]:
+    async def _comprehensive_analysis(self, skill_class: type) -> dict[str, Any]:
         """Including dependencies and usage patterns."""
 
         # Start with detailed analysis
@@ -160,7 +160,7 @@ class SkillAnalyzer:
 
         return "No description available"
 
-    def _analyze_method_inputs(self, signature: inspect.Signature) -> List[Dict[str, Any]]:
+    def _analyze_method_inputs(self, signature: inspect.Signature) -> list[dict[str, Any]]:
         """Analyze method signature inputs."""
 
         inputs = []
@@ -183,7 +183,7 @@ class SkillAnalyzer:
 
         return inputs
 
-    def _analyze_method_returns(self, signature: inspect.Signature, skill_class: type) -> List[Dict[str, Any]]:
+    def _analyze_method_returns(self, signature: inspect.Signature, skill_class: type) -> list[dict[str, Any]]:
         """Analyze method return types."""
 
         outputs = []
@@ -213,7 +213,7 @@ class SkillAnalyzer:
 
         return outputs
 
-    def _analyze_source_code(self, tree: ast.AST) -> Dict[str, Any]:
+    def _analyze_source_code(self, tree: ast.AST) -> dict[str, Any]:
         """Analyze AST of source code."""
 
         analysis = {
@@ -226,7 +226,7 @@ class SkillAnalyzer:
         }
 
         # Count lines and analyze complexity
-        lines = ast.get_source_segment(open(tree.__file__, "r").read(), tree) if hasattr(tree, "__file__") else ""
+        lines = ast.get_source_segment(open(tree.__file__).read(), tree) if hasattr(tree, "__file__") else ""
         if lines:
             analysis["lines_of_code"] = len(lines.split("\n"))
 
@@ -257,7 +257,7 @@ class SkillAnalyzer:
 
         return analysis
 
-    def _analyze_dependencies(self, skill_class: type) -> List[str]:
+    def _analyze_dependencies(self, skill_class: type) -> list[str]:
         """Analyze skill dependencies."""
 
         dependencies = []
@@ -280,7 +280,7 @@ class SkillAnalyzer:
 
         return dependencies
 
-    def _analyze_usage_patterns(self, skill_class: type) -> List[str]:
+    def _analyze_usage_patterns(self, skill_class: type) -> list[str]:
         """Analyze common usage patterns."""
 
         patterns = []
@@ -317,7 +317,7 @@ class SkillAnalyzer:
 
         return list(set(patterns))
 
-    def _generate_example_suggestions(self, skill_class: type, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_example_suggestions(self, skill_class: type, analysis: dict[str, Any]) -> list[dict[str, Any]]:
         """Generate suggested code examples."""
 
         examples = []
@@ -340,7 +340,7 @@ class SkillAnalyzer:
 
         return examples
 
-    def _analyze_performance_characteristics(self, skill_class: type, analysis: Dict[str, Any]) -> Dict[str, Any]:
+    def _analyze_performance_characteristics(self, skill_class: type, analysis: dict[str, Any]) -> dict[str, Any]:
         """Analyze performance characteristics."""
 
         performance = {
@@ -398,25 +398,24 @@ class SkillAnalyzer:
 
         if name_lower == "query":
             return "The query or request to process"
-        elif name_lower == "context":
+        if name_lower == "context":
             return "Execution context information"
-        elif name_lower == "level":
+        if name_lower == "level":
             return "Detail level for processing"
-        elif name_lower == "data":
+        if name_lower == "data":
             return "Input data to process"
-        elif name_lower == "config":
+        if name_lower == "config":
             return "Configuration options"
-        elif name_lower == "options":
+        if name_lower == "options":
             return "Processing options"
-        elif name_lower == "input" or name_lower == "inputs":
+        if name_lower == "input" or name_lower == "inputs":
             return "Input parameters"
-        elif name_lower == "output" or name_lower == "outputs":
+        if name_lower == "output" or name_lower == "outputs":
             return "Output format specification"
-        else:
-            # Generate from parameter name
-            return f"The {param_name} parameter"
+        # Generate from parameter name
+        return f"The {param_name} parameter"
 
-    def _extract_tags_from_function_call(self, node: ast.Call) -> List[str]:
+    def _extract_tags_from_function_call(self, node: ast.Call) -> list[str]:
         """Extract relevant tags from function call."""
 
         tags = []
@@ -437,7 +436,7 @@ class SkillAnalyzer:
 
         return tags
 
-    def _create_basic_example(self, skill_class: type, analysis: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_basic_example(self, skill_class: type, analysis: dict[str, Any]) -> dict[str, Any]:
         """Create basic usage example."""
 
         skill_name = skill_class.__name__
@@ -459,7 +458,7 @@ print(result)""",
 
         return example
 
-    def _create_input_specific_example(self, skill_class: type, inputs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _create_input_specific_example(self, skill_class: type, inputs: list[dict[str, Any]]) -> dict[str, Any]:
         """Create example using specific inputs."""
 
         skill_name = skill_class.__name__
@@ -499,7 +498,7 @@ else:
 
         return example
 
-    def _create_error_handling_example(self, skill_class: type) -> Dict[str, Any]:
+    def _create_error_handling_example(self, skill_class: type) -> dict[str, Any]:
         """Create example with error handling."""
 
         skill_name = skill_class.__name__

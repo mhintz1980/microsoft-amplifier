@@ -5,17 +5,21 @@ Comprehensive test suite ensuring zero-hallucination performance recommendations
 and validated optimization patterns.
 """
 
-import asyncio
 import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock
+from unittest.mock import patch
 
-from performance_testing_expert import PerformanceTestingExpertSkill, PerformanceMetric, PerformanceGrade
-from performance_tools_integration import PerformanceToolsManager, LighthouseIntegration
 from agent_lightning_performance_patterns import AgentLightningPerformancePatterns
-from performance_examples import PerformanceOptimizationExamples, PerformanceDemoRunner
+from performance_examples import PerformanceDemoRunner
+from performance_examples import PerformanceOptimizationExamples
+from performance_testing_expert import PerformanceGrade
+from performance_testing_expert import PerformanceMetric
+from performance_testing_expert import PerformanceTestingExpertSkill
+from performance_tools_integration import LighthouseIntegration
+from performance_tools_integration import PerformanceToolsManager
 
 
 class TestPerformanceTestingExpertSkill(unittest.TestCase):
@@ -289,7 +293,7 @@ class TestAgentLightningPerformancePatterns(unittest.TestCase):
             self.assertTrue(Path(export_path).exists())
 
             # Verify export file content
-            with open(export_path, "r") as f:
+            with open(export_path) as f:
                 export_data = json.load(f)
 
             self.assertIn("patterns", export_data)

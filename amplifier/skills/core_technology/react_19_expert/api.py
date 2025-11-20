@@ -5,11 +5,15 @@ Provides type-safe wrappers and utilities for all React 19 APIs
 with zero hallucination guarantee and comprehensive error handling.
 """
 
-import json
 import re
-from typing import Any, Dict, List, Optional, Union, Callable, Awaitable, TypeVar, Generic
-from dataclasses import dataclass, field
+from collections.abc import Awaitable
+from collections.abc import Callable
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
+from typing import Any
+from typing import Generic
+from typing import TypeVar
 
 # Type definitions for React 19
 T = TypeVar("T")
@@ -35,20 +39,20 @@ class ReactAPI:
     type: ReactAPIType
     signature: str
     description: str
-    parameters: List[Dict[str, Any]]
-    returns: Dict[str, Any]
+    parameters: list[dict[str, Any]]
+    returns: dict[str, Any]
     example: str
     since_version: str = "19.0.0"
     deprecated: bool = False
-    alternatives: List[str] = field(default_factory=list)
+    alternatives: list[str] = field(default_factory=list)
 
 
 @dataclass
 class ActionState(Generic[State]):
     """Type-safe representation of action state."""
 
-    data: Optional[State] = None
-    error: Optional[str] = None
+    data: State | None = None
+    error: str | None = None
     pending: bool = False
 
 
@@ -180,15 +184,15 @@ function NameForm({ initialName }) {
             if api_name not in self.apis:
                 raise ValueError(f"Missing required React 19 API: {api_name}")
 
-    def get_api(self, name: str) -> Optional[ReactAPI]:
+    def get_api(self, name: str) -> ReactAPI | None:
         """Get API definition by name."""
         return self.apis.get(name)
 
-    def list_apis_by_type(self, api_type: ReactAPIType) -> List[ReactAPI]:
+    def list_apis_by_type(self, api_type: ReactAPIType) -> list[ReactAPI]:
         """List all APIs of a specific type."""
         return [api for api in self.apis.values() if api.type == api_type]
 
-    def validate_api_usage(self, code: str) -> Dict[str, Any]:
+    def validate_api_usage(self, code: str) -> dict[str, Any]:
         """Validate React 19 API usage in code."""
         validation_result = {"valid": True, "errors": [], "warnings": [], "apis_used": [], "recommendations": []}
 
@@ -200,14 +204,14 @@ function NameForm({ initialName }) {
 
         return validation_result
 
-    def _validate_specific_api(self, api_name: str, code: str, result: Dict[str, Any]):
+    def _validate_specific_api(self, api_name: str, code: str, result: dict[str, Any]):
         """Validate specific React 19 API usage."""
         if api_name == "useOptimistic":
             self._validate_useOptimistic(code, result)
         elif api_name == "useActionState":
             self._validate_useActionState(code, result)
 
-    def _validate_useOptimistic(self, code: str, result: Dict[str, Any]):
+    def _validate_useOptimistic(self, code: str, result: dict[str, Any]):
         """Validate useOptimistic hook usage."""
         # Check for proper pattern
         if "useOptimistic" in code:
@@ -222,7 +226,7 @@ function NameForm({ initialName }) {
             if "sending" not in code and "pending" not in code and "optimistic" not in code.lower():
                 result["recommendations"].append("Add visual indicators for optimistic state changes")
 
-    def _validate_useActionState(self, code: str, result: Dict[str, Any]):
+    def _validate_useActionState(self, code: str, result: dict[str, Any]):
         """Validate useActionState hook usage."""
         if "useActionState" in code:
             # Check for proper array destructuring
@@ -318,7 +322,7 @@ function NewPostForm() {
         self,
         name: str,
         handler: Callable[[FormData], Awaitable[Any]],
-        validation_rules: Optional[Dict[str, Any]] = None,
+        validation_rules: dict[str, Any] | None = None,
     ) -> str:
         """
         Create a type-safe server action with validation.
@@ -351,7 +355,7 @@ export default {name}
 
         return action_code
 
-    def _generate_validation_code(self, rules: Dict[str, Any]) -> str:
+    def _generate_validation_code(self, rules: dict[str, Any]) -> str:
         """Generate validation code from rules."""
         validation_code = "  // Validation\n"
 
@@ -379,7 +383,7 @@ export default {name}
     throw new Error('Invalid email format')
   }}
 """
-        elif field_type == "number":
+        if field_type == "number":
             return f"""
   if ({field} && isNaN(Number({field}))) {{
     throw new Error('Must be a number')
@@ -439,7 +443,7 @@ const [optimisticItems, deleteOptimisticItem] = useOptimistic(
             },
         }
 
-    def create_optimistic_hook(self, pattern_name: str, state_name: str, custom_logic: Optional[str] = None) -> str:
+    def create_optimistic_hook(self, pattern_name: str, state_name: str, custom_logic: str | None = None) -> str:
         """
         Create an optimistic update hook based on common patterns.
 
@@ -524,8 +528,8 @@ class DocumentMetadataAPI(React19APIs):
         title: str,
         description: str,
         url: str,
-        image_url: Optional[str] = None,
-        additional_meta: Optional[List[Dict[str, str]]] = None,
+        image_url: str | None = None,
+        additional_meta: list[dict[str, str]] | None = None,
     ) -> str:
         """
         Generate comprehensive SEO metadata.
@@ -608,7 +612,7 @@ class AsyncScriptsAPI(React19APIs):
         }
 
     def create_script_component(
-        self, script_type: str, src: Optional[str] = None, content: Optional[str] = None, **props
+        self, script_type: str, src: str | None = None, content: str | None = None, **props
     ) -> str:
         """
         Create a script component with proper attributes.
@@ -638,13 +642,12 @@ class AsyncScriptsAPI(React19APIs):
 
             return f"<script {attrs_str} />"
 
-        elif script_type == "inline" and content:
+        if script_type == "inline" and content:
             return f"<script>{content}</script>"
 
-        else:
-            raise ValueError("Invalid script configuration")
+        raise ValueError("Invalid script configuration")
 
-    def get_optimal_loading_strategy(self, script_info: Dict[str, Any]) -> str:
+    def get_optimal_loading_strategy(self, script_info: dict[str, Any]) -> str:
         """
         Get optimal loading strategy for a script.
 
@@ -656,7 +659,6 @@ class AsyncScriptsAPI(React19APIs):
         """
         if script_info.get("critical", False):
             return "Load in head with async={true}"
-        elif script_info.get("defer", False):
+        if script_info.get("defer", False):
             return "Load with defer attribute"
-        else:
-            return "Load with async={true} at end of body"
+        return "Load with async={true} at end of body"

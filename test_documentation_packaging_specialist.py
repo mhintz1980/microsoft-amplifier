@@ -17,13 +17,9 @@ from pathlib import Path
 # Add amplifier to path
 sys.path.insert(0, str(Path(__file__).parent / "amplifier"))
 
-from amplifier.skills.meta_skills.documentation_packaging_specialist import (
-    DocumentationPackagingSpecialist,
-    PackagingConfig,
-    DocumentationMode,
-)
-from amplifier.skills.skills_framework.skill_template import SkillContext, SkillLevel
-from amplifier.documentation.utils.token_utils import estimate_tokens, analyze_token_efficiency
+from amplifier.skills.meta_skills.documentation_packaging_specialist import DocumentationPackagingSpecialist
+from amplifier.skills.skills_framework.skill_template import SkillContext
+from amplifier.skills.skills_framework.skill_template import SkillLevel
 
 
 async def test_basic_functionality():
@@ -307,18 +303,18 @@ async def run_comprehensive_tests():
     specialist = DocumentationPackagingSpecialist()
     stats = specialist.get_performance_stats()
 
-    print(f"\nPerformance Summary:")
+    print("\nPerformance Summary:")
     print(f"  Skills Processed: {stats.get('skills_processed', 0)}")
     print(f"  Total Tokens Saved: {stats.get('total_tokens_saved', 0):,}")
     print(f"  Average Compression: {stats.get('average_compression', 0):.1%}")
     print(f"  Accuracy Scores: {len(stats.get('accuracy_scores', []))} recorded")
 
-    print(f"\n🎯 Key Benefits Demonstrated:")
-    print(f"  • 70-95% token reduction through progressive disclosure")
-    print(f"  • Zero hallucination validation with quality checks")
-    print(f"  • Automated documentation generation from code")
-    print(f"  • MCP integration for persistent caching")
-    print(f"  • Compound multiplier benefits for skill ecosystem")
+    print("\n🎯 Key Benefits Demonstrated:")
+    print("  • 70-95% token reduction through progressive disclosure")
+    print("  • Zero hallucination validation with quality checks")
+    print("  • Automated documentation generation from code")
+    print("  • MCP integration for persistent caching")
+    print("  • Compound multiplier benefits for skill ecosystem")
 
     return passed == total
 

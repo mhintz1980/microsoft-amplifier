@@ -5,12 +5,11 @@ Comprehensive validation system for Tailwind CSS classes, configurations,
 and implementation patterns with zero hallucination guarantee.
 """
 
-import re
 import json
-from typing import Dict, List, Any, Optional, Tuple, Set
+import re
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
+from typing import Any
 
 from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
 
@@ -30,10 +29,10 @@ class ValidationIssue:
     severity: ValidationSeverity
     category: str
     message: str
-    line_number: Optional[int]
-    column_number: Optional[int]
-    suggestion: Optional[str]
-    class_name: Optional[str]
+    line_number: int | None
+    column_number: int | None
+    suggestion: str | None
+    class_name: str | None
 
 
 @dataclass
@@ -41,10 +40,10 @@ class ValidationResult:
     """Result of Tailwind CSS validation."""
 
     is_valid: bool
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     score: int  # 0-100
-    statistics: Dict[str, Any]
-    recommendations: List[str]
+    statistics: dict[str, Any]
+    recommendations: list[str]
 
 
 class TailwindCSSValidator:
@@ -642,7 +641,7 @@ class TailwindCSSValidator:
             },
         }
 
-    def validate_classes(self, class_string: str, context: Optional[Dict[str, Any]] = None) -> ValidationResult:
+    def validate_classes(self, class_string: str, context: dict[str, Any] | None = None) -> ValidationResult:
         """
         Validate Tailwind CSS classes against official specification.
 
@@ -713,8 +712,8 @@ class TailwindCSSValidator:
         )
 
     def _validate_single_class(
-        self, class_name: str, context: Optional[Dict[str, Any]] = None
-    ) -> Tuple[bool, List[ValidationIssue]]:
+        self, class_name: str, context: dict[str, Any] | None = None
+    ) -> tuple[bool, list[ValidationIssue]]:
         """Validate a single Tailwind CSS class."""
         issues = []
         is_valid = False
@@ -906,7 +905,7 @@ class TailwindCSSValidator:
 
         return similarity >= threshold
 
-    def _analyze_performance_impact(self, classes: List[str]) -> List[ValidationIssue]:
+    def _analyze_performance_impact(self, classes: list[str]) -> list[ValidationIssue]:
         """Analyze performance impact of CSS classes."""
         issues = []
 
@@ -955,9 +954,7 @@ class TailwindCSSValidator:
 
         return issues
 
-    def _check_accessibility(
-        self, classes: List[str], context: Optional[Dict[str, Any]] = None
-    ) -> List[ValidationIssue]:
+    def _check_accessibility(self, classes: list[str], context: dict[str, Any] | None = None) -> list[ValidationIssue]:
         """Check accessibility compliance of CSS classes."""
         issues = []
 
@@ -1000,7 +997,7 @@ class TailwindCSSValidator:
 
         return issues
 
-    def _generate_recommendations(self, issues: List[ValidationIssue], statistics: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(self, issues: list[ValidationIssue], statistics: dict[str, Any]) -> list[str]:
         """Generate actionable recommendations based on validation results."""
         recommendations = []
 
@@ -1130,7 +1127,7 @@ class TailwindCSSValidator:
             File validation result
         """
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
 
             # Find all class attributes
@@ -1186,7 +1183,7 @@ class TailwindCSSValidator:
             )
 
     def _generate_file_recommendation(
-        self, total_classes: int, valid_classes: int, issues: List[ValidationIssue]
+        self, total_classes: int, valid_classes: int, issues: list[ValidationIssue]
     ) -> str:
         """Generate recommendation for file validation."""
         if total_classes == 0:
@@ -1197,7 +1194,6 @@ class TailwindCSSValidator:
 
         if error_count == 0 and warning_count == 0:
             return f"✅ All {total_classes} Tailwind classes are valid"
-        elif error_count == 0:
+        if error_count == 0:
             return f"⚠️ {valid_classes}/{total_classes} classes valid, {warning_count} warnings"
-        else:
-            return f"❌ {error_count} errors, {warning_count} warnings out of {total_classes} classes"
+        return f"❌ {error_count} errors, {warning_count} warnings out of {total_classes} classes"

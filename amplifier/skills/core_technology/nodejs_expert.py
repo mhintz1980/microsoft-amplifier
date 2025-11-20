@@ -27,18 +27,17 @@ Agent Lightning Integration:
 - Eliminates incorrect Node.js usage through continuous validation
 """
 
-import json
 import logging
 import os
 import re
 import subprocess
 import tempfile
 import time
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
-from ..skills_framework.base_skill import BaseSkill, SkillContext, SkillResult, SkillMetrics, SkillStatus
-from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 from ..utils.token_utils import estimate_tokens
 
 logger = logging.getLogger(__name__)
@@ -51,7 +50,7 @@ class NodeJSCodeValidator:
         self.node_version_cache = {}
         self.validation_cache = {}
 
-    def validate_syntax(self, code: str) -> tuple[bool, Optional[str]]:
+    def validate_syntax(self, code: str) -> tuple[bool, str | None]:
         """Validate Node.js code syntax"""
         try:
             # Create temporary file
@@ -66,8 +65,7 @@ class NodeJSCodeValidator:
 
                 if result.returncode == 0:
                     return True, None
-                else:
-                    return False, result.stderr
+                return False, result.stderr
 
         except (subprocess.TimeoutExpired, FileNotFoundError):
             # Fallback to basic syntax checking
@@ -77,7 +75,7 @@ class NodeJSCodeValidator:
             except SyntaxError as e:
                 return False, str(e)
 
-    def validate_node_api_usage(self, code: str) -> List[str]:
+    def validate_node_api_usage(self, code: str) -> list[str]:
         """Validate Node.js API usage for common errors"""
         errors = []
 
@@ -129,7 +127,7 @@ class NodeJSPatternOptimizer:
 
         return optimized_code
 
-    def get_performance_recommendations(self, code: str) -> List[str]:
+    def get_performance_recommendations(self, code: str) -> list[str]:
         """Get performance recommendations based on code analysis"""
         recommendations = []
 
@@ -157,14 +155,18 @@ class NodeJSExpertSkill(BaseSkill):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            skill_id="nodejs_expert",
+            name="Node.js Expert",
+            description="Comprehensive Node.js expert providing mastery-level server-side JavaScript development",
+        )
         self.code_validator = NodeJSCodeValidator()
         self.pattern_optimizer = NodeJSPatternOptimizer()
         self.agent_lightning_integration = NodeJSAgentLightningIntegration()
         self.code_cache = {}
         self.pattern_library = self._initialize_pattern_library()
 
-    def _initialize_pattern_library(self) -> Dict[str, Any]:
+    def _initialize_pattern_library(self) -> dict[str, Any]:
         """Initialize comprehensive Node.js pattern library"""
         return {
             "express_patterns": {
@@ -203,14 +205,103 @@ class NodeJSExpertSkill(BaseSkill):
             },
         }
 
-    @property
-    def description(self) -> str:
-        return (
-            "Comprehensive Node.js expert providing mastery-level server-side JavaScript development. "
-            "Includes Node.js core expertise, Express.js mastery, API development, database integration, "
-            "performance optimization, and production deployment with zero-hallucination guaranteed accuracy "
-            "and Agent Lightning optimization."
-        )
+    async def validate_input(self, input_data: Any) -> bool:
+        """
+        Validate input data for Node.js expertise requests
+
+        Args:
+            input_data: The input data to validate
+
+        Returns:
+            True if input is valid for Node.js processing, False otherwise
+        """
+        # Handle string queries (most common case)
+        if isinstance(input_data, str):
+            # Check if it's a reasonable length
+            if len(input_data.strip()) == 0 or len(input_data) > 10000:
+                return False
+
+            # Basic content validation - should contain Node.js related content
+            query_lower = input_data.lower()
+            nodejs_indicators = [
+                "nodejs",
+                "node.js",
+                "node",
+                "express",
+                "fastify",
+                "koa",
+                "javascript",
+                "backend",
+                "server",
+                "api",
+                "npm",
+                "yarn",
+                "async",
+                "await",
+                "promise",
+                "callback",
+                "middleware",
+                "module",
+                "require",
+                "import",
+                "stream",
+                "buffer",
+            ]
+
+            # At least one Node.js indicator should be present
+            has_nodejs_content = any(indicator in query_lower for indicator in nodejs_indicators)
+            return has_nodejs_content
+
+        # Handle dict input (should have query field)
+        elif isinstance(input_data, dict):
+            if "query" in input_data:
+                return await self.validate_input(input_data["query"])
+            elif "question" in input_data:
+                return await self.validate_input(input_data["question"])
+            else:
+                # Dict without clear query field
+                return False
+
+        # Handle SkillContext
+        elif isinstance(input_data, SkillContext):
+            if input_data.metadata and "query" in input_data.metadata:
+                return await self.validate_input(input_data.metadata["query"])
+            else:
+                return False
+
+        # Other types are not valid
+        else:
+            return False
+
+    def get_capabilities(self) -> list[str]:
+        """
+        Get list of Node.js expertise capabilities
+
+        Returns:
+            List of capability descriptions
+        """
+        return [
+            "Node.js Core API expertise (events, streams, buffers, fs, http, https)",
+            "Express.js web framework development (routing, middleware, error handling)",
+            "Fastify and Koa framework patterns and best practices",
+            "REST API development and design patterns",
+            "GraphQL implementation with Node.js",
+            "WebSocket real-time communication",
+            "Database integration (MongoDB, PostgreSQL, Redis, connection pooling)",
+            "Authentication and authorization patterns (JWT, OAuth, sessions)",
+            "Security best practices (helmet, CORS, input validation, rate limiting)",
+            "Performance optimization (clustering, caching, streaming, worker threads)",
+            "Memory management and garbage collection optimization",
+            "Testing strategies (unit testing, integration testing, mocking)",
+            "Production deployment and monitoring",
+            "Package management with npm, yarn, and pnpm",
+            "Module system expertise (CommonJS, ES Modules)",
+            "Error handling and debugging strategies",
+            "Microservices architecture with Node.js",
+            "Event-driven programming and EventEmitter patterns",
+            "Pipeline and stream processing",
+            "Async/await patterns and Promise handling",
+        ]
 
     @property
     def tags(self) -> list[str]:
@@ -295,15 +386,23 @@ class NodeJSExpertSkill(BaseSkill):
         matches = sum(1 for keyword in nodejs_keywords if keyword in query)
         return min(matches * 0.15, 0.7)
 
-    def execute(self, context: SkillContext) -> SkillResult:
+    async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
         """Execute Node.js expertise with zero hallucination enforcement"""
         start_time = time.time()
 
         try:
-            if not context.metadata or "query" not in context.metadata:
-                return SkillResult(success=False, error="No query provided in context")
+            # Handle different input types
+            query = None
+            if isinstance(input_data, str):
+                query = input_data
+            elif isinstance(input_data, dict):
+                query = input_data.get("query") or input_data.get("question")
+            elif context and context.metadata:
+                query = context.metadata.get("query")
 
-            query = context.metadata["query"]
+            if not query:
+                return SkillResult(success=False, error="No query provided in input_data or context")
+
             nodejs_query = self._analyze_nodejs_query(query)
 
             # Generate comprehensive response
@@ -319,9 +418,6 @@ class NodeJSExpertSkill(BaseSkill):
             # Track performance
             execution_time = time.time() - start_time
             tokens_used = estimate_tokens(str(optimized_response))
-
-            # Update metrics
-            self._update_metrics(execution_time, tokens_used, True)
 
             return SkillResult(
                 success=True,
@@ -339,11 +435,9 @@ class NodeJSExpertSkill(BaseSkill):
             execution_time = time.time() - start_time
             logger.error(f"Node.js expert skill execution failed: {e}")
 
-            self._update_metrics(execution_time, 0, False)
-
             return SkillResult(success=False, error=str(e), execution_time=execution_time)
 
-    def _analyze_nodejs_query(self, query: str) -> Dict[str, Any]:
+    def _analyze_nodejs_query(self, query: str) -> dict[str, Any]:
         """Analyze the Node.js query to determine expertise needed"""
         query_lower = query.lower()
 
@@ -395,7 +489,7 @@ class NodeJSExpertSkill(BaseSkill):
 
         return analysis
 
-    def _generate_nodejs_response(self, query_analysis: Dict[str, Any], context: SkillContext) -> Dict[str, Any]:
+    def _generate_nodejs_response(self, query_analysis: dict[str, Any], context: SkillContext) -> dict[str, Any]:
         """Generate comprehensive Node.js response based on query analysis"""
         response = {
             "query_analysis": query_analysis,
@@ -433,7 +527,7 @@ class NodeJSExpertSkill(BaseSkill):
 
         return response
 
-    def _generate_core_explanation(self, query_analysis: Dict[str, Any]) -> str:
+    def _generate_core_explanation(self, query_analysis: dict[str, Any]) -> str:
         """Generate core explanation based on query analysis"""
         topics = query_analysis["topics"]
 
@@ -516,7 +610,7 @@ Key concepts to master:
 
         return explanation
 
-    def _generate_code_examples(self, query_analysis: Dict[str, Any]) -> List[Dict[str, str]]:
+    def _generate_code_examples(self, query_analysis: dict[str, Any]) -> list[dict[str, str]]:
         """Generate validated code examples based on query analysis"""
         examples = []
         topics = query_analysis["topics"]
@@ -575,7 +669,7 @@ Key concepts to master:
 
         return examples
 
-    def _validate_code_examples(self, code_examples: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    def _validate_code_examples(self, code_examples: list[dict[str, str]]) -> list[dict[str, str]]:
         """Validate all code examples for syntax and correctness"""
         validated_examples = []
 
@@ -592,7 +686,7 @@ Key concepts to master:
 
         return validated_examples
 
-    def _get_best_practices(self, topics: List[str]) -> List[str]:
+    def _get_best_practices(self, topics: list[str]) -> list[str]:
         """Get best practices for specific topics"""
         all_practices = {
             "express": [
@@ -636,7 +730,7 @@ Key concepts to master:
 
         return list(set(practices))  # Remove duplicates
 
-    def _get_common_pitfalls(self, topics: List[str]) -> List[str]:
+    def _get_common_pitfalls(self, topics: list[str]) -> list[str]:
         """Get common pitfalls for specific topics"""
         all_pitfalls = {
             "express": [
@@ -676,7 +770,7 @@ Key concepts to master:
 
         return list(set(pitfalls))
 
-    def _get_performance_considerations(self, topics: List[str]) -> List[str]:
+    def _get_performance_considerations(self, topics: list[str]) -> list[str]:
         """Get performance considerations for specific topics"""
         all_considerations = {
             "express": [
@@ -709,7 +803,7 @@ Key concepts to master:
 
         return list(set(considerations))
 
-    def _get_security_considerations(self, topics: List[str]) -> List[str]:
+    def _get_security_considerations(self, topics: list[str]) -> list[str]:
         """Get security considerations for specific topics"""
         all_considerations = {
             "express": [
@@ -745,7 +839,7 @@ Key concepts to master:
 
         return list(set(considerations))
 
-    def _get_related_resources(self, topics: List[str]) -> List[Dict[str, str]]:
+    def _get_related_resources(self, topics: list[str]) -> list[dict[str, str]]:
         """Get related learning resources"""
         resources = [
             {"title": "Node.js Official Documentation", "url": "https://nodejs.org/docs/", "type": "official_docs"},
@@ -791,7 +885,7 @@ Key concepts to master:
 
     def _get_version_specific_notes(self) -> str:
         """Get Node.js version-specific information"""
-        return f"""
+        return """
 **Node.js Version Information**
 - Current LTS version: Node.js 18.x (recommended for production)
 - Latest features: Node.js 20.x (for development and testing)
@@ -806,11 +900,6 @@ Key concepts to master:
             return result.stdout.strip()
         except (subprocess.CalledProcessError, FileNotFoundError):
             return "Unknown"
-
-    def _update_metrics(self, execution_time: float, tokens_used: int, success: bool) -> None:
-        """Update internal metrics for performance tracking"""
-        # Implement metrics tracking here
-        pass
 
     # Code example generators (would be expanded with complete implementations)
 
@@ -1594,154 +1683,154 @@ module.exports = {
         """
 
     # Pattern library implementations (would be expanded)
-    def _express_middleware_pattern(self) -> Dict[str, str]:
+    def _express_middleware_pattern(self) -> dict[str, str]:
         return {
             "description": "Express.js middleware implementation patterns",
             "pattern": "middleware_chain",
             "example": "See _express_middleware_example()",
         }
 
-    def _express_error_handling_pattern(self) -> Dict[str, str]:
+    def _express_error_handling_pattern(self) -> dict[str, str]:
         return {
             "description": "Express.js error handling best practices",
             "pattern": "error_handling",
             "example": "See _express_server_setup()",
         }
 
-    def _express_routing_pattern(self) -> Dict[str, str]:
+    def _express_routing_pattern(self) -> dict[str, str]:
         return {
             "description": "Express.js routing patterns and organization",
             "pattern": "routing",
             "example": "Organize routes in separate modules with proper validation",
         }
 
-    def _express_validation_pattern(self) -> Dict[str, str]:
+    def _express_validation_pattern(self) -> dict[str, str]:
         return {
             "description": "Input validation patterns for Express.js",
             "pattern": "validation",
             "example": "Use express-validator or Joi for request validation",
         }
 
-    def _async_error_handling_pattern(self) -> Dict[str, str]:
+    def _async_error_handling_pattern(self) -> dict[str, str]:
         return {
             "description": "Async/await error handling patterns",
             "pattern": "async_error_handling",
             "example": "See _async_best_practices_example()",
         }
 
-    def _async_parallel_pattern(self) -> Dict[str, str]:
+    def _async_parallel_pattern(self) -> dict[str, str]:
         return {
             "description": "Parallel async execution with controlled concurrency",
             "pattern": "parallel_execution",
             "example": "See _async_best_practices_example()",
         }
 
-    def _resource_management_pattern(self) -> Dict[str, str]:
+    def _resource_management_pattern(self) -> dict[str, str]:
         return {
             "description": "Resource management with proper cleanup",
             "pattern": "resource_management",
             "example": "See _async_best_practices_example()",
         }
 
-    def _streaming_pattern(self) -> Dict[str, str]:
+    def _streaming_pattern(self) -> dict[str, str]:
         return {
             "description": "Efficient stream processing with backpressure handling",
             "pattern": "streaming",
             "example": "See _async_best_practices_example()",
         }
 
-    def _clustering_pattern(self) -> Dict[str, str]:
+    def _clustering_pattern(self) -> dict[str, str]:
         return {
             "description": "Node.js clustering for optimal CPU utilization",
             "pattern": "clustering",
             "example": "See _clustering_example()",
         }
 
-    def _caching_pattern(self) -> Dict[str, str]:
+    def _caching_pattern(self) -> dict[str, str]:
         return {
             "description": "Caching strategies for Node.js applications",
             "pattern": "caching",
             "example": "Implement Redis or in-memory caching with proper invalidation",
         }
 
-    def _connection_pooling_pattern(self) -> Dict[str, str]:
+    def _connection_pooling_pattern(self) -> dict[str, str]:
         return {
             "description": "Database connection pooling patterns",
             "pattern": "connection_pooling",
             "example": "See _mongodb_connection_example()",
         }
 
-    def _mongodb_pattern(self) -> Dict[str, str]:
+    def _mongodb_pattern(self) -> dict[str, str]:
         return {
             "description": "MongoDB integration patterns with Node.js",
             "pattern": "mongodb_integration",
             "example": "See _mongodb_connection_example()",
         }
 
-    def _postgresql_pattern(self) -> Dict[str, str]:
+    def _postgresql_pattern(self) -> dict[str, str]:
         return {
             "description": "PostgreSQL integration patterns with Node.js",
             "pattern": "postgresql_integration",
             "example": "Use pg or Sequelize with connection pooling",
         }
 
-    def _redis_pattern(self) -> Dict[str, str]:
+    def _redis_pattern(self) -> dict[str, str]:
         return {
             "description": "Redis integration patterns for caching and sessions",
             "pattern": "redis_integration",
             "example": "Use ioredis with clustering and proper error handling",
         }
 
-    def _transaction_pattern(self) -> Dict[str, str]:
+    def _transaction_pattern(self) -> dict[str, str]:
         return {
             "description": "Database transaction patterns for data consistency",
             "pattern": "transactions",
             "example": "Implement proper transaction handling with rollback",
         }
 
-    def _authentication_pattern(self) -> Dict[str, str]:
+    def _authentication_pattern(self) -> dict[str, str]:
         return {
             "description": "JWT-based authentication patterns",
             "pattern": "authentication",
             "example": "See _jwt_auth_middleware()",
         }
 
-    def _authorization_pattern(self) -> Dict[str, str]:
+    def _authorization_pattern(self) -> dict[str, str]:
         return {
             "description": "Role-based authorization patterns",
             "pattern": "authorization",
             "example": "Implement middleware-based role checking",
         }
 
-    def _input_validation_pattern(self) -> Dict[str, str]:
+    def _input_validation_pattern(self) -> dict[str, str]:
         return {
             "description": "Input validation and sanitization patterns",
             "pattern": "input_validation",
             "example": "Use Joi or express-validator with custom sanitizers",
         }
 
-    def _rate_limiting_pattern(self) -> Dict[str, str]:
+    def _rate_limiting_pattern(self) -> dict[str, str]:
         return {
             "description": "Rate limiting patterns for API protection",
             "pattern": "rate_limiting",
             "example": "Use express-rate-limit with Redis backend",
         }
 
-    def _unit_testing_pattern(self) -> Dict[str, str]:
+    def _unit_testing_pattern(self) -> dict[str, str]:
         return {
             "description": "Unit testing patterns for Node.js applications",
             "pattern": "unit_testing",
             "example": "Use Jest with mocking and assertion libraries",
         }
 
-    def _integration_testing_pattern(self) -> Dict[str, str]:
+    def _integration_testing_pattern(self) -> dict[str, str]:
         return {
             "description": "Integration testing patterns for Node.js APIs",
             "pattern": "integration_testing",
             "example": "Use Supertest with test database setup",
         }
 
-    def _mocking_pattern(self) -> Dict[str, str]:
+    def _mocking_pattern(self) -> dict[str, str]:
         return {
             "description": "Mocking patterns for isolated testing",
             "pattern": "mocking",
@@ -1757,7 +1846,7 @@ class NodeJSAgentLightningIntegration:
         self.error_tracking = {}
         self.optimization_history = []
 
-    def optimize_response(self, response_data: Dict[str, Any]) -> Dict[str, Any]:
+    def optimize_response(self, response_data: dict[str, Any]) -> dict[str, Any]:
         """Optimize response based on learned patterns"""
         optimized_response = response_data.copy()
 
@@ -1773,7 +1862,7 @@ class NodeJSAgentLightningIntegration:
 
         return optimized_response
 
-    def _optimize_code_examples(self, code_examples: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    def _optimize_code_examples(self, code_examples: list[dict[str, str]]) -> list[dict[str, str]]:
         """Optimize code examples based on learned patterns"""
         optimizer = NodeJSPatternOptimizer()
         optimized_examples = []
@@ -1791,7 +1880,7 @@ class NodeJSAgentLightningIntegration:
 
         return optimized_examples
 
-    def _get_performance_insights(self, response_data: Dict[str, Any]) -> List[str]:
+    def _get_performance_insights(self, response_data: dict[str, Any]) -> list[str]:
         """Get performance insights based on response context"""
         insights = []
 
@@ -1813,7 +1902,7 @@ class NodeJSAgentLightningIntegration:
 
         return insights
 
-    def _get_error_prevention_tips(self, response_data: Dict[str, Any]) -> List[str]:
+    def _get_error_prevention_tips(self, response_data: dict[str, Any]) -> list[str]:
         """Get error prevention tips based on response context"""
         tips = []
 
@@ -1834,3 +1923,25 @@ class NodeJSAgentLightningIntegration:
                 tips.append("Implement proper logout and token invalidation")
 
         return tips
+
+
+# Simple function interface for direct calls
+async def nodejs_expert(query: str) -> str:
+    """
+    Simple function interface for Node.js expertise.
+
+    Args:
+        query: Node.js query or question
+
+    Returns:
+        Node.js expertise response
+    """
+    skill = NodeJSExpertSkill()
+    result = await skill.execute(query)
+    if result.success:
+        return result.data
+    return f"Error: {result.error}"
+
+
+# Create skill instance for registry
+nodejs_expert_instance = NodeJSExpertSkill()

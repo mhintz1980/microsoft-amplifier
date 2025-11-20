@@ -6,22 +6,23 @@ This module provides the main interface for running QA validation, testing,
 performance monitoring, security scanning, and compliance checking.
 """
 
-import asyncio
 import argparse
+import asyncio
 import json
 import sys
-from pathlib import Path
-from typing import List, Dict, Any, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from .compliance.compliance_validator import ComplianceValidator
+from .learning.continuous_improvement import ContinuousImprovement
+from .performance.performance_monitor import PerformanceMonitor
+from .security.security_scanner import SecurityScanner
+from .storage.quality_metrics_storage import QualityMetricsStorage
+from .testing.automated_test_generator import AutomatedTestGenerator
 
 # Import QA components
 from .validators.zero_hallucination_validator import ZeroHallucinationValidator
-from .testing.automated_test_generator import AutomatedTestGenerator
-from .performance.performance_monitor import PerformanceMonitor
-from .security.security_scanner import SecurityScanner
-from .compliance.compliance_validator import ComplianceValidator
-from .learning.continuous_improvement import ContinuousImprovement
-from .storage.quality_metrics_storage import QualityMetricsStorage
 
 
 class QualityAssuranceFramework:
@@ -60,7 +61,7 @@ class QualityAssuranceFramework:
         # Create output directory
         self.output_dir.mkdir(exist_ok=True)
 
-    async def run_full_qa(self, skill_path: str) -> Dict[str, Any]:
+    async def run_full_qa(self, skill_path: str) -> dict[str, Any]:
         """
         Run complete QA pipeline on a skill.
 
@@ -190,7 +191,7 @@ class QualityAssuranceFramework:
 
         return results
 
-    def _calculate_overall_score(self, results: Dict[str, Any]) -> float:
+    def _calculate_overall_score(self, results: dict[str, Any]) -> float:
         """Calculate overall quality score from all components."""
         scores = []
 
@@ -219,7 +220,7 @@ class QualityAssuranceFramework:
 
         return sum(scores) if scores else 0.0
 
-    def _generate_overall_recommendations(self, results: Dict[str, Any]) -> List[str]:
+    def _generate_overall_recommendations(self, results: dict[str, Any]) -> list[str]:
         """Generate overall recommendations based on QA results."""
         recommendations = []
 
@@ -272,7 +273,7 @@ class QualityAssuranceFramework:
 
         return recommendations
 
-    async def _store_qa_results(self, results: Dict[str, Any]):
+    async def _store_qa_results(self, results: dict[str, Any]):
         """Store QA results in persistent storage."""
         try:
             await self.storage.store_result(
@@ -283,7 +284,7 @@ class QualityAssuranceFramework:
         except Exception as e:
             print(f"Warning: Failed to store QA results: {e}")
 
-    async def _save_qa_report(self, results: Dict[str, Any]):
+    async def _save_qa_report(self, results: dict[str, Any]):
         """Save detailed QA report to file."""
         try:
             skill_name = Path(results["skill_path"]).name
@@ -298,32 +299,32 @@ class QualityAssuranceFramework:
             # Generate summary report
             summary_file = self.output_dir / f"qa_summary_{skill_name}_{timestamp}.txt"
             with open(summary_file, "w") as f:
-                f.write(f"Quality Assurance Report\n")
+                f.write("Quality Assurance Report\n")
                 f.write(f"{'=' * 50}\n\n")
                 f.write(f"Skill: {results['skill_path']}\n")
                 f.write(f"Timestamp: {results['timestamp']}\n")
                 f.write(f"Overall Quality Score: {results['overall_quality_score']:.2f}\n")
                 f.write(f"Status: {results['status']}\n\n")
 
-                f.write(f"Validation Results:\n")
+                f.write("Validation Results:\n")
                 f.write(f"  Passed: {results['validation_results'].get('passed', False)}\n")
                 f.write(f"  Confidence: {results['validation_results'].get('confidence', 0.0):.2f}\n\n")
 
-                f.write(f"Test Results:\n")
+                f.write("Test Results:\n")
                 f.write(f"  Total Tests: {results['test_results'].get('total_tests', 0)}\n")
                 f.write(f"  Passed: {results['test_results'].get('passed', 0)}\n")
                 f.write(f"  Failed: {results['test_results'].get('failed', 0)}\n")
                 f.write(f"  Coverage: {results['test_results'].get('coverage', 0.0):.1%}\n\n")
 
-                f.write(f"Security Results:\n")
+                f.write("Security Results:\n")
                 f.write(f"  Vulnerabilities: {results['security_results'].get('vulnerabilities_found', 0)}\n")
                 f.write(f"  Risk Score: {results['security_results'].get('risk_score', 0.0):.1f}/10\n\n")
 
-                f.write(f"Compliance Results:\n")
+                f.write("Compliance Results:\n")
                 f.write(f"  Level: {results['compliance_results'].get('overall_compliance', 'unknown')}\n")
                 f.write(f"  Score: {results['compliance_results'].get('compliance_score', 0.0):.2f}\n\n")
 
-                f.write(f"Recommendations:\n")
+                f.write("Recommendations:\n")
                 for i, rec in enumerate(results["recommendations"], 1):
                     f.write(f"  {i}. {rec}\n")
 
@@ -332,7 +333,7 @@ class QualityAssuranceFramework:
         except Exception as e:
             print(f"Warning: Failed to save QA reports: {e}")
 
-    async def run_batch_qa(self, skills_dir: str, pattern: str = "**/*.py") -> Dict[str, Any]:
+    async def run_batch_qa(self, skills_dir: str, pattern: str = "**/*.py") -> dict[str, Any]:
         """
         Run QA on multiple skills in batch.
 
@@ -387,7 +388,7 @@ class QualityAssuranceFramework:
             json.dump(batch_results, f, indent=2, default=str)
 
         print(f"\n{'=' * 60}")
-        print(f"🏁 Batch QA completed")
+        print("🏁 Batch QA completed")
         print(f"📊 Completed: {batch_results['summary']['completed']}")
         print(f"❌ Failed: {batch_results['summary']['failed']}")
         print(f"📈 Average Quality Score: {batch_results['summary']['average_quality_score']:.2f}")

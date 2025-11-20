@@ -7,12 +7,34 @@ Zero-hallucination enforcement with working examples.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillLevel, SkillResult
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 
 
 class FullStackIntegrationExpertSkill(BaseSkill):
+
+    def __init__(self):
+        super().__init__(
+            skill_id="fullstackintegrationexpert_",
+            name="FullStackIntegrationExpert Expert",
+            description="Expert skill for fullstackintegrationexpert"
+        )
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "fullstackintegrationexpert expertise",
+            "Best practices",
+            "Production solutions"
+        ]
+
+    
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        return isinstance(input_data, str) and len(input_data.strip()) > 0
+
+    
     """
     Expert-level full-stack integration patterns for building robust, scalable applications.
 
@@ -21,22 +43,9 @@ class FullStackIntegrationExpertSkill(BaseSkill):
     All patterns are tested and production-proven.
     """
 
-    @property
-    def description(self) -> str:
-        return "Complete full-stack integration patterns including monorepo design, API connectivity, and deployment strategies"
 
-    @property
-    def tags(self) -> List[str]:
-        return [
-            "full-stack",
-            "integration",
-            "monorepo",
-            "api-design",
-            "deployment",
-            "frontend-backend",
-            "authentication",
-            "production",
-        ]
+
+
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the integration query."""
@@ -80,7 +89,7 @@ class FullStackIntegrationExpertSkill(BaseSkill):
 
         return 0.2
 
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
+    async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
         """Execute the skill with progressive disclosure."""
         start_time = datetime.now()
 
@@ -94,11 +103,10 @@ class FullStackIntegrationExpertSkill(BaseSkill):
         execution_time = (datetime.now() - start_time).total_seconds()
 
         return SkillResult(
-            skill_name=self.skill_name,
-            level=level,
-            content=content,
-            tokens_used=len(content.split()) * 1.3,  # Rough token estimate
+            success=True,
+            data=content,
             execution_time=execution_time,
+            tokens_used=int(len(content) * 1.3),  # Rough token estimate
             metadata={"focus_areas": self._extract_focus_areas(context.query), "complexity": "high"},
         )
 
@@ -1526,7 +1534,7 @@ This comprehensive integration guide provides production-tested patterns for bui
 """
         )
 
-    def _extract_focus_areas(self, query: str) -> List[str]:
+    def _extract_focus_areas(self, query: str) -> list[str]:
         """Extract focus areas from the user's query."""
         query_lower = query.lower()
         focus_areas = []

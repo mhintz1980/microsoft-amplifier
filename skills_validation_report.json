@@ -1,0 +1,2735 @@
+{
+  "total_skills": 141,
+  "valid_skills": 0,
+  "invalid_skills": 141,
+  "categories": {
+    "core_technology": 33,
+    "integration": 9,
+    "domain_expertise": 0,
+    "meta_skills": 13,
+    "validation": 5,
+    "quality_assurance": 7,
+    "documentation": 11,
+    "creation_pipeline": 14,
+    "signature_framework": 11,
+    "agent_lightning_integration": 11,
+    "mcp_storage": 5,
+    "context_management": 0,
+    "scheduler": 4,
+    "resource_optimization": 4,
+    "discovery": 1,
+    "examples": 1,
+    "templates": 1,
+    "other": 11
+  },
+  "average_performance_ms": 0.05,
+  "average_memory_usage_mb": 0.0,
+  "overall_system_health": 0.0,
+  "critical_issues": [
+    "CRITICAL: code_quality_expert_examples (score: 49.7) - Unexpected import error: 'amplifier/skills/core_technology/code_quality_expert_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', Functionality validation error: 'amplifier/skills/core_technology/code_quality_expert_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', No error handling patterns found",
+    "CRITICAL: core (score: 48.5) - Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', No error handling patterns found",
+    "CRITICAL: integration_patterns_library (score: 48.5) - Unexpected import error: 'amplifier/skills/meta_skills/integration_patterns_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', Functionality validation error: 'amplifier/skills/meta_skills/integration_patterns_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', No error handling patterns found",
+    "CRITICAL: claude_code_integration (score: 48.5) - Unexpected import error: 'amplifier/skills/templates/claude_code_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', Functionality validation error: 'amplifier/skills/templates/claude_code_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier', No error handling patterns found"
+  ],
+  "recommendations": [
+    "Resolve 141 skills with import dependencies",
+    "Address 141 skills with functionality issues",
+    "Improve API accuracy in 3 skills",
+    "Add error handling to 13 skills"
+  ],
+  "skill_results": [
+    {
+      "skill_name": "jest_rtl_expert",
+      "skill_path": "amplifier/skills/core_technology/jest_rtl_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.12922286987304688,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/jest_rtl_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/jest_rtl_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "skill_path": "amplifier/skills/core_technology/tailwind_agent_lightning.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05841255187988281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/tailwind_agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/tailwind_agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "database_design_expert",
+      "skill_path": "amplifier/skills/core_technology/database_design_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04863739013671875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/database_design_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/database_design_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "typescript_expert",
+      "skill_path": "amplifier/skills/core_technology/typescript_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04744529724121094,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/typescript_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/typescript_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "skill_path": "amplifier/skills/core_technology/tailwind_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.047206878662109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/tailwind_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/tailwind_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "supabase_expert",
+      "skill_path": "amplifier/skills/core_technology/supabase_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04863739013671875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/supabase_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/supabase_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "skill_path": "amplifier/skills/core_technology/performance_testing_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04696846008300781,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/performance_testing_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/performance_testing_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "skill_path": "amplifier/skills/core_technology/performance_tools_integration.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04744529724121094,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/performance_tools_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/performance_tools_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "skill_path": "amplifier/skills/core_technology/tailwind_performance.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/tailwind_performance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/tailwind_performance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "skill_path": "amplifier/skills/core_technology/nodejs_expert_enhanced.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.047206878662109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/nodejs_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/nodejs_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "skill_path": "amplifier/skills/core_technology/code_quality_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04839897155761719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/code_quality_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/code_quality_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "skill_path": "amplifier/skills/core_technology/code_quality_expert_examples.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0514984130859375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/code_quality_expert_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/code_quality_expert_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 49.7
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "skill_path": "amplifier/skills/core_technology/typescript_expert_enhanced.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/typescript_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/typescript_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "skill_path": "amplifier/skills/core_technology/tailwind_patterns.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.10538101196289062,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/tailwind_patterns.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/tailwind_patterns.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "skill_path": "amplifier/skills/core_technology/test_performance_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/test_performance_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/test_performance_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "skill_path": "amplifier/skills/core_technology/nodejs_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04506111145019531,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/nodejs_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/nodejs_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "skill_path": "amplifier/skills/core_technology/tailwind_validator.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04482269287109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/tailwind_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/tailwind_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_examples",
+      "skill_path": "amplifier/skills/core_technology/performance_examples.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06556510925292969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/performance_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/performance_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "vite_expert",
+      "skill_path": "amplifier/skills/core_technology/vite_expert.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0743865966796875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/vite_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/vite_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "skill_path": "amplifier/skills/core_technology/agent_lightning_performance_patterns.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06461143493652344,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/agent_lightning_performance_patterns.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/agent_lightning_performance_patterns.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "simple_test",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/simple_test.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04649162292480469,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/simple_test.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/simple_test.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 75.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 56.25
+    },
+    {
+      "skill_name": "examples",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/examples.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06771087646484375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "agent_lightning",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/agent_lightning.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.059604644775390625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 75.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 56.25
+    },
+    {
+      "skill_name": "test_validation",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/test_validation.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05125999450683594,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/test_validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/test_validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "core",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/core.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 48.5
+    },
+    {
+      "skill_name": "api",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/api.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04839897155761719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/api.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/api.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 70.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 55.5
+    },
+    {
+      "skill_name": "validation",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/validation.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04696846008300781,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "typescript",
+      "skill_path": "amplifier/skills/core_technology/react_19_expert/typescript.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0457763671875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/react_19_expert/typescript.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/react_19_expert/typescript.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 80.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 57.0
+    },
+    {
+      "skill_name": "accessibility",
+      "skill_path": "amplifier/skills/core_technology/shadcn_ui_expert/accessibility.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05936622619628906,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/shadcn_ui_expert/accessibility.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/shadcn_ui_expert/accessibility.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "agent_lightning",
+      "skill_path": "amplifier/skills/core_technology/shadcn_ui_expert/agent_lightning.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.091552734375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/shadcn_ui_expert/agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/shadcn_ui_expert/agent_lightning.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "core",
+      "skill_path": "amplifier/skills/core_technology/shadcn_ui_expert/core.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.050067901611328125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/shadcn_ui_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/shadcn_ui_expert/core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "validation",
+      "skill_path": "amplifier/skills/core_technology/shadcn_ui_expert/validation.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.049114227294921875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/shadcn_ui_expert/validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/shadcn_ui_expert/validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "quality_assurance",
+      "skill_path": "amplifier/skills/core_technology/shadcn_ui_expert/quality_assurance.py",
+      "category": "core_technology",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.07343292236328125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/core_technology/shadcn_ui_expert/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/core_technology/shadcn_ui_expert/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "skill_path": "amplifier/skills/integration/meta_skill_coordinator.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.07343292236328125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/meta_skill_coordinator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/meta_skill_coordinator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "skill_path": "amplifier/skills/integration/full_stack_integration_expert.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.08702278137207031,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/full_stack_integration_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/full_stack_integration_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 88.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.2
+    },
+    {
+      "skill_name": "graphql_expert",
+      "skill_path": "amplifier/skills/integration/graphql_expert.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.09179115295410156,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/graphql_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/graphql_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "skill_path": "amplifier/skills/integration/resource_optimizer.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/resource_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/resource_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "skill_path": "amplifier/skills/integration/api_design_expert_enhanced.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/api_design_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/api_design_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 80.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 57.0
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "skill_path": "amplifier/skills/integration/performance_monitoring.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.043392181396484375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/performance_monitoring.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/performance_monitoring.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 88.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.2
+    },
+    {
+      "skill_name": "api_design_expert",
+      "skill_path": "amplifier/skills/integration/api_design_expert.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/api_design_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/api_design_expert.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "skill_path": "amplifier/skills/integration/agent_lightning_hooks.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04220008850097656,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/agent_lightning_hooks.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/agent_lightning_hooks.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 93.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 58.95
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "skill_path": "amplifier/skills/integration/full_stack_integration_expert_enhanced.py",
+      "category": "integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04315376281738281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/integration/full_stack_integration_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/integration/full_stack_integration_expert_enhanced.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 85.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 57.75
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "skill_path": "amplifier/skills/meta_skills/skill_creation_methodology.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04363059997558594,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/skill_creation_methodology.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/skill_creation_methodology.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "skill_path": "amplifier/skills/meta_skills/workflow_orchestrator.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/workflow_orchestrator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/workflow_orchestrator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "agent_coordination",
+      "skill_path": "amplifier/skills/meta_skills/agent_coordination.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06365776062011719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/agent_coordination.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/agent_coordination.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "skill_path": "amplifier/skills/meta_skills/integration_patterns_library.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/integration_patterns_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/integration_patterns_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 48.5
+    },
+    {
+      "skill_name": "template_library",
+      "skill_path": "amplifier/skills/meta_skills/template_library.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/template_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/template_library.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "skill_path": "amplifier/skills/meta_skills/pattern_learning_system.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04315376281738281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/pattern_learning_system.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/pattern_learning_system.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "skill_path": "amplifier/skills/meta_skills/skill_integration_patterns_specialist.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04291534423828125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/skill_integration_patterns_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/skill_integration_patterns_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "skill_path": "amplifier/skills/meta_skills/documentation_packaging_specialist.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05793571472167969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/documentation_packaging_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/documentation_packaging_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "skill_path": "amplifier/skills/meta_skills/intelligent_routing_design_specialist.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04291534423828125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/intelligent_routing_design_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/intelligent_routing_design_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "skill_path": "amplifier/skills/meta_skills/performance_optimizer.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/performance_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/performance_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "skill_path": "amplifier/skills/meta_skills/skill_testing_validation_specialist.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0476837158203125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/skill_testing_validation_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/skill_testing_validation_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "quality_assurance",
+      "skill_path": "amplifier/skills/meta_skills/quality_assurance.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04410743713378906,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "skill_path": "amplifier/skills/meta_skills/custom_agent_development_specialist.py",
+      "category": "meta_skills",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.07104873657226562,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/meta_skills/custom_agent_development_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/meta_skills/custom_agent_development_specialist.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_validator",
+      "skill_path": "amplifier/skills/validation/performance_validator.py",
+      "category": "validation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06437301635742188,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/validation/performance_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/validation/performance_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "skill_path": "amplifier/skills/validation/benchmark_suite.py",
+      "category": "validation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04458427429199219,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/validation/benchmark_suite.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/validation/benchmark_suite.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "quality_assurance",
+      "skill_path": "amplifier/skills/validation/quality_assurance.py",
+      "category": "validation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04506111145019531,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/validation/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/validation/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "integration_tester",
+      "skill_path": "amplifier/skills/validation/integration_tester.py",
+      "category": "validation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.057697296142578125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/validation/integration_tester.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/validation/integration_tester.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 88.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.2
+    },
+    {
+      "skill_name": "metrics_collector",
+      "skill_path": "amplifier/skills/validation/metrics_collector.py",
+      "category": "validation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04601478576660156,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/validation/metrics_collector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/validation/metrics_collector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "performance_monitor",
+      "skill_path": "amplifier/skills/quality_assurance/performance/performance_monitor.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04482269287109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/performance/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/performance/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "skill_path": "amplifier/skills/quality_assurance/validators/zero_hallucination_validator.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04601478576660156,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/validators/zero_hallucination_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/validators/zero_hallucination_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "skill_path": "amplifier/skills/quality_assurance/learning/continuous_improvement.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.044345855712890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/learning/continuous_improvement.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/learning/continuous_improvement.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "compliance_validator",
+      "skill_path": "amplifier/skills/quality_assurance/compliance/compliance_validator.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06365776062011719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/compliance/compliance_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/compliance/compliance_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "security_scanner",
+      "skill_path": "amplifier/skills/quality_assurance/security/security_scanner.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06341934204101562,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/security/security_scanner.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/security/security_scanner.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "skill_path": "amplifier/skills/quality_assurance/storage/quality_metrics_storage.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04553794860839844,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/storage/quality_metrics_storage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/storage/quality_metrics_storage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "skill_path": "amplifier/skills/quality_assurance/testing/automated_test_generator.py",
+      "category": "quality_assurance",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04410743713378906,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/quality_assurance/testing/automated_test_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/quality_assurance/testing/automated_test_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "validation_utils",
+      "skill_path": "amplifier/skills/documentation/utils/validation_utils.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.045299530029296875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/utils/validation_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/utils/validation_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "file_utils",
+      "skill_path": "amplifier/skills/documentation/utils/file_utils.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/utils/file_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/utils/file_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "token_utils",
+      "skill_path": "amplifier/skills/documentation/utils/token_utils.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.060558319091796875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/utils/token_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/utils/token_utils.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "mcp_integration",
+      "skill_path": "amplifier/skills/documentation/storage/mcp_integration.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04673004150390625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/storage/mcp_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/storage/mcp_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "auto_generator",
+      "skill_path": "amplifier/skills/documentation/generation/auto_generator.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05412101745605469,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/generation/auto_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/generation/auto_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "skill_path": "amplifier/skills/documentation/generation/skill_analyzer.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.045299530029296875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/generation/skill_analyzer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/generation/skill_analyzer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "skill_path": "amplifier/skills/documentation/core/progressive_formatter.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.044345855712890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/core/progressive_formatter.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/core/progressive_formatter.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "skill_path": "amplifier/skills/documentation/core/cross_reference_manager.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.043392181396484375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/core/cross_reference_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/core/cross_reference_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "version_manager",
+      "skill_path": "amplifier/skills/documentation/core/version_manager.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/core/version_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/core/version_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "template_engine",
+      "skill_path": "amplifier/skills/documentation/core/template_engine.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04291534423828125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/core/template_engine.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/core/template_engine.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "quality_validator",
+      "skill_path": "amplifier/skills/documentation/core/quality_validator.py",
+      "category": "documentation",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/documentation/core/quality_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/documentation/core/quality_validator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "orchestrator",
+      "skill_path": "amplifier/skills/creation_pipeline/orchestrator.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04315376281738281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/orchestrator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/orchestrator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "pipeline",
+      "skill_path": "amplifier/skills/creation_pipeline/pipeline.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0400543212890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/pipeline.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/pipeline.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "pipeline_core",
+      "skill_path": "amplifier/skills/creation_pipeline/pipeline_core.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04100799560546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/pipeline_core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/pipeline_core.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "progress_tracker",
+      "skill_path": "amplifier/skills/creation_pipeline/progress_tracker.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0400543212890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/progress_tracker.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/progress_tracker.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 96.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.4
+    },
+    {
+      "skill_name": "mcp_integration",
+      "skill_path": "amplifier/skills/creation_pipeline/mcp_integration.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04315376281738281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/mcp_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/mcp_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "skill_path": "amplifier/skills/creation_pipeline/example_skill_demo.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.039577484130859375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/example_skill_demo.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/example_skill_demo.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "documentation",
+      "skill_path": "amplifier/skills/creation_pipeline/documentation.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.03981590270996094,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/documentation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/documentation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "quality_assurance",
+      "skill_path": "amplifier/skills/creation_pipeline/quality_assurance.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04029273986816406,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/quality_assurance.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "code_generator",
+      "skill_path": "amplifier/skills/creation_pipeline/code_generator.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0400543212890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/code_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/code_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "specification_processor",
+      "skill_path": "amplifier/skills/creation_pipeline/specification_processor.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04029273986816406,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/specification_processor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/specification_processor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "validators",
+      "skill_path": "amplifier/skills/creation_pipeline/validators.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04172325134277344,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/validators.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/validators.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "documentation_generator",
+      "skill_path": "amplifier/skills/creation_pipeline/documentation_generator.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04792213439941406,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/documentation_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/documentation_generator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "templates",
+      "skill_path": "amplifier/skills/creation_pipeline/templates.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04291534423828125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/templates.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/templates.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "testing",
+      "skill_path": "amplifier/skills/creation_pipeline/testing.py",
+      "category": "creation_pipeline",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04363059997558594,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/creation_pipeline/testing.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/creation_pipeline/testing.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "skill_path": "amplifier/skills/signature_framework/meta_skill_integration.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.041961669921875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/meta_skill_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/meta_skill_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "base_types",
+      "skill_path": "amplifier/skills/signature_framework/base_types.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.03981590270996094,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/base_types.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/base_types.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "integration_layer",
+      "skill_path": "amplifier/skills/signature_framework/integration_layer.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04076957702636719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/integration_layer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/integration_layer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "runtime_validation",
+      "skill_path": "amplifier/skills/signature_framework/runtime_validation.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04076957702636719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/runtime_validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/runtime_validation.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_signature",
+      "skill_path": "amplifier/skills/signature_framework/skill_signature.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04124641418457031,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/skill_signature.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/skill_signature.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "skill_path": "amplifier/skills/signature_framework/bootstrap_optimizer.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.048160552978515625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/bootstrap_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/bootstrap_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "skill_path": "amplifier/skills/signature_framework/zero_hallucination.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04410743713378906,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/zero_hallucination.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/zero_hallucination.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "test_integration",
+      "skill_path": "amplifier/skills/signature_framework/tests/test_integration.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04410743713378906,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/tests/test_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/tests/test_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "test_base_types",
+      "skill_path": "amplifier/skills/signature_framework/tests/test_base_types.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.045299530029296875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/tests/test_base_types.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/tests/test_base_types.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "skill_path": "amplifier/skills/signature_framework/tests/test_skill_signature.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/tests/test_skill_signature.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/tests/test_skill_signature.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "basic_usage",
+      "skill_path": "amplifier/skills/signature_framework/examples/basic_usage.py",
+      "category": "signature_framework",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.045299530029296875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/signature_framework/examples/basic_usage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/signature_framework/examples/basic_usage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "test_integration",
+      "skill_path": "amplifier/skills/agent_lightning_integration/test_integration.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04172325134277344,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/test_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/test_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "skill_path": "amplifier/skills/agent_lightning_integration/error_detection_engine.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/error_detection_engine.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/error_detection_engine.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "config",
+      "skill_path": "amplifier/skills/agent_lightning_integration/config.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04100799560546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/config.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/config.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "skill_path": "amplifier/skills/agent_lightning_integration/continuous_optimizer.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04076957702636719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/continuous_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/continuous_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "skill_path": "amplifier/skills/agent_lightning_integration/quality_gate_enforcer.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05555152893066406,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/quality_gate_enforcer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/quality_gate_enforcer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "integration_manager",
+      "skill_path": "amplifier/skills/agent_lightning_integration/integration_manager.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.041961669921875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/integration_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/integration_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "skill_path": "amplifier/skills/agent_lightning_integration/skill_performance_tracker.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04076957702636719,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/skill_performance_tracker.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/skill_performance_tracker.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "skill_path": "amplifier/skills/agent_lightning_integration/knowledge_transfer_system.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04124641418457031,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/knowledge_transfer_system.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/knowledge_transfer_system.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "performance_monitor",
+      "skill_path": "amplifier/skills/agent_lightning_integration/performance_monitor.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.05364418029785156,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "skill_path": "amplifier/skills/agent_lightning_integration/mcp_storage_integration.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04458427429199219,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/mcp_storage_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/mcp_storage_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "skill_path": "amplifier/skills/agent_lightning_integration/frontend_skill_monitor.py",
+      "category": "agent_lightning_integration",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.047206878662109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/agent_lightning_integration/frontend_skill_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/agent_lightning_integration/frontend_skill_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 95.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.25
+    },
+    {
+      "skill_name": "integration_connectors",
+      "skill_path": "amplifier/skills/mcp_storage/integration_connectors.py",
+      "category": "mcp_storage",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04220008850097656,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/mcp_storage/integration_connectors.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/mcp_storage/integration_connectors.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 93.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 58.95
+    },
+    {
+      "skill_name": "backup_recovery",
+      "skill_path": "amplifier/skills/mcp_storage/backup_recovery.py",
+      "category": "mcp_storage",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04553794860839844,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/mcp_storage/backup_recovery.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/mcp_storage/backup_recovery.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "skill_path": "amplifier/skills/mcp_storage/skill_repository_manager.py",
+      "category": "mcp_storage",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04363059997558594,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/mcp_storage/skill_repository_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/mcp_storage/skill_repository_manager.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "distributed_storage",
+      "skill_path": "amplifier/skills/mcp_storage/distributed_storage.py",
+      "category": "mcp_storage",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.06771087646484375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/mcp_storage/distributed_storage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/mcp_storage/distributed_storage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_monitor",
+      "skill_path": "amplifier/skills/mcp_storage/performance_monitor.py",
+      "category": "mcp_storage",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04315376281738281,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/mcp_storage/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/mcp_storage/performance_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 98.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 59.7
+    },
+    {
+      "skill_name": "task_queue",
+      "skill_path": "amplifier/skills/scheduler/task_queue.py",
+      "category": "scheduler",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04172325134277344,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/scheduler/task_queue.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/scheduler/task_queue.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "load_balancer",
+      "skill_path": "amplifier/skills/scheduler/load_balancer.py",
+      "category": "scheduler",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.047206878662109375,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/scheduler/load_balancer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/scheduler/load_balancer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "skill_path": "amplifier/skills/scheduler/work_stealing_scheduler.py",
+      "category": "scheduler",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/scheduler/work_stealing_scheduler.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/scheduler/work_stealing_scheduler.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "worker_pool",
+      "skill_path": "amplifier/skills/scheduler/worker_pool.py",
+      "category": "scheduler",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/scheduler/worker_pool.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/scheduler/worker_pool.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "arena_allocator",
+      "skill_path": "amplifier/skills/resource_optimization/arena_allocator.py",
+      "category": "resource_optimization",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04291534423828125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/resource_optimization/arena_allocator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/resource_optimization/arena_allocator.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "memory_monitor",
+      "skill_path": "amplifier/skills/resource_optimization/memory_monitor.py",
+      "category": "resource_optimization",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/resource_optimization/memory_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/resource_optimization/memory_monitor.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "garbage_collector",
+      "skill_path": "amplifier/skills/resource_optimization/garbage_collector.py",
+      "category": "resource_optimization",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/resource_optimization/garbage_collector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/resource_optimization/garbage_collector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "memory_pool",
+      "skill_path": "amplifier/skills/resource_optimization/memory_pool.py",
+      "category": "resource_optimization",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.08440017700195312,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/resource_optimization/memory_pool.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/resource_optimization/memory_pool.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_matcher",
+      "skill_path": "amplifier/skills/discovery/skill_matcher.py",
+      "category": "discovery",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.044345855712890625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/discovery/skill_matcher.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/discovery/skill_matcher.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "basic_usage",
+      "skill_path": "amplifier/skills/examples/basic_usage.py",
+      "category": "examples",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.08559226989746094,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/examples/basic_usage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/examples/basic_usage.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "skill_path": "amplifier/skills/templates/claude_code_integration.py",
+      "category": "templates",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.046253204345703125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/templates/claude_code_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/templates/claude_code_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 48.5
+    },
+    {
+      "skill_name": "context_optimization_examples",
+      "skill_path": "amplifier/skills/context_optimization_examples.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04863739013671875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/context_optimization_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/context_optimization_examples.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "skill_path": "amplifier/skills/context_memory_integration.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.0438690185546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/context_memory_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/context_memory_integration.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 90.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 58.5
+    },
+    {
+      "skill_name": "context_optimization",
+      "skill_path": "amplifier/skills/context_optimization.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04029273986816406,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/context_optimization.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/context_optimization.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "skill_path": "amplifier/skills/jit_compiler/jit_optimizer.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/jit_compiler/jit_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/jit_compiler/jit_optimizer.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "skill_path": "amplifier/skills/jit_compiler/hot_path_detector.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04267692565917969,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/jit_compiler/hot_path_detector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/jit_compiler/hot_path_detector.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "performance_profiler",
+      "skill_path": "amplifier/skills/jit_compiler/performance_profiler.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.052928924560546875,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/jit_compiler/performance_profiler.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/jit_compiler/performance_profiler.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "compilation_cache",
+      "skill_path": "amplifier/skills/jit_compiler/compilation_cache.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04124641418457031,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/jit_compiler/compilation_cache.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/jit_compiler/compilation_cache.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "skill_template",
+      "skill_path": "amplifier/skills/skills-framework/skill_template.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.040531158447265625,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/skills-framework/skill_template.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/skills-framework/skill_template.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "base_skill",
+      "skill_path": "amplifier/skills/skills-framework/base_skill.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.03933906555175781,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/skills-framework/base_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/skills-framework/base_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": true,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "skill_path": "amplifier/skills/context-management/token_budget_skill.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.042438507080078125,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/context-management/token_budget_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/context-management/token_budget_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "No error handling patterns found"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": false,
+      "overall_score": 50.0
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "skill_path": "amplifier/skills/context-management/context_compactor_skill.py",
+      "category": "other",
+      "syntax_valid": true,
+      "import_valid": false,
+      "functionality_valid": false,
+      "performance_ms": 0.04124641418457031,
+      "memory_usage_mb": 0.0,
+      "error_messages": [
+        "Unexpected import error: 'amplifier/skills/context-management/context_compactor_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'",
+        "Functionality validation error: 'amplifier/skills/context-management/context_compactor_skill.py' is not in the subpath of '/home/markimus/projects/microsoft-amplifier'"
+      ],
+      "warnings": [],
+      "api_accuracy_score": 100.0,
+      "integration_compatible": false,
+      "error_handling_valid": true,
+      "overall_score": 60.0
+    }
+  ],
+  "validation_timestamp": "2025-11-18 21:40:46"
+}

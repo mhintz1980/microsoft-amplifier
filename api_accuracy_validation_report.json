@@ -1,0 +1,1342 @@
+{
+  "total_validations": 141,
+  "average_accuracy": 100.0,
+  "api_types": {
+    "nodejs": 14,
+    "typescript": 35,
+    "general": 16,
+    "react": 76
+  },
+  "common_outdated_patterns": {},
+  "validations": [
+    {
+      "skill_name": "context_optimization_examples",
+      "api_type": "nodejs",
+      "examples_found": 9,
+      "working_examples": 9,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern nodejs: import",
+        "Modern nodejs: require",
+        "Modern nodejs: import",
+        "Modern nodejs: import",
+        "Modern nodejs: import"
+      ]
+    },
+    {
+      "skill_name": "context_memory_integration",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "context_optimization",
+      "api_type": "typescript",
+      "examples_found": 3,
+      "working_examples": 3,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern typescript: type",
+        "Modern typescript: type"
+      ]
+    },
+    {
+      "skill_name": "claude_code_integration",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "jit_optimizer",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "hot_path_detector",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_profiler",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "compilation_cache",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "meta_skill_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "base_types",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "integration_layer",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "runtime_validation",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_signature",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "bootstrap_optimizer",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "zero_hallucination",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "orchestrator",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "pipeline",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "pipeline_core",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "progress_tracker",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "mcp_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "example_skill_demo",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "documentation",
+      "api_type": "react",
+      "examples_found": 28,
+      "working_examples": 28,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_assurance",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "code_generator",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "specification_processor",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "validators",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "documentation_generator",
+      "api_type": "react",
+      "examples_found": 6,
+      "working_examples": 6,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "templates",
+      "api_type": "react",
+      "examples_found": 77,
+      "working_examples": 77,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "testing",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_matcher",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_template",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "base_skill",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_creation_methodology",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "workflow_orchestrator",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "agent_coordination",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "integration_patterns_library",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "template_library",
+      "api_type": "react",
+      "examples_found": 67,
+      "working_examples": 67,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "pattern_learning_system",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_integration_patterns_specialist",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "documentation_packaging_specialist",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "intelligent_routing_design_specialist",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_optimizer",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_testing_validation_specialist",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_assurance",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "custom_agent_development_specialist",
+      "api_type": "react",
+      "examples_found": 2,
+      "working_examples": 2,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "jest_rtl_expert",
+      "api_type": "react",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "tailwind_agent_lightning",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "database_design_expert",
+      "api_type": "nodejs",
+      "examples_found": 17,
+      "working_examples": 17,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern nodejs: import",
+        "Modern nodejs: require"
+      ]
+    },
+    {
+      "skill_name": "typescript_expert",
+      "api_type": "react",
+      "examples_found": 159,
+      "working_examples": 159,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useState",
+        "Modern react: useEffect",
+        "Modern react: useCallback",
+        "Modern react: useState",
+        "Modern react: useEffect"
+      ]
+    },
+    {
+      "skill_name": "tailwind_expert",
+      "api_type": "react",
+      "examples_found": 187,
+      "working_examples": 187,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useState",
+        "Modern react: useEffect"
+      ]
+    },
+    {
+      "skill_name": "supabase_expert",
+      "api_type": "react",
+      "examples_found": 403,
+      "working_examples": 403,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_testing_expert",
+      "api_type": "react",
+      "examples_found": 13,
+      "working_examples": 13,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_tools_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "tailwind_performance",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "nodejs_expert_enhanced",
+      "api_type": "react",
+      "examples_found": 48,
+      "working_examples": 48,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "code_quality_expert",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "code_quality_expert_examples",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "typescript_expert_enhanced",
+      "api_type": "react",
+      "examples_found": 102,
+      "working_examples": 102,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useState",
+        "Modern react: useEffect",
+        "Modern react: useCallback",
+        "Modern react: useState",
+        "Modern react: useEffect"
+      ]
+    },
+    {
+      "skill_name": "tailwind_patterns",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_performance_expert",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "nodejs_expert",
+      "api_type": "react",
+      "examples_found": 20,
+      "working_examples": 20,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "tailwind_validator",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_examples",
+      "api_type": "react",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "vite_expert",
+      "api_type": "react",
+      "examples_found": 200,
+      "working_examples": 200,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useEffect",
+        "Modern react: useEffect",
+        "Modern react: useEffect",
+        "Modern react: useEffect"
+      ]
+    },
+    {
+      "skill_name": "agent_lightning_performance_patterns",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "meta_skill_coordinator",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "full_stack_integration_expert",
+      "api_type": "react",
+      "examples_found": 57,
+      "working_examples": 57,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useState",
+        "Modern react: useEffect",
+        "Modern react: useContext",
+        "Modern react: useState",
+        "Modern react: useEffect"
+      ]
+    },
+    {
+      "skill_name": "graphql_expert",
+      "api_type": "nodejs",
+      "examples_found": 55,
+      "working_examples": 55,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern nodejs: require",
+        "Modern nodejs: export",
+        "Modern nodejs: require",
+        "Modern nodejs: require",
+        "Modern nodejs: export"
+      ]
+    },
+    {
+      "skill_name": "resource_optimizer",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "api_design_expert_enhanced",
+      "api_type": "nodejs",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern nodejs: import"
+      ]
+    },
+    {
+      "skill_name": "performance_monitoring",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "api_design_expert",
+      "api_type": "react",
+      "examples_found": 71,
+      "working_examples": 71,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "agent_lightning_hooks",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "full_stack_integration_expert_enhanced",
+      "api_type": "react",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "error_detection_engine",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "config",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "continuous_optimizer",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_gate_enforcer",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "integration_manager",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_performance_tracker",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "knowledge_transfer_system",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_monitor",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "mcp_storage_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "frontend_skill_monitor",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "basic_usage",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "integration_connectors",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "backup_recovery",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_repository_manager",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "distributed_storage",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_monitor",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "token_budget_skill",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "context_compactor_skill",
+      "api_type": "typescript",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern typescript: type"
+      ]
+    },
+    {
+      "skill_name": "task_queue",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "load_balancer",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "work_stealing_scheduler",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "worker_pool",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_validator",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "benchmark_suite",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_assurance",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "integration_tester",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "metrics_collector",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "arena_allocator",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "memory_monitor",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "garbage_collector",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "memory_pool",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_integration",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_base_types",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_skill_signature",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "basic_usage",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "validation_utils",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "file_utils",
+      "api_type": "general",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "token_utils",
+      "api_type": "general",
+      "examples_found": 2,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "mcp_integration",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "auto_generator",
+      "api_type": "typescript",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "skill_analyzer",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "progressive_formatter",
+      "api_type": "typescript",
+      "examples_found": 6,
+      "working_examples": 6,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern typescript: type",
+        "Modern typescript: interface",
+        "Modern typescript: interface"
+      ]
+    },
+    {
+      "skill_name": "cross_reference_manager",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "version_manager",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "template_engine",
+      "api_type": "typescript",
+      "examples_found": 3,
+      "working_examples": 3,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern typescript: type"
+      ]
+    },
+    {
+      "skill_name": "quality_validator",
+      "api_type": "react",
+      "examples_found": 1,
+      "working_examples": 1,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "simple_test",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "examples",
+      "api_type": "react",
+      "examples_found": 13,
+      "working_examples": 13,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": [
+        "Modern react: useState",
+        "Modern react: useEffect",
+        "Modern react: useMemo",
+        "Modern react: useCallback",
+        "Modern react: useState"
+      ]
+    },
+    {
+      "skill_name": "agent_lightning",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "test_validation",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "core",
+      "api_type": "react",
+      "examples_found": 2,
+      "working_examples": 2,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "api",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "validation",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "typescript",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "accessibility",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "agent_lightning",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "core",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "validation",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_assurance",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "performance_monitor",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "zero_hallucination_validator",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "continuous_improvement",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "compliance_validator",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "security_scanner",
+      "api_type": "nodejs",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "quality_metrics_storage",
+      "api_type": "typescript",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    },
+    {
+      "skill_name": "automated_test_generator",
+      "api_type": "react",
+      "examples_found": 0,
+      "working_examples": 0,
+      "accuracy_score": 100.0,
+      "outdated_patterns": [],
+      "modern_patterns": []
+    }
+  ]
+}

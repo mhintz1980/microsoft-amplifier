@@ -3,7 +3,6 @@ Token utilities for documentation management.
 """
 
 import re
-import json
 
 
 def estimate_tokens(text: str) -> int:
@@ -135,13 +134,13 @@ def _summarize_text(text: str, compression_ratio: float) -> str:
 
     for paragraph in paragraphs:
         # Keep short paragraphs and code blocks
-        if len(paragraph) < 200 or paragraph.strip().startswith("```"):
-            important_paragraphs.append(paragraph)
-        # Keep paragraphs with emphasis
-        elif "**" in paragraph or "*" in paragraph:
-            important_paragraphs.append(paragraph)
-        # Keep first paragraph
-        elif not important_paragraphs:
+        if (
+            len(paragraph) < 200
+            or paragraph.strip().startswith("```")
+            or "**" in paragraph
+            or "*" in paragraph
+            or not important_paragraphs
+        ):
             important_paragraphs.append(paragraph)
 
     return "\n\n".join(important_paragraphs)
@@ -158,15 +157,14 @@ def _extract_key_points(text: str, target_tokens: int) -> str:
         line = line.strip()
 
         # Keep headings
-        if line.startswith("#") or line.startswith("##") or line.startswith("###"):
-            key_lines.append(line)
-
-        # Keep emphasized text
-        elif line.startswith("**") or line.startswith("*"):
-            key_lines.append(line)
-
-        # Keep code blocks
-        elif line.startswith("```"):
+        if (
+            line.startswith("#")
+            or line.startswith("##")
+            or line.startswith("###")
+            or line.startswith("**")
+            or line.startswith("*")
+            or line.startswith("```")
+        ):
             key_lines.append(line)
 
     # If still too long, take first few key lines

@@ -1,64 +1,44 @@
 {
+  "sessionHooks": {
+    "enabled": true,
+    "autoRunPrime": true,
+    "sessionStartHook": ".claude/hooks/session_start.py"
+  },
+  "primeCommand": {
+    "enhanced": true,
+    "autoInitialize": true,
+    "errorPrevention": true,
+    "tokenOptimization": true,
+    "parallelDelegation": true
+  },
   "mcpServers": {
-    "code-execution": {
-      "command": "python",
-      "args": ["-m", "amplifier.mcp.code_execution"],
-      "env": {
-        "PYTHONPATH": "/home/markimus/projects/microsoft-amplifier"
-      }
+    "context7": {
+      "enabled": true,
+      "priority": "high"
     },
-    "persistent-storage": {
-      "command": "python",
-      "args": ["-m", "amplifier.mcp.persistent_storage"],
-      "env": {
-        "PYTHONPATH": "/home/markimus/projects/microsoft-amplifier"
-      }
+    "serena": {
+      "enabled": true,
+      "priority": "high"
+    },
+    "chrome_devtools": {
+      "enabled": true,
+      "priority": "medium"
+    },
+    "playwright": {
+      "enabled": true,
+      "priority": "medium"
     }
   },
   "enhancedSDK": {
     "enabled": true,
-    "tokenOptimization": true,
-    "parallelProcessing": true,
-    "realTimeStreaming": true,
-    "autoErrorFixing": true
+    "tokenEfficiency": "82.8%",
+    "streamingAnalysis": true,
+    "parallelProcessing": true
   },
-  "progressiveLoading": {
+  "agentLightning": {
     "enabled": true,
-    "autoContextOptimization": true,
-    "patternLearning": true,
-    "agentPreferenceTracking": true,
-    "checkpointing": true,
-    "compressionLevels": {
-      "low": 0.1,
-      "standard": 0.3,
-      "high": 0.7
-    },
-    "maxPatternsStored": 100,
-    "checkpointRetention": {
-      "sessionCheckpoints": 50,
-      "performancePatterns": 100
-    }
-  },
-  "hooks": {
-    "sessionStart": {
-      "enabled": true,
-      "path": ".claude/hooks/session_start.py",
-      "autoExecute": true
-    },
-    "preTask": {
-      "enabled": true,
-      "path": ".claude/hooks/pre_task_hook.py",
-      "autoExecute": true,
-      "taskDetection": {
-        "enabled": true,
-        "keywords": ["implement", "create", "build", "fix", "test", "debug", "refactor"]
-      }
-    },
-    "postTask": {
-      "enabled": true,
-      "path": ".claude/hooks/post_task_hook.py",
-      "autoExecute": true,
-      "learningEnabled": true
-    }
+    "monitoring": true,
+    "performanceOptimization": true,
+    "errorPrevention": true
   }
 }

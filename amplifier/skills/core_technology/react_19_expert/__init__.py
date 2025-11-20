@@ -29,30 +29,32 @@ Zero Hallucination Guarantee:
 __version__ = "1.0.0"
 __author__ = "Claude Code Agent Lightning System"
 
+from .api import ActionsAPI
+from .api import AsyncScriptsAPI
+
+# ConcurrentAPI removed - doesn't exist in api.py
+from .api import DocumentMetadataAPI
+from .api import OptimisticAPI
+from .api import React19APIs
 from .core import React19Expert
-from .api import (
-    React19APIs,
-    ActionsAPI,
-    OptimisticAPI,
-    DocumentMetadataAPI,
-    AsyncScriptsAPI,
-    ConcurrentAPI,
-)
-from .patterns import (
-    ConcurrentPatterns,
-    PerformancePatterns,
-    ErrorBoundaryPatterns,
-    CustomHookPatterns,
-)
-from .typescript import TypeScriptDefinitions, TypeSafePatterns
-from .toolchain import ViteConfig, TestingConfig, LintingConfig
-from .examples import (
-    BasicExamples,
-    AdvancedExamples,
-    ProductionExamples,
-    PerformanceExamples,
-)
-from .validation import QualityAssurance, APIChecker, PerformanceValidator
+from .examples import AdvancedExamples
+from .examples import BasicExamples
+from .examples import PerformanceExamples
+from .examples import ProductionExamples
+
+# from .patterns import ConcurrentPatterns  # Module doesn't exist
+# from .patterns import CustomHookPatterns    # Module doesn't exist
+# from .patterns import ErrorBoundaryPatterns # Module doesn't exist
+# from .patterns import PerformancePatterns   # Module doesn't exist
+# from .toolchain import LintingConfig        # Module doesn't exist
+# from .toolchain import TestingConfig        # Module doesn't exist
+# from .toolchain import ViteConfig            # Module doesn't exist
+from .typescript import TypeSafePatterns
+from .typescript import TypeScriptDefinitions
+
+# from .validation import APIChecker           # Class doesn't exist in validation.py
+# from .validation import PerformanceValidator # Class doesn't exist in validation.py
+from .validation import QualityAssurance
 
 __all__ = [
     # Core expert system
@@ -63,19 +65,19 @@ __all__ = [
     "OptimisticAPI",
     "DocumentMetadataAPI",
     "AsyncScriptsAPI",
-    "ConcurrentAPI",
-    # Pattern libraries
-    "ConcurrentPatterns",
-    "PerformancePatterns",
-    "ErrorBoundaryPatterns",
-    "CustomHookPatterns",
+    # "ConcurrentAPI",  # Class doesn't exist in api.py
+    # Pattern libraries - modules don't exist
+    # "ConcurrentPatterns",
+    # "PerformancePatterns",
+    # "ErrorBoundaryPatterns",
+    # "CustomHookPatterns",
     # TypeScript support
     "TypeScriptDefinitions",
     "TypeSafePatterns",
-    # Toolchain configurations
-    "ViteConfig",
-    "TestingConfig",
-    "LintingConfig",
+    # Toolchain configurations - modules don't exist
+    # "ViteConfig",
+    # "TestingConfig",
+    # "LintingConfig",
     # Examples and demonstrations
     "BasicExamples",
     "AdvancedExamples",
@@ -83,8 +85,8 @@ __all__ = [
     "PerformanceExamples",
     # Quality assurance
     "QualityAssurance",
-    "APIChecker",
-    "PerformanceValidator",
+    # "APIChecker",           # Class doesn't exist in validation.py
+    # "PerformanceValidator", # Class doesn't exist in validation.py
 ]
 
 # Agent Lightning integration
@@ -149,5 +151,14 @@ def get_optimization_recommendations(component_code: str) -> list:
     Returns:
         List of optimization recommendations with React 19 features
     """
-    patterns = PerformancePatterns()
-    return patterns.analyze_and_recommend(component_code)
+    # Note: PerformancePatterns class doesn't exist yet - would need to be implemented
+    # For now, return a placeholder with basic recommendations
+    recommendations = []
+
+    if "useState" in component_code and "loading" in component_code.lower():
+        recommendations.append("Consider using useActionState for automatic pending state management")
+
+    if "form" in component_code.lower() and "onSubmit" in component_code:
+        recommendations.append("Consider using React 19 Actions for better form handling")
+
+    return recommendations

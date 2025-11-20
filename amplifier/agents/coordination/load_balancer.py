@@ -17,11 +17,6 @@ from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
 
 from ...utils.logger import get_logger
 
@@ -67,7 +62,7 @@ class TaskDependency:
     depends_on: str
     dependency_type: DependencyType
     strength: float = 1.0  # 0.0-1.0, how strong the dependency is
-    metadata: Dict[str, any] = field(default_factory=dict)
+    metadata: dict[str, any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -78,12 +73,12 @@ class TaskNode:
     task_id: str
     priority: TaskPriority
     estimated_duration: float
-    required_capabilities: Set[str]
-    resource_requirements: Dict[str, float]
-    dependencies: List[TaskDependency]
-    dependents: List[str]  # Tasks that depend on this one
+    required_capabilities: set[str]
+    resource_requirements: dict[str, float]
+    dependencies: list[TaskDependency]
+    dependents: list[str]  # Tasks that depend on this one
     status: str = "pending"  # pending, ready, running, completed, failed
-    assigned_agent_id: Optional[str] = None
+    assigned_agent_id: str | None = None
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -97,8 +92,8 @@ class AgentLoadInfo:
     utilization_rate: float
     average_task_time: float
     success_rate: float
-    capability_scores: Dict[str, float]  # capability -> score
-    last_task_completed: Optional[datetime] = None
+    capability_scores: dict[str, float]  # capability -> score
+    last_task_completed: datetime | None = None
     total_tasks_completed: int = 0
     weighted_load: float = 0.0  # Load considering task complexity
 
@@ -113,7 +108,7 @@ class LoadBalancingDecision:
     reasoning: str
     expected_completion_time: float
     load_distribution_score: float
-    alternative_agents: List[str] = field(default_factory=list)
+    alternative_agents: list[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -121,10 +116,10 @@ class DependencyManager:
     """Manages task dependencies and optimization."""
 
     def __init__(self):
-        self.tasks: Dict[str, TaskNode] = {}
-        self.dependencies: List[TaskDependency] = []
-        self.execution_graph: Dict[str, Set[str]] = defaultdict(set)  # task_id -> dependencies
-        self.reverse_graph: Dict[str, Set[str]] = defaultdict(set)  # task_id -> dependents
+        self.tasks: dict[str, TaskNode] = {}
+        self.dependencies: list[TaskDependency] = []
+        self.execution_graph: dict[str, set[str]] = defaultdict(set)  # task_id -> dependencies
+        self.reverse_graph: dict[str, set[str]] = defaultdict(set)  # task_id -> dependents
         self._lock = asyncio.Lock()
 
     async def add_task(self, task: TaskNode) -> None:
@@ -140,7 +135,7 @@ class DependencyManager:
 
         logger.debug(f"Added task {task.task_id} with {len(task.dependencies)} dependencies")
 
-    async def get_ready_tasks(self) -> List[TaskNode]:
+    async def get_ready_tasks(self) -> list[TaskNode]:
         """Get tasks that are ready to execute (dependencies satisfied)."""
         async with self._lock:
             ready_tasks = []
@@ -164,7 +159,7 @@ class DependencyManager:
 
         return True
 
-    async def mark_task_completed(self, task_id: str) -> List[str]:
+    async def mark_task_completed(self, task_id: str) -> list[str]:
         """Mark a task as completed and return newly ready tasks."""
         async with self._lock:
             if task_id not in self.tasks:
@@ -181,7 +176,7 @@ class DependencyManager:
 
             return newly_ready
 
-    async def detect_deadlocks(self) -> List[List[str]]:
+    async def detect_deadlocks(self) -> list[list[str]]:
         """Detect circular dependencies that would cause deadlocks."""
         async with self._lock:
             # Use DFS to detect cycles
@@ -189,7 +184,7 @@ class DependencyManager:
             rec_stack = set()
             cycles = []
 
-            def dfs(node: str, path: List[str]) -> bool:
+            def dfs(node: str, path: list[str]) -> bool:
                 if node in rec_stack:
                     # Found cycle
                     cycle_start = path.index(node)
@@ -215,7 +210,7 @@ class DependencyManager:
 
             return cycles
 
-    async def optimize_dependency_order(self) -> List[str]:
+    async def optimize_dependency_order(self) -> list[str]:
         """Optimize task execution order for maximum parallelism."""
         async with self._lock:
             # Topological sort with level assignment
@@ -248,7 +243,7 @@ class DependencyManager:
 
             return execution_order
 
-    async def get_dependency_statistics(self) -> Dict[str, any]:
+    async def get_dependency_statistics(self) -> dict[str, any]:
         """Get statistics about task dependencies."""
         async with self._lock:
             total_tasks = len(self.tasks)
@@ -286,7 +281,7 @@ class DependencyManager:
                 },
             }
 
-    async def _calculate_dependency_depth(self, task_id: str, visited: Set[str] = None) -> int:
+    async def _calculate_dependency_depth(self, task_id: str, visited: set[str] = None) -> int:
         """Calculate maximum dependency depth for a task."""
         if visited is None:
             visited = set()
@@ -313,10 +308,10 @@ class LoadBalancer:
 
     def __init__(self, strategy: LoadBalancingStrategy = LoadBalancingStrategy.ADAPTIVE):
         self.strategy = strategy
-        self.agent_loads: Dict[str, AgentLoadInfo] = {}
+        self.agent_loads: dict[str, AgentLoadInfo] = {}
         self.round_robin_index = 0
-        self.decision_history: List[LoadBalancingDecision] = []
-        self.performance_history: Dict[str, List[float]] = defaultdict(list)  # agent_id -> performance scores
+        self.decision_history: list[LoadBalancingDecision] = []
+        self.performance_history: dict[str, list[float]] = defaultdict(list)  # agent_id -> performance scores
         self._lock = asyncio.Lock()
 
     async def update_agent_load(self, agent_id: str, load_info: AgentLoadInfo) -> None:
@@ -329,7 +324,7 @@ class LoadBalancer:
             if len(self.performance_history[agent_id]) > 100:
                 self.performance_history[agent_id] = self.performance_history[agent_id][-50:]
 
-    async def select_agent(self, task: TaskNode, available_agents: List[str]) -> LoadBalancingDecision:
+    async def select_agent(self, task: TaskNode, available_agents: list[str]) -> LoadBalancingDecision:
         """Select the best agent for a task using the configured strategy."""
         if not available_agents:
             return LoadBalancingDecision(
@@ -366,14 +361,14 @@ class LoadBalancer:
 
         return decision
 
-    async def _round_robin_select(self, available_agents: List[str]) -> str:
+    async def _round_robin_select(self, available_agents: list[str]) -> str:
         """Round-robin agent selection."""
         async with self._lock:
             agent_id = available_agents[self.round_robin_index % len(available_agents)]
             self.round_robin_index += 1
             return agent_id
 
-    async def _least_connections_select(self, available_agents: List[str]) -> str:
+    async def _least_connections_select(self, available_agents: list[str]) -> str:
         """Select agent with least current connections."""
         best_agent = None
         min_load = float("inf")
@@ -388,7 +383,7 @@ class LoadBalancer:
 
         return best_agent or available_agents[0]
 
-    async def _weighted_round_robin_select(self, available_agents: List[str]) -> str:
+    async def _weighted_round_robin_select(self, available_agents: list[str]) -> str:
         """Weighted round-robin based on agent performance."""
         weights = []
         for agent_id in available_agents:
@@ -417,7 +412,7 @@ class LoadBalancer:
 
         return available_agents[-1]
 
-    async def _capability_based_select(self, task: TaskNode, available_agents: List[str]) -> str:
+    async def _capability_based_select(self, task: TaskNode, available_agents: list[str]) -> str:
         """Select agent based on capability matching."""
         best_agent = None
         best_score = -1.0
@@ -447,7 +442,7 @@ class LoadBalancer:
 
         return best_agent or available_agents[0]
 
-    async def _performance_based_select(self, available_agents: List[str]) -> str:
+    async def _performance_based_select(self, available_agents: list[str]) -> str:
         """Select agent based on historical performance."""
         best_agent = None
         best_performance = 0.0
@@ -473,7 +468,7 @@ class LoadBalancer:
 
         return best_agent or available_agents[0]
 
-    async def _adaptive_select(self, task: TaskNode, available_agents: List[str]) -> str:
+    async def _adaptive_select(self, task: TaskNode, available_agents: list[str]) -> str:
         """Adaptive selection combining multiple strategies."""
         # Get recommendations from different strategies
         strategies = [
@@ -493,12 +488,11 @@ class LoadBalancer:
 
         if len(top_candidates) == 1:
             return top_candidates[0]
-        else:
-            # Tie-breaker: capability match
-            return await self._capability_based_select(task, top_candidates)
+        # Tie-breaker: capability match
+        return await self._capability_based_select(task, top_candidates)
 
     async def _create_decision(
-        self, task: TaskNode, selected_agent_id: str, available_agents: List[str]
+        self, task: TaskNode, selected_agent_id: str, available_agents: list[str]
     ) -> LoadBalancingDecision:
         """Create a load balancing decision record."""
         load_info = self.agent_loads.get(selected_agent_id)
@@ -527,7 +521,7 @@ class LoadBalancer:
             alternative_agents=alternatives,
         )
 
-    async def get_load_statistics(self) -> Dict[str, any]:
+    async def get_load_statistics(self) -> dict[str, any]:
         """Get load balancing statistics."""
         async with self._lock:
             total_agents = len(self.agent_loads)
@@ -567,9 +561,8 @@ class LoadBalancer:
             # Poor load distribution, try different strategy
             if self.strategy == LoadBalancingStrategy.ROUND_ROBIN:
                 return LoadBalancingStrategy.LEAST_CONNECTIONS
-            elif self.strategy == LoadBalancingStrategy.LEAST_CONNECTIONS:
+            if self.strategy == LoadBalancingStrategy.LEAST_CONNECTIONS:
                 return LoadBalancingStrategy.ADAPTIVE
-            else:
-                return LoadBalancingStrategy.ADAPTIVE
+            return LoadBalancingStrategy.ADAPTIVE
 
         return self.strategy

@@ -14,22 +14,21 @@ Pipeline Stages:
 6. MCP Integration - Persistent storage and context optimization
 """
 
-import asyncio
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from ...utils.logger import get_logger
 from ...utils.token_utils import estimate_tokens
-
-from .orchestrator import SkillCreationOrchestrator, SkillRequest
-from .templates import SkillTemplateManager
-from .validators import QualityValidator
 from .documentation import DocumentationGenerator
-from .testing import TestingFramework
 from .mcp_integration import MCPSkillManager
+from .orchestrator import SkillCreationOrchestrator
+from .templates import SkillTemplateManager
+from .testing import TestingFramework
+from .validators import QualityValidator
 
 logger = get_logger(__name__)
 
@@ -69,14 +68,14 @@ class PipelineResult:
     success: bool
     skill_name: str
     stage: PipelineStage
-    artifacts: Dict[str, Any] = field(default_factory=dict)
-    metrics: Dict[str, Any] = field(default_factory=dict)
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    artifacts: dict[str, Any] = field(default_factory=dict)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     execution_time: float = 0.0
     token_efficiency: float = 0.0
     mcp_token_reduction: float = 0.0
-    recommendations: List[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
 
 class SkillCreationPipeline:
@@ -92,7 +91,7 @@ class SkillCreationPipeline:
     - Automated documentation generation
     """
 
-    def __init__(self, config: Optional[PipelineConfig] = None):
+    def __init__(self, config: PipelineConfig | None = None):
         self.config = config or PipelineConfig()
         self.template_manager = SkillTemplateManager()
         self.quality_validator = QualityValidator()
@@ -105,7 +104,7 @@ class SkillCreationPipeline:
         self.current_stage = PipelineStage.INITIALIZATION
         self.checkpoint_count = 0
         self.start_time = None
-        self.pipeline_history: List[Dict[str, Any]] = []
+        self.pipeline_history: list[dict[str, Any]] = []
 
     async def initialize(self) -> bool:
         """Initialize all pipeline components."""
@@ -137,13 +136,13 @@ class SkillCreationPipeline:
         skill_name: str,
         description: str,
         category: str,
-        requirements: List[str],
-        examples: List[Dict[str, Any]] = None,
-        input_schema: Dict[str, Any] = None,
-        output_schema: Dict[str, Any] = None,
-        constraints: List[str] = None,
+        requirements: list[str],
+        examples: list[dict[str, Any]] = None,
+        input_schema: dict[str, Any] = None,
+        output_schema: dict[str, Any] = None,
+        constraints: list[str] = None,
         use_template: str = None,
-        customizations: Dict[str, Any] = None,
+        customizations: dict[str, Any] = None,
     ) -> PipelineResult:
         """
         Execute complete skill creation pipeline.
@@ -363,12 +362,12 @@ class SkillCreationPipeline:
         skill_name: str,
         description: str,
         category: str,
-        requirements: List[str],
-        examples: List[Dict[str, Any]],
-        input_schema: Dict[str, Any],
-        output_schema: Dict[str, Any],
-        constraints: List[str],
-    ) -> Dict[str, Any]:
+        requirements: list[str],
+        examples: list[dict[str, Any]],
+        input_schema: dict[str, Any],
+        output_schema: dict[str, Any],
+        constraints: list[str],
+    ) -> dict[str, Any]:
         """Process and validate skill specification."""
         logger.info("Processing skill specification")
 
@@ -384,7 +383,7 @@ class SkillCreationPipeline:
             "processed_at": datetime.now().isoformat(),
         }
 
-    async def _select_template(self, category: str, preferred_template: str = None) -> Optional[Dict[str, Any]]:
+    async def _select_template(self, category: str, preferred_template: str = None) -> dict[str, Any] | None:
         """Select appropriate template for skill generation."""
         logger.info(f"Selecting template for category: {category}")
 
@@ -415,10 +414,10 @@ class SkillCreationPipeline:
 
     async def _generate_skill_code(
         self,
-        template: Optional[Dict[str, Any]],
+        template: dict[str, Any] | None,
         skill_name: str,
-        specification: Dict[str, Any],
-        customizations: Dict[str, Any],
+        specification: dict[str, Any],
+        customizations: dict[str, Any],
     ) -> str:
         """Generate skill code using template or custom generation."""
         logger.info("Generating skill code")
@@ -489,7 +488,7 @@ def {skill_name.lower().replace(" ", "_")}(data: Any, config: Optional[Dict[str,
     return skill.process(data)
 '''
 
-    async def _generate_test_code(self, skill_code: str, skill_name: str, examples: List[Dict[str, Any]]) -> str:
+    async def _generate_test_code(self, skill_code: str, skill_name: str, examples: list[dict[str, Any]]) -> str:
         """Generate comprehensive test code."""
         logger.info("Generating test code")
 
@@ -513,7 +512,7 @@ import os
 # Add skill to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-{chr(10).join(f"import {{imp}}" for imp in imports)}
+{chr(10).join("import {imp}" for imp in imports)}
 
 class Test{skill_name.title().replace(" ", "")}:
     """Test suite for {skill_name}"""
@@ -559,7 +558,7 @@ if __name__ == "__main__":
 
         return test_code
 
-    async def _create_checkpoint(self, stage_name: str, data: Dict[str, Any]) -> None:
+    async def _create_checkpoint(self, stage_name: str, data: dict[str, Any]) -> None:
         """Create pipeline checkpoint."""
         self.checkpoint_count += 1
 
@@ -576,7 +575,7 @@ if __name__ == "__main__":
         }
         self.pipeline_history.append(checkpoint_data)
 
-    def _extract_imports(self, code: str) -> List[str]:
+    def _extract_imports(self, code: str) -> list[str]:
         """Extract import statements from code."""
         imports = []
 
@@ -598,7 +597,7 @@ if __name__ == "__main__":
 
         return list(set(imports))
 
-    def _extract_functions(self, code: str) -> List[str]:
+    def _extract_functions(self, code: str) -> list[str]:
         """Extract function names from code."""
         functions = []
 
@@ -616,7 +615,7 @@ if __name__ == "__main__":
 
         return functions
 
-    def get_pipeline_stats(self) -> Dict[str, Any]:
+    def get_pipeline_stats(self) -> dict[str, Any]:
         """Get pipeline execution statistics."""
         return {
             "current_stage": self.current_stage.value,
@@ -639,7 +638,7 @@ if __name__ == "__main__":
             },
         }
 
-    def get_pipeline_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_pipeline_history(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get recent pipeline execution history."""
         return self.pipeline_history[-limit:]
 
@@ -649,9 +648,9 @@ async def create_skill_pipeline(
     skill_name: str,
     description: str,
     category: str,
-    requirements: List[str],
-    examples: List[Dict[str, Any]] = None,
-    config: Optional[PipelineConfig] = None,
+    requirements: list[str],
+    examples: list[dict[str, Any]] = None,
+    config: PipelineConfig | None = None,
 ) -> PipelineResult:
     """
     Convenience function for creating a skill through the pipeline.

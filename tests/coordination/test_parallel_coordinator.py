@@ -14,28 +14,25 @@ These tests validate the 40-70% efficiency gain target and system reliability.
 """
 
 import asyncio
-import pytest
-from datetime import datetime
-from typing import List
 
-from amplifier.agents.coordination import (
-    AgentPoolManager,
-    TaskRouter,
-    ResultAggregator,
-    PerformanceMonitor,
-    LoadBalancer,
-    DependencyManager,
-    ParallelAgentCoordinator,
-    CoordinationRequest,
-    CoordinationResult,
-    TaskDefinition,
-    TaskType,
-    TaskComplexity,
-    AggregationStrategy,
-    get_parallel_coordinator,
-    execute_parallel_tasks,
-    PoolConfiguration,
-)
+import pytest
+
+from amplifier.agents.coordination import AgentPoolManager
+from amplifier.agents.coordination import AggregationStrategy
+from amplifier.agents.coordination import CoordinationRequest
+from amplifier.agents.coordination import CoordinationResult
+from amplifier.agents.coordination import DependencyManager
+from amplifier.agents.coordination import LoadBalancer
+from amplifier.agents.coordination import ParallelAgentCoordinator
+from amplifier.agents.coordination import PerformanceMonitor
+from amplifier.agents.coordination import PoolConfiguration
+from amplifier.agents.coordination import ResultAggregator
+from amplifier.agents.coordination import TaskComplexity
+from amplifier.agents.coordination import TaskDefinition
+from amplifier.agents.coordination import TaskRouter
+from amplifier.agents.coordination import TaskType
+from amplifier.agents.coordination import execute_parallel_tasks
+from amplifier.agents.coordination import get_parallel_coordinator
 
 
 class TestAgentPoolManager:
@@ -172,7 +169,8 @@ class TestResultAggregator:
     @pytest.mark.asyncio
     async def test_single_result_aggregation(self, result_aggregator):
         """Test aggregating a single result."""
-        from amplifier.agents.coordination.result_aggregator import AgentResult, ResultStatus
+        from amplifier.agents.coordination.result_aggregator import AgentResult
+        from amplifier.agents.coordination.result_aggregator import ResultStatus
 
         # Create test result
         result = AgentResult(
@@ -198,7 +196,8 @@ class TestResultAggregator:
     @pytest.mark.asyncio
     async def test_multiple_result_aggregation(self, result_aggregator):
         """Test aggregating multiple results."""
-        from amplifier.agents.coordination.result_aggregator import AgentResult, ResultStatus
+        from amplifier.agents.coordination.result_aggregator import AgentResult
+        from amplifier.agents.coordination.result_aggregator import ResultStatus
 
         # Create test results
         results = [
@@ -227,7 +226,8 @@ class TestResultAggregator:
     @pytest.mark.asyncio
     async def test_conflict_detection(self, result_aggregator):
         """Test conflict detection between results."""
-        from amplifier.agents.coordination.result_aggregator import AgentResult, ResultStatus
+        from amplifier.agents.coordination.result_aggregator import AgentResult
+        from amplifier.agents.coordination.result_aggregator import ResultStatus
 
         # Create conflicting results
         results = [
@@ -293,7 +293,8 @@ class TestPerformanceMonitor:
     async def test_efficiency_calculation(self, performance_monitor):
         """Test efficiency metrics calculation."""
         # Add some mock metrics
-        from amplifier.agents.coordination.performance_monitor import PerformanceMetric, MetricType
+        from amplifier.agents.coordination.performance_monitor import MetricType
+        from amplifier.agents.coordination.performance_monitor import PerformanceMetric
 
         mock_metrics = [
             PerformanceMetric(MetricType.UTILIZATION, 0.8, "ratio"),
@@ -329,7 +330,9 @@ class TestLoadBalancer:
     @pytest.mark.asyncio
     async def test_agent_selection(self, load_balancer):
         """Test agent selection for load balancing."""
-        from amplifier.agents.coordination.load_balancer import AgentLoadInfo, TaskNode, TaskPriority
+        from amplifier.agents.coordination.load_balancer import AgentLoadInfo
+        from amplifier.agents.coordination.load_balancer import TaskNode
+        from amplifier.agents.coordination.load_balancer import TaskPriority
 
         # Add some mock agents
         agents = [
@@ -369,7 +372,10 @@ class TestLoadBalancer:
     @pytest.mark.asyncio
     async def test_dependency_resolution(self, dependency_manager):
         """Test task dependency resolution."""
-        from amplifier.agents.coordination.load_balancer import TaskNode, TaskPriority, TaskDependency, DependencyType
+        from amplifier.agents.coordination.load_balancer import DependencyType
+        from amplifier.agents.coordination.load_balancer import TaskDependency
+        from amplifier.agents.coordination.load_balancer import TaskNode
+        from amplifier.agents.coordination.load_balancer import TaskPriority
 
         # Create tasks with dependencies
         task_a = TaskNode(
@@ -619,7 +625,7 @@ class TestPerformanceBenchmarks:
         requests_per_second = num_requests / total_time
 
         # Log benchmark results
-        print(f"\nCoordination Throughput Benchmark:")
+        print("\nCoordination Throughput Benchmark:")
         print(f"Total tasks: {total_tasks}")
         print(f"Total time: {total_time:.2f}s")
         print(f"Tasks per second: {tasks_per_second:.2f}")
@@ -693,7 +699,8 @@ class TestQualityAssurance:
     @pytest.mark.asyncio
     async def test_hallucination_detection(self):
         """Test hallucination detection in results."""
-        from amplifier.agents.coordination.result_aggregator import AgentResult, ResultStatus
+        from amplifier.agents.coordination.result_aggregator import AgentResult
+        from amplifier.agents.coordination.result_aggregator import ResultStatus
 
         aggregator = ResultAggregator()
 

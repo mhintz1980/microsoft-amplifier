@@ -177,7 +177,7 @@ def test_zero_hallucination_patterns():
         # Search for pattern in all Python files
         for py_file in Path(".").glob("*.py"):
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     content = f.read()
                     if pattern in content:
                         found_patterns.append(pattern)
@@ -208,7 +208,7 @@ if __name__ == "__main__":
         # Overall assessment
         overall_score = (basic_results["success_rate"] + hallucination_results["score"]) / 2
 
-        print(f"\n🏆 OVERALL ASSESSMENT")
+        print("\n🏆 OVERALL ASSESSMENT")
         print("=" * 40)
         print(f"Overall Score: {overall_score:.1f}%")
 
@@ -236,7 +236,7 @@ if __name__ == "__main__":
 
             with open("test_results_simple.json", "w") as f:
                 json.dump(results, f, indent=2)
-            print(f"\n📄 Results saved to: test_results_simple.json")
+            print("\n📄 Results saved to: test_results_simple.json")
         except:
             pass
 

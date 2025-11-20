@@ -5,11 +5,11 @@ Comprehensive ShadCN/ui expertise with zero hallucinations.
 Provides mastery of modern React component libraries and design systems.
 """
 
-from .core import ShadCNExpert
-from .components import ComponentLibrary
 from .accessibility import AccessibilityExpert
-from .validation import ValidationEngine
 from .agent_lightning import AgentLightningIntegration
+from .components import ComponentLibrary
+from .core import ShadCNExpert
+from .validation import ValidationEngine
 
 __all__ = [
     "ShadCNExpert",

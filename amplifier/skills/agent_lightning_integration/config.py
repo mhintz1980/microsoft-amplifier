@@ -2,9 +2,10 @@
 Configuration for Agent Lightning Integration
 """
 
+from dataclasses import dataclass
+from dataclasses import field
 from pathlib import Path
-from typing import Dict, Any, List
-from dataclasses import dataclass, field
+from typing import Any
 
 
 @dataclass
@@ -26,7 +27,7 @@ class PerformanceTrackingConfig:
     error_detection_sensitivity: float = 0.8
 
     # Performance metrics to track
-    tracked_metrics: List[str] = field(
+    tracked_metrics: list[str] = field(
         default_factory=lambda: [
             "success_rate",
             "execution_time",
@@ -186,7 +187,7 @@ class AgentLightningIntegrationConfig:
         if self.rl_training.apo_batch_size <= 0:
             raise ValueError("apo_batch_size must be positive")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert configuration to dictionary"""
         return {
             "storage_root": str(self.storage_root),

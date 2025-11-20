@@ -4,7 +4,37 @@ This module provides utilities for accurately counting tokens and truncating tex
 to fit within token limits for LLM processing.
 """
 
-import tiktoken
+try:
+    import tiktoken
+
+    HAS_TIKTOKEN = True
+except ImportError:
+    HAS_TIKTOKEN = False
+    # Fallback to basic token estimation
+
+
+def estimate_tokens(text: str, model: str = "cl100k_base") -> int:
+    """Estimate tokens without tiktoken dependency.
+
+    Args:
+        text: The text to estimate tokens for
+        model: The model identifier (for compatibility)
+
+    Returns:
+        Estimated number of tokens
+    """
+    if not text:
+        return 0
+
+    # Conservative estimation: ~4 characters per token for English
+    # Word-based estimation
+    words = len(text.split())
+
+    # Character-based estimation (more conservative)
+    char_estimate = len(text) // 4
+
+    # Return the more conservative estimate
+    return max(words, char_estimate)
 
 
 def count_tokens(text: str, model: str = "cl100k_base") -> int:
@@ -12,11 +42,15 @@ def count_tokens(text: str, model: str = "cl100k_base") -> int:
 
     Args:
         text: The text to count tokens for
-        model: The tiktoken encoding model to use (default: cl100k_base for GPT-4/Claude)
+        model: The model identifier (default: cl100k_base for GPT-4/Claude)
 
     Returns:
         Number of tokens in the text
     """
+    if not HAS_TIKTOKEN:
+        # Fallback estimation
+        return estimate_tokens(text, model)
+
     try:
         encoding = tiktoken.get_encoding(model)
     except KeyError:

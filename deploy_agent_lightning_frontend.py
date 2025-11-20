@@ -14,8 +14,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.append(str(Path(__file__).parent))
 
+from amplifier.skills.agent_lightning_integration.config import PerformanceTrackingConfig
+from amplifier.skills.agent_lightning_integration.config import RLTrainingConfig
 from amplifier.skills.agent_lightning_integration.frontend_skill_monitor import FrontendSkillMonitor
-from amplifier.skills.agent_lightning_integration.config import RLTrainingConfig, PerformanceTrackingConfig
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -75,10 +76,10 @@ async def deploy_agent_lightning_frontend():
         logger.info("✅ AGENT LIGHTNING DEPLOYMENT COMPLETE")
         logger.info(f"   🎯 Monitoring {skills_count} frontend skills")
         logger.info(f"   🚨 {critical_alerts} critical alerts detected")
-        logger.info(f"   🔄 Real-time optimization: ACTIVE")
-        logger.info(f"   🛡️  Zero-hallucination enforcement: ACTIVE")
-        logger.info(f"   ⚡ Performance optimization: ACTIVE")
-        logger.info(f"   📈 Knowledge transfer: ACTIVE")
+        logger.info("   🔄 Real-time optimization: ACTIVE")
+        logger.info("   🛡️  Zero-hallucination enforcement: ACTIVE")
+        logger.info("   ⚡ Performance optimization: ACTIVE")
+        logger.info("   📈 Knowledge transfer: ACTIVE")
 
         logger.info("\n🎯 FRONTEND SKILLS UNDER OPTIMIZATION:")
         logger.info("   • React 19 skills - API accuracy & hooks optimization")

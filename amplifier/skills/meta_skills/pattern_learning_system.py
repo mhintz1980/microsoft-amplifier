@@ -7,23 +7,20 @@ algorithms for pattern optimization and adaptation.
 """
 
 import asyncio
-import json
-import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple, Union
-from dataclasses import dataclass, field
-from collections import defaultdict, deque
 import logging
-from pathlib import Path
+from collections import defaultdict
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from typing import Any
 
+import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
-import pandas as pd
 
-from .skill_integration_patterns_specialist import IntegrationPattern, SkillDependency, SkillConflict
 from ...mcp.persistent_storage import MCPStorageManager
-from ...utils.performance_monitor import PerformanceMonitor
+from .skill_integration_patterns_specialist import IntegrationPattern
 
 
 @dataclass
@@ -41,7 +38,7 @@ class PatternPerformanceMetrics:
     avg_tokens: float = 0.0
     error_count: int = 0
     error_rate: float = 0.0
-    resource_utilization: Dict[str, float] = field(default_factory=dict)
+    resource_utilization: dict[str, float] = field(default_factory=dict)
     last_updated: datetime = field(default_factory=datetime.now)
 
 
@@ -51,18 +48,18 @@ class PatternExecutionRecord:
 
     execution_id: str
     pattern_id: str
-    skill_ids: List[str]
-    execution_context: Dict[str, Any]
+    skill_ids: list[str]
+    execution_context: dict[str, Any]
     start_time: datetime
     end_time: datetime
     duration: float
     success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
     tokens_used: int = 0
-    resources_used: Dict[str, float] = field(default_factory=dict)
+    resources_used: dict[str, float] = field(default_factory=dict)
     output_quality: float = 0.0  # 0-1 scale
-    user_satisfaction: Optional[float] = None  # 0-1 scale
-    performance_metrics: Dict[str, float] = field(default_factory=dict)
+    user_satisfaction: float | None = None  # 0-1 scale
+    performance_metrics: dict[str, float] = field(default_factory=dict)
 
 
 @dataclass
@@ -73,8 +70,8 @@ class PatternRecommendation:
     recommendation_type: str  # "optimize", "replace", "combine", "avoid"
     confidence: float  # 0-1 scale
     reasoning: str
-    suggested_changes: List[Dict[str, Any]]
-    expected_improvement: Dict[str, float]
+    suggested_changes: list[dict[str, Any]]
+    expected_improvement: dict[str, float]
     risk_assessment: str  # "low", "medium", "high"
 
 
@@ -82,8 +79,8 @@ class PatternAnalytics:
     """Analytics engine for pattern performance analysis."""
 
     def __init__(self):
-        self.performance_data: Dict[str, List[PatternExecutionRecord]] = defaultdict(list)
-        self.metrics_cache: Dict[str, PatternPerformanceMetrics] = {}
+        self.performance_data: dict[str, list[PatternExecutionRecord]] = defaultdict(list)
+        self.metrics_cache: dict[str, PatternPerformanceMetrics] = {}
         self.trend_analyzers = {}
         self.anomaly_detectors = {}
 
@@ -98,13 +95,13 @@ class PatternAnalytics:
         if len(self.performance_data[record.pattern_id]) >= 10:
             self._analyze_trends(record.pattern_id)
 
-    def get_pattern_metrics(self, pattern_id: str) -> Optional[PatternPerformanceMetrics]:
+    def get_pattern_metrics(self, pattern_id: str) -> PatternPerformanceMetrics | None:
         """Get performance metrics for a pattern."""
         if pattern_id not in self.metrics_cache:
             self._update_pattern_metrics(pattern_id)
         return self.metrics_cache.get(pattern_id)
 
-    def analyze_performance_trends(self, pattern_id: str) -> Dict[str, Any]:
+    def analyze_performance_trends(self, pattern_id: str) -> dict[str, Any]:
         """Analyze performance trends for a pattern."""
         records = self.performance_data.get(pattern_id, [])
         if len(records) < 5:
@@ -157,7 +154,7 @@ class PatternAnalytics:
 
         return trends
 
-    def detect_anomalies(self, pattern_id: str) -> List[Dict[str, Any]]:
+    def detect_anomalies(self, pattern_id: str) -> list[dict[str, Any]]:
         """Detect anomalous executions for a pattern."""
         records = self.performance_data.get(pattern_id, [])
         if len(records) < 20:
@@ -239,7 +236,7 @@ class PatternAnalytics:
         metrics.last_updated = datetime.now()
         self.metrics_cache[pattern_id] = metrics
 
-    def _calculate_trend(self, values: pd.Series) -> Tuple[float, float]:
+    def _calculate_trend(self, values: pd.Series) -> tuple[float, float]:
         """Calculate trend slope and confidence."""
         if len(values) < 2:
             return 0.0, 0.0
@@ -282,7 +279,7 @@ class PatternOptimizer:
         self.is_trained = False
 
     def extract_features(
-        self, pattern: IntegrationPattern, historical_metrics: Optional[PatternPerformanceMetrics] = None
+        self, pattern: IntegrationPattern, historical_metrics: PatternPerformanceMetrics | None = None
     ) -> np.ndarray:
         """Extract features from pattern for ML prediction."""
         features = []
@@ -311,7 +308,7 @@ class PatternOptimizer:
 
         return np.array(features).reshape(1, -1)
 
-    def predict_performance(self, pattern: IntegrationPattern, context: Dict[str, Any]) -> Dict[str, float]:
+    def predict_performance(self, pattern: IntegrationPattern, context: dict[str, Any]) -> dict[str, float]:
         """Predict pattern performance metrics."""
         if not self.is_trained:
             return {"estimated_duration": 10.0, "success_probability": 0.5}
@@ -353,7 +350,7 @@ class PatternOptimizer:
 
         return optimized_pattern
 
-    def train_models(self, training_data: List[Tuple[IntegrationPattern, PatternPerformanceMetrics]]) -> None:
+    def train_models(self, training_data: list[tuple[IntegrationPattern, PatternPerformanceMetrics]]) -> None:
         """Train ML models with historical data."""
         if len(training_data) < 10:
             return  # Not enough data for training
@@ -510,8 +507,8 @@ class PatternLearningSystem:
         )
 
     async def get_pattern_recommendations(
-        self, pattern_id: str, context: Dict[str, Any]
-    ) -> List[PatternRecommendation]:
+        self, pattern_id: str, context: dict[str, Any]
+    ) -> list[PatternRecommendation]:
         """Get recommendations for pattern improvement."""
         return await self.recommendation_engine.generate_recommendations(pattern_id, context, self.analytics)
 
@@ -531,7 +528,7 @@ class PatternLearningSystem:
 
         return optimized
 
-    async def get_learning_insights(self) -> Dict[str, Any]:
+    async def get_learning_insights(self) -> dict[str, Any]:
         """Get comprehensive learning insights."""
         insights = {
             "patterns_analyzed": len(self.analytics.performance_data),
@@ -667,7 +664,7 @@ class PatternLearningSystem:
 
         return total_successes / total_executions
 
-    def _get_top_performing_patterns(self, limit: int = 5) -> List[Dict[str, Any]]:
+    def _get_top_performing_patterns(self, limit: int = 5) -> list[dict[str, Any]]:
         """Get top performing patterns."""
         pattern_performance = []
         for pattern_id, metrics in self.analytics.metrics_cache.items():
@@ -686,7 +683,7 @@ class PatternLearningSystem:
 
         return pattern_performance[:limit]
 
-    def _get_attention_needed_patterns(self, limit: int = 5) -> List[Dict[str, Any]]:
+    def _get_attention_needed_patterns(self, limit: int = 5) -> list[dict[str, Any]]:
         """Get patterns that need attention."""
         attention_patterns = []
         for pattern_id, metrics in self.analytics.metrics_cache.items():
@@ -712,7 +709,7 @@ class PatternLearningSystem:
 
         return attention_patterns[:limit]
 
-    async def _identify_optimization_opportunities(self) -> List[Dict[str, Any]]:
+    async def _identify_optimization_opportunities(self) -> list[dict[str, Any]]:
         """Identify optimization opportunities."""
         opportunities = []
         for pattern_id, metrics in self.analytics.metrics_cache.items():
@@ -754,8 +751,8 @@ class RecommendationEngine:
     """Engine for generating pattern recommendations."""
 
     async def generate_recommendations(
-        self, pattern_id: str, context: Dict[str, Any], analytics: PatternAnalytics
-    ) -> List[PatternRecommendation]:
+        self, pattern_id: str, context: dict[str, Any], analytics: PatternAnalytics
+    ) -> list[PatternRecommendation]:
         """Generate recommendations for a pattern."""
         recommendations = []
         metrics = analytics.get_pattern_metrics(pattern_id)

@@ -20,7 +20,6 @@ Agent Lightning Integration:
 - Eliminates incorrect type usage through validation
 """
 
-import json
 import logging
 import re
 import subprocess
@@ -29,14 +28,18 @@ import time
 from pathlib import Path
 from typing import Any
 
-from ..skills_framework.base_skill import BaseSkill, SkillContext, SkillResult, SkillMetrics, SkillStatus
-from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.base_skill import BaseSkill as FrameworkBaseSkill
+from ..skills_framework.base_skill import SkillContext as FrameworkSkillContext
+from ..skills_framework.base_skill import SkillResult as FrameworkSkillResult
+from ..skills_framework.skill_template import SkillContext as TemplateSkillContext
+from ..skills_framework.skill_template import SkillLevel as TemplateSkillLevel
+from ..skills_framework.skill_template import SkillResult as TemplateSkillResult
 from ..utils.token_utils import estimate_tokens
 
 logger = logging.getLogger(__name__)
 
 
-class TypeScriptExpertSkill(BaseSkill):
+class TypeScriptExpertSkill(FrameworkBaseSkill):
     """
     Advanced TypeScript expertise with zero hallucination enforcement.
 
@@ -45,21 +48,75 @@ class TypeScriptExpertSkill(BaseSkill):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            skill_id="typescript_expert",
+            name="TypeScript Expert",
+            description="Advanced TypeScript expertise with zero hallucination enforcement. Provides comprehensive type system mastery, React integration patterns, and production-ready solutions with guaranteed compilation accuracy.",
+        )
         self.type_pattern_cache = {}
         self.compilation_validator = TypeScriptCompilationValidator()
         self.performance_optimizer = TypeScriptPerformanceOptimizer()
         self.error_prevention = TypeScriptErrorPrevention()
         self.agent_lightning_integration = AgentLightningTypeIntegration()
 
-    @property
-    def description(self) -> str:
-        return (
-            "Advanced TypeScript expert providing comprehensive type system mastery, "
-            "React integration patterns, and zero-hallucination guaranteed solutions. "
-            "Includes advanced generics, utility types, toolchain optimization, "
-            "and production-ready design patterns with compilation validation."
-        )
+    async def execute(self, input_data: Any, context: Any = None) -> FrameworkSkillResult:
+        """Execute the skill with given input and context"""
+        try:
+            # Validate input
+            if not await self.validate_input(input_data):
+                return FrameworkSkillResult(success=False, error="Invalid input data")
+
+            # Process the TypeScript request
+            if isinstance(input_data, str):
+                # Handle simple string input (like function calls)
+                result = await self._process_string_query(input_data)
+                return FrameworkSkillResult(
+                    success=True, data=result, execution_time=0.0, tokens_used=estimate_tokens(result)
+                )
+            return FrameworkSkillResult(success=False, error="Input must be a string")
+
+        except Exception as e:
+            return FrameworkSkillResult(success=False, error=str(e), execution_time=0.0, tokens_used=0)
+
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        if input_data is None:
+            return False
+        if isinstance(input_data, str) and len(input_data.strip()) == 0:
+            return False
+        return True
+
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "Advanced TypeScript Type System",
+            "React TypeScript Integration",
+            "TypeScript Toolchain Optimization",
+            "TypeScript Design Patterns",
+            "Generic Programming",
+            "Type-safe API Design",
+            "Performance Optimization",
+            "Zero-Hallucination Code Generation",
+        ]
+
+    async def _process_string_query(self, query: str) -> str:
+        """Process a simple string query and return TypeScript expertise"""
+        # Analyze query to determine expertise area
+        expertise_area = self._analyze_expertise_area(query)
+
+        # Generate comprehensive response
+        if expertise_area == "advanced_type_system":
+            return self._get_advanced_types_full()
+        elif expertise_area == "generics_mastery":
+            return self._get_generics_full()
+        elif expertise_area == "react_integration":
+            return self._get_react_full()
+        elif expertise_area == "toolchain_optimization":
+            return self._get_toolchain_full()
+        elif expertise_area == "design_patterns":
+            return self._get_patterns_full()
+        else:
+            return self._get_comprehensive_full()
 
     @property
     def tags(self) -> list[str]:
@@ -79,139 +136,6 @@ class TypeScriptExpertSkill(BaseSkill):
             "toolchain",
             "tsconfig",
         ]
-
-    def can_handle(self, context: SkillContext) -> float:
-        """Determine if this skill can handle the TypeScript-related query."""
-        query_lower = context.query.lower()
-
-        # High-confidence TypeScript indicators
-        typescript_keywords = [
-            "typescript",
-            "tsconfig",
-            "type",
-            "interface",
-            "generic",
-            "utility type",
-            "conditional type",
-            "mapped type",
-            "template literal",
-            "discriminated union",
-            "branded type",
-            "react types",
-            "hook types",
-            "props typing",
-            "context typing",
-            "type inference",
-            "type guard",
-            "type predicate",
-            "variance",
-            "higher-order type",
-            "recursive type",
-            "module augmentation",
-            "declaration merging",
-            "tuple type",
-            "readonly type",
-            "keyof",
-            "infer",
-            "extends",
-            "never",
-            "unknown",
-            "any",
-        ]
-
-        # Check for TypeScript-specific terms
-        typescript_count = sum(1 for keyword in typescript_keywords if keyword in query_lower)
-
-        # High confidence for explicit TypeScript mentions
-        if "typescript" in query_lower or "tsconfig" in query_lower:
-            return 1.0
-
-        # Medium-high confidence for type-related questions
-        if typescript_count >= 3:
-            return 0.9
-
-        # Medium confidence for generic programming or React typing
-        if "generic" in query_lower or "react" in query_lower and ("type" in query_lower or "props" in query_lower):
-            return 0.7
-
-        # Lower confidence for general typing questions
-        if typescript_count >= 1:
-            return 0.5
-
-        return 0.0
-
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
-        """Execute TypeScript expertise based on query and level."""
-        start_time = time.time()
-
-        try:
-            # Analyze query to determine expertise area
-            expertise_area = self._analyze_expertise_area(context.query)
-
-            if level == SkillLevel.METADATA:
-                content = self._get_metadata_response(expertise_area)
-                tokens_used = estimate_tokens(content)
-                return SkillResult(
-                    skill_name=self.skill_name,
-                    level=level,
-                    content=content,
-                    tokens_used=tokens_used,
-                    execution_time=time.time() - start_time,
-                    next_level_available=True,
-                )
-
-            elif level == SkillLevel.SUMMARY:
-                content = self._get_summary_response(expertise_area, context.query)
-                tokens_used = estimate_tokens(content)
-                return SkillResult(
-                    skill_name=self.skill_name,
-                    level=level,
-                    content=content,
-                    tokens_used=tokens_used,
-                    execution_time=time.time() - start_time,
-                    next_level_available=True,
-                )
-
-            else:  # FULL level
-                content = self._get_full_response(expertise_area, context.query, context)
-                tokens_used = estimate_tokens(content)
-
-                # Validate TypeScript examples with Agent Lightning integration
-                validation_result = self.agent_lightning_integration.validate_and_optimize(content)
-
-                if validation_result["has_errors"]:
-                    # Fix TypeScript errors using Agent Lightning patterns
-                    content = self.agent_lightning_integration.fix_typescript_errors(
-                        content, validation_result["errors"]
-                    )
-                    logger.info(f"Fixed {len(validation_result['errors'])} TypeScript errors")
-
-                return SkillResult(
-                    skill_name=self.skill_name,
-                    level=level,
-                    content=content,
-                    tokens_used=tokens_used,
-                    execution_time=time.time() - start_time,
-                    metadata={
-                        "expertise_area": expertise_area,
-                        "validation_passed": not validation_result["has_errors"],
-                        "errors_fixed": len(validation_result.get("errors", [])),
-                        "optimizations_applied": validation_result.get("optimizations", 0),
-                    },
-                    next_level_available=False,
-                )
-
-        except Exception as e:
-            logger.error(f"TypeScript skill execution failed: {e}")
-            error_content = f"TypeScript expertise temporarily unavailable. Error: {str(e)}"
-            return SkillResult(
-                skill_name=self.skill_name,
-                level=level,
-                content=error_content,
-                tokens_used=estimate_tokens(error_content),
-                execution_time=time.time() - start_time,
-                next_level_available=False,
-            )
 
     def _analyze_expertise_area(self, query: str) -> str:
         """Analyze query to determine TypeScript expertise area."""
@@ -266,7 +190,7 @@ class TypeScriptExpertSkill(BaseSkill):
 
         return responses.get(expertise_area, responses["comprehensive"])
 
-    def _get_full_response(self, expertise_area: str, query: str, context: SkillContext) -> str:
+    def _get_full_response(self, expertise_area: str, query: str, context: Any = None) -> str:
         """Get full comprehensive response with validated TypeScript examples."""
         responses = {
             "advanced_type_system": self._get_advanced_types_full(),
@@ -382,7 +306,7 @@ All examples compilation-validated with TypeScript 5.0+, optimized for performan
 
     def _get_advanced_types_full(self) -> str:
         """Full advanced type system with validated examples."""
-        return """
+        return r"""
 # Advanced TypeScript Type System - Complete Mastery
 
 ## Conditional Types
@@ -1027,7 +951,7 @@ All generic patterns are optimized for TypeScript 5.0+ compilation performance a
 
     def _get_react_full(self) -> str:
         """Full React TypeScript integration with patterns."""
-        return """
+        return r"""
 # React TypeScript Integration - Complete Guide
 
 ## Function Component Typing
@@ -1616,7 +1540,7 @@ All React TypeScript patterns are production-ready with maximum type inference a
 
     def _get_toolchain_full(self) -> str:
         """Full toolchain optimization with tsconfig patterns."""
-        return """
+        return r"""
 # TypeScript Toolchain Optimization - Complete Configuration
 
 ## Optimized tsconfig.json
@@ -2978,13 +2902,12 @@ class TypeScriptCompilationValidator:
 
                 if result.returncode == 0:
                     return {"valid": True, "errors": [], "warnings": [], "message": "TypeScript compilation successful"}
-                else:
-                    return {
-                        "valid": False,
-                        "errors": self._parse_tsc_errors(result.stderr),
-                        "warnings": [],
-                        "message": "TypeScript compilation failed",
-                    }
+                return {
+                    "valid": False,
+                    "errors": self._parse_tsc_errors(result.stderr),
+                    "warnings": [],
+                    "message": "TypeScript compilation failed",
+                }
 
             finally:
                 # Clean up temp file
@@ -3109,10 +3032,9 @@ class TypeScriptPerformanceOptimizer:
 
         if high_issues > 0:
             return "Significant compilation speed improvement expected"
-        elif medium_issues > 2:
+        if medium_issues > 2:
             return "Moderate compilation speed improvement expected"
-        else:
-            return "Minor compilation speed improvement expected"
+        return "Minor compilation speed improvement expected"
 
 
 class TypeScriptErrorPrevention:

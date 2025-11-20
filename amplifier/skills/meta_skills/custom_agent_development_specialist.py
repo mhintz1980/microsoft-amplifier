@@ -22,17 +22,18 @@ Author: Amplifier Meta-Skills Team
 Version: 1.0.0
 """
 
-import asyncio
-import json
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillLevel, SkillResult
 from ...utils.logger import get_logger
+from ..skills_framework.skill_template import BaseSkill
+from ..skills_framework.skill_template import SkillContext
+from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.skill_template import SkillResult
 
 logger = get_logger(__name__)
 
@@ -75,13 +76,13 @@ class AgentTemplate:
     description: str
     agent_type: AgentType
     complexity: AgentComplexity
-    base_capabilities: List[str]
-    dependencies: List[str]
+    base_capabilities: list[str]
+    dependencies: list[str]
     code_template: str
-    configuration_template: Dict[str, Any]
-    training_requirements: Dict[str, Any]
-    expected_performance: Dict[str, float]
-    usage_patterns: List[str]
+    configuration_template: dict[str, Any]
+    training_requirements: dict[str, Any]
+    expected_performance: dict[str, float]
+    usage_patterns: list[str]
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -93,13 +94,13 @@ class AgentSpecification:
     name: str
     description: str
     agent_type: AgentType
-    domain_expertise: List[str]
-    capabilities_required: List[str]
+    domain_expertise: list[str]
+    capabilities_required: list[str]
     complexity: AgentComplexity
-    performance_targets: Dict[str, float]
-    integration_requirements: List[str]
-    training_data_requirements: Dict[str, Any]
-    quality_requirements: Dict[str, Any]
+    performance_targets: dict[str, float]
+    integration_requirements: list[str]
+    training_data_requirements: dict[str, Any]
+    quality_requirements: dict[str, Any]
     created_at: datetime = field(default_factory=datetime.now)
     created_by: str = "custom_agent_development_specialist"
 
@@ -111,11 +112,11 @@ class AgentTrainingPlan:
     plan_id: str
     agent_id: str
     training_mode: TrainingMode
-    phases: List[Dict[str, Any]]
+    phases: list[dict[str, Any]]
     duration_estimate_hours: float
-    resource_requirements: Dict[str, Any]
-    success_criteria: Dict[str, float]
-    monitoring_metrics: List[str]
+    resource_requirements: dict[str, Any]
+    success_criteria: dict[str, float]
+    monitoring_metrics: list[str]
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -168,7 +169,7 @@ class CustomAgentDevelopmentSpecialist(BaseSkill):
         for agent development across all domains."""
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         return [
             "agent-development",
             "meta-skill",
@@ -442,7 +443,7 @@ Next steps: Template selection → Customization → Training → Quality Assura
         # Full comprehensive guidance
         return await self._generate_complete_guidance(context)
 
-    def _initialize_agent_templates(self) -> List[AgentTemplate]:
+    def _initialize_agent_templates(self) -> list[AgentTemplate]:
         """Initialize library of reusable agent templates."""
         templates = []
 
@@ -556,7 +557,7 @@ Next steps: Template selection → Customization → Training → Quality Assura
 
         return templates
 
-    def _initialize_training_pipelines(self) -> Dict[AgentType, Dict[str, Any]]:
+    def _initialize_training_pipelines(self) -> dict[AgentType, dict[str, Any]]:
         """Initialize automated training pipelines for different agent types."""
         return {
             AgentType.ANALYSIS: {
@@ -613,7 +614,7 @@ Next steps: Template selection → Customization → Training → Quality Assura
         self,
         agent_type: AgentType,
         domain: str,
-        capabilities: List[str],
+        capabilities: list[str],
         complexity: AgentComplexity,
         context: SkillContext,
     ) -> str:
@@ -779,7 +780,7 @@ This specification provides everything needed to create a high-performance speci
         # Default fallback
         return self.agent_templates[0]
 
-    async def _create_implementation_plan(self, spec: AgentSpecification, template: AgentTemplate) -> Dict[str, Any]:
+    async def _create_implementation_plan(self, spec: AgentSpecification, template: AgentTemplate) -> dict[str, Any]:
         """Create detailed implementation plan for the agent."""
         return {
             "template_customization": {
@@ -907,7 +908,7 @@ This specification provides everything needed to create a high-performance speci
 
         return "general"
 
-    def _extract_capabilities(self, query: str) -> List[str]:
+    def _extract_capabilities(self, query: str) -> list[str]:
         """Extract required capabilities from query."""
         capability_keywords = {
             "analysis": ["analyze", "process", "interpret", "evaluate"],
@@ -936,7 +937,7 @@ This specification provides everything needed to create a high-performance speci
 
         if any(indicator in query_lower for indicator in complex_indicators):
             return AgentComplexity.COMPLEX
-        elif any(indicator in query_lower for indicator in simple_indicators):
+        if any(indicator in query_lower for indicator in simple_indicators):
             return AgentComplexity.SIMPLE
 
         return AgentComplexity.MODERATE
@@ -1841,10 +1842,10 @@ class AgentPerformanceTracker:
     """Track and analyze agent performance metrics."""
 
     def __init__(self):
-        self.metrics_history: Dict[str, List[AgentPerformanceMetrics]] = {}
-        self.current_metrics: Dict[str, AgentPerformanceMetrics] = {}
+        self.metrics_history: dict[str, list[AgentPerformanceMetrics]] = {}
+        self.current_metrics: dict[str, AgentPerformanceMetrics] = {}
 
-    async def track_execution(self, agent_id: str, execution_result: Dict[str, Any]) -> AgentPerformanceMetrics:
+    async def track_execution(self, agent_id: str, execution_result: dict[str, Any]) -> AgentPerformanceMetrics:
         """Track individual agent execution performance."""
         metrics = AgentPerformanceMetrics(
             agent_id=agent_id,
@@ -1871,7 +1872,7 @@ class AgentPerformanceTracker:
 
         return metrics
 
-    async def get_performance_summary(self, agent_id: str) -> Dict[str, float]:
+    async def get_performance_summary(self, agent_id: str) -> dict[str, float]:
         """Get performance summary for an agent."""
         if agent_id not in self.metrics_history:
             return {}
@@ -1900,7 +1901,7 @@ class AgentQualityAssurance:
         self.validation_rules = self._initialize_validation_rules()
         self.quality_thresholds = self._initialize_quality_thresholds()
 
-    def _initialize_validation_rules(self) -> Dict[str, Any]:
+    def _initialize_validation_rules(self) -> dict[str, Any]:
         """Initialize validation rules for different agent types."""
         return {
             "analysis": {"data_validation": True, "statistical_validation": True, "result_verification": True},
@@ -1909,7 +1910,7 @@ class AgentQualityAssurance:
             "coordination": {"routing_validation": True, "efficiency_check": True, "consistency_verification": True},
         }
 
-    def _initialize_quality_thresholds(self) -> Dict[str, float]:
+    def _initialize_quality_thresholds(self) -> dict[str, float]:
         """Initialize quality thresholds for agent validation."""
         return {
             "accuracy_threshold": 0.99,
@@ -1919,7 +1920,7 @@ class AgentQualityAssurance:
             "satisfaction_threshold": 0.90,
         }
 
-    async def validate_agent_output(self, agent_type: str, output: Any, input_data: Any) -> Dict[str, Any]:
+    async def validate_agent_output(self, agent_type: str, output: Any, input_data: Any) -> dict[str, Any]:
         """Validate agent output for quality and hallucination prevention."""
         validation_result = {"passed": True, "confidence_score": 1.0, "issues": [], "quality_metrics": {}}
 
@@ -1956,7 +1957,7 @@ class AgentQualityAssurance:
 
         return validation_result
 
-    async def _check_for_hallucinations(self, output: Any, input_data: Any) -> Dict[str, Any]:
+    async def _check_for_hallucinations(self, output: Any, input_data: Any) -> dict[str, Any]:
         """Check output for potential hallucinations."""
         # This would implement sophisticated hallucination detection
         # For now, return basic check
@@ -1990,7 +1991,7 @@ class AgentIntegrationCoordinator:
         self.integration_patterns = self._initialize_integration_patterns()
         self.compatibility_matrix = self._initialize_compatibility_matrix()
 
-    def _initialize_integration_patterns(self) -> Dict[str, Any]:
+    def _initialize_integration_patterns(self) -> dict[str, Any]:
         """Initialize integration patterns for different agent types."""
         return {
             "framework_integration": {
@@ -2002,7 +2003,7 @@ class AgentIntegrationCoordinator:
             "multi_agent_coordination": {"task_routing": True, "load_balancing": True, "result_aggregation": True},
         }
 
-    def _initialize_compatibility_matrix(self) -> Dict[str, Dict[str, float]]:
+    def _initialize_compatibility_matrix(self) -> dict[str, dict[str, float]]:
         """Initialize compatibility matrix for agent combinations."""
         return {
             "analysis": {"technical": 0.9, "creative": 0.7, "coordination": 0.8},
@@ -2011,7 +2012,7 @@ class AgentIntegrationCoordinator:
             "coordination": {"analysis": 0.8, "technical": 0.9, "creative": 0.7},
         }
 
-    async def plan_agent_integration(self, agent_spec: AgentSpecification) -> Dict[str, Any]:
+    async def plan_agent_integration(self, agent_spec: AgentSpecification) -> dict[str, Any]:
         """Plan integration of new agent with existing ecosystem."""
         integration_plan = {
             "agent_id": agent_spec.agent_id,
@@ -2043,15 +2044,15 @@ class AgentTemplateLibrary:
     """Library of agent templates for rapid development."""
 
     def __init__(self):
-        self.templates: Dict[str, AgentTemplate] = {}
-        self.template_usage_stats: Dict[str, int] = {}
+        self.templates: dict[str, AgentTemplate] = {}
+        self.template_usage_stats: dict[str, int] = {}
 
     def add_template(self, template: AgentTemplate) -> None:
         """Add a new template to the library."""
         self.templates[template.template_id] = template
         self.template_usage_stats[template.template_id] = 0
 
-    def get_template(self, template_id: str) -> Optional[AgentTemplate]:
+    def get_template(self, template_id: str) -> AgentTemplate | None:
         """Get a template by ID."""
         if template_id in self.templates:
             self.template_usage_stats[template_id] += 1
@@ -2059,10 +2060,10 @@ class AgentTemplateLibrary:
 
     def search_templates(
         self,
-        agent_type: Optional[AgentType] = None,
-        complexity: Optional[AgentComplexity] = None,
-        capabilities: Optional[List[str]] = None,
-    ) -> List[AgentTemplate]:
+        agent_type: AgentType | None = None,
+        complexity: AgentComplexity | None = None,
+        capabilities: list[str] | None = None,
+    ) -> list[AgentTemplate]:
         """Search templates by criteria."""
         results = []
 
@@ -2079,7 +2080,7 @@ class AgentTemplateLibrary:
 
         return results
 
-    def get_usage_stats(self) -> Dict[str, int]:
+    def get_usage_stats(self) -> dict[str, int]:
         """Get template usage statistics."""
         return self.template_usage_stats.copy()
 

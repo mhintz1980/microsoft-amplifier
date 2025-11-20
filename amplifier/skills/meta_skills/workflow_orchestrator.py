@@ -6,20 +6,22 @@ Provides parallel execution, dynamic scheduling, and real-time monitoring.
 """
 
 import asyncio
-import uuid
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Set, Callable, Union
-from dataclasses import dataclass, field
-from enum import Enum
-import networkx as nx
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import json
 import logging
+import uuid
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from enum import Enum
+from typing import Any
 
-from ..skill_base import Skill, SkillContext, SkillResult
-from .skill_integration_patterns_specialist import SkillWorkflow, IntegrationPattern
+import networkx as nx
+
 from ...utils.performance_monitor import PerformanceMonitor
-from ...agents.coordination_system import AgentCoordinator
+from ..skill_base import Skill
+from ..skill_base import SkillContext
+from ..skill_base import SkillResult
+from .skill_integration_patterns_specialist import SkillWorkflow
 
 
 class ExecutionStatus(Enum):
@@ -51,18 +53,18 @@ class WorkflowTask:
     skill_id: str
     skill: Skill
     context: SkillContext
-    dependencies: List[str] = field(default_factory=list)
-    dependents: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    dependents: list[str] = field(default_factory=list)
     priority: TaskPriority = TaskPriority.MEDIUM
     status: ExecutionStatus = ExecutionStatus.PENDING
-    result: Optional[SkillResult] = None
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
+    result: SkillResult | None = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
     execution_time: float = 0.0
     retry_count: int = 0
     max_retries: int = 3
-    parallel_group: Optional[str] = None
-    resource_requirements: Dict[str, Any] = field(default_factory=dict)
+    parallel_group: str | None = None
+    resource_requirements: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -71,16 +73,16 @@ class WorkflowExecution:
 
     id: str
     workflow: SkillWorkflow
-    tasks: Dict[str, WorkflowTask]
+    tasks: dict[str, WorkflowTask]
     execution_graph: nx.DiGraph
     status: ExecutionStatus = ExecutionStatus.PENDING
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
     total_duration: float = 0.0
     completed_tasks: int = 0
     failed_tasks: int = 0
-    context_data: Dict[str, Any] = field(default_factory=dict)
-    performance_metrics: Dict[str, Any] = field(default_factory=dict)
+    context_data: dict[str, Any] = field(default_factory=dict)
+    performance_metrics: dict[str, Any] = field(default_factory=dict)
 
 
 class DynamicScheduler:
@@ -88,9 +90,9 @@ class DynamicScheduler:
 
     def __init__(self, max_concurrent_tasks: int = 10):
         self.max_concurrent_tasks = max_concurrent_tasks
-        self.running_tasks: Set[str] = set()
-        self.completed_tasks: Set[str] = set()
-        self.failed_tasks: Set[str] = set()
+        self.running_tasks: set[str] = set()
+        self.completed_tasks: set[str] = set()
+        self.failed_tasks: set[str] = set()
         self.task_queue = asyncio.PriorityQueue()
         self.resource_pool = ResourcePool()
 
@@ -112,12 +114,12 @@ class DynamicScheduler:
         await self.task_queue.put((task.priority.value, task))
         self.running_tasks.add(task.id)
 
-    async def get_next_task(self) -> Optional[WorkflowTask]:
+    async def get_next_task(self) -> WorkflowTask | None:
         """Get the next task to execute."""
         try:
             priority, task = await asyncio.wait_for(self.task_queue.get(), timeout=0.1)
             return task
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return None
 
     def complete_task(self, task_id: str, success: bool = True) -> None:
@@ -158,9 +160,9 @@ class ResourcePool:
             "network": {"total": 1000, "allocated": 0},  # Mbps
             "tokens": {"total": 10000, "allocated": 0},  # Per minute
         }
-        self.task_allocations: Dict[str, Dict[str, float]] = {}
+        self.task_allocations: dict[str, dict[str, float]] = {}
 
-    def check_availability(self, requirements: Dict[str, Any]) -> bool:
+    def check_availability(self, requirements: dict[str, Any]) -> bool:
         """Check if resources are available for given requirements."""
         for resource, amount in requirements.items():
             if resource in self.resources:
@@ -169,7 +171,7 @@ class ResourcePool:
                     return False
         return True
 
-    def allocate_resources(self, task_id: str, requirements: Dict[str, Any]) -> bool:
+    def allocate_resources(self, task_id: str, requirements: dict[str, Any]) -> bool:
         """Allocate resources to a task."""
         if not self.check_availability(requirements):
             return False
@@ -197,7 +199,7 @@ class ParallelExecutor:
     def __init__(self, max_workers: int = 5):
         self.max_workers = max_workers
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
-        self.running_futures: Dict[str, asyncio.Future] = {}
+        self.running_futures: dict[str, asyncio.Future] = {}
 
     async def execute_task(self, task: WorkflowTask) -> SkillResult:
         """Execute a single task."""
@@ -264,7 +266,7 @@ class ParallelExecutor:
         except Exception as e:
             return SkillResult(success=False, message=f"Skill execution failed: {str(e)}", error=str(e))
 
-    async def execute_parallel_group(self, tasks: List[WorkflowTask]) -> List[SkillResult]:
+    async def execute_parallel_group(self, tasks: list[WorkflowTask]) -> list[SkillResult]:
         """Execute multiple tasks in parallel."""
         if not tasks:
             return []
@@ -321,8 +323,8 @@ class WorkflowOrchestrator:
         self.executor = ParallelExecutor(max_workers)
         self.resource_pool = ResourcePool()
         self.performance_monitor = PerformanceMonitor()
-        self.active_executions: Dict[str, WorkflowExecution] = {}
-        self.execution_history: List[WorkflowExecution] = []
+        self.active_executions: dict[str, WorkflowExecution] = {}
+        self.execution_history: list[WorkflowExecution] = []
         self.logger = logging.getLogger(__name__)
 
     async def execute_workflow(self, workflow: SkillWorkflow, context: SkillContext) -> WorkflowExecution:
@@ -441,7 +443,7 @@ class WorkflowOrchestrator:
                         if not self._should_continue_on_failure(task, result):
                             raise Exception(f"Critical task failed: {task.skill_id}")
 
-    def _build_execution_groups(self, execution: WorkflowExecution) -> List[Dict[str, Any]]:
+    def _build_execution_groups(self, execution: WorkflowExecution) -> list[dict[str, Any]]:
         """Build execution groups from workflow graph."""
         groups = []
         processed_tasks = set()
@@ -479,7 +481,7 @@ class WorkflowOrchestrator:
 
         return groups
 
-    def _can_execute_parallel(self, task_ids: List[str], execution: WorkflowExecution) -> bool:
+    def _can_execute_parallel(self, task_ids: list[str], execution: WorkflowExecution) -> bool:
         """Check if tasks can be executed in parallel."""
         # Check resource constraints
         total_requirements = {"cpu": 0, "memory": 0, "tokens": 0}
@@ -505,15 +507,14 @@ class WorkflowOrchestrator:
             # More successors = higher priority (affects more tasks)
             if len(successors) > 3:
                 return TaskPriority.HIGH
-            elif len(successors) > 1:
+            if len(successors) > 1:
                 return TaskPriority.MEDIUM
-            else:
-                return TaskPriority.LOW
+            return TaskPriority.LOW
 
         except Exception:
             return TaskPriority.MEDIUM
 
-    def _estimate_resource_requirements(self, skill: Skill) -> Dict[str, Any]:
+    def _estimate_resource_requirements(self, skill: Skill) -> dict[str, Any]:
         """Estimate resource requirements for a skill."""
         # Default estimates based on skill metadata
         requirements = {
@@ -549,7 +550,7 @@ class WorkflowOrchestrator:
 
         return True
 
-    async def get_execution_status(self, execution_id: str) -> Optional[WorkflowExecution]:
+    async def get_execution_status(self, execution_id: str) -> WorkflowExecution | None:
         """Get the status of a workflow execution."""
         return self.active_executions.get(execution_id)
 
@@ -568,7 +569,7 @@ class WorkflowOrchestrator:
         execution.status = ExecutionStatus.CANCELLED
         return True
 
-    def get_performance_metrics(self) -> Dict[str, Any]:
+    def get_performance_metrics(self) -> dict[str, Any]:
         """Get performance metrics for the orchestrator."""
         return {
             "active_executions": len(self.active_executions),

@@ -18,11 +18,6 @@ from dataclasses import field
 from datetime import datetime
 from enum import Enum
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Tuple
 
 from ...utils.logger import get_logger
 
@@ -60,21 +55,21 @@ class TaskDefinition:
     task_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     task_type: TaskType = TaskType.CODE_GENERATION
     description: str = ""
-    required_capabilities: Set[str] = field(default_factory=set)
-    input_data: Dict[str, Any] = field(default_factory=dict)
-    expected_output_types: Set[str] = field(default_factory=set)
+    required_capabilities: set[str] = field(default_factory=set)
+    input_data: dict[str, Any] = field(default_factory=dict)
+    expected_output_types: set[str] = field(default_factory=set)
     priority: int = 5  # 1-10, higher is more important
     complexity: TaskComplexity = TaskComplexity.MODERATE
     estimated_runtime_seconds: float = 10.0
     max_concurrency: int = 1
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     retry_count: int = 0
     max_retries: int = 3
     requires_gpu: bool = False
     memory_requirement_mb: int = 512
     quality_threshold: float = 0.90
     timeout_seconds: int = 300
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -83,14 +78,14 @@ class TaskRoutingDecision:
     """Decision made by the task router."""
 
     task_id: str
-    selected_agent_ids: List[str]
+    selected_agent_ids: list[str]
     routing_strategy: str
     confidence: float
     reasoning: str
     estimated_success_probability: float
-    parallel_execution_plan: Optional[Dict[str, Any]] = None
-    fallback_agents: List[str] = field(default_factory=list)
-    resource_allocation: Dict[str, Any] = field(default_factory=dict)
+    parallel_execution_plan: dict[str, Any] | None = None
+    fallback_agents: list[str] = field(default_factory=list)
+    resource_allocation: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -101,9 +96,9 @@ class AgentCapabilityMatch:
     agent_id: str
     agent_name: str
     match_score: float
-    capability_coverage: Set[str]
-    missing_capabilities: Set[str]
-    performance_history: Dict[str, float]
+    capability_coverage: set[str]
+    missing_capabilities: set[str]
+    performance_history: dict[str, float]
     current_load: int
     max_concurrent_tasks: int
     estimated_queue_time: float
@@ -114,8 +109,8 @@ class TaskRouter:
 
     def __init__(self, agent_pool_manager):
         self.agent_pool_manager = agent_pool_manager
-        self.routing_history: List[TaskRoutingDecision] = []
-        self.performance_cache: Dict[str, Dict[str, float]] = {}  # agent_id -> metrics
+        self.routing_history: list[TaskRoutingDecision] = []
+        self.performance_cache: dict[str, dict[str, float]] = {}  # agent_id -> metrics
         self._lock = asyncio.Lock()
 
     async def route_task(self, task: TaskDefinition) -> TaskRoutingDecision:
@@ -159,7 +154,7 @@ class TaskRouter:
             logger.error(f"Error routing task {task.task_id}: {e}")
             return self._create_error_decision(task, str(e))
 
-    async def _analyze_task_requirements(self, task: TaskDefinition) -> Set[str]:
+    async def _analyze_task_requirements(self, task: TaskDefinition) -> set[str]:
         """Analyze task to determine required capabilities."""
         required_capabilities = set(task.required_capabilities)
 
@@ -208,7 +203,7 @@ class TaskRouter:
         logger.debug(f"Task {task.task_id} requires capabilities: {required_capabilities}")
         return required_capabilities
 
-    async def _find_matching_agents(self, required_capabilities: Set[str]) -> List[AgentCapabilityMatch]:
+    async def _find_matching_agents(self, required_capabilities: set[str]) -> list[AgentCapabilityMatch]:
         """Find agents that can handle the required capabilities."""
         matches = []
 
@@ -248,8 +243,8 @@ class TaskRouter:
         return matches
 
     async def _select_agents(
-        self, task: TaskDefinition, matches: List[AgentCapabilityMatch], required_capabilities: Set[str]
-    ) -> List[str]:
+        self, task: TaskDefinition, matches: list[AgentCapabilityMatch], required_capabilities: set[str]
+    ) -> list[str]:
         """Select the best agents for the task."""
         if not matches:
             return []
@@ -258,13 +253,12 @@ class TaskRouter:
         if task.complexity in [TaskComplexity.COMPLEX, TaskComplexity.CRITICAL]:
             # Use multiple agents for complex tasks
             return await self._select_multiple_agents(task, matches, required_capabilities)
-        else:
-            # Use single best agent for simple/moderate tasks
-            return [matches[0].agent_id]
+        # Use single best agent for simple/moderate tasks
+        return [matches[0].agent_id]
 
     async def _select_multiple_agents(
-        self, task: TaskDefinition, matches: List[AgentCapabilityMatch], required_capabilities: Set[str]
-    ) -> List[str]:
+        self, task: TaskDefinition, matches: list[AgentCapabilityMatch], required_capabilities: set[str]
+    ) -> list[str]:
         """Select multiple agents for complex task decomposition."""
         selected_agents = []
         covered_capabilities = set()
@@ -293,14 +287,14 @@ class TaskRouter:
         """Determine the routing strategy for the task."""
         if task.complexity == TaskComplexity.SIMPLE:
             return "single_best"
-        elif task.complexity == TaskComplexity.MODERATE:
+        if task.complexity == TaskComplexity.MODERATE:
             return "capability_match"
-        elif task.complexity == TaskComplexity.COMPLEX:
+        if task.complexity == TaskComplexity.COMPLEX:
             return "parallel_decomposition"
-        else:  # CRITICAL
-            return "redundant_execution"
+        # CRITICAL
+        return "redundant_execution"
 
-    def _calculate_confidence(self, task: TaskDefinition, matches: List[AgentCapabilityMatch]) -> float:
+    def _calculate_confidence(self, task: TaskDefinition, matches: list[AgentCapabilityMatch]) -> float:
         """Calculate confidence in the routing decision."""
         if not matches:
             return 0.0
@@ -328,7 +322,7 @@ class TaskRouter:
         confidence = base_confidence * performance_factor * load_factor * complexity_factor
         return min(confidence, 1.0)
 
-    def _generate_reasoning(self, task: TaskDefinition, selected_agents: List[str]) -> str:
+    def _generate_reasoning(self, task: TaskDefinition, selected_agents: list[str]) -> str:
         """Generate human-readable reasoning for the routing decision."""
         reasoning_parts = []
 
@@ -350,7 +344,7 @@ class TaskRouter:
 
         return " | ".join(reasoning_parts)
 
-    def _estimate_success_probability(self, task: TaskDefinition, selected_agents: List[str]) -> float:
+    def _estimate_success_probability(self, task: TaskDefinition, selected_agents: list[str]) -> float:
         """Estimate probability of successful task completion."""
         if not selected_agents:
             return 0.0
@@ -372,7 +366,7 @@ class TaskRouter:
         success_probability = base_success * redundancy_factor * complexity_factor
         return min(success_probability, 1.0)
 
-    async def _create_parallel_plan(self, task: TaskDefinition, selected_agents: List[str]) -> Dict[str, Any]:
+    async def _create_parallel_plan(self, task: TaskDefinition, selected_agents: list[str]) -> dict[str, Any]:
         """Create parallel execution plan for multiple agents."""
         if len(selected_agents) <= 1:
             return None
@@ -386,7 +380,7 @@ class TaskRouter:
             "quality_check": "cross_validation",
         }
 
-    def _allocate_resources(self, task: TaskDefinition, selected_agents: List[str]) -> Dict[str, Any]:
+    def _allocate_resources(self, task: TaskDefinition, selected_agents: list[str]) -> dict[str, Any]:
         """Allocate resources for task execution."""
         total_memory = task.memory_requirement_mb
         memory_per_agent = total_memory // len(selected_agents) if selected_agents else total_memory
@@ -449,7 +443,7 @@ class TaskRouter:
 
             logger.debug(f"Updated performance for agent {agent_id}: success_rate={metrics['success_rate']:.2f}")
 
-    async def get_routing_statistics(self) -> Dict[str, Any]:
+    async def get_routing_statistics(self) -> dict[str, Any]:
         """Get routing performance statistics."""
         async with self._lock:
             total_routings = len(self.routing_history)

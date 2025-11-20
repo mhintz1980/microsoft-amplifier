@@ -21,10 +21,6 @@ from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
 
 from ...mcp.code_execution import execute_in_docker
 from ...mcp.persistent_storage import get_persistent_storage
@@ -34,15 +30,12 @@ from .agent_pool import AgentPoolManager
 from .agent_pool import PoolConfiguration
 from .load_balancer import DependencyManager
 from .load_balancer import LoadBalancer
-from .load_balancer import TaskNode
-from .load_balancer import TaskPriority
 from .performance_monitor import PerformanceMonitor
 from .performance_monitor import PerformanceOptimizer
 from .result_aggregator import AggregationStrategy
 from .result_aggregator import ResultAggregator
 from .task_router import TaskDefinition
 from .task_router import TaskRouter
-from .task_router import TaskType
 
 logger = get_logger(__name__)
 
@@ -52,14 +45,14 @@ class CoordinationRequest:
     """Request for coordinated agent execution."""
 
     request_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    tasks: List[TaskDefinition] = field(default_factory=list)
+    tasks: list[TaskDefinition] = field(default_factory=list)
     strategy: str = "parallel_first"  # parallel_first, sequential, hybrid
     max_parallel_agents: int = 15
     timeout_seconds: int = 300
     quality_threshold: float = 0.90
     enable_optimization: bool = True
     store_results: bool = True
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -75,12 +68,12 @@ class CoordinationResult:
     parallel_efficiency_gain: float
     total_execution_time: float
     quality_score: float
-    results: Dict[str, Any] = field(default_factory=dict)
-    errors: List[str] = field(default_factory=list)
-    performance_metrics: Dict[str, Any] = field(default_factory=dict)
-    optimization_applied: List[str] = field(default_factory=list)
+    results: dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    performance_metrics: dict[str, Any] = field(default_factory=dict)
+    optimization_applied: list[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
-    completed_at: Optional[datetime] = None
+    completed_at: datetime | None = None
 
 
 class ParallelAgentCoordinator:
@@ -110,8 +103,8 @@ class ParallelAgentCoordinator:
         self.persistent_storage = get_persistent_storage()
 
         # State tracking
-        self.active_requests: Dict[str, CoordinationRequest] = {}
-        self.request_results: Dict[str, CoordinationResult] = {}
+        self.active_requests: dict[str, CoordinationRequest] = {}
+        self.request_results: dict[str, CoordinationResult] = {}
         self._initialized = False
         self._lock = asyncio.Lock()
 
@@ -240,7 +233,7 @@ class ParallelAgentCoordinator:
                 task_results = await asyncio.wait_for(
                     asyncio.gather(*execution_tasks, return_exceptions=True), timeout=request.timeout_seconds
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.warning(f"Request {request.request_id} timed out")
                 result.status = "timeout"
                 return result
@@ -392,7 +385,8 @@ class ParallelAgentCoordinator:
             await self.agent_pool_manager.agent_pool.release_task(task.task_id, result.status.value == "completed")
 
             # Create agent result object
-            from .result_aggregator import AgentResult, ResultStatus
+            from .result_aggregator import AgentResult
+            from .result_aggregator import ResultStatus
 
             agent_result = AgentResult(
                 agent_id=agent_id,
@@ -419,7 +413,8 @@ class ParallelAgentCoordinator:
                 pass
 
             # Return error result
-            from .result_aggregator import AgentResult, ResultStatus
+            from .result_aggregator import AgentResult
+            from .result_aggregator import ResultStatus
 
             return AgentResult(
                 agent_id=agent_id,
@@ -528,12 +523,12 @@ except Exception as e:
             errors=[error_message],
         )
 
-    async def get_coordination_status(self, request_id: str) -> Optional[CoordinationResult]:
+    async def get_coordination_status(self, request_id: str) -> CoordinationResult | None:
         """Get status of a coordination request."""
         async with self._lock:
             return self.request_results.get(request_id)
 
-    async def get_system_status(self) -> Dict[str, Any]:
+    async def get_system_status(self) -> dict[str, Any]:
         """Get overall system status and metrics."""
         try:
             # Get component statuses
@@ -601,7 +596,7 @@ async def get_parallel_coordinator(max_agents: int = 15) -> ParallelAgentCoordin
 
 
 async def execute_parallel_tasks(
-    tasks: List[TaskDefinition], strategy: str = "parallel_first", max_agents: int = 15, quality_threshold: float = 0.90
+    tasks: list[TaskDefinition], strategy: str = "parallel_first", max_agents: int = 15, quality_threshold: float = 0.90
 ) -> CoordinationResult:
     """Convenient function to execute tasks in parallel."""
     coordinator = await get_parallel_coordinator(max_agents)

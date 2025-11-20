@@ -17,11 +17,6 @@ Author: Amplifier Demo Team
 Version: 1.0.0
 """
 
-import json
-import sys
-from pathlib import Path
-from datetime import datetime
-
 
 # Simple demonstration without external dependencies
 def print_banner():
@@ -186,9 +181,9 @@ def demonstrate_development_workflow():
     print("✓ Documentation and team training materials")
     print()
 
-    print(f"⏱️  Total Time: 17-28 hours (vs 80-100+ hours manual development)")
-    print(f"🚀 Acceleration: 70-80% time reduction")
-    print(f"🎯 Quality: 99%+ reliability with zero hallucination")
+    print("⏱️  Total Time: 17-28 hours (vs 80-100+ hours manual development)")
+    print("🚀 Acceleration: 70-80% time reduction")
+    print("🎯 Quality: 99%+ reliability with zero hallucination")
 
 
 def demonstrate_quality_assurance():
@@ -270,7 +265,7 @@ def demonstrate_performance_monitoring():
         for metric, target in category_metrics.items():
             print(f"   • {metric.replace('_', ' ').title()}: {target}")
 
-    print(f"\n🔄 Adaptive Optimization:")
+    print("\n🔄 Adaptive Optimization:")
     print("   • Real-time parameter tuning based on performance")
     print("   • Automatic optimization when metrics drop below thresholds")
     print("   • Continuous learning from user feedback and execution patterns")

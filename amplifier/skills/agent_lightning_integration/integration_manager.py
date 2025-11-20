@@ -6,22 +6,26 @@ Coordinates all components and provides a unified interface for
 skill optimization, quality assurance, and continuous improvement.
 """
 
-import asyncio
 import json
 import logging
-from datetime import datetime, timedelta
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
+from typing import Any
 
 from .config import AgentLightningIntegrationConfig
-from .skill_performance_tracker import SkillPerformanceTracker, SkillExecutionMetrics
-from .error_detection_engine import ErrorDetectionEngine, DetectionResult
-from .continuous_optimizer import ContinuousOptimizer, OptimizationType, OptimizationResult
-from .quality_gate_enforcer import QualityGateEnforcer, QualityGateEvaluation, QualityGateResult
-from .knowledge_transfer_system import KnowledgeTransferSystem, PatternType
+from .continuous_optimizer import ContinuousOptimizer
+from .continuous_optimizer import OptimizationType
+from .error_detection_engine import ErrorDetectionEngine
+from .knowledge_transfer_system import KnowledgeTransferSystem
 from .mcp_storage_integration import MCPStorageIntegration
 from .performance_monitor import PerformanceMonitor
+from .quality_gate_enforcer import QualityGateEnforcer
+from .quality_gate_enforcer import QualityGateResult
+from .skill_performance_tracker import SkillExecutionMetrics
+from .skill_performance_tracker import SkillPerformanceTracker
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +35,11 @@ class SystemStatus:
     """Overall system status"""
 
     healthy: bool
-    component_status: Dict[str, bool]
+    component_status: dict[str, bool]
     active_optimizations: int
     total_skills_monitored: int
     last_update: datetime
-    issues: List[str]
+    issues: list[str]
 
 
 @dataclass
@@ -45,19 +49,19 @@ class IntegrationRequest:
     request_id: str
     skill_id: str
     request_type: str
-    parameters: Dict[str, Any]
+    parameters: dict[str, Any]
     timestamp: datetime
     status: str = "pending"
-    result: Optional[Dict[str, Any]] = None
+    result: dict[str, Any] | None = None
 
 
 class AgentLightningIntegrationManager:
     """Main integration manager for Agent Lightning system"""
 
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Path | None = None):
         # Load configuration
         if config_path and config_path.exists():
-            with open(config_path, "r") as f:
+            with open(config_path) as f:
                 config_data = json.load(f)
             self.config = AgentLightningIntegrationConfig(**config_data)
         else:
@@ -106,7 +110,7 @@ class AgentLightningIntegrationManager:
 
         # System state
         self._running = False
-        self.active_requests: Dict[str, IntegrationRequest] = {}
+        self.active_requests: dict[str, IntegrationRequest] = {}
         self.system_stats = {
             "total_requests": 0,
             "successful_requests": 0,
@@ -166,7 +170,7 @@ class AgentLightningIntegrationManager:
         except Exception as e:
             logger.error(f"Error stopping integration system: {e}")
 
-    async def process_skill_execution(self, execution_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def process_skill_execution(self, execution_data: dict[str, Any]) -> dict[str, Any]:
         """Process a skill execution through the integration pipeline"""
         request_id = f"exec_{int(datetime.now().timestamp())}"
         request = IntegrationRequest(
@@ -322,7 +326,7 @@ class AgentLightningIntegrationManager:
             # Clean up old requests
             await self._cleanup_old_requests()
 
-    async def optimize_skill(self, skill_id: str, optimization_types: Optional[List[str]] = None) -> Dict[str, Any]:
+    async def optimize_skill(self, skill_id: str, optimization_types: list[str] | None = None) -> dict[str, Any]:
         """Manually trigger optimization for a skill"""
         try:
             logger.info(f"Manual optimization triggered for skill {skill_id}")
@@ -355,7 +359,7 @@ class AgentLightningIntegrationManager:
             logger.error(f"Manual optimization failed for {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def evaluate_quality_gate(self, skill_id: str, skill_version: str) -> Dict[str, Any]:
+    async def evaluate_quality_gate(self, skill_id: str, skill_version: str) -> dict[str, Any]:
         """Manually trigger quality gate evaluation"""
         try:
             logger.info(f"Manual quality gate evaluation for skill {skill_id} v{skill_version}")
@@ -384,7 +388,7 @@ class AgentLightningIntegrationManager:
             logger.error(f"Quality gate evaluation failed for {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def get_skill_insights(self, skill_id: str) -> Dict[str, Any]:
+    async def get_skill_insights(self, skill_id: str) -> dict[str, Any]:
         """Get comprehensive insights for a skill"""
         try:
             # Get performance summary
@@ -465,7 +469,7 @@ class AgentLightningIntegrationManager:
                 issues=[f"Status check failed: {str(e)}"],
             )
 
-    async def get_system_statistics(self) -> Dict[str, Any]:
+    async def get_system_statistics(self) -> dict[str, Any]:
         """Get comprehensive system statistics"""
         try:
             # Get storage statistics
@@ -507,7 +511,7 @@ class AgentLightningIntegrationManager:
             logger.error(f"Failed to get system statistics: {e}")
             return {"error": str(e)}
 
-    async def create_backup(self, backup_name: Optional[str] = None) -> str:
+    async def create_backup(self, backup_name: str | None = None) -> str:
         """Create a system-wide backup"""
         try:
             return await self.storage.create_backup(backup_name)

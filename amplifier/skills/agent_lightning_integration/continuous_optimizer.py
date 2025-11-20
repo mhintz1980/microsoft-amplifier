@@ -10,12 +10,14 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-from enum import Enum
 from collections import defaultdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -25,8 +27,8 @@ try:
 
     sys.path.append("/home/markimus/projects/microsoft-amplifier/agent_lightning_fresh")
     from agentlightning import APO
-    from agentlightning.trainer import Trainer
     from agentlightning.execution import TaskExecutor
+    from agentlightning.trainer import Trainer
 
     AGENT_LIGHTNING_AVAILABLE = True
 except ImportError:
@@ -34,8 +36,9 @@ except ImportError:
     AGENT_LIGHTNING_AVAILABLE = False
 
 from .config import RLTrainingConfig
-from .skill_performance_tracker import SkillPerformanceTracker, SkillPerformanceSummary
-from .error_detection_engine import ErrorDetectionEngine, DetectionResult
+from .error_detection_engine import ErrorDetectionEngine
+from .skill_performance_tracker import SkillPerformanceSummary
+from .skill_performance_tracker import SkillPerformanceTracker
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +73,7 @@ class OptimizationTarget:
     current_value: float
     target_value: float
     priority: int  # 1-10
-    constraints: Dict[str, Any]
+    constraints: dict[str, Any]
 
 
 @dataclass
@@ -82,7 +85,7 @@ class OptimizationProposal:
     optimization_type: OptimizationType
     strategy: OptimizationStrategy
     description: str
-    changes: Dict[str, Any]
+    changes: dict[str, Any]
     expected_improvement: float
     confidence: float
     implementation_complexity: str  # "low", "medium", "high"
@@ -98,11 +101,11 @@ class OptimizationResult:
     proposal_id: str
     skill_id: str
     implemented_at: datetime
-    metrics_before: Dict[str, float]
-    metrics_after: Dict[str, float]
+    metrics_before: dict[str, float]
+    metrics_after: dict[str, float]
     actual_improvement: float
     success: bool
-    lessons_learned: List[str]
+    lessons_learned: list[str]
 
 
 class ContinuousOptimizer:
@@ -124,9 +127,9 @@ class ContinuousOptimizer:
         self.error_detector = error_detector
 
         # Optimization state
-        self.optimization_targets: Dict[str, OptimizationTarget] = {}
-        self.active_proposals: Dict[str, OptimizationProposal] = {}
-        self.optimization_history: Dict[str, List[OptimizationResult]] = defaultdict(list)
+        self.optimization_targets: dict[str, OptimizationTarget] = {}
+        self.active_proposals: dict[str, OptimizationProposal] = {}
+        self.optimization_history: dict[str, list[OptimizationResult]] = defaultdict(list)
 
         # Agent Lightning components
         self.apo_optimizer = None
@@ -134,8 +137,8 @@ class ContinuousOptimizer:
         self.executor = None
 
         # Background tasks
-        self._optimization_task: Optional[asyncio.Task] = None
-        self._evaluation_task: Optional[asyncio.Task] = None
+        self._optimization_task: asyncio.Task | None = None
+        self._evaluation_task: asyncio.Task | None = None
         self._running = False
 
     async def start(self):
@@ -174,8 +177,8 @@ class ContinuousOptimizer:
         await self._save_optimization_data()
 
     async def optimize_skill(
-        self, skill_id: str, optimization_types: Optional[List[OptimizationType]] = None
-    ) -> List[OptimizationProposal]:
+        self, skill_id: str, optimization_types: list[OptimizationType] | None = None
+    ) -> list[OptimizationProposal]:
         """Generate optimization proposals for a skill"""
         try:
             if optimization_types is None:
@@ -273,7 +276,7 @@ class ContinuousOptimizer:
             logger.error(f"Failed to implement optimization {proposal_id}: {e}")
             raise
 
-    async def get_optimization_status(self, skill_id: str) -> Dict[str, Any]:
+    async def get_optimization_status(self, skill_id: str) -> dict[str, Any]:
         """Get optimization status for a skill"""
         try:
             # Get active proposals
@@ -312,7 +315,7 @@ class ContinuousOptimizer:
             logger.error(f"Failed to get optimization status for {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def benchmark_optimization_strategies(self, skill_id: str, duration_hours: int = 24) -> Dict[str, Any]:
+    async def benchmark_optimization_strategies(self, skill_id: str, duration_hours: int = 24) -> dict[str, Any]:
         """Benchmark different optimization strategies"""
         try:
             logger.info(f"Starting optimization strategy benchmark for skill {skill_id}")
@@ -444,8 +447,8 @@ class ContinuousOptimizer:
                 await asyncio.sleep(600)
 
     async def _identify_optimization_targets(
-        self, skill_id: str, performance_summary: SkillPerformanceSummary, error_trends: Dict[str, Any]
-    ) -> List[OptimizationTarget]:
+        self, skill_id: str, performance_summary: SkillPerformanceSummary, error_trends: dict[str, Any]
+    ) -> list[OptimizationTarget]:
         """Identify optimization targets based on performance and error analysis"""
         targets = []
 
@@ -516,7 +519,7 @@ class ContinuousOptimizer:
 
         return targets
 
-    async def _generate_optimization_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_optimization_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate optimization proposals for a target"""
         proposals = []
 
@@ -535,7 +538,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_apo_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_apo_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate proposals using Agent Lightning's APO algorithm"""
         proposals = []
 
@@ -563,7 +566,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_rule_based_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_rule_based_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate proposals using rule-based approaches"""
         proposals = []
 
@@ -584,7 +587,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_performance_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_performance_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate performance optimization proposals"""
         proposals = []
 
@@ -630,7 +633,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_accuracy_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_accuracy_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate accuracy optimization proposals"""
         proposals = []
 
@@ -680,7 +683,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_reliability_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_reliability_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate reliability optimization proposals"""
         proposals = []
 
@@ -732,7 +735,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_security_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_security_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate security optimization proposals"""
         proposals = []
 
@@ -783,7 +786,7 @@ class ContinuousOptimizer:
 
         return proposals
 
-    async def _generate_efficiency_proposals(self, target: OptimizationTarget) -> List[OptimizationProposal]:
+    async def _generate_efficiency_proposals(self, target: OptimizationTarget) -> list[OptimizationProposal]:
         """Generate efficiency optimization proposals"""
         proposals = []
 
@@ -836,8 +839,8 @@ class ContinuousOptimizer:
         return proposals
 
     async def _create_apo_style_proposals(
-        self, target: OptimizationTarget, problem: Dict[str, Any]
-    ) -> List[OptimizationProposal]:
+        self, target: OptimizationTarget, problem: dict[str, Any]
+    ) -> list[OptimizationProposal]:
         """Create APO-style optimization proposals"""
         # This would integrate with actual APO algorithm
         # For now, create enhanced versions of rule-based proposals
@@ -853,7 +856,7 @@ class ContinuousOptimizer:
 
     async def _generate_strategy_specific_proposals(
         self, skill_id: str, strategy: OptimizationStrategy
-    ) -> List[OptimizationProposal]:
+    ) -> list[OptimizationProposal]:
         """Generate proposals specific to a strategy"""
         try:
             performance_summary = await self.performance_tracker.get_skill_summary(skill_id)
@@ -906,7 +909,7 @@ class ContinuousOptimizer:
             logger.error(f"Failed to apply optimization {proposal.proposal_id}: {e}")
             return False
 
-    async def _get_current_metrics(self, skill_id: str) -> Dict[str, float]:
+    async def _get_current_metrics(self, skill_id: str) -> dict[str, float]:
         """Get current performance metrics for a skill"""
         try:
             performance_summary = await self.performance_tracker.get_skill_summary(skill_id)
@@ -926,7 +929,7 @@ class ContinuousOptimizer:
             return {}
 
     async def _calculate_improvement(
-        self, optimization_type: OptimizationType, before: Dict[str, float], after: Dict[str, float]
+        self, optimization_type: OptimizationType, before: dict[str, float], after: dict[str, float]
     ) -> float:
         """Calculate improvement percentage for an optimization type"""
         try:
@@ -961,8 +964,8 @@ class ContinuousOptimizer:
             return 0.0
 
     async def _generate_lessons_learned(
-        self, proposal: OptimizationProposal, before: Dict[str, float], after: Dict[str, float]
-    ) -> List[str]:
+        self, proposal: OptimizationProposal, before: dict[str, float], after: dict[str, float]
+    ) -> list[str]:
         """Generate lessons learned from optimization implementation"""
         lessons = []
 
@@ -970,11 +973,11 @@ class ContinuousOptimizer:
             actual_improvement = await self._calculate_improvement(proposal.optimization_type, before, after)
 
             if actual_improvement > proposal.expected_improvement:
-                lessons.append(f"Optimization exceeded expectations - consider similar strategies for other skills")
+                lessons.append("Optimization exceeded expectations - consider similar strategies for other skills")
             elif actual_improvement < proposal.expected_improvement * 0.5:
-                lessons.append(f"Optimization underperformed - review assumptions and constraints")
+                lessons.append("Optimization underperformed - review assumptions and constraints")
             else:
-                lessons.append(f"Optimization performed as expected - strategy validated")
+                lessons.append("Optimization performed as expected - strategy validated")
 
             # Strategy-specific lessons
             if proposal.strategy == OptimizationStrategy.APO_REINFORCEMENT:
@@ -994,7 +997,7 @@ class ContinuousOptimizer:
 
         return lessons
 
-    async def _identify_skills_needing_optimization(self) -> List[str]:
+    async def _identify_skills_needing_optimization(self) -> list[str]:
         """Identify skills that need optimization"""
         skills_to_optimize = []
 
@@ -1043,7 +1046,7 @@ class ContinuousOptimizer:
             logger.error(f"Failed to evaluate optimization effectiveness: {e}")
 
     async def _check_sustained_improvement(
-        self, optimization: OptimizationResult, current_metrics: Dict[str, float]
+        self, optimization: OptimizationResult, current_metrics: dict[str, float]
     ) -> bool:
         """Check if optimization benefits were sustained"""
         try:
@@ -1093,7 +1096,7 @@ class ContinuousOptimizer:
             # Load optimization history
             history_file = self.optimizations_path / "optimization_history.json"
             if history_file.exists():
-                with open(history_file, "r") as f:
+                with open(history_file) as f:
                     data = json.load(f)
                     for skill_id, results_data in data.items():
                         for result_data in results_data:

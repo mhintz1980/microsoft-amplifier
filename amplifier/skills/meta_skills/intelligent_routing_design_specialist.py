@@ -16,22 +16,22 @@ Core Functionality:
 - Agent-optimized routing decisions with sub-second decisions
 """
 
-import asyncio
 import json
-import math
 import re
 import time
 from collections import defaultdict
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 from ...utils.logger import get_logger
-from ..skills_framework import BaseSkill, SkillContext, SkillLevel, SkillResult
 from ..mcp_storage.skill_repository_manager import get_skill_repository
-from ...mcp.persistent_storage import store_result, retrieve_result
+from ..skills_framework import BaseSkill
+from ..skills_framework import SkillContext
+from ..skills_framework import SkillLevel
+from ..skills_framework import SkillResult
 
 logger = get_logger(__name__)
 
@@ -62,29 +62,29 @@ class SkillCapability:
 
     name: str
     description: str
-    input_types: List[str]
-    output_types: List[str]
+    input_types: list[str]
+    output_types: list[str]
     complexity: SkillComplexity
     estimated_tokens: int
     estimated_time: float
-    dependencies: List[str] = field(default_factory=list)
-    synergistic_skills: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
+    synergistic_skills: list[str] = field(default_factory=list)
     success_rate: float = 0.95
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass
 class SkillCombination:
     """Optimal skill combination with execution plan."""
 
-    skills: List[str]
-    execution_order: List[str]
+    skills: list[str]
+    execution_order: list[str]
     estimated_tokens: int
     estimated_time: float
     confidence: float
     strategy: RoutingStrategy
-    dependencies: List[str] = field(default_factory=list)
-    synergistic_benefits: Dict[str, float] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    synergistic_benefits: dict[str, float] = field(default_factory=dict)
     reasoning: str = ""
 
 
@@ -106,10 +106,10 @@ class SkillCapabilityDatabase:
     """Database of skill capabilities and performance metrics."""
 
     def __init__(self):
-        self.capabilities: Dict[str, SkillCapability] = {}
-        self.performance_history: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-        self.synergy_matrix: Dict[Tuple[str, str], float] = {}
-        self.dependency_graph: Dict[str, Set[str]] = defaultdict(set)
+        self.capabilities: dict[str, SkillCapability] = {}
+        self.performance_history: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        self.synergy_matrix: dict[tuple[str, str], float] = {}
+        self.dependency_graph: dict[str, set[str]] = defaultdict(set)
 
     def register_skill_capability(self, skill_id: str, capability: SkillCapability) -> None:
         """Register a skill capability."""
@@ -121,11 +121,11 @@ class SkillCapabilityDatabase:
 
         logger.debug(f"Registered capability for skill: {skill_id}")
 
-    def get_capability(self, skill_id: str) -> Optional[SkillCapability]:
+    def get_capability(self, skill_id: str) -> SkillCapability | None:
         """Get skill capability by ID."""
         return self.capabilities.get(skill_id)
 
-    def update_performance(self, skill_id: str, metrics: Dict[str, Any]) -> None:
+    def update_performance(self, skill_id: str, metrics: dict[str, Any]) -> None:
         """Update performance metrics for a skill."""
         self.performance_history[skill_id].append({"timestamp": datetime.now().isoformat(), **metrics})
 
@@ -162,9 +162,9 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         self.routing_metrics = RoutingMetrics()
 
         # Learning components
-        self.routing_patterns: Dict[str, List[SkillCombination]] = defaultdict(list)
-        self.user_preferences: Dict[str, Dict[str, Any]] = {}
-        self.performance_cache: Dict[str, SkillCombination] = {}
+        self.routing_patterns: dict[str, list[SkillCombination]] = defaultdict(list)
+        self.user_preferences: dict[str, dict[str, Any]] = {}
+        self.performance_cache: dict[str, SkillCombination] = {}
 
         # Initialize with known skill capabilities
         self._initialize_skill_capabilities()
@@ -179,7 +179,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         )
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         """Tags for skill discovery and matching."""
         return ["routing", "optimization", "meta", "coordination", "performance", "efficiency", "synergy", "automation"]
 
@@ -288,7 +288,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
                 next_level_available=False,
             )
 
-    def _analyze_requirements(self, query: str) -> Dict[str, Any]:
+    def _analyze_requirements(self, query: str) -> dict[str, Any]:
         """Analyze user requirements from query."""
         requirements = {
             "primary_goal": self._extract_primary_goal(query),
@@ -319,7 +319,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return max(scores.items(), key=lambda x: x[1])[0] if any(scores.values()) else "balanced"
 
-    def _extract_constraints(self, query: str) -> List[str]:
+    def _extract_constraints(self, query: str) -> list[str]:
         """Extract constraints from the query."""
         query_lower = query.lower()
 
@@ -335,7 +335,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return constraints
 
-    def _extract_preferences(self, query: str) -> Dict[str, Any]:
+    def _extract_preferences(self, query: str) -> dict[str, Any]:
         """Extract user preferences from query."""
         query_lower = query.lower()
 
@@ -355,7 +355,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return preferences
 
-    def _assess_complexity(self, query: str) -> Dict[str, Any]:
+    def _assess_complexity(self, query: str) -> dict[str, Any]:
         """Assess complexity indicators from the query."""
         words = query.split()
         sentences = query.split(".")
@@ -386,14 +386,13 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         if count >= 4:
             return "high"
-        elif count >= 2:
+        if count >= 2:
             return "medium"
-        elif count >= 1:
+        if count >= 1:
             return "low"
-        else:
-            return "minimal"
+        return "minimal"
 
-    def _assess_context_needs(self, query: str) -> Dict[str, Any]:
+    def _assess_context_needs(self, query: str) -> dict[str, Any]:
         """Assess context requirements."""
         query_lower = query.lower()
 
@@ -406,7 +405,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return needs
 
-    def _determine_strategy(self, requirements: Dict[str, Any], context: SkillContext) -> RoutingStrategy:
+    def _determine_strategy(self, requirements: dict[str, Any], context: SkillContext) -> RoutingStrategy:
         """Determine optimal routing strategy based on requirements."""
         # User-specified strategy takes precedence
         if "strategy" in requirements["preferences"]:
@@ -432,8 +431,8 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         return RoutingStrategy.BALANCED
 
     def _generate_skill_combinations(
-        self, requirements: Dict[str, Any], strategy: RoutingStrategy
-    ) -> List[SkillCombination]:
+        self, requirements: dict[str, Any], strategy: RoutingStrategy
+    ) -> list[SkillCombination]:
         """Generate potential skill combinations based on requirements."""
         combinations = []
 
@@ -464,7 +463,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return valid_combinations[:10]  # Return top 10 combinations
 
-    def _generate_synergy_combinations(self, available_skills: List[str]) -> List[SkillCombination]:
+    def _generate_synergy_combinations(self, available_skills: list[str]) -> list[SkillCombination]:
         """Generate combinations optimized for synergistic effects."""
         combinations = []
 
@@ -485,7 +484,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return combinations
 
-    def _generate_performance_combinations(self, available_skills: List[str]) -> List[SkillCombination]:
+    def _generate_performance_combinations(self, available_skills: list[str]) -> list[SkillCombination]:
         """Generate combinations optimized for performance."""
         # Sort by estimated time
         sorted_skills = sorted(
@@ -511,7 +510,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return combinations
 
-    def _generate_accuracy_combinations(self, available_skills: List[str]) -> List[SkillCombination]:
+    def _generate_accuracy_combinations(self, available_skills: list[str]) -> list[SkillCombination]:
         """Generate combinations optimized for accuracy."""
         # Sort by success rate
         sorted_skills = sorted(
@@ -543,7 +542,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return combinations
 
-    def _generate_efficiency_combinations(self, available_skills: List[str]) -> List[SkillCombination]:
+    def _generate_efficiency_combinations(self, available_skills: list[str]) -> list[SkillCombination]:
         """Generate combinations optimized for token efficiency."""
         # Sort by estimated tokens
         sorted_skills = sorted(
@@ -579,7 +578,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return combinations
 
-    def _generate_balanced_combinations(self, available_skills: List[str]) -> List[SkillCombination]:
+    def _generate_balanced_combinations(self, available_skills: list[str]) -> list[SkillCombination]:
         """Generate balanced combinations across all metrics."""
         combinations = []
 
@@ -597,7 +596,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return combinations
 
-    def _create_combination(self, skills: List[str], strategy: RoutingStrategy) -> SkillCombination:
+    def _create_combination(self, skills: list[str], strategy: RoutingStrategy) -> SkillCombination:
         """Create a skill combination with calculated metrics."""
         total_tokens = 0
         total_time = 0
@@ -638,7 +637,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
             reasoning="",  # Will be generated later
         )
 
-    def _resolve_execution_order(self, skills: List[str], dependencies: List[str]) -> List[str]:
+    def _resolve_execution_order(self, skills: list[str], dependencies: list[str]) -> list[str]:
         """Resolve optimal execution order based on dependencies."""
         # Simple dependency resolution - skills with no dependencies first
         ordered = []
@@ -672,7 +671,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
         return ordered
 
-    def _validate_combination(self, combination: SkillCombination, requirements: Dict[str, Any]) -> bool:
+    def _validate_combination(self, combination: SkillCombination, requirements: dict[str, Any]) -> bool:
         """Validate if combination meets requirements."""
         # Check constraints
         if "resource_minimal" in requirements["constraints"]:
@@ -692,7 +691,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         return True
 
     def _calculate_combination_confidence(
-        self, combination: SkillCombination, requirements: Dict[str, Any], strategy: RoutingStrategy
+        self, combination: SkillCombination, requirements: dict[str, Any], strategy: RoutingStrategy
     ) -> float:
         """Calculate confidence score for a combination."""
         confidence = 0.5  # Base confidence
@@ -732,8 +731,8 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         return max(0.0, min(1.0, confidence))
 
     def _select_optimal_combination(
-        self, combinations: List[SkillCombination], strategy: RoutingStrategy
-    ) -> Optional[SkillCombination]:
+        self, combinations: list[SkillCombination], strategy: RoutingStrategy
+    ) -> SkillCombination | None:
         """Select the optimal combination from candidates."""
         if not combinations:
             return None
@@ -781,7 +780,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
         return "; ".join(reasons)
 
     def _format_result(
-        self, combination: Optional[SkillCombination], requirements: Dict[str, Any], level: SkillLevel
+        self, combination: SkillCombination | None, requirements: dict[str, Any], level: SkillLevel
     ) -> str:
         """Format the result based on skill level."""
         if not combination:
@@ -798,9 +797,9 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
                 }
             )
 
-        elif level == SkillLevel.SUMMARY:
+        if level == SkillLevel.SUMMARY:
             result = [
-                f"**Optimal Skill Combination Found**",
+                "**Optimal Skill Combination Found**",
                 f"Strategy: {combination.strategy.value.title()}",
                 f"Skills: {', '.join(combination.skills)}",
                 f"Estimated: {combination.estimated_tokens} tokens, {combination.estimated_time:.1f}s",
@@ -813,83 +812,83 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
 
             return "\n".join(result)
 
-        else:  # FULL level
-            result = [
-                f"# Intelligent Routing Design Specialist Analysis",
-                f"",
-                f"## Requirements Analysis",
-                f"- Primary Goal: {requirements['primary_goal']}",
-                f"- Constraints: {', '.join(requirements['constraints']) if requirements['constraints'] else 'None'}",
-                f"- Complexity: {requirements['complexity_indicators']['technical_complexity']}",
-                f"",
-                f"## Optimal Skill Combination",
-                f"**Strategy:** {combination.strategy.value.title()}",
-                f"**Confidence:** {combination.confidence:.1%}",
-                f"",
-                f"### Skills ({len(combination.skills)})",
+        # FULL level
+        result = [
+            "# Intelligent Routing Design Specialist Analysis",
+            "",
+            "## Requirements Analysis",
+            f"- Primary Goal: {requirements['primary_goal']}",
+            f"- Constraints: {', '.join(requirements['constraints']) if requirements['constraints'] else 'None'}",
+            f"- Complexity: {requirements['complexity_indicators']['technical_complexity']}",
+            "",
+            "## Optimal Skill Combination",
+            f"**Strategy:** {combination.strategy.value.title()}",
+            f"**Confidence:** {combination.confidence:.1%}",
+            "",
+            f"### Skills ({len(combination.skills)})",
+            "",
+        ]
+
+        for i, skill in enumerate(combination.execution_order, 1):
+            capability = self.capability_db.get_capability(skill)
+            if capability:
+                result.append(
+                    f"{i}. **{skill}** - {capability.description}\n"
+                    f"   - Complexity: {capability.complexity.value}\n"
+                    f"   - Est. Tokens: {capability.estimated_tokens}\n"
+                    f"   - Est. Time: {capability.estimated_time:.1f}s\n"
+                    f"   - Success Rate: {capability.success_rate:.1%}"
+                )
+            else:
+                result.append(f"{i}. **{skill}")
+            result.append("")
+
+        result.extend(
+            [
+                "### Execution Metrics",
+                f"- **Total Estimated Tokens:** {combination.estimated_tokens:,}",
+                f"- **Total Estimated Time:** {combination.estimated_time:.1f} seconds",
+                f"- **Optimal Execution Order:** {' → '.join(combination.execution_order)}",
                 "",
+                "### Synergistic Benefits",
             ]
+        )
 
-            for i, skill in enumerate(combination.execution_order, 1):
-                capability = self.capability_db.get_capability(skill)
-                if capability:
-                    result.append(
-                        f"{i}. **{skill}** - {capability.description}\n"
-                        f"   - Complexity: {capability.complexity.value}\n"
-                        f"   - Est. Tokens: {capability.estimated_tokens}\n"
-                        f"   - Est. Time: {capability.estimated_time:.1f}s\n"
-                        f"   - Success Rate: {capability.success_rate:.1%}"
-                    )
-                else:
-                    result.append(f"{i}. **{skill}")
-                result.append("")
+        if combination.synergistic_benefits:
+            for pair, benefit in combination.synergistic_benefits.items():
+                result.append(f"- **{pair}:** {benefit:.1%} efficiency gain")
+        else:
+            result.append("- No significant synergistic benefits detected")
 
-            result.extend(
-                [
-                    f"### Execution Metrics",
-                    f"- **Total Estimated Tokens:** {combination.estimated_tokens:,}",
-                    f"- **Total Estimated Time:** {combination.estimated_time:.1f} seconds",
-                    f"- **Optimal Execution Order:** {' → '.join(combination.execution_order)}",
-                    f"",
-                    f"### Synergistic Benefits",
-                ]
-            )
+        result.extend(
+            [
+                "",
+                "### Reasoning",
+                combination.reasoning,
+                "",
+                "### Dependencies",
+            ]
+        )
 
-            if combination.synergistic_benefits:
-                for pair, benefit in combination.synergistic_benefits.items():
-                    result.append(f"- **{pair}:** {benefit:.1%} efficiency gain")
-            else:
-                result.append("- No significant synergistic benefits detected")
+        if combination.dependencies:
+            for dep in combination.dependencies:
+                result.append(f"- {dep}")
+        else:
+            result.append("- No external dependencies required")
 
-            result.extend(
-                [
-                    "",
-                    f"### Reasoning",
-                    combination.reasoning,
-                    "",
-                    f"### Dependencies",
-                ]
-            )
+        result.extend(
+            [
+                "",
+                "### Recommendations",
+                "- Execute skills in the recommended order for optimal performance",
+                "- Monitor execution metrics and adjust if necessary",
+                "- Consider caching results for repeated use patterns",
+            ]
+        )
 
-            if combination.dependencies:
-                for dep in combination.dependencies:
-                    result.append(f"- {dep}")
-            else:
-                result.append("- No external dependencies required")
+        return "\n".join(result)
 
-            result.extend(
-                [
-                    "",
-                    f"### Recommendations",
-                    f"- Execute skills in the recommended order for optimal performance",
-                    f"- Monitor execution metrics and adjust if necessary",
-                    f"- Consider caching results for repeated use patterns",
-                ]
-            )
-
-            return "\n".join(result)
-
-    def _update_metrics(self, combination: Optional[SkillCombination], success: bool) -> None:
+    def _update_metrics(self, combination: SkillCombination | None, success: bool) -> None:
         """Update routing metrics."""
         if not combination:
             return
@@ -903,7 +902,7 @@ class IntelligentRoutingDesignSpecialist(BaseSkill):
             self.routing_metrics.successful_routes / self.routing_metrics.total_routes
         )
 
-    def _update_learning_patterns(self, query: str, combination: Optional[SkillCombination]) -> None:
+    def _update_learning_patterns(self, query: str, combination: SkillCombination | None) -> None:
         """Update learning patterns for future routing decisions."""
         if not combination:
             return

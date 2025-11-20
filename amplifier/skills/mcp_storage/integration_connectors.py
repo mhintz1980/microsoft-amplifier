@@ -13,8 +13,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from ..utils.logger import get_logger
 from ...mcp.persistent_storage import SkillDefinition
+from ..utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -606,7 +606,7 @@ class IntegrationConnectors:
                 # Process event
                 await self._process_event(event)
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 # No events to process
                 continue
             except Exception as e:
@@ -645,21 +645,20 @@ class IntegrationConnectors:
 
             if connector.integration_type == IntegrationType.SKILL_CREATION_PIPELINE:
                 return await self._sync_skill_creation_pipeline(connector)
-            elif connector.integration_type == IntegrationType.DOCUMENTATION_SYSTEM:
+            if connector.integration_type == IntegrationType.DOCUMENTATION_SYSTEM:
                 return await self._sync_documentation_system(connector)
-            elif connector.integration_type == IntegrationType.CONTEXT_OPTIMIZATION:
+            if connector.integration_type == IntegrationType.CONTEXT_OPTIMIZATION:
                 return await self._sync_context_optimization(connector)
-            elif connector.integration_type == IntegrationType.MEMORY_SYSTEM:
+            if connector.integration_type == IntegrationType.MEMORY_SYSTEM:
                 return await self._sync_memory_system(connector)
-            elif connector.integration_type == IntegrationType.CODE_EXECUTION:
+            if connector.integration_type == IntegrationType.CODE_EXECUTION:
                 return await self._sync_code_execution(connector)
-            elif connector.integration_type == IntegrationType.AGENT_FRAMEWORK:
+            if connector.integration_type == IntegrationType.AGENT_FRAMEWORK:
                 return await self._sync_agent_framework(connector)
-            elif connector.integration_type == IntegrationType.MCP_SERVERS:
+            if connector.integration_type == IntegrationType.MCP_SERVERS:
                 return await self._sync_mcp_servers(connector)
-            else:
-                logger.warning(f"Unknown integration type: {connector.integration_type}")
-                return True
+            logger.warning(f"Unknown integration type: {connector.integration_type}")
+            return True
 
         except Exception as e:
             logger.error(f"Failed to sync with {connector.system_name}: {e}")

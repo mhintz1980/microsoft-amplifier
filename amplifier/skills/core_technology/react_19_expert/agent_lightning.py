@@ -5,14 +5,15 @@ Provides continuous learning, optimization, and pattern tracking
 for React 19 development with zero hallucination guarantee.
 """
 
-import json
-import time
 import hashlib
-from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, asdict
+import json
+import statistics
+import time
+from dataclasses import asdict
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-import statistics
+from typing import Any
 
 
 class PerformanceMetric(Enum):
@@ -33,8 +34,8 @@ class AgentLightningMetric:
     name: str
     value: float
     timestamp: float
-    context: Dict[str, Any]
-    improvement_suggestion: Optional[str] = None
+    context: dict[str, Any]
+    improvement_suggestion: str | None = None
 
 
 @dataclass
@@ -45,8 +46,8 @@ class PatternPerformance:
     usage_count: int
     success_rate: float
     average_performance_score: float
-    common_issues: List[str]
-    optimization_recommendations: List[str]
+    common_issues: list[str]
+    optimization_recommendations: list[str]
     last_updated: float
 
 
@@ -56,11 +57,11 @@ class CodeGenerationSession:
 
     session_id: str
     timestamp: float
-    requirements: Dict[str, Any]
+    requirements: dict[str, Any]
     generated_code: str
-    validation_results: Dict[str, Any]
-    user_feedback: Optional[Dict[str, Any]] = None
-    performance_metrics: Optional[Dict[str, float]] = None
+    validation_results: dict[str, Any]
+    user_feedback: dict[str, Any] | None = None
+    performance_metrics: dict[str, float] | None = None
     improvement_applied: bool = False
 
 
@@ -101,7 +102,7 @@ class AgentLightning:
         }
 
     def track_pattern_usage(
-        self, pattern_name: str, success: bool, performance_score: float, issues: Optional[List[str]] = None
+        self, pattern_name: str, success: bool, performance_score: float, issues: list[str] | None = None
     ) -> None:
         """
         Track the usage and performance of React 19 patterns.
@@ -155,10 +156,10 @@ class AgentLightning:
 
     def track_code_generation(
         self,
-        requirements: Dict[str, Any],
+        requirements: dict[str, Any],
         generated_code: str,
-        validation_results: Dict[str, Any],
-        user_feedback: Optional[Dict[str, Any]] = None,
+        validation_results: dict[str, Any],
+        user_feedback: dict[str, Any] | None = None,
     ) -> str:
         """
         Track a code generation session for continuous learning.
@@ -197,7 +198,7 @@ class AgentLightning:
         return session_id
 
     def record_metric(
-        self, metric_type: PerformanceMetric, value: float, context: Optional[Dict[str, Any]] = None
+        self, metric_type: PerformanceMetric, value: float, context: dict[str, Any] | None = None
     ) -> None:
         """
         Record a performance metric for tracking.
@@ -225,7 +226,7 @@ class AgentLightning:
         # Save learning data
         self._save_learning_data()
 
-    def get_performance_summary(self) -> Dict[str, Any]:
+    def get_performance_summary(self) -> dict[str, Any]:
         """
         Get comprehensive performance summary.
 
@@ -312,7 +313,7 @@ class AgentLightning:
 
         return summary
 
-    def get_optimization_recommendations(self, context: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def get_optimization_recommendations(self, context: dict[str, Any] | None = None) -> list[dict[str, Any]]:
         """
         Get optimization recommendations based on performance data.
 
@@ -367,7 +368,7 @@ class AgentLightning:
 
         return recommendations[:10]  # Return top 10 recommendations
 
-    def validate_zero_hallucination(self, code: str, context: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_zero_hallucination(self, code: str, context: dict[str, Any]) -> dict[str, Any]:
         """
         Validate code for zero hallucination compliance.
 
@@ -448,7 +449,7 @@ class AgentLightning:
         if session.user_feedback:
             self._learn_from_user_feedback(session)
 
-    def _calculate_session_metrics(self, session: CodeGenerationSession) -> Dict[str, float]:
+    def _calculate_session_metrics(self, session: CodeGenerationSession) -> dict[str, float]:
         """Calculate performance metrics for a session."""
         metrics = {}
 
@@ -476,7 +477,7 @@ class AgentLightning:
 
         return metrics
 
-    def _validate_api_usage(self, code: str) -> Dict[str, Any]:
+    def _validate_api_usage(self, code: str) -> dict[str, Any]:
         """Validate React 19 API usage in code."""
         # Known React 19 APIs
         react_19_apis = [
@@ -508,7 +509,7 @@ class AgentLightning:
 
         return validation_result
 
-    def _validate_pattern_usage(self, code: str) -> Dict[str, Any]:
+    def _validate_pattern_usage(self, code: str) -> dict[str, Any]:
         """Validate React 19 pattern usage in code."""
         validation_result = {"all_patterns_valid": True, "patterns_found": [], "issues": [], "overall_score": 90.0}
 
@@ -533,7 +534,7 @@ class AgentLightning:
 
         return min(100, max(0, score))
 
-    def _extract_patterns_from_code(self, code: str) -> List[str]:
+    def _extract_patterns_from_code(self, code: str) -> list[str]:
         """Extract React 19 patterns used in code."""
         patterns = []
 
@@ -548,7 +549,7 @@ class AgentLightning:
 
         return patterns
 
-    def _generate_pattern_recommendations(self, pattern: PatternPerformance) -> List[str]:
+    def _generate_pattern_recommendations(self, pattern: PatternPerformance) -> list[str]:
         """Generate optimization recommendations for a pattern."""
         recommendations = []
 
@@ -580,7 +581,7 @@ class AgentLightning:
 
         return suggestions.get(metric_type, "Analyze performance data and identify optimization opportunities")
 
-    def _calculate_trend(self, metrics: List[AgentLightningMetric]) -> str:
+    def _calculate_trend(self, metrics: list[AgentLightningMetric]) -> str:
         """Calculate trend for a series of metrics."""
         if len(metrics) < 2:
             return "insufficient_data"
@@ -593,12 +594,11 @@ class AgentLightning:
 
         if second_half_avg > first_half_avg + 5:
             return "improving"
-        elif second_half_avg < first_half_avg - 5:
+        if second_half_avg < first_half_avg - 5:
             return "declining"
-        else:
-            return "stable"
+        return "stable"
 
-    def _generate_context_recommendations(self, context: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_context_recommendations(self, context: dict[str, Any]) -> list[dict[str, Any]]:
         """Generate context-specific recommendations."""
         recommendations = []
 
@@ -664,7 +664,7 @@ class AgentLightning:
         try:
             data_path = Path("data/agent_lightning_react19.json")
             if data_path.exists():
-                with open(data_path, "r") as f:
+                with open(data_path) as f:
                     data = json.load(f)
 
                 # Load pattern performance data
@@ -676,7 +676,7 @@ class AgentLightning:
         except Exception as e:
             print(f"Failed to load learning data: {e}")
 
-    def _serialize_metrics(self) -> Dict[str, Any]:
+    def _serialize_metrics(self) -> dict[str, Any]:
         """Serialize metrics for storage."""
         serialized = {}
         for metric_type, metrics in self.metrics_db.items():
@@ -697,7 +697,7 @@ def get_agent_lightning() -> AgentLightning:
 
 
 def track_pattern_usage(
-    pattern_name: str, success: bool, performance_score: float, issues: Optional[List[str]] = None
+    pattern_name: str, success: bool, performance_score: float, issues: list[str] | None = None
 ) -> None:
     """Convenience function to track pattern usage."""
     agent = get_agent_lightning()
@@ -705,23 +705,23 @@ def track_pattern_usage(
 
 
 def track_code_generation(
-    requirements: Dict[str, Any],
+    requirements: dict[str, Any],
     generated_code: str,
-    validation_results: Dict[str, Any],
-    user_feedback: Optional[Dict[str, Any]] = None,
+    validation_results: dict[str, Any],
+    user_feedback: dict[str, Any] | None = None,
 ) -> str:
     """Convenience function to track code generation."""
     agent = get_agent_lightning()
     return agent.track_code_generation(requirements, generated_code, validation_results, user_feedback)
 
 
-def get_performance_summary() -> Dict[str, Any]:
+def get_performance_summary() -> dict[str, Any]:
     """Convenience function to get performance summary."""
     agent = get_agent_lightning()
     return agent.get_performance_summary()
 
 
-def validate_zero_hallucination(code: str, context: Dict[str, Any]) -> Dict[str, Any]:
+def validate_zero_hallucination(code: str, context: dict[str, Any]) -> dict[str, Any]:
     """Convenience function to validate zero hallucination compliance."""
     agent = get_agent_lightning()
     return agent.validate_zero_hallucination(code, context)

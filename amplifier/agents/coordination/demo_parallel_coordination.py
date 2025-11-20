@@ -17,16 +17,13 @@ This demo shows:
 
 import asyncio
 import time
-from typing import List
 
-from .. import (
-    TaskDefinition,
-    TaskType,
-    TaskComplexity,
-    CoordinationRequest,
-    ParallelAgentCoordinator,
-    execute_parallel_tasks,
-)
+from .. import CoordinationRequest
+from .. import ParallelAgentCoordinator
+from .. import TaskComplexity
+from .. import TaskDefinition
+from .. import TaskType
+from .. import execute_parallel_tasks
 
 
 async def demo_basic_parallel_execution():
@@ -86,7 +83,7 @@ async def demo_basic_parallel_execution():
     print(f"Efficiency gain: {((sequential_time - parallel_time) / sequential_time * 100):.1f}%")
 
     # Display results
-    print(f"\nExecution Results:")
+    print("\nExecution Results:")
     print(f"- Status: {result.status}")
     print(f"- Completed tasks: {result.completed_tasks}/{result.total_tasks}")
     print(f"- Failed tasks: {result.failed_tasks}")
@@ -94,7 +91,7 @@ async def demo_basic_parallel_execution():
     print(f"- Parallel efficiency gain: {result.parallel_efficiency_gain:.1%}")
 
     if result.performance_metrics:
-        print(f"\nPerformance Metrics:")
+        print("\nPerformance Metrics:")
         for key, value in result.performance_metrics.items():
             print(f"- {key}: {value}")
 
@@ -236,7 +233,7 @@ async def demo_performance_optimization():
         # Get system performance status
         system_status = await coordinator.get_system_status()
 
-        print(f"\nSystem Performance Summary:")
+        print("\nSystem Performance Summary:")
         print(f"- Active agents: {system_status['agent_pool'].get('total_agents', 0)}")
         print(f"- Agent utilization: {system_status['agent_pool'].get('pool_utilization', 0):.1%}")
         print(f"- Total routings: {system_status['task_router'].get('total_routings', 0)}")
@@ -245,7 +242,7 @@ async def demo_performance_optimization():
         # Performance metrics
         if system_status.get("performance_monitor", {}).get("current_efficiency"):
             efficiency = system_status["performance_monitor"]["current_efficiency"]
-            print(f"\nCurrent Efficiency Metrics:")
+            print("\nCurrent Efficiency Metrics:")
             print(f"- Parallel efficiency gain: {efficiency.get('parallel_efficiency_gain', 0):.1%}")
             print(f"- Agent utilization: {efficiency.get('agent_utilization', 0):.1%}")
             print(f"- Task completion rate: {efficiency.get('task_completion_rate', 0):.1%}")
@@ -254,7 +251,7 @@ async def demo_performance_optimization():
         # Performance optimizer summary
         if system_status.get("performance_optimizer"):
             optimizer = system_status["performance_optimizer"]
-            print(f"\nOptimization Summary:")
+            print("\nOptimization Summary:")
             print(f"- Total recommendations: {optimizer.get('total_recommendations', 0)}")
             print(f"- Applied optimizations: {optimizer.get('applied_optimizations', 0)}")
             print(f"- Average expected improvement: {optimizer.get('average_expected_improvement', 0):.1%}")
@@ -313,21 +310,21 @@ async def demo_quality_control():
         store_results=True,  # Store for audit trail
     )
 
-    print(f"\nQuality Control Results:")
+    print("\nQuality Control Results:")
     print(f"- Tasks completed: {result.completed_tasks}/{result.total_tasks}")
     print(f"- Overall quality score: {result.quality_score:.3f}")
     print(f"- Validation passed: {result.validation_passed}")
 
     if result.errors:
-        print(f"\nQuality control interventions:")
+        print("\nQuality control interventions:")
         for error in result.errors:
             print(f"- {error}")
 
     # Demonstrate result storage for audit
-    print(f"\nResults stored for audit trail:")
+    print("\nResults stored for audit trail:")
     print(f"- Request ID: {result.request_id}")
-    print(f"- Storage enabled: True")
-    print(f"- Quality logs: Available in MCP persistent storage")
+    print("- Storage enabled: True")
+    print("- Quality logs: Available in MCP persistent storage")
 
     return result
 

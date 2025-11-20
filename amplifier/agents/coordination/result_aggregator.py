@@ -18,11 +18,6 @@ from dataclasses import field
 from datetime import datetime
 from enum import Enum
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Set
-from typing import Union
 
 from ...utils.logger import get_logger
 
@@ -73,10 +68,10 @@ class AgentResult:
     quality_score: float = 0.0
     execution_time_seconds: float = 0.0
     tokens_used: int = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    error_message: Optional[str] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+    error_message: str | None = None
     created_at: datetime = field(default_factory=datetime.now)
-    dependencies: Set[str] = field(default_factory=set)
+    dependencies: set[str] = field(default_factory=set)
 
 
 @dataclass
@@ -84,7 +79,7 @@ class ConflictInfo:
     """Information about a detected conflict."""
 
     conflict_type: str
-    conflicting_results: List[str]  # agent_ids
+    conflicting_results: list[str]  # agent_ids
     description: str
     severity: float  # 0.0-1.0
     resolution_strategy: ConflictResolutionStrategy
@@ -99,16 +94,16 @@ class AggregatedResult:
     task_id: str
     status: ResultStatus
     final_output: Any
-    contributing_agents: List[str]
+    contributing_agents: list[str]
     aggregation_strategy: AggregationStrategy
     confidence: float
     quality_score: float
     total_execution_time: float = 0.0
     total_tokens_used: int = 0
-    conflicts_detected: List[ConflictInfo] = field(default_factory=list)
-    conflicts_resolved: List[ConflictInfo] = field(default_factory=list)
+    conflicts_detected: list[ConflictInfo] = field(default_factory=list)
+    conflicts_resolved: list[ConflictInfo] = field(default_factory=list)
     validation_passed: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -117,14 +112,14 @@ class ResultAggregator:
 
     def __init__(self, quality_threshold: float = 0.90):
         self.quality_threshold = quality_threshold
-        self.aggregation_history: List[AggregatedResult] = []
-        self.conflict_patterns: Dict[str, int] = {}  # conflict_type -> count
+        self.aggregation_history: list[AggregatedResult] = []
+        self.conflict_patterns: dict[str, int] = {}  # conflict_type -> count
         self._lock = asyncio.Lock()
 
     async def aggregate_results(
         self,
         task_id: str,
-        results: List[AgentResult],
+        results: list[AgentResult],
         strategy: AggregationStrategy = AggregationStrategy.BEST_QUALITY,
     ) -> AggregatedResult:
         """Aggregate multiple agent results into a final output."""
@@ -187,7 +182,7 @@ class ResultAggregator:
             logger.error(f"Error aggregating results for task {task_id}: {e}")
             return self._create_failure_result(task_id, results, f"Aggregation error: {e}")
 
-    async def _detect_conflicts(self, results: List[AgentResult]) -> List[ConflictInfo]:
+    async def _detect_conflicts(self, results: list[AgentResult]) -> list[ConflictInfo]:
         """Detect conflicts between agent results."""
         conflicts = []
 
@@ -208,7 +203,7 @@ class ResultAggregator:
 
         return conflicts
 
-    async def _detect_output_conflicts(self, results: List[AgentResult]) -> List[ConflictInfo]:
+    async def _detect_output_conflicts(self, results: list[AgentResult]) -> list[ConflictInfo]:
         """Detect conflicts in agent outputs."""
         conflicts = []
 
@@ -236,7 +231,7 @@ class ResultAggregator:
 
         return conflicts
 
-    async def _detect_confidence_conflicts(self, results: List[AgentResult]) -> List[ConflictInfo]:
+    async def _detect_confidence_conflicts(self, results: list[AgentResult]) -> list[ConflictInfo]:
         """Detect conflicts in agent confidence levels."""
         conflicts = []
 
@@ -260,7 +255,7 @@ class ResultAggregator:
 
         return conflicts
 
-    async def _detect_quality_conflicts(self, results: List[AgentResult]) -> List[ConflictInfo]:
+    async def _detect_quality_conflicts(self, results: list[AgentResult]) -> list[ConflictInfo]:
         """Detect conflicts in quality scores."""
         conflicts = []
 
@@ -293,22 +288,21 @@ class ResultAggregator:
                 import hashlib
 
                 return hashlib.md5(output.encode()).hexdigest()[:16]
-            elif isinstance(output, dict):
+            if isinstance(output, dict):
                 # For dict outputs, sort keys and create signature
                 sorted_items = sorted(output.items())
                 return str(sorted_items)[:100]
-            elif isinstance(output, list):
+            if isinstance(output, list):
                 # For list outputs, use length and first few items
                 return f"list_{len(output)}_{str(output[:3]) if output else 'empty'}"
-            else:
-                # For other types, use string representation
-                return f"{type(output).__name__}_{str(output)[:50]}"
+            # For other types, use string representation
+            return f"{type(output).__name__}_{str(output)[:50]}"
         except Exception:
             return f"unknown_{type(output).__name__}"
 
     async def _resolve_conflicts(
-        self, results: List[AgentResult], conflicts: List[ConflictInfo]
-    ) -> tuple[List[AgentResult], List[ConflictInfo]]:
+        self, results: list[AgentResult], conflicts: list[ConflictInfo]
+    ) -> tuple[list[AgentResult], list[ConflictInfo]]:
         """Resolve detected conflicts."""
         resolved_results = results.copy()
         resolved_conflicts = []
@@ -328,57 +322,55 @@ class ResultAggregator:
 
         return resolved_results, resolved_conflicts
 
-    async def _auto_resolve_conflict(self, results: List[AgentResult], conflict: ConflictInfo) -> bool:
+    async def _auto_resolve_conflict(self, results: list[AgentResult], conflict: ConflictInfo) -> bool:
         """Automatically resolve a conflict."""
         if conflict.resolution_strategy == ConflictResolutionStrategy.MAJORITY_VOTE:
             # Keep the result that appears most frequently
             return await self._apply_majority_vote(results, conflict)
-        elif conflict.resolution_strategy == ConflictResolutionStrategy.HIGHEST_QUALITY:
+        if conflict.resolution_strategy == ConflictResolutionStrategy.HIGHEST_QUALITY:
             # Keep the highest quality result
             return await self._apply_highest_quality(results, conflict)
-        elif conflict.resolution_strategy == ConflictResolutionStrategy.QUALITY_THRESHOLD:
+        if conflict.resolution_strategy == ConflictResolutionStrategy.QUALITY_THRESHOLD:
             # Filter results by quality threshold
             return await self._apply_quality_threshold(results, conflict)
-        else:
-            return False
+        return False
 
-    async def _apply_majority_vote(self, results: List[AgentResult], conflict: ConflictInfo) -> bool:
+    async def _apply_majority_vote(self, results: list[AgentResult], conflict: ConflictInfo) -> bool:
         """Apply majority vote resolution."""
         # This is a simplified implementation
         # In practice, would need more sophisticated output comparison
         return True
 
-    async def _apply_highest_quality(self, results: List[AgentResult], conflict: ConflictInfo) -> bool:
+    async def _apply_highest_quality(self, results: list[AgentResult], conflict: ConflictInfo) -> bool:
         """Apply highest quality resolution."""
         # Filter to keep only high-quality results
         min_quality = max(r.quality_score for r in results) - 0.1
         return min_quality >= self.quality_threshold
 
-    async def _apply_quality_threshold(self, results: List[AgentResult], conflict: ConflictInfo) -> bool:
+    async def _apply_quality_threshold(self, results: list[AgentResult], conflict: ConflictInfo) -> bool:
         """Apply quality threshold resolution."""
         # Filter results by quality threshold
         high_quality_results = [r for r in results if r.quality_score >= self.quality_threshold]
         return len(high_quality_results) > 0
 
     async def _apply_aggregation_strategy(
-        self, task_id: str, results: List[AgentResult], strategy: AggregationStrategy
+        self, task_id: str, results: list[AgentResult], strategy: AggregationStrategy
     ) -> AgentResult:
         """Apply the specified aggregation strategy."""
         if strategy == AggregationStrategy.FIRST_SUCCESS:
             return results[0]
-        elif strategy == AggregationStrategy.BEST_QUALITY:
+        if strategy == AggregationStrategy.BEST_QUALITY:
             return max(results, key=lambda r: r.quality_score)
-        elif strategy == AggregationStrategy.CONSENSUS:
+        if strategy == AggregationStrategy.CONSENSUS:
             return await self._build_consensus(results)
-        elif strategy == AggregationStrategy.MERGE_ALL:
+        if strategy == AggregationStrategy.MERGE_ALL:
             return await self._merge_all_results(results)
-        elif strategy == AggregationStrategy.REDUNDANT_VALIDATION:
+        if strategy == AggregationStrategy.REDUNDANT_VALIDATION:
             return await self._validate_redundantly(results)
-        else:
-            # Default to best quality
-            return max(results, key=lambda r: r.quality_score)
+        # Default to best quality
+        return max(results, key=lambda r: r.quality_score)
 
-    async def _build_consensus(self, results: List[AgentResult]) -> AgentResult:
+    async def _build_consensus(self, results: list[AgentResult]) -> AgentResult:
         """Build consensus from multiple results."""
         # For now, return the highest confidence result
         # In practice, would implement more sophisticated consensus building
@@ -386,7 +378,7 @@ class ResultAggregator:
         best_result.metadata["consensus_method"] = "highest_confidence"
         return best_result
 
-    async def _merge_all_results(self, results: List[AgentResult]) -> AgentResult:
+    async def _merge_all_results(self, results: list[AgentResult]) -> AgentResult:
         """Merge all results into a combined output."""
         merged_output = {
             "individual_results": [
@@ -417,7 +409,7 @@ class ResultAggregator:
             metadata={"aggregation_method": "merge_all"},
         )
 
-    async def _validate_redundantly(self, results: List[AgentResult]) -> AgentResult:
+    async def _validate_redundantly(self, results: list[AgentResult]) -> AgentResult:
         """Validate results through redundant execution."""
         # Find results that agree with each other
         agreement_groups = {}
@@ -437,13 +429,12 @@ class ResultAggregator:
             best_in_group.metadata["validation_method"] = "redundant_agreement"
             best_in_group.metadata["agreement_count"] = len(largest_group)
             return best_in_group
-        else:
-            # No clear agreement, use highest quality
-            best_result = max(results, key=lambda r: r.quality_score)
-            best_result.metadata["validation_method"] = "quality_fallback"
-            return best_result
+        # No clear agreement, use highest quality
+        best_result = max(results, key=lambda r: r.quality_score)
+        best_result.metadata["validation_method"] = "quality_fallback"
+        return best_result
 
-    async def _validate_result(self, result: AgentResult, source_results: List[AgentResult]) -> bool:
+    async def _validate_result(self, result: AgentResult, source_results: list[AgentResult]) -> bool:
         """Validate the aggregated result."""
         # Basic validation checks
         if result.quality_score < self.quality_threshold:
@@ -479,7 +470,7 @@ class ResultAggregator:
         except (TypeError, ValueError):
             return False
 
-    def _detect_potential_hallucination(self, output: Any, source_results: List[AgentResult]) -> bool:
+    def _detect_potential_hallucination(self, output: Any, source_results: list[AgentResult]) -> bool:
         """Detect potential hallucinations in the output."""
         # This is a simplified implementation
         # In practice, would use more sophisticated hallucination detection
@@ -500,7 +491,7 @@ class ResultAggregator:
 
         return False
 
-    def _create_failure_result(self, task_id: str, results: List[AgentResult], reason: str) -> AggregatedResult:
+    def _create_failure_result(self, task_id: str, results: list[AgentResult], reason: str) -> AggregatedResult:
         """Create a failure result when aggregation fails."""
         return AggregatedResult(
             task_id=task_id,
@@ -516,7 +507,7 @@ class ResultAggregator:
             metadata={"failure_reason": reason},
         )
 
-    async def get_aggregation_statistics(self) -> Dict[str, Any]:
+    async def get_aggregation_statistics(self) -> dict[str, Any]:
         """Get aggregation performance statistics."""
         async with self._lock:
             total_aggregations = len(self.aggregation_history)
@@ -559,27 +550,25 @@ class ConflictResolver:
             ConflictResolutionStrategy.MERGE: self._merge_conflicting_results,
         }
 
-    async def resolve_complex_conflict(
-        self, conflict: ConflictInfo, results: List[AgentResult]
-    ) -> Optional[AgentResult]:
+    async def resolve_complex_conflict(self, conflict: ConflictInfo, results: list[AgentResult]) -> AgentResult | None:
         """Resolve a complex conflict that requires special handling."""
         resolver = self.resolution_strategies.get(conflict.resolution_strategy)
         if resolver:
             return await resolver(conflict, results)
         return None
 
-    async def _escalate_conflict(self, conflict: ConflictInfo, results: List[AgentResult]) -> None:
+    async def _escalate_conflict(self, conflict: ConflictInfo, results: list[AgentResult]) -> None:
         """Escalate conflict for human intervention."""
         logger.error(f"Conflict escalation required: {conflict.description}")
         # In practice, would integrate with human-in-the-loop system
-        return None
+        return
 
-    async def _build_consensus_resolution(self, conflict: ConflictInfo, results: List[AgentResult]) -> AgentResult:
+    async def _build_consensus_resolution(self, conflict: ConflictInfo, results: list[AgentResult]) -> AgentResult:
         """Build consensus resolution for conflicting results."""
         # Implement consensus-building logic
         return max(results, key=lambda r: r.quality_score)
 
-    async def _merge_conflicting_results(self, conflict: ConflictInfo, results: List[AgentResult]) -> AgentResult:
+    async def _merge_conflicting_results(self, conflict: ConflictInfo, results: list[AgentResult]) -> AgentResult:
         """Merge conflicting results into a compromise."""
         # Implement result merging logic
         merged_output = {

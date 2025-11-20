@@ -20,11 +20,11 @@ Architecture: Brick-based with clear contract interfaces
 """
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from ...utils.logger import get_logger
 
@@ -63,8 +63,8 @@ class TemplateParameter:
     description: str
     required: bool = True
     default_value: Any = None
-    validation_rules: List[str] = field(default_factory=list)
-    examples: List[Any] = field(default_factory=list)
+    validation_rules: list[str] = field(default_factory=list)
+    examples: list[Any] = field(default_factory=list)
 
 
 @dataclass
@@ -74,8 +74,8 @@ class TemplateFeature:
     name: str
     description: str
     enabled_by_default: bool = False
-    dependencies: List[str] = field(default_factory=list)
-    configuration: Dict[str, Any] = field(default_factory=dict)
+    dependencies: list[str] = field(default_factory=list)
+    configuration: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -91,25 +91,25 @@ class SkillTemplate:
     author: str
     created_at: datetime
     updated_at: datetime
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     # Template structure
-    parameters: List[TemplateParameter] = field(default_factory=list)
-    features: List[TemplateFeature] = field(default_factory=list)
+    parameters: list[TemplateParameter] = field(default_factory=list)
+    features: list[TemplateFeature] = field(default_factory=list)
     code_template: str = ""
     test_template: str = ""
     documentation_template: str = ""
 
     # Metadata
-    requirements: List[str] = field(default_factory=list)
-    dependencies: List[str] = field(default_factory=list)
+    requirements: list[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     performance_notes: str = ""
-    usage_examples: List[Dict[str, Any]] = field(default_factory=list)
+    usage_examples: list[dict[str, Any]] = field(default_factory=list)
 
     # Quality metrics
-    validation_rules: List[str] = field(default_factory=list)
-    quality_checks: List[str] = field(default_factory=list)
-    anti_patterns: List[str] = field(default_factory=list)
+    validation_rules: list[str] = field(default_factory=list)
+    quality_checks: list[str] = field(default_factory=list)
+    anti_patterns: list[str] = field(default_factory=list)
 
 
 class TemplateLibrary:
@@ -129,10 +129,10 @@ class TemplateLibrary:
     """
 
     def __init__(self):
-        self.templates: Dict[str, SkillTemplate] = {}
-        self.category_index: Dict[SkillCategory, List[str]] = {}
-        self.complexity_index: Dict[TemplateComplexity, List[str]] = {}
-        self.feature_index: Dict[str, List[str]] = {}
+        self.templates: dict[str, SkillTemplate] = {}
+        self.category_index: dict[SkillCategory, list[str]] = {}
+        self.complexity_index: dict[TemplateComplexity, list[str]] = {}
+        self.feature_index: dict[str, list[str]] = {}
 
         # Initialize built-in templates
         self._initialize_builtin_templates()
@@ -434,17 +434,17 @@ class TemplateLibrary:
                     self.feature_index[feature.name] = []
                 self.feature_index[feature.name].append(template_id)
 
-    def get_template(self, template_id: str) -> Optional[SkillTemplate]:
+    def get_template(self, template_id: str) -> SkillTemplate | None:
         """Get template by ID."""
         return self.templates.get(template_id)
 
     def find_templates(
         self,
-        category: Optional[SkillCategory] = None,
-        complexity: Optional[TemplateComplexity] = None,
-        features: Optional[List[str]] = None,
-        tags: Optional[List[str]] = None,
-    ) -> List[SkillTemplate]:
+        category: SkillCategory | None = None,
+        complexity: TemplateComplexity | None = None,
+        features: list[str] | None = None,
+        tags: list[str] | None = None,
+    ) -> list[SkillTemplate]:
         """Find templates matching criteria."""
         candidates = list(self.templates.values())
 
@@ -467,8 +467,8 @@ class TemplateLibrary:
         return candidates
 
     def get_template_for_skill(
-        self, skill_name: str, skill_description: str, skill_category: str, requirements: List[str] = None
-    ) -> Optional[SkillTemplate]:
+        self, skill_name: str, skill_description: str, skill_category: str, requirements: list[str] = None
+    ) -> SkillTemplate | None:
         """
         Intelligent template selection for a skill.
 
@@ -540,8 +540,8 @@ class TemplateLibrary:
         return best_template
 
     def customize_template(
-        self, template: SkillTemplate, parameters: Dict[str, Any], features: List[str] = None
-    ) -> Dict[str, Any]:
+        self, template: SkillTemplate, parameters: dict[str, Any], features: list[str] = None
+    ) -> dict[str, Any]:
         """
         Customize template with parameters and features.
 
@@ -578,7 +578,7 @@ class TemplateLibrary:
             "dependencies": template.dependencies,
         }
 
-    def _validate_template_parameters(self, template: SkillTemplate, parameters: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_template_parameters(self, template: SkillTemplate, parameters: dict[str, Any]) -> dict[str, Any]:
         """Validate and process template parameters."""
         validated = {}
 
@@ -625,7 +625,7 @@ class TemplateLibrary:
         return validated
 
     def _generate_customized_code(
-        self, template: SkillTemplate, parameters: Dict[str, Any], features: List[str]
+        self, template: SkillTemplate, parameters: dict[str, Any], features: list[str]
     ) -> str:
         """Generate customized code from template."""
         code = template.code_template
@@ -663,7 +663,7 @@ class TemplateLibrary:
         return code
 
     def _generate_customized_tests(
-        self, template: SkillTemplate, parameters: Dict[str, Any], features: List[str]
+        self, template: SkillTemplate, parameters: dict[str, Any], features: list[str]
     ) -> str:
         """Generate customized tests from template."""
         tests = template.test_template
@@ -687,7 +687,7 @@ class TemplateLibrary:
         return tests
 
     def _generate_customized_docs(
-        self, template: SkillTemplate, parameters: Dict[str, Any], features: List[str]
+        self, template: SkillTemplate, parameters: dict[str, Any], features: list[str]
     ) -> str:
         """Generate customized documentation from template."""
         docs = template.documentation_template
@@ -1421,27 +1421,27 @@ class TextAnalyzer:
         }
 
         # Email patterns
-        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\b'
         entities["emails"] = re.findall(email_pattern, text)
 
         # URL patterns
-        url_pattern = r'https?://\S+|www\.\S+'
+        url_pattern = r'https?://\\S+|www\\.\\S+'
         entities["urls"] = re.findall(url_pattern, text)
 
         # Phone number patterns (simplified)
-        phone_pattern = r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'
+        phone_pattern = r'\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\b'
         entities["phone_numbers"] = re.findall(phone_pattern, text)
 
         # Number patterns
-        number_pattern = r'\b\d+\.?\d*\b'
+        number_pattern = r'\b\\d+\\.?\\d*\b'
         entities["numbers"] = re.findall(number_pattern, text)
 
         # Money patterns
-        money_pattern = r'\$\d+(?:\.\d{2})?|\d+(?:\.\d{2})?\s*(?:USD|dollars?|cents?)'
+        money_pattern = r'\\$\\d+(?:\\.\\d{2})?|\\d+(?:\\.\\d{2})?\\s*(?:USD|dollars?|cents?)'
         entities["money"] = re.findall(money_pattern, text, re.IGNORECASE)
 
         # Date patterns (simplified)
-        date_pattern = r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{4}[/-]\d{1,2}[/-]\d{1,2}\b'
+        date_pattern = r'\b\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\b|\b\\d{4}[/-]\\d{1,2}[/-]\\d{1,2}\b'
         entities["dates"] = re.findall(date_pattern, text)
 
         return entities
@@ -1537,10 +1537,10 @@ class TextAnalyzer:
     def _initialize_entity_patterns(self) -> Dict[str, str]:
         """Initialize entity extraction patterns."""
         return {
-            "email": r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-            "url": r'https?://\S+|www\.\S+',
-            "phone": r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b',
-            "money": r'\$\d+(?:\.\d{2})?'
+            "email": r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\b',
+            "url": r'https?://\\S+|www\\.\\S+',
+            "phone": r'\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\b',
+            "money": r'\\$\\d+(?:\\.\\d{2})?'
         }
 
     def _initialize_language_patterns(self) -> Dict[str, List[str]]:

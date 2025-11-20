@@ -10,21 +10,17 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from collections import defaultdict
+from pathlib import Path
+from typing import Any
 
-import re
-import subprocess
-import sys
-
-from .continuous_optimizer import ContinuousOptimizer, OptimizationType
-from .error_detection_engine import ErrorDetectionEngine, ErrorType, Severity
-from .config import RLTrainingConfig, PerformanceTrackingConfig
-from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator, ValidationLayer
+from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
+from .config import PerformanceTrackingConfig
+from .config import RLTrainingConfig
+from .error_detection_engine import Severity
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +66,7 @@ class RealTimeAlert:
     detected_at: datetime
     requires_immediate_action: bool
     auto_fix_available: bool
-    suggested_actions: List[str]
+    suggested_actions: list[str]
 
 
 class FrontendSkillMonitor:
@@ -96,14 +92,14 @@ class FrontendSkillMonitor:
         )
 
         # Frontend-specific monitoring
-        self.skill_metrics: Dict[str, FrontendSkillMetrics] = {}
-        self.active_alerts: Dict[str, RealTimeAlert] = {}
-        self.technology_patterns: Dict[FrontendTechnology, Dict[str, Any]] = {}
+        self.skill_metrics: dict[str, FrontendSkillMetrics] = {}
+        self.active_alerts: dict[str, RealTimeAlert] = {}
+        self.technology_patterns: dict[FrontendTechnology, dict[str, Any]] = {}
 
         # Background monitoring
-        self._monitoring_task: Optional[asyncio.Task] = None
-        self._validation_task: Optional[asyncio.Task] = None
-        self._optimization_task: Optional[asyncio.Task] = None
+        self._monitoring_task: asyncio.Task | None = None
+        self._validation_task: asyncio.Task | None = None
+        self._optimization_task: asyncio.Task | None = None
         self._running = False
 
         # Initialize technology-specific patterns
@@ -210,7 +206,7 @@ class FrontendSkillMonitor:
             logger.error(f"❌ Failed to scan frontend skill {skill_path}: {e}")
             raise
 
-    async def get_frontend_skill_status(self, skill_id: str) -> Dict[str, Any]:
+    async def get_frontend_skill_status(self, skill_id: str) -> dict[str, Any]:
         """Get comprehensive status of a frontend skill"""
         try:
             if skill_id not in self.skill_metrics:
@@ -244,7 +240,7 @@ class FrontendSkillMonitor:
             logger.error(f"Failed to get frontend skill status {skill_id}: {e}")
             return {"error": str(e)}
 
-    async def optimize_frontend_skill(self, skill_id: str, optimization_targets: List[str] = None) -> Dict[str, Any]:
+    async def optimize_frontend_skill(self, skill_id: str, optimization_targets: list[str] = None) -> dict[str, Any]:
         """Trigger optimization for a frontend skill"""
         try:
             if skill_id not in self.skill_metrics:
@@ -632,14 +628,13 @@ class FrontendSkillMonitor:
 
             if avg_score >= 0.95:
                 return "A"
-            elif avg_score >= 0.90:
+            if avg_score >= 0.90:
                 return "B"
-            elif avg_score >= 0.80:
+            if avg_score >= 0.80:
                 return "C"
-            elif avg_score >= 0.70:
+            if avg_score >= 0.70:
                 return "D"
-            else:
-                return "F"
+            return "F"
 
         except Exception:
             return "F"

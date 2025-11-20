@@ -3,11 +3,10 @@ File utilities for safe file operations.
 """
 
 import json
-import os
-from pathlib import Path
-from typing import Any, Dict, Optional
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
+from typing import Any
 
 
 def safe_write(file_path: Path, content: str, backup: bool = True) -> bool:
@@ -53,7 +52,7 @@ def safe_write(file_path: Path, content: str, backup: bool = True) -> bool:
         return False
 
 
-def safe_read(file_path: Path) -> Optional[str]:
+def safe_read(file_path: Path) -> str | None:
     """
     Safely read content from a file.
 
@@ -67,14 +66,14 @@ def safe_read(file_path: Path) -> Optional[str]:
         if not file_path.exists():
             return None
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             return f.read()
 
     except Exception:
         return None
 
 
-def safe_write_json(file_path: Path, data: Dict[str, Any], backup: bool = True) -> bool:
+def safe_write_json(file_path: Path, data: dict[str, Any], backup: bool = True) -> bool:
     """
     Safely write JSON data to a file.
 
@@ -94,7 +93,7 @@ def safe_write_json(file_path: Path, data: Dict[str, Any], backup: bool = True) 
         return False
 
 
-def safe_read_json(file_path: Path) -> Optional[Dict[str, Any]]:
+def safe_read_json(file_path: Path) -> dict[str, Any] | None:
     """
     Safely read JSON data from a file.
 
@@ -159,7 +158,7 @@ def cleanup_temp_files(directory: Path, pattern: str = ".tmp_*") -> int:
     return cleaned
 
 
-def backup_file(file_path: Path, backup_dir: Optional[Path] = None) -> Optional[Path]:
+def backup_file(file_path: Path, backup_dir: Path | None = None) -> Path | None:
     """
     Create backup of a file.
 

@@ -33,16 +33,18 @@ import sqlite3
 import time
 from typing import Any
 
-from ..skills_framework.base_skill import BaseSkill
-from ..skills_framework.base_skill import SkillContext
-from ..skills_framework.base_skill import SkillResult
+from ..skills_framework.base_skill import BaseSkill as FrameworkBaseSkill
+from ..skills_framework.base_skill import SkillContext as FrameworkSkillContext
+from ..skills_framework.base_skill import SkillResult as FrameworkSkillResult
+from ..skills_framework.skill_template import SkillContext as TemplateSkillContext
 from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.skill_template import SkillResult as TemplateSkillResult
 from ..utils.token_utils import estimate_tokens
 
 logger = logging.getLogger(__name__)
 
 
-class DatabaseDesignExpertSkill(BaseSkill):
+class DatabaseDesignExpertSkill(FrameworkBaseSkill):
     """
     Advanced database design expertise with zero hallucination enforcement.
 
@@ -51,7 +53,11 @@ class DatabaseDesignExpertSkill(BaseSkill):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            skill_id="database_design_expert",
+            name="Database Design Expert",
+            description="Advanced database design expertise with zero hallucination enforcement. Provides comprehensive data modeling, schema design, and performance optimization with guaranteed SQL accuracy and production-ready patterns.",
+        )
         self.sql_validator = SQLSyntaxValidator()
         self.schema_validator = SchemaDesignValidator()
         self.performance_optimizer = DatabasePerformanceOptimizer()
@@ -59,8 +65,47 @@ class DatabaseDesignExpertSkill(BaseSkill):
         self.query_cache = {}
         self.schema_patterns = {}
 
-    @property
-    def description(self) -> str:
+    async def execute(self, input_data: Any, context: FrameworkSkillContext = None) -> FrameworkSkillResult:
+        """Execute the skill with given input and context"""
+        try:
+            # Validate input
+            if not await self.validate_input(input_data):
+                return FrameworkSkillResult(success=False, error="Invalid input data")
+
+            # Process the database design request
+            if isinstance(input_data, str):
+                # Handle simple string input (like function calls)
+                result = await self._process_string_query(input_data)
+                return FrameworkSkillResult(
+                    success=True, data=result, execution_time=0.0, tokens_used=estimate_tokens(result)
+                )
+            return FrameworkSkillResult(success=False, error="Input must be a string")
+
+        except Exception as e:
+            return FrameworkSkillResult(success=False, error=str(e), execution_time=0.0, tokens_used=0)
+
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        if input_data is None:
+            return False
+        if isinstance(input_data, str) and len(input_data.strip()) == 0:
+            return False
+        return True
+
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "Database Design Expertise",
+            "SQL Query Optimization",
+            "Schema Design and Normalization",
+            "Performance Tuning",
+            "NoSQL Database Integration",
+            "Database Security",
+            "Migration Strategies",
+            "Backup and Recovery Planning",
+        ]
+
+    def get_skill_description(self) -> str:
         return (
             "Comprehensive database design expert providing mastery-level data modeling, "
             "SQL optimization, NoSQL expertise, and performance tuning. "
@@ -96,7 +141,15 @@ class DatabaseDesignExpertSkill(BaseSkill):
             "zero-hallucination",
         ]
 
-    def can_handle(self, context: SkillContext) -> float:
+    async def _process_string_query(self, query: str) -> str:
+        """Process a simple string query and return database expertise response."""
+        # For simple string inputs, provide a comprehensive response
+        expertise_area = self._analyze_expertise_area(query)
+
+        # Return summary-level content for string inputs
+        return self._get_summary_response(expertise_area, query)
+
+    def can_handle(self, context: TemplateSkillContext) -> float:
         """Determine if this skill can handle the database-related query."""
         query_lower = context.query.lower()
 
@@ -187,7 +240,9 @@ class DatabaseDesignExpertSkill(BaseSkill):
 
         return 0.0
 
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
+    def execute_template_style(
+        self, context: TemplateSkillContext, level: SkillLevel = SkillLevel.SUMMARY
+    ) -> TemplateSkillResult:
         """Execute database expertise based on query and level."""
         start_time = time.time()
 
@@ -198,8 +253,8 @@ class DatabaseDesignExpertSkill(BaseSkill):
             if level == SkillLevel.METADATA:
                 content = self._get_metadata_response(expertise_area)
                 tokens_used = estimate_tokens(content)
-                return SkillResult(
-                    skill_name=self.skill_name,
+                return TemplateSkillResult(
+                    skill_name=self.name,  # Use self.name from FrameworkBaseSkill
                     level=level,
                     content=content,
                     tokens_used=tokens_used,
@@ -210,8 +265,8 @@ class DatabaseDesignExpertSkill(BaseSkill):
             if level == SkillLevel.SUMMARY:
                 content = self._get_summary_response(expertise_area, context.query)
                 tokens_used = estimate_tokens(content)
-                return SkillResult(
-                    skill_name=self.skill_name,
+                return TemplateSkillResult(
+                    skill_name=self.name,  # Use self.name from FrameworkBaseSkill
                     level=level,
                     content=content,
                     tokens_used=tokens_used,
@@ -231,8 +286,8 @@ class DatabaseDesignExpertSkill(BaseSkill):
                 content = self.agent_lightning_integration.fix_sql_errors(content, validation_result["errors"])
                 logger.info(f"Fixed {len(validation_result['errors'])} SQL errors")
 
-            return SkillResult(
-                skill_name=self.skill_name,
+            return TemplateSkillResult(
+                skill_name=self.name,  # Use self.name from FrameworkBaseSkill
                 level=level,
                 content=content,
                 tokens_used=tokens_used,
@@ -249,8 +304,8 @@ class DatabaseDesignExpertSkill(BaseSkill):
         except Exception as e:
             logger.error(f"Database design skill execution failed: {e}")
             error_content = f"Database expertise temporarily unavailable. Error: {str(e)}"
-            return SkillResult(
-                skill_name=self.skill_name,
+            return TemplateSkillResult(
+                skill_name=self.name,  # Use self.name from FrameworkBaseSkill
                 level=level,
                 content=error_content,
                 tokens_used=estimate_tokens(error_content),
@@ -317,7 +372,7 @@ class DatabaseDesignExpertSkill(BaseSkill):
 
         return responses.get(expertise_area, responses["comprehensive"])
 
-    def _get_full_response(self, expertise_area: str, query: str, context: SkillContext) -> str:
+    def _get_full_response(self, expertise_area: str, query: str, context: TemplateSkillContext) -> str:
         """Get full comprehensive response with validated examples."""
         responses = {
             "sql_mastery": self._get_sql_mastery_full(),
@@ -1062,5 +1117,23 @@ class AgentLightningDatabaseIntegration:
         return "\n".join(insights)
 
 
-# Create skill instance
-database_design_expert = DatabaseDesignExpertSkill()
+# Simple function interface for direct calls
+async def database_design_expert(query: str) -> str:
+    """
+    Simple function interface for database design expertise.
+
+    Args:
+        query: Database design query or question
+
+    Returns:
+        Database expertise response
+    """
+    skill = DatabaseDesignExpertSkill()
+    result = await skill.execute(query)
+    if result.success:
+        return result.data
+    return f"Error: {result.error}"
+
+
+# Create skill instance for registry
+database_design_expert_instance = DatabaseDesignExpertSkill()

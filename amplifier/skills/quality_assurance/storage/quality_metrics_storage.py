@@ -5,16 +5,16 @@ Persistent storage system for quality metrics, validation results, and
 performance data using MCP storage for long-term retention and analysis.
 """
 
-import json
-import asyncio
-from typing import Dict, List, Any, Optional, Union
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-from pathlib import Path
 import gzip
-import pickle
+import json
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from typing import Any
 
-from amplifier.mcp.persistent_storage import store_result, retrieve_result
+from amplifier.mcp.persistent_storage import retrieve_result
+from amplifier.mcp.persistent_storage import store_result
 
 
 @dataclass
@@ -29,7 +29,7 @@ class QualityMetricsSnapshot:
     security_score: float
     compliance_score: float
     user_satisfaction: float
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 @dataclass
@@ -39,8 +39,8 @@ class QualityTrendData:
     skill_name: str
     metric_type: str
     time_period: str  # "daily", "weekly", "monthly"
-    data_points: List[Dict[str, Any]]
-    trend_analysis: Dict[str, Any]
+    data_points: list[dict[str, Any]]
+    trend_analysis: dict[str, Any]
     created_at: datetime
 
 
@@ -73,8 +73,8 @@ class QualityMetricsStorage:
         self.cache_size = cache_size
 
         # In-memory cache for frequently accessed data
-        self.cache: Dict[str, Any] = {}
-        self.cache_timestamps: Dict[str, datetime] = {}
+        self.cache: dict[str, Any] = {}
+        self.cache_timestamps: dict[str, datetime] = {}
 
         # Storage namespaces
         self.snapshots_namespace = "quality_metrics_snapshots"
@@ -122,10 +122,10 @@ class QualityMetricsStorage:
     async def retrieve_snapshots(
         self,
         skill_name: str,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
         limit: int = 100,
-    ) -> List[QualityMetricsSnapshot]:
+    ) -> list[QualityMetricsSnapshot]:
         """
         Retrieve quality metrics snapshots.
 
@@ -216,8 +216,8 @@ class QualityMetricsStorage:
             return False
 
     async def retrieve_trend_data(
-        self, skill_name: str, metric_type: Optional[str] = None, time_period: str = "daily", days_back: int = 30
-    ) -> List[QualityTrendData]:
+        self, skill_name: str, metric_type: str | None = None, time_period: str = "daily", days_back: int = 30
+    ) -> list[QualityTrendData]:
         """
         Retrieve trend data for analysis.
 
@@ -299,7 +299,7 @@ class QualityMetricsStorage:
         except Exception:
             return False
 
-    async def retrieve_thresholds(self, skill_name: str) -> Optional[QualityThresholds]:
+    async def retrieve_thresholds(self, skill_name: str) -> QualityThresholds | None:
         """
         Retrieve quality thresholds for a skill.
 
@@ -333,8 +333,8 @@ class QualityMetricsStorage:
             return None
 
     async def get_aggregated_metrics(
-        self, skill_name: str, period: str = "week", metric_types: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        self, skill_name: str, period: str = "week", metric_types: list[str] | None = None
+    ) -> dict[str, Any]:
         """
         Get aggregated quality metrics for a skill.
 
@@ -409,7 +409,7 @@ class QualityMetricsStorage:
         except Exception:
             return {}
 
-    async def get_quality_summary(self, skill_name: Optional[str] = None, days_back: int = 7) -> Dict[str, Any]:
+    async def get_quality_summary(self, skill_name: str | None = None, days_back: int = 7) -> dict[str, Any]:
         """
         Get comprehensive quality summary.
 
@@ -513,31 +513,31 @@ class QualityMetricsStorage:
         self.cache[key] = data
         self.cache_timestamps[key] = datetime.now()
 
-    def _compress_data(self, data: Dict[str, Any]) -> bytes:
+    def _compress_data(self, data: dict[str, Any]) -> bytes:
         """Compress data for storage."""
         json_str = json.dumps(data, default=str)
         return gzip.compress(json_str.encode("utf-8"))
 
-    def _decompress_data(self, compressed_data: bytes) -> Dict[str, Any]:
+    def _decompress_data(self, compressed_data: bytes) -> dict[str, Any]:
         """Decompress stored data."""
         json_str = gzip.decompress(compressed_data).decode("utf-8")
         return json.loads(json_str)
 
-    def _deserialize_snapshot(self, data: Dict[str, Any]) -> QualityMetricsSnapshot:
+    def _deserialize_snapshot(self, data: dict[str, Any]) -> QualityMetricsSnapshot:
         """Deserialize snapshot data."""
         if isinstance(data.get("timestamp"), str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
 
         return QualityMetricsSnapshot(**data)
 
-    def _deserialize_trend_data(self, data: Dict[str, Any]) -> QualityTrendData:
+    def _deserialize_trend_data(self, data: dict[str, Any]) -> QualityTrendData:
         """Deserialize trend data."""
         if isinstance(data.get("created_at"), str):
             data["created_at"] = datetime.fromisoformat(data["created_at"])
 
         return QualityTrendData(**data)
 
-    def _calculate_simple_trend(self, values: List[float]) -> str:
+    def _calculate_simple_trend(self, values: list[float]) -> str:
         """Calculate simple trend direction."""
         if len(values) < 2:
             return "insufficient_data"
@@ -545,12 +545,11 @@ class QualityMetricsStorage:
         # Simple comparison of first and last values
         if values[-1] > values[0] * 1.05:
             return "improving"
-        elif values[-1] < values[0] * 0.95:
+        if values[-1] < values[0] * 0.95:
             return "degrading"
-        else:
-            return "stable"
+        return "stable"
 
-    def _calculate_overall_health(self, compliance: Dict[str, Any]) -> Dict[str, Any]:
+    def _calculate_overall_health(self, compliance: dict[str, Any]) -> dict[str, Any]:
         """Calculate overall health score."""
         if not compliance:
             return {"score": 0.0, "status": "unknown"}
@@ -575,8 +574,8 @@ class QualityMetricsStorage:
         return {"score": score, "status": status, "compliant_metrics": compliant_count, "total_metrics": total_count}
 
     async def export_data(
-        self, skill_name: Optional[str] = None, format_type: str = "json", days_back: int = 30
-    ) -> Optional[bytes]:
+        self, skill_name: str | None = None, format_type: str = "json", days_back: int = 30
+    ) -> bytes | None:
         """
         Export quality data for analysis.
 
@@ -610,7 +609,7 @@ class QualityMetricsStorage:
             if format_type == "json":
                 json_str = json.dumps(export_data, default=str, indent=2)
                 return json_str.encode("utf-8")
-            elif format_type == "csv":
+            if format_type == "csv":
                 # Convert to CSV format (simplified)
                 import csv
                 import io

@@ -13,10 +13,9 @@ from typing import Any
 
 from ...utils.logger import get_logger
 from ...utils.token_utils import estimate_tokens
-from ..skills_framework.skill_template import BaseSkill
-from ..skills_framework.skill_template import SkillContext
-from ..skills_framework.skill_template import SkillLevel
-from ..skills_framework.skill_template import SkillResult
+from ..skills_framework.base_skill import BaseSkill
+from ..skills_framework.base_skill import SkillContext
+from ..skills_framework.base_skill import SkillResult
 
 logger = get_logger(__name__)
 
@@ -49,6 +48,27 @@ class ContextChunk:
 
 
 class ContextCompactorSkill(BaseSkill):
+
+    def __init__(self):
+        super().__init__(
+            skill_id="contextcompactor_",
+            name="ContextCompactor Expert",
+            description="Expert skill for contextcompactor"
+        )
+    def get_capabilities(self) -> list[str]:
+        """Get list of skill capabilities"""
+        return [
+            "contextcompactor expertise",
+            "Best practices",
+            "Production solutions"
+        ]
+
+    
+    async def validate_input(self, input_data: Any) -> bool:
+        """Validate input data before execution"""
+        return isinstance(input_data, str) and len(input_data.strip()) > 0
+
+    
     """
     Skill for intelligent context compression and retrieval.
 
@@ -56,13 +76,9 @@ class ContextCompactorSkill(BaseSkill):
     while preserving essential information and reconstruction hints.
     """
 
-    @property
-    def description(self) -> str:
-        return "Compress context progressively while preserving essential information"
 
-    @property
-    def tags(self) -> list[str]:
-        return ["context", "compression", "memory", "summarization"]
+
+
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the context."""
@@ -102,7 +118,7 @@ class ContextCompactorSkill(BaseSkill):
 
         return min(score, 1.0)
 
-    def execute(self, context: SkillContext, level: SkillLevel = SkillLevel.SUMMARY) -> SkillResult:
+    async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
         """Execute context compression at specified level."""
         start_time = time.time()
 
@@ -111,12 +127,7 @@ class ContextCompactorSkill(BaseSkill):
             chunks = self._messages_to_chunks(context.conversation_history)
 
             if not chunks:
-                return SkillResult(
-                    skill_name=self.skill_name,
-                    level=level,
-                    content="No context to compress.",
-                    tokens_used=10,
-                    execution_time=time.time() - start_time,
+                return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result)) - start_time,
                     next_level_available=False,
                 )
 
@@ -133,12 +144,7 @@ class ContextCompactorSkill(BaseSkill):
             self.execution_count += 1
             self.last_execution = datetime.now()
 
-            return SkillResult(
-                skill_name=self.skill_name,
-                level=level,
-                content=compressed,
-                tokens_used=tokens_used,
-                execution_time=time.time() - start_time,
+            return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result)) - start_time,
                 metadata={
                     "original_chunks": len(chunks),
                     "compression_ratio": tokens_used / sum(estimate_tokens(c.content) for c in chunks)
@@ -151,10 +157,7 @@ class ContextCompactorSkill(BaseSkill):
 
         except Exception as e:
             logger.error(f"Context compression failed: {e}")
-            return SkillResult(
-                skill_name=self.skill_name,
-                level=level,
-                content=f"Context compression failed: {str(e)}",
+            return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result))}",
                 tokens_used=50,
                 execution_time=time.time() - start_time,
                 next_level_available=False,

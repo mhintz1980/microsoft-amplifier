@@ -5,24 +5,26 @@ Generates comprehensive documentation from skill specifications using
 enhanced SDK patterns and zero-hallucination validation.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from pathlib import Path
 import asyncio
-import importlib
-import inspect
-import ast
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
+from enum import Enum
+from typing import Any
 
-from ..core.template_engine import DocumentationTemplate, SkillDocumentationSpec, SkillCategory
-from ..core.progressive_formatter import ProgressiveFormatter, DisclosureLevel
-from ..core.quality_validator import DocumentationValidator, ValidationResult
 from ..core.cross_reference_manager import CrossReferenceManager
+from ..core.progressive_formatter import DisclosureLevel
+from ..core.progressive_formatter import ProgressiveFormatter
+from ..core.quality_validator import DocumentationValidator
+from ..core.quality_validator import ValidationResult
+from ..core.template_engine import DocumentationTemplate
+from ..core.template_engine import SkillCategory
+from ..core.template_engine import SkillDocumentationSpec
 from ..core.version_manager import DocumentationVersionManager
-from ..storage.mcp_integration import MCPDocumentationStorage, StorageConfig
-from .skill_analyzer import SkillAnalyzer
+from ..storage.mcp_integration import MCPDocumentationStorage
+from ..storage.mcp_integration import StorageConfig
 from .example_generator import ExampleGenerator
+from .skill_analyzer import SkillAnalyzer
 
 
 class GenerationMode(Enum):
@@ -39,7 +41,7 @@ class GenerationConfig:
     """Configuration for documentation generation."""
 
     mode: GenerationMode = GenerationMode.FULL
-    target_levels: List[DisclosureLevel] = field(
+    target_levels: list[DisclosureLevel] = field(
         default_factory=lambda: [
             DisclosureLevel.METADATA,
             DisclosureLevel.SUMMARY,
@@ -51,8 +53,8 @@ class GenerationConfig:
     include_cross_refs: bool = True
     validate_output: bool = True
     auto_fix_issues: bool = True
-    max_examples_per_level: Dict[str, int] = field(default_factory=lambda: {"summary": 1, "detailed": 2, "full": 5})
-    storage_config: Optional[StorageConfig] = None
+    max_examples_per_level: dict[str, int] = field(default_factory=lambda: {"summary": 1, "detailed": 2, "full": 5})
+    storage_config: StorageConfig | None = None
     strict_validation: bool = True
 
 
@@ -62,14 +64,14 @@ class GenerationResult:
 
     skill_name: str
     success: bool
-    documentation: Dict[str, Any] = field(default_factory=dict)
-    validation_result: Optional[ValidationResult] = None
+    documentation: dict[str, Any] = field(default_factory=dict)
+    validation_result: ValidationResult | None = None
     generation_time: float = 0.0
     issues_found: int = 0
     issues_fixed: int = 0
-    levels_generated: List[str] = field(default_factory=list)
-    cross_references: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    levels_generated: list[str] = field(default_factory=list)
+    cross_references: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class AutomaticDocumentationGenerator:
@@ -77,12 +79,12 @@ class AutomaticDocumentationGenerator:
 
     def __init__(
         self,
-        template_engine: Optional[DocumentationTemplate] = None,
-        formatter: Optional[ProgressiveFormatter] = None,
-        validator: Optional[DocumentationValidator] = None,
-        xref_manager: Optional[CrossReferenceManager] = None,
-        version_manager: Optional[DocumentationVersionManager] = None,
-        storage: Optional[MCPDocumentationStorage] = None,
+        template_engine: DocumentationTemplate | None = None,
+        formatter: ProgressiveFormatter | None = None,
+        validator: DocumentationValidator | None = None,
+        xref_manager: CrossReferenceManager | None = None,
+        version_manager: DocumentationVersionManager | None = None,
+        storage: MCPDocumentationStorage | None = None,
     ):
         self.template_engine = template_engine or DocumentationTemplate()
         self.formatter = formatter or ProgressiveFormatter()
@@ -97,8 +99,8 @@ class AutomaticDocumentationGenerator:
     async def generate_documentation(
         self,
         skill_class: type,
-        config: Optional[GenerationConfig] = None,
-        existing_documentation: Optional[Dict[str, Any]] = None,
+        config: GenerationConfig | None = None,
+        existing_documentation: dict[str, Any] | None = None,
     ) -> GenerationResult:
         """Generate comprehensive documentation for a skill."""
 
@@ -193,8 +195,8 @@ class AutomaticDocumentationGenerator:
             )
 
     async def batch_generate_documentation(
-        self, skill_classes: List[type], config: Optional[GenerationConfig] = None, parallel: bool = True
-    ) -> List[GenerationResult]:
+        self, skill_classes: list[type], config: GenerationConfig | None = None, parallel: bool = True
+    ) -> list[GenerationResult]:
         """Generate documentation for multiple skills."""
 
         if parallel:
@@ -215,17 +217,16 @@ class AutomaticDocumentationGenerator:
                     processed_results.append(result)
 
             return processed_results
-        else:
-            # Generate sequentially
-            results = []
-            for skill_class in skill_classes:
-                result = await self.generate_documentation(skill_class, config)
-                results.append(result)
+        # Generate sequentially
+        results = []
+        for skill_class in skill_classes:
+            result = await self.generate_documentation(skill_class, config)
+            results.append(result)
 
-            return results
+        return results
 
     async def update_documentation(
-        self, skill_name: str, updates: Dict[str, Any], config: Optional[GenerationConfig] = None
+        self, skill_name: str, updates: dict[str, Any], config: GenerationConfig | None = None
     ) -> GenerationResult:
         """Update existing documentation."""
 
@@ -275,7 +276,7 @@ class AutomaticDocumentationGenerator:
             metadata={"updated_sections": list(updates.keys())},
         )
 
-    def _create_documentation_spec(self, skill_class: type, analysis: Dict[str, Any]) -> SkillDocumentationSpec:
+    def _create_documentation_spec(self, skill_class: type, analysis: dict[str, Any]) -> SkillDocumentationSpec:
         """Create documentation specification from skill analysis."""
 
         skill_name = skill_class.__name__.replace("Skill", "").lower()
@@ -318,7 +319,7 @@ class AutomaticDocumentationGenerator:
             related_skills=analysis.get("related_skills", []),
         )
 
-    def _generate_base_documentation(self, spec: SkillDocumentationSpec, config: GenerationConfig) -> Dict[str, Any]:
+    def _generate_base_documentation(self, spec: SkillDocumentationSpec, config: GenerationConfig) -> dict[str, Any]:
         """Generate base documentation using templates."""
 
         documentation = {}
@@ -338,8 +339,8 @@ class AutomaticDocumentationGenerator:
         return documentation
 
     async def _enhance_with_examples(
-        self, documentation: Dict[str, Any], skill_class: type, analysis: Dict[str, Any], config: GenerationConfig
-    ) -> Dict[str, Any]:
+        self, documentation: dict[str, Any], skill_class: type, analysis: dict[str, Any], config: GenerationConfig
+    ) -> dict[str, Any]:
         """Enhance documentation with generated examples."""
 
         enhanced_docs = documentation.copy()
@@ -369,8 +370,8 @@ class AutomaticDocumentationGenerator:
         return enhanced_docs
 
     def _apply_progressive_formatting(
-        self, documentation: Dict[str, Any], target_levels: List[DisclosureLevel]
-    ) -> Dict[str, Any]:
+        self, documentation: dict[str, Any], target_levels: list[DisclosureLevel]
+    ) -> dict[str, Any]:
         """Apply progressive disclosure formatting."""
 
         formatted_docs = {}
@@ -410,7 +411,7 @@ class AutomaticDocumentationGenerator:
 
         return formatted_docs
 
-    def _determine_skill_category(self, skill_class: type, analysis: Dict[str, Any]) -> SkillCategory:
+    def _determine_skill_category(self, skill_class: type, analysis: dict[str, Any]) -> SkillCategory:
         """Determine the category of a skill."""
 
         # Check for explicit category
@@ -425,22 +426,21 @@ class AutomaticDocumentationGenerator:
 
         if "context" in skill_name or "memory" in skill_name:
             return SkillCategory.CONTEXT_MANAGEMENT
-        elif "synthesis" in skill_name or "knowledge" in skill_name:
+        if "synthesis" in skill_name or "knowledge" in skill_name:
             return SkillCategory.KNOWLEDGE_SYNTHESIS
-        elif "generate" in skill_name or "code" in skill_name:
+        if "generate" in skill_name or "code" in skill_name:
             return SkillCategory.CODE_GENERATION
-        elif "process" in skill_name or "data" in skill_name:
+        if "process" in skill_name or "data" in skill_name:
             return SkillCategory.DATA_PROCESSING
-        elif "analyze" in skill_name or "analysis" in skill_name:
+        if "analyze" in skill_name or "analysis" in skill_name:
             return SkillCategory.ANALYSIS
-        elif "optimize" in skill_name or "optimization" in skill_name:
+        if "optimize" in skill_name or "optimization" in skill_name:
             return SkillCategory.OPTIMIZATION
-        elif "integration" in skill_name or "connect" in skill_name:
+        if "integration" in skill_name or "connect" in skill_name:
             return SkillCategory.INTEGRATION
-        else:
-            return SkillCategory.UTILITY
+        return SkillCategory.UTILITY
 
-    def _format_examples_section(self, examples: List[Dict[str, Any]], level: DisclosureLevel) -> str:
+    def _format_examples_section(self, examples: list[dict[str, Any]], level: DisclosureLevel) -> str:
         """Format examples into a documentation section."""
 
         if not examples:
@@ -449,12 +449,12 @@ class AutomaticDocumentationGenerator:
         if level == DisclosureLevel.METADATA:
             return "**Examples**: Available"
 
-        elif level == DisclosureLevel.SUMMARY:
+        if level == DisclosureLevel.SUMMARY:
             if examples:
                 return f"**Example**: {examples[0].get('description', 'Basic usage')}"
             return ""
 
-        elif level in [DisclosureLevel.DETAILED, DisclosureLevel.FULL]:
+        if level in [DisclosureLevel.DETAILED, DisclosureLevel.FULL]:
             formatted_examples = []
             for i, example in enumerate(examples[:5], 1):  # Limit to 5 examples
                 formatted_examples.append(f"**Example {i}**: {example.get('description', 'No description')}")
@@ -471,9 +471,10 @@ class AutomaticDocumentationGenerator:
 
         return ""
 
-    def _create_version_changes(self, old_docs: Optional[Dict[str, Any]], new_docs: Dict[str, Any]) -> List[Any]:
+    def _create_version_changes(self, old_docs: dict[str, Any] | None, new_docs: dict[str, Any]) -> list[Any]:
         """Create version change entries."""
-        from ..core.version_manager import DocumentationChange, ChangeType
+        from ..core.version_manager import ChangeType
+        from ..core.version_manager import DocumentationChange
 
         changes = []
 
@@ -506,7 +507,7 @@ class AutomaticDocumentationGenerator:
 
         return changes
 
-    def _calculate_docs_hash(self, documentation: Dict[str, Any]) -> str:
+    def _calculate_docs_hash(self, documentation: dict[str, Any]) -> str:
         """Calculate hash for documentation comparison."""
         import hashlib
         import json
@@ -514,7 +515,7 @@ class AutomaticDocumentationGenerator:
         docs_str = json.dumps(documentation, sort_keys=True, separators=(",", ":"))
         return hashlib.md5(docs_str.encode()).hexdigest()[:16]
 
-    def _find_changed_sections(self, old_docs: Dict[str, Any], new_docs: Dict[str, Any]) -> List[str]:
+    def _find_changed_sections(self, old_docs: dict[str, Any], new_docs: dict[str, Any]) -> list[str]:
         """Find sections that changed between documentation versions."""
 
         changed_sections = []
@@ -532,8 +533,8 @@ class AutomaticDocumentationGenerator:
         return changed_sections or ["unknown"]
 
     def _generate_metadata(
-        self, spec: SkillDocumentationSpec, analysis: Dict[str, Any], validation_result: Optional[ValidationResult]
-    ) -> Dict[str, Any]:
+        self, spec: SkillDocumentationSpec, analysis: dict[str, Any], validation_result: ValidationResult | None
+    ) -> dict[str, Any]:
         """Generate metadata for the documentation."""
 
         metadata = {

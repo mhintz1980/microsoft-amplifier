@@ -5,16 +5,16 @@ Integrates with MCP (Model Context Protocol) for persistent, distributed
 documentation storage with automatic backup and recovery capabilities.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Union, AsyncGenerator
-from datetime import datetime, timedelta
-import json
 import asyncio
 import hashlib
+import json
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
 from pathlib import Path
-
-from ..utils.token_utils import estimate_tokens
+from typing import Any
 
 
 class StorageLevel(Enum):
@@ -40,7 +40,7 @@ class StorageStatus(Enum):
 class StorageConfig:
     """Configuration for MCP storage integration."""
 
-    mcp_endpoint: Optional[str] = None
+    mcp_endpoint: str | None = None
     backup_interval: timedelta = field(default_factory=lambda: timedelta(hours=1))
     max_retries: int = 3
     retry_delay: float = 1.0
@@ -48,7 +48,7 @@ class StorageConfig:
     encryption_enabled: bool = False
     cache_size_mb: int = 100
     sync_on_write: bool = True
-    local_backup_path: Optional[Path] = None
+    local_backup_path: Path | None = None
 
 
 @dataclass
@@ -58,12 +58,12 @@ class StorageOperation:
     operation_id: str
     operation_type: str  # "read", "write", "delete", "backup"
     skill_name: str
-    version: Optional[str] = None
+    version: str | None = None
     timestamp: datetime = field(default_factory=datetime.now)
     status: StorageStatus = StorageStatus.PENDING
     retry_count: int = 0
-    error_message: Optional[str] = None
-    data_hash: Optional[str] = None
+    error_message: str | None = None
+    data_hash: str | None = None
 
 
 @dataclass
@@ -77,7 +77,7 @@ class StorageMetrics:
     cache_hit_rate: float = 0.0
     compression_ratio: float = 0.0
     storage_used_mb: float = 0.0
-    last_sync: Optional[datetime] = None
+    last_sync: datetime | None = None
 
 
 class MCPDocumentationStorage:
@@ -86,8 +86,8 @@ class MCPDocumentationStorage:
     def __init__(self, config: StorageConfig):
         self.config = config
         self.metrics = StorageMetrics()
-        self.cache: Dict[str, Dict[str, Any]] = {}
-        self.pending_operations: List[StorageOperation] = []
+        self.cache: dict[str, dict[str, Any]] = {}
+        self.pending_operations: list[StorageOperation] = []
         self.mcp_client = None
 
         # Initialize local storage
@@ -106,9 +106,9 @@ class MCPDocumentationStorage:
     async def store_documentation(
         self,
         skill_name: str,
-        documentation: Dict[str, Any],
-        version: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        documentation: dict[str, Any],
+        version: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> StorageOperation:
         """Store documentation with MCP integration."""
 
@@ -161,7 +161,7 @@ class MCPDocumentationStorage:
 
         return operation
 
-    async def retrieve_documentation(self, skill_name: str, version: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    async def retrieve_documentation(self, skill_name: str, version: str | None = None) -> dict[str, Any] | None:
         """Retrieve documentation from storage."""
 
         cache_key = f"{skill_name}:{version or 'latest'}"
@@ -194,7 +194,7 @@ class MCPDocumentationStorage:
 
         return None
 
-    async def list_documentations(self, skill_name: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def list_documentations(self, skill_name: str | None = None) -> list[dict[str, Any]]:
         """List available documentations."""
 
         # Try local first
@@ -213,7 +213,7 @@ class MCPDocumentationStorage:
 
         return all_docs
 
-    async def delete_documentation(self, skill_name: str, version: Optional[str] = None) -> StorageOperation:
+    async def delete_documentation(self, skill_name: str, version: str | None = None) -> StorageOperation:
         """Delete documentation from storage."""
 
         operation_id = self._generate_operation_id()
@@ -283,8 +283,8 @@ class MCPDocumentationStorage:
         return operation
 
     async def restore_from_backup(
-        self, skill_name: Optional[str] = None, version: Optional[str] = None
-    ) -> List[StorageOperation]:
+        self, skill_name: str | None = None, version: str | None = None
+    ) -> list[StorageOperation]:
         """Restore documentation from MCP backup."""
 
         if not self.config.mcp_client:
@@ -350,8 +350,8 @@ class MCPDocumentationStorage:
         return self.metrics
 
     async def cleanup_old_versions(
-        self, skill_name: str, keep_count: int = 5, older_than: Optional[timedelta] = None
-    ) -> List[StorageOperation]:
+        self, skill_name: str, keep_count: int = 5, older_than: timedelta | None = None
+    ) -> list[StorageOperation]:
         """Clean up old versions of documentation."""
 
         operations = []
@@ -393,12 +393,12 @@ class MCPDocumentationStorage:
         """Generate unique operation ID."""
         return hashlib.md5(f"{datetime.now().isoformat()}{id(self)}".encode()).hexdigest()[:16]
 
-    def _calculate_data_hash(self, data: Dict[str, Any]) -> str:
+    def _calculate_data_hash(self, data: dict[str, Any]) -> str:
         """Calculate hash for data integrity."""
         data_str = json.dumps(data, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(data_str.encode()).hexdigest()[:16]
 
-    def _compress_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _compress_data(self, data: dict[str, Any]) -> dict[str, Any]:
         """Compress data for storage."""
         # Simple compression - would use proper compression in production
         compressed = data.copy()
@@ -415,7 +415,7 @@ class MCPDocumentationStorage:
 
         return compressed
 
-    def _decompress_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _decompress_data(self, data: dict[str, Any]) -> dict[str, Any]:
         """Decompress data from storage."""
         if not data.get("compressed", False):
             return data
@@ -427,7 +427,7 @@ class MCPDocumentationStorage:
 
         return decompressed
 
-    async def _store_local(self, skill_name: str, version: Optional[str], data: Dict[str, Any]) -> None:
+    async def _store_local(self, skill_name: str, version: str | None, data: dict[str, Any]) -> None:
         """Store documentation locally."""
         file_path = self.local_path / skill_name
         file_path.mkdir(exist_ok=True)
@@ -438,7 +438,7 @@ class MCPDocumentationStorage:
         with open(full_path, "w") as f:
             json.dump(data, f, indent=2)
 
-    async def _retrieve_local(self, skill_name: str, version: Optional[str]) -> Optional[Dict[str, Any]]:
+    async def _retrieve_local(self, skill_name: str, version: str | None) -> dict[str, Any] | None:
         """Retrieve documentation from local storage."""
         file_path = self.local_path / skill_name
         filename = f"{version or 'latest'}.json"
@@ -447,12 +447,12 @@ class MCPDocumentationStorage:
         if not full_path.exists():
             return None
 
-        with open(full_path, "r") as f:
+        with open(full_path) as f:
             data = json.load(f)
 
         return self._decompress_data(data)
 
-    async def _delete_local(self, skill_name: str, version: Optional[str]) -> None:
+    async def _delete_local(self, skill_name: str, version: str | None) -> None:
         """Delete documentation from local storage."""
         file_path = self.local_path / skill_name
         filename = f"{version or 'latest'}.json"
@@ -461,7 +461,7 @@ class MCPDocumentationStorage:
         if full_path.exists():
             full_path.unlink()
 
-    async def _list_local(self, skill_name: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def _list_local(self, skill_name: str | None = None) -> list[dict[str, Any]]:
         """List documentations in local storage."""
         docs = []
 
@@ -476,7 +476,7 @@ class MCPDocumentationStorage:
                 version = file_path.stem
 
                 try:
-                    with open(file_path, "r") as f:
+                    with open(file_path) as f:
                         data = json.load(f)
 
                     docs.append(
@@ -514,12 +514,12 @@ class MCPDocumentationStorage:
         # Implement MCP sync logic here
         pass
 
-    async def _store_to_mcp(self, skill_name: str, version: Optional[str], data: Dict[str, Any]) -> None:
+    async def _store_to_mcp(self, skill_name: str, version: str | None, data: dict[str, Any]) -> None:
         """Store documentation to MCP."""
         # Implement MCP storage logic here
         pass
 
-    async def _retrieve_from_mcp(self, skill_name: str, version: Optional[str]) -> Optional[Dict[str, Any]]:
+    async def _retrieve_from_mcp(self, skill_name: str, version: str | None) -> dict[str, Any] | None:
         """Retrieve documentation from MCP."""
         # Implement MCP retrieval logic here
         return None
@@ -529,14 +529,14 @@ class MCPDocumentationStorage:
         # Implement MCP deletion logic here
         pass
 
-    async def _list_mcp(self, skill_name: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def _list_mcp(self, skill_name: str | None = None) -> list[dict[str, Any]]:
         """List documentations in MCP storage."""
         # Implement MCP listing logic here
         return []
 
     def _merge_documentation_lists(
-        self, local_docs: List[Dict[str, Any]], mcp_docs: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, local_docs: list[dict[str, Any]], mcp_docs: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """Merge and deduplicate documentation lists."""
         seen = set()
         merged = []
@@ -556,7 +556,7 @@ class MCPDocumentationStorage:
 
         if cache_file.exists():
             try:
-                with open(cache_file, "r") as f:
+                with open(cache_file) as f:
                     self.cache = json.load(f)
             except Exception:
                 self.cache = {}

@@ -15,28 +15,29 @@ This meta-skill orchestrates:
 """
 
 import asyncio
-import json
 import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set, Union
-from dataclasses import dataclass, asdict
-from enum import Enum
 import traceback
-import subprocess
-import sys
+from dataclasses import asdict
+from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
-from ..skills_framework.skill_template import BaseSkill, SkillContext, SkillResult, SkillLevel
-from ..quality_assurance.automated_test_generator import AutomatedTestGenerator, TestSuite, TestCase, TestStatus
-from ..quality_assurance.validators.zero_hallucination_validator import (
-    ZeroHallucinationValidator,
-    ValidationReport,
-    ValidationLayer,
-)
-from ..quality_assurance.performance.performance_monitor import PerformanceMonitor
-from ..quality_assurance.storage.quality_metrics_storage import QualityMetricsStorage
 from amplifier.mcp.code_execution import execute_in_docker
 from amplifier.mcp.persistent_storage import store_result
+
+from ..quality_assurance.automated_test_generator import AutomatedTestGenerator
+from ..quality_assurance.automated_test_generator import TestCase
+from ..quality_assurance.automated_test_generator import TestSuite
+from ..quality_assurance.performance.performance_monitor import PerformanceMonitor
+from ..quality_assurance.storage.quality_metrics_storage import QualityMetricsStorage
+from ..quality_assurance.validators.zero_hallucination_validator import ZeroHallucinationValidator
+from ..skills_framework.skill_template import BaseSkill
+from ..skills_framework.skill_template import SkillContext
+from ..skills_framework.skill_template import SkillLevel
+from ..skills_framework.skill_template import SkillResult
 
 
 class QualityGate(Enum):
@@ -75,8 +76,8 @@ class TestingMetrics:
     security_score: float
     overall_quality_score: float
     execution_time: float
-    issues_found: List[str]
-    recommendations: List[str]
+    issues_found: list[str]
+    recommendations: list[str]
     timestamp: str
     gate_status: QualityGate
 
@@ -98,12 +99,12 @@ class ContinuousMonitoringResult:
 
     skill_path: str
     monitoring_period: str
-    performance_trend: Dict[str, float]
+    performance_trend: dict[str, float]
     error_rate: float
     user_satisfaction: float
-    resource_usage: Dict[str, float]
-    alerts: List[str]
-    recommendations: List[str]
+    resource_usage: dict[str, float]
+    alerts: list[str]
+    recommendations: list[str]
 
 
 class SkillTestingValidationSpecialist(BaseSkill):
@@ -147,10 +148,10 @@ class SkillTestingValidationSpecialist(BaseSkill):
         }
 
         # Testing history for regression detection
-        self.testing_history: Dict[str, List[TestingMetrics]] = {}
+        self.testing_history: dict[str, list[TestingMetrics]] = {}
 
         # Compound skill interaction registry
-        self.skill_interactions: Dict[str, List[SkillInteraction]] = {}
+        self.skill_interactions: dict[str, list[SkillInteraction]] = {}
 
     @property
     def description(self) -> str:
@@ -162,7 +163,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
         )
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         """Tags for skill discovery and matching."""
         return [
             "testing",
@@ -394,7 +395,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
 
         return metrics
 
-    async def _execute_performance_testing(self, skill_path: str, test_suite: TestSuite) -> Dict[str, Any]:
+    async def _execute_performance_testing(self, skill_path: str, test_suite: TestSuite) -> dict[str, Any]:
         """Execute performance testing and benchmarking."""
         performance_metrics = {
             "execution_times": [],
@@ -424,7 +425,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
 
         return performance_metrics
 
-    async def _run_performance_benchmarks(self, skill_path: str) -> Dict[str, Any]:
+    async def _run_performance_benchmarks(self, skill_path: str) -> dict[str, Any]:
         """Run additional performance benchmarks."""
         # Implementation would run specific performance benchmarks
         # For now, return placeholder data
@@ -449,7 +450,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
             print(f"Security testing failed: {e}")
             return 0.8  # Default score if security testing fails
 
-    async def _execute_integration_testing(self, skill_path: str) -> List[SkillInteraction]:
+    async def _execute_integration_testing(self, skill_path: str) -> list[SkillInteraction]:
         """Execute integration testing for compound skills."""
         interactions = []
 
@@ -459,7 +460,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
 
         for py_file in python_files:
             try:
-                with open(py_file, "r", encoding="utf-8") as f:
+                with open(py_file, encoding="utf-8") as f:
                     content = f.read()
 
                 # Analyze imports and external references
@@ -478,7 +479,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
 
         return tested_interactions
 
-    def _analyze_integration_points(self, content: str, file_path: str) -> List[SkillInteraction]:
+    def _analyze_integration_points(self, content: str, file_path: str) -> list[SkillInteraction]:
         """Analyze code for integration points with other skills."""
         interactions = []
 
@@ -511,7 +512,7 @@ class SkillTestingValidationSpecialist(BaseSkill):
 
         return interactions
 
-    def _extract_skill_from_import(self, import_line: str) -> Optional[str]:
+    def _extract_skill_from_import(self, import_line: str) -> str | None:
         """Extract skill name from import statement."""
         # Simple extraction - in practice would be more sophisticated
         if "skills." in import_line:
@@ -553,7 +554,7 @@ except Exception as e:
         except Exception:
             return False
 
-    async def _execute_regression_testing(self, skill_path: str) -> Optional[TestingMetrics]:
+    async def _execute_regression_testing(self, skill_path: str) -> TestingMetrics | None:
         """Execute regression testing against historical data."""
         if skill_path not in self.testing_history or len(self.testing_history[skill_path]) < 2:
             return None
@@ -580,7 +581,7 @@ except Exception as e:
             gate_status=QualityGate.ACCEPTABLE,
         )
 
-    def _calculate_performance_score(self, performance_metrics: Dict[str, Any]) -> float:
+    def _calculate_performance_score(self, performance_metrics: dict[str, Any]) -> float:
         """Calculate performance score from metrics."""
         score = 1.0
 
@@ -631,7 +632,7 @@ except Exception as e:
 
         return min(1.0, score)
 
-    def _determine_quality_gate(self, quality_score: float, issues: List[str]) -> QualityGate:
+    def _determine_quality_gate(self, quality_score: float, issues: list[str]) -> QualityGate:
         """Determine quality gate status."""
         critical_issues = [
             issue
@@ -641,18 +642,17 @@ except Exception as e:
 
         if critical_issues:
             return QualityGate.REJECT
-        elif quality_score >= 1.0:
+        if quality_score >= 1.0:
             return QualityGate.PERFECT
-        elif quality_score >= 0.95:
+        if quality_score >= 0.95:
             return QualityGate.EXCELLENT
-        elif quality_score >= 0.90:
+        if quality_score >= 0.90:
             return QualityGate.GOOD
-        elif quality_score >= 0.85:
+        if quality_score >= 0.85:
             return QualityGate.ACCEPTABLE
-        else:
-            return QualityGate.REJECT
+        return QualityGate.REJECT
 
-    def _extract_skill_path(self, query: str) -> Optional[str]:
+    def _extract_skill_path(self, query: str) -> str | None:
         """Extract skill path from query."""
         # Look for path patterns in the query
         import re
@@ -755,7 +755,7 @@ Confidence: {metrics.overall_quality_score:.1%}
 Testing history available for regression detection.
 Next recommended retest: {(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")}"""
 
-    async def test_multiple_skills(self, skill_paths: List[str], parallel: bool = True) -> List[TestingMetrics]:
+    async def test_multiple_skills(self, skill_paths: list[str], parallel: bool = True) -> list[TestingMetrics]:
         """
         Test multiple skills in parallel or sequentially.
 
@@ -797,33 +797,32 @@ Next recommended retest: {(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%
                     metrics_list.append(result)
 
             return metrics_list
-        else:
-            # Run tests sequentially
-            metrics_list = []
-            for skill_path in skill_paths:
-                try:
-                    metrics = await self._execute_comprehensive_testing(skill_path)
-                    metrics_list.append(metrics)
-                except Exception as e:
-                    error_metrics = TestingMetrics(
-                        skill_path=skill_path,
-                        total_tests=0,
-                        passed_tests=0,
-                        failed_tests=0,
-                        coverage_percentage=0.0,
-                        hallucination_score=0.0,
-                        performance_score=0.0,
-                        security_score=0.0,
-                        overall_quality_score=0.0,
-                        execution_time=0.0,
-                        issues=[f"Testing failed: {str(e)}"],
-                        recommendations=["Fix skill before testing"],
-                        timestamp=datetime.now().isoformat(),
-                        gate_status=QualityGate.REJECT,
-                    )
-                    metrics_list.append(error_metrics)
+        # Run tests sequentially
+        metrics_list = []
+        for skill_path in skill_paths:
+            try:
+                metrics = await self._execute_comprehensive_testing(skill_path)
+                metrics_list.append(metrics)
+            except Exception as e:
+                error_metrics = TestingMetrics(
+                    skill_path=skill_path,
+                    total_tests=0,
+                    passed_tests=0,
+                    failed_tests=0,
+                    coverage_percentage=0.0,
+                    hallucination_score=0.0,
+                    performance_score=0.0,
+                    security_score=0.0,
+                    overall_quality_score=0.0,
+                    execution_time=0.0,
+                    issues=[f"Testing failed: {str(e)}"],
+                    recommendations=["Fix skill before testing"],
+                    timestamp=datetime.now().isoformat(),
+                    gate_status=QualityGate.REJECT,
+                )
+                metrics_list.append(error_metrics)
 
-            return metrics_list
+        return metrics_list
 
     async def continuous_monitoring(self, skill_path: str, monitoring_period: int = 7) -> ContinuousMonitoringResult:
         """

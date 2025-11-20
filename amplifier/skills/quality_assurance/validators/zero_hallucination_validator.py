@@ -8,17 +8,14 @@ any form of hallucinated content.
 
 import ast
 import importlib
-import inspect
-import json
 import re
-from typing import Dict, List, Any, Optional, Tuple, Set
-from pathlib import Path
-from dataclasses import dataclass
-from enum import Enum
 import subprocess
 import sys
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
-from amplifier.mcp.code_execution import execute_in_docker
 from amplifier.mcp.persistent_storage import store_result
 
 
@@ -40,9 +37,9 @@ class ValidationResult:
     layer: ValidationLayer
     passed: bool
     confidence: float
-    issues: List[str]
-    suggestions: List[str]
-    metadata: Dict[str, Any]
+    issues: list[str]
+    suggestions: list[str]
+    metadata: dict[str, Any]
 
 
 @dataclass
@@ -52,9 +49,9 @@ class ValidationReport:
     skill_path: str
     overall_passed: bool
     overall_confidence: float
-    layer_results: Dict[ValidationLayer, ValidationResult]
-    critical_issues: List[str]
-    recommendations: List[str]
+    layer_results: dict[ValidationLayer, ValidationResult]
+    critical_issues: list[str]
+    recommendations: list[str]
     timestamp: str
 
 
@@ -77,9 +74,9 @@ class ZeroHallucinationValidator:
         self.strict_mode = strict_mode
 
         # Validation caches
-        self._api_cache: Dict[str, bool] = {}
-        self._import_cache: Dict[str, bool] = {}
-        self._reference_cache: Dict[str, bool] = {}
+        self._api_cache: dict[str, bool] = {}
+        self._import_cache: dict[str, bool] = {}
+        self._reference_cache: dict[str, bool] = {}
 
         # External validation tools
         self._install_validation_tools()
@@ -169,7 +166,7 @@ class ZeroHallucinationValidator:
             timestamp=timestamp,
         )
 
-    def _collect_python_files(self, path: Path) -> List[Path]:
+    def _collect_python_files(self, path: Path) -> list[Path]:
         """Collect all Python files in the given path."""
         if path.is_file() and path.suffix == ".py":
             return [path]
@@ -178,23 +175,22 @@ class ZeroHallucinationValidator:
 
     def _validate_layer(self, file_path: Path, layer: ValidationLayer) -> ValidationResult:
         """Validate a specific layer for a file."""
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         if layer == ValidationLayer.SYNTAX:
             return self._validate_syntax(content, file_path)
-        elif layer == ValidationLayer.IMPORTS:
+        if layer == ValidationLayer.IMPORTS:
             return self._validate_imports(content, file_path)
-        elif layer == ValidationLayer.API_ACCURACY:
+        if layer == ValidationLayer.API_ACCURACY:
             return self._validate_api_accuracy(content, file_path)
-        elif layer == ValidationLayer.SEMANTIC_CORRECTNESS:
+        if layer == ValidationLayer.SEMANTIC_CORRECTNESS:
             return self._validate_semantic_correctness(content, file_path)
-        elif layer == ValidationLayer.REFERENCE_VALIDITY:
+        if layer == ValidationLayer.REFERENCE_VALIDITY:
             return self._validate_reference_validity(content, file_path)
-        elif layer == ValidationLayer.LOGIC_CONSISTENCY:
+        if layer == ValidationLayer.LOGIC_CONSISTENCY:
             return self._validate_logic_consistency(content, file_path)
-        else:
-            return ValidationResult(layer=layer, passed=True, confidence=1.0, issues=[], suggestions=[], metadata={})
+        return ValidationResult(layer=layer, passed=True, confidence=1.0, issues=[], suggestions=[], metadata={})
 
     def _validate_syntax(self, content: str, file_path: Path) -> ValidationResult:
         """Validate Python syntax."""
@@ -533,7 +529,7 @@ class ZeroHallucinationValidator:
             metadata={"logic_checks_performed": "comprehensive"},
         )
 
-    def _find_parent(self, tree: ast.AST, node: ast.AST) -> Optional[ast.AST]:
+    def _find_parent(self, tree: ast.AST, node: ast.AST) -> ast.AST | None:
         """Find the parent of a node in AST."""
         for parent in ast.walk(tree):
             if hasattr(parent, "body") and isinstance(parent.body, list):
@@ -549,7 +545,7 @@ class ZeroHallucinationValidator:
                     return True
         return False
 
-    def _check_conditional_logic(self, if_node: ast.If, issues: List[str], suggestions: List[str]):
+    def _check_conditional_logic(self, if_node: ast.If, issues: list[str], suggestions: list[str]):
         """Check conditional logic for contradictions."""
         # This is a simplified check - in practice, you'd do more sophisticated analysis
         test_str = ast.unparse(if_node.test) if hasattr(ast, "unparse") else str(if_node.test)
@@ -562,7 +558,7 @@ class ZeroHallucinationValidator:
             issues.append(f"Always false condition: {test_str}")
             suggestions.append("Review conditional logic for correctness")
 
-    def _check_loop_potential(self, loop_node: ast.AST, tree: ast.AST, issues: List[str], suggestions: List[str]):
+    def _check_loop_potential(self, loop_node: ast.AST, tree: ast.AST, issues: list[str], suggestions: list[str]):
         """Check for potential infinite loops."""
         # This is a simplified check
         if isinstance(loop_node, ast.While):
@@ -574,7 +570,7 @@ class ZeroHallucinationValidator:
                     issues.append(f"Potential infinite loop: {test_str}")
                     suggestions.append("Add break condition or review loop logic")
 
-    def _check_redundant_conditions(self, if_node: ast.If, issues: List[str], suggestions: List[str]):
+    def _check_redundant_conditions(self, if_node: ast.If, issues: list[str], suggestions: list[str]):
         """Check for redundant or contradictory conditions."""
         # Simplified check for duplicate conditions in if/elif chains
         conditions = []
@@ -597,8 +593,8 @@ class ZeroHallucinationValidator:
                 break
 
     def _generate_recommendations(
-        self, layer_results: Dict[ValidationLayer, ValidationResult], all_issues: List[str]
-    ) -> List[str]:
+        self, layer_results: dict[ValidationLayer, ValidationResult], all_issues: list[str]
+    ) -> list[str]:
         """Generate recommendations based on validation results."""
         recommendations = []
 

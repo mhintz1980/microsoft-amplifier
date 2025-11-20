@@ -4,9 +4,7 @@ Provides comprehensive management of skills using MCP persistent storage,
 enabling 98.7% token reduction and cross-session persistence.
 """
 
-import asyncio
 import json
-import uuid
 from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
@@ -14,9 +12,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from ..utils.logger import get_logger
 from ...mcp.persistent_storage import SkillDefinition
 from ...mcp.persistent_storage import get_persistent_storage
+from ..utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -486,7 +484,7 @@ class SkillRepositoryManager:
             if compression_level == SkillCompressionLevel.REFERENCE:
                 return self.skill_index.get(skill_id)
 
-            elif compression_level == SkillCompressionLevel.METADATA:
+            if compression_level == SkillCompressionLevel.METADATA:
                 file_path = self.compressed_cache / "metadata" / f"{skill_id}.json"
                 if file_path.exists():
                     with open(file_path) as f:

@@ -5,14 +5,14 @@ Ensures zero-hallucination rate in all documentation through comprehensive
 validation against actual skill implementations and specifications.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-import re
-import inspect
-import importlib
 import ast
-from pathlib import Path
+import importlib
+import inspect
+import re
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from typing import Any
 
 from ..utils.token_utils import estimate_tokens
 
@@ -47,10 +47,10 @@ class ValidationIssue:
     severity: ValidationSeverity
     message: str
     location: str  # Where the issue was found
-    suggested_fix: Optional[str] = None
-    line_number: Optional[int] = None
-    actual_value: Optional[str] = None
-    expected_value: Optional[str] = None
+    suggested_fix: str | None = None
+    line_number: int | None = None
+    actual_value: str | None = None
+    expected_value: str | None = None
 
 
 @dataclass
@@ -58,14 +58,14 @@ class ValidationResult:
     """Result of documentation validation."""
 
     is_valid: bool
-    issues: List[ValidationIssue] = field(default_factory=list)
+    issues: list[ValidationIssue] = field(default_factory=list)
     total_issues: int = 0
     critical_issues: int = 0
     high_issues: int = 0
     validation_score: float = 0.0  # 0.0 to 1.0
-    tested_examples: List[str] = field(default_factory=list)
-    failed_examples: List[str] = field(default_factory=list)
-    verified_dependencies: List[str] = field(default_factory=list)
+    tested_examples: list[str] = field(default_factory=list)
+    failed_examples: list[str] = field(default_factory=list)
+    verified_dependencies: list[str] = field(default_factory=list)
 
 
 class DocumentationValidator:
@@ -76,7 +76,7 @@ class DocumentationValidator:
         self.validation_rules = self._initialize_validation_rules()
         self.skill_registry = None  # Will be injected or loaded
 
-    def _initialize_validation_rules(self) -> Dict[ValidationRule, Dict[str, Any]]:
+    def _initialize_validation_rules(self) -> dict[ValidationRule, dict[str, Any]]:
         """Initialize validation rules with their configurations."""
         return {
             ValidationRule.CODE_ACCURACY: {
@@ -132,9 +132,9 @@ class DocumentationValidator:
     def validate_documentation(
         self,
         skill_name: str,
-        documentation: Dict[str, Any],
-        skill_module_path: Optional[str] = None,
-        skill_class: Optional[type] = None,
+        documentation: dict[str, Any],
+        skill_module_path: str | None = None,
+        skill_class: type | None = None,
     ) -> ValidationResult:
         """Comprehensive validation of skill documentation."""
 
@@ -194,32 +194,32 @@ class DocumentationValidator:
         return self._create_result(issues, tested_examples, failed_examples, verified_dependencies)
 
     def _validate_rule(
-        self, rule: ValidationRule, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, rule: ValidationRule, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate a specific rule against the documentation."""
 
         if rule == ValidationRule.CODE_ACCURACY:
             return self._validate_code_accuracy(documentation, skill_class, config)
-        elif rule == ValidationRule.API_CONSISTENCY:
+        if rule == ValidationRule.API_CONSISTENCY:
             return self._validate_api_consistency(documentation, skill_class, config)
-        elif rule == ValidationRule.TYPE_ACCURACY:
+        if rule == ValidationRule.TYPE_ACCURACY:
             return self._validate_type_accuracy(documentation, skill_class, config)
-        elif rule == ValidationRule.EXAMPLE_VALIDITY:
+        if rule == ValidationRule.EXAMPLE_VALIDITY:
             return self._validate_example_validity(documentation, skill_class, config)
-        elif rule == ValidationRule.TAG_ACCURACY:
+        if rule == ValidationRule.TAG_ACCURACY:
             return self._validate_tag_accuracy(documentation, skill_class, config)
-        elif rule == ValidationRule.DEPENDENCY_VERIFICATION:
+        if rule == ValidationRule.DEPENDENCY_VERIFICATION:
             return self._validate_dependencies(documentation, skill_class, config)
-        elif rule == ValidationRule.TOKEN_EFFICIENCY:
+        if rule == ValidationRule.TOKEN_EFFICIENCY:
             return self._validate_token_efficiency(documentation, config)
-        elif rule == ValidationRule.CROSS_REFERENCE_VALIDITY:
+        if rule == ValidationRule.CROSS_REFERENCE_VALIDITY:
             return self._validate_cross_references(documentation, config)
 
         return []
 
     def _validate_code_accuracy(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that code examples are accurate and runnable."""
 
         issues = []
@@ -271,8 +271,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_api_consistency(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that API documentation matches the actual implementation."""
 
         issues = []
@@ -319,8 +319,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_type_accuracy(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that type hints and documentation match."""
 
         issues = []
@@ -354,8 +354,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_example_validity(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that examples are valid and can be executed."""
 
         issues = []
@@ -407,8 +407,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_tag_accuracy(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that tags accurately reflect the skill's functionality."""
 
         issues = []
@@ -448,8 +448,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_dependencies(
-        self, documentation: Dict[str, Any], skill_class: type, config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], skill_class: type, config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that documented dependencies are correct and importable."""
 
         issues = []
@@ -470,7 +470,7 @@ class DocumentationValidator:
                         message=f"Dependency '{dep}' cannot be imported",
                         location="dependencies",
                         actual_value=dep,
-                        suggested_fix=f"Verify dependency name and availability",
+                        suggested_fix="Verify dependency name and availability",
                     )
                 )
 
@@ -491,8 +491,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_token_efficiency(
-        self, documentation: Dict[str, Any], config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that documentation stays within token limits."""
 
         issues = []
@@ -521,8 +521,8 @@ class DocumentationValidator:
         return issues
 
     def _validate_cross_references(
-        self, documentation: Dict[str, Any], config: Dict[str, Any]
-    ) -> List[ValidationIssue]:
+        self, documentation: dict[str, Any], config: dict[str, Any]
+    ) -> list[ValidationIssue]:
         """Validate that cross-references to other skills are valid."""
 
         issues = []
@@ -541,13 +541,13 @@ class DocumentationValidator:
                         message=f"Referenced skill '{ref}' not found in registry",
                         location="cross_references",
                         actual_value=ref,
-                        suggested_fix=f"Verify skill name or remove reference",
+                        suggested_fix="Verify skill name or remove reference",
                     )
                 )
 
         return issues
 
-    def _load_skill_class(self, module_path: str) -> Optional[type]:
+    def _load_skill_class(self, module_path: str) -> type | None:
         """Load skill class from module path."""
         try:
             module = importlib.import_module(module_path)
@@ -559,27 +559,26 @@ class DocumentationValidator:
             pass
         return None
 
-    def _extract_documentation_content(self, documentation: Dict[str, Any]) -> str:
+    def _extract_documentation_content(self, documentation: dict[str, Any]) -> str:
         """Extract all text content from documentation."""
         if isinstance(documentation.get("full"), str):
             return documentation["full"]
-        elif isinstance(documentation.get("full"), dict):
+        if isinstance(documentation.get("full"), dict):
             sections = documentation["full"].get("sections", {})
             return "\n".join(sections.values())
-        else:
-            # Try to extract from other levels
-            for level in ["detailed", "summary", "metadata"]:
-                content = documentation.get(level)
-                if content:
-                    if isinstance(content, str):
-                        return content
-                    elif isinstance(content, dict):
-                        sections = content.get("sections", {})
-                        if sections:
-                            return "\n".join(sections.values())
+        # Try to extract from other levels
+        for level in ["detailed", "summary", "metadata"]:
+            content = documentation.get(level)
+            if content:
+                if isinstance(content, str):
+                    return content
+                if isinstance(content, dict):
+                    sections = content.get("sections", {})
+                    if sections:
+                        return "\n".join(sections.values())
         return ""
 
-    def _extract_code_blocks(self, content: str) -> List[Dict[str, str]]:
+    def _extract_code_blocks(self, content: str) -> list[dict[str, str]]:
         """Extract code blocks from content."""
         code_blocks = []
         pattern = r"```(\w+)?\n(.*?)```"
@@ -589,7 +588,7 @@ class DocumentationValidator:
 
         return code_blocks
 
-    def _extract_examples(self, content: str) -> List[Dict[str, str]]:
+    def _extract_examples(self, content: str) -> list[dict[str, str]]:
         """Extract examples from content."""
         examples = []
 
@@ -601,7 +600,7 @@ class DocumentationValidator:
 
         return examples
 
-    def _extract_documented_inputs(self, documentation: Dict[str, Any]) -> Set[str]:
+    def _extract_documented_inputs(self, documentation: dict[str, Any]) -> set[str]:
         """Extract input parameter names from documentation."""
         inputs = set()
         content = self._extract_documentation_content(documentation)
@@ -612,7 +611,7 @@ class DocumentationValidator:
 
         return inputs
 
-    def _extract_documented_outputs(self, documentation: Dict[str, Any]) -> Set[str]:
+    def _extract_documented_outputs(self, documentation: dict[str, Any]) -> set[str]:
         """Extract output parameter names from documentation."""
         outputs = set()
         content = self._extract_documentation_content(documentation)
@@ -623,7 +622,7 @@ class DocumentationValidator:
 
         return outputs
 
-    def _extract_documented_types(self, documentation: Dict[str, Any]) -> Dict[str, str]:
+    def _extract_documented_types(self, documentation: dict[str, Any]) -> dict[str, str]:
         """Extract type information from documentation."""
         types = {}
         content = self._extract_documentation_content(documentation)
@@ -638,7 +637,7 @@ class DocumentationValidator:
 
         return types
 
-    def _extract_skill_imports(self, skill_class: type) -> Set[str]:
+    def _extract_skill_imports(self, skill_class: type) -> set[str]:
         """Extract imports from skill module."""
         try:
             source = inspect.getsource(skill_class)
@@ -657,7 +656,7 @@ class DocumentationValidator:
         except:
             return set()
 
-    def _analyze_skill_functionality(self, skill_class: type) -> Dict[str, Any]:
+    def _analyze_skill_functionality(self, skill_class: type) -> dict[str, Any]:
         """Analyze skill code to infer functionality and suggest tags."""
 
         try:
@@ -697,7 +696,7 @@ class DocumentationValidator:
         except:
             return {"suggested_tags": []}
 
-    def _extract_skill_references(self, content: str) -> Set[str]:
+    def _extract_skill_references(self, content: str) -> set[str]:
         """Extract references to other skills from content."""
         # Look for skill name patterns
         pattern = r"`([A-Z][a-zA-Z]*Skill)`|([A-Z][a-zA-Z]*Skill)"
@@ -712,10 +711,10 @@ class DocumentationValidator:
 
     def _create_result(
         self,
-        issues: List[ValidationIssue],
-        tested_examples: List[str],
-        failed_examples: List[str],
-        verified_dependencies: List[str],
+        issues: list[ValidationIssue],
+        tested_examples: list[str],
+        failed_examples: list[str],
+        verified_dependencies: list[str],
     ) -> ValidationResult:
         """Create validation result from issues and metadata."""
 
@@ -743,8 +742,8 @@ class DocumentationValidator:
         )
 
     def auto_fix_issues(
-        self, documentation: Dict[str, Any], validation_result: ValidationResult
-    ) -> Tuple[Dict[str, Any], List[ValidationIssue]]:
+        self, documentation: dict[str, Any], validation_result: ValidationResult
+    ) -> tuple[dict[str, Any], list[ValidationIssue]]:
         """Attempt to automatically fix fixable issues."""
 
         fixed_documentation = documentation.copy()
@@ -773,22 +772,22 @@ class DocumentationValidator:
 
         return fixed_documentation, remaining_issues
 
-    def _fix_api_consistency(self, documentation: Dict[str, Any], issue: ValidationIssue) -> Dict[str, Any]:
+    def _fix_api_consistency(self, documentation: dict[str, Any], issue: ValidationIssue) -> dict[str, Any]:
         """Auto-fix API consistency issues."""
         # Implementation would update documentation to match actual API
         return documentation
 
-    def _fix_type_accuracy(self, documentation: Dict[str, Any], issue: ValidationIssue) -> Dict[str, Any]:
+    def _fix_type_accuracy(self, documentation: dict[str, Any], issue: ValidationIssue) -> dict[str, Any]:
         """Auto-fix type accuracy issues."""
         # Implementation would update type documentation
         return documentation
 
-    def _fix_tag_accuracy(self, documentation: Dict[str, Any], issue: ValidationIssue) -> Dict[str, Any]:
+    def _fix_tag_accuracy(self, documentation: dict[str, Any], issue: ValidationIssue) -> dict[str, Any]:
         """Auto-fix tag accuracy issues."""
         # Implementation would update tags
         return documentation
 
-    def _fix_token_efficiency(self, documentation: Dict[str, Any], issue: ValidationIssue) -> Dict[str, Any]:
+    def _fix_token_efficiency(self, documentation: dict[str, Any], issue: ValidationIssue) -> dict[str, Any]:
         """Auto-fix token efficiency issues."""
         # Implementation would compress content
         return documentation

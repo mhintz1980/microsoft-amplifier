@@ -5,16 +5,16 @@ Optimizes Tailwind CSS patterns, performance, and best practices
 through continuous learning and pattern analysis.
 """
 
-import json
-import time
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-from pathlib import Path
-from collections import defaultdict, Counter
 import re
+import time
+from collections import Counter
+from collections import defaultdict
+from dataclasses import asdict
+from dataclasses import dataclass
+from typing import Any
 
-from ..agent_lightning_integration.performance_monitor import PerformanceMonitor
 from ..agent_lightning_integration.knowledge_transfer_system import KnowledgeTransferSystem
+from ..agent_lightning_integration.performance_monitor import PerformanceMonitor
 
 
 @dataclass
@@ -26,8 +26,8 @@ class DesignPattern:
     tailwind_classes: str
     performance_score: int
     usage_frequency: int
-    context_tags: List[str]
-    optimization_applied: Optional[str]
+    context_tags: list[str]
+    optimization_applied: str | None
     created_at: float
 
 
@@ -35,10 +35,10 @@ class DesignPattern:
 class PerformanceMetrics:
     """Performance metrics for Tailwind usage."""
 
-    bundle_size_trend: List[float]
-    render_performance_trend: List[float]
-    class_usage_frequency: Dict[str, int]
-    error_patterns: List[Dict[str, Any]]
+    bundle_size_trend: list[float]
+    render_performance_trend: list[float]
+    class_usage_frequency: dict[str, int]
+    error_patterns: list[dict[str, Any]]
     optimization_success_rate: float
 
 
@@ -59,7 +59,7 @@ class TailwindAgentLightning:
         self.knowledge_system = KnowledgeTransferSystem()
 
         # Learning data storage
-        self.learned_patterns: List[DesignPattern] = []
+        self.learned_patterns: list[DesignPattern] = []
         self.performance_metrics = PerformanceMetrics(
             bundle_size_trend=[],
             render_performance_trend=[],
@@ -69,8 +69,8 @@ class TailwindAgentLightning:
         )
 
         # Optimization cache
-        self.optimization_cache: Dict[str, Any] = {}
-        self.pattern_library: Dict[str, DesignPattern] = {}
+        self.optimization_cache: dict[str, Any] = {}
+        self.pattern_library: dict[str, DesignPattern] = {}
 
         # Initialize with baseline knowledge
         self._init_baseline_patterns()
@@ -123,7 +123,7 @@ class TailwindAgentLightning:
             "accessibility_compliance_target": 0.95,  # 95% compliance
         }
 
-    def analyze_and_optimize_pattern(self, html_content: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+    def analyze_and_optimize_pattern(self, html_content: str, context: dict[str, Any] = None) -> dict[str, Any]:
         """
         Analyze HTML content and provide optimized Tailwind CSS recommendations.
 
@@ -170,7 +170,7 @@ class TailwindAgentLightning:
             "confidence_score": self._calculate_confidence_score(recommendations),
         }
 
-    def _extract_tailwind_classes(self, html_content: str) -> List[str]:
+    def _extract_tailwind_classes(self, html_content: str) -> list[str]:
         """Extract all Tailwind CSS classes from HTML content."""
         class_pattern = r'(?:class(?:Name)?=["\'])([^"\']*)(?=["\'])'
         classes = []
@@ -182,7 +182,7 @@ class TailwindAgentLightning:
 
         return classes
 
-    def _analyze_usage_patterns(self, classes: List[str]) -> Dict[str, Any]:
+    def _analyze_usage_patterns(self, classes: list[str]) -> dict[str, Any]:
         """Analyze usage patterns in Tailwind classes."""
         class_counter = Counter(classes)
         unique_classes = set(classes)
@@ -223,20 +223,19 @@ class TailwindAgentLightning:
 
         if any(prefix in base_class for prefix in ["p", "m", "space"]):
             return "spacing"
-        elif any(prefix in base_class for prefix in ["w", "h", "max-w", "max-h"]):
+        if any(prefix in base_class for prefix in ["w", "h", "max-w", "max-h"]):
             return "sizing"
-        elif any(prefix in base_class for prefix in ["bg", "text", "border"]):
+        if any(prefix in base_class for prefix in ["bg", "text", "border"]):
             return "colors"
-        elif any(prefix in base_class for prefix in ["font", "text", "leading", "tracking"]):
+        if any(prefix in base_class for prefix in ["font", "text", "leading", "tracking"]):
             return "typography"
-        elif any(prefix in base_class for prefix in ["flex", "grid", "block"]):
+        if any(prefix in base_class for prefix in ["flex", "grid", "block"]):
             return "layout"
-        elif any(prefix in base_class for prefix in ["rounded", "shadow"]):
+        if any(prefix in base_class for prefix in ["rounded", "shadow"]):
             return "styling"
-        elif "transition" in base_class or "animate" in base_class:
+        if "transition" in base_class or "animate" in base_class:
             return "animation"
-        else:
-            return "other"
+        return "other"
 
     def _remove_variants(self, class_name: str) -> str:
         """Remove variants from class name for categorization."""
@@ -247,8 +246,8 @@ class TailwindAgentLightning:
         return class_name
 
     def _identify_optimization_opportunities(
-        self, classes: List[str], pattern_analysis: Dict[str, Any], context: Dict[str, Any] = None
-    ) -> List[Dict[str, Any]]:
+        self, classes: list[str], pattern_analysis: dict[str, Any], context: dict[str, Any] = None
+    ) -> list[dict[str, Any]]:
         """Identify specific optimization opportunities."""
         opportunities = []
 
@@ -312,7 +311,7 @@ class TailwindAgentLightning:
 
         return opportunities
 
-    def _find_redundant_classes(self, classes: List[str]) -> List[str]:
+    def _find_redundant_classes(self, classes: list[str]) -> list[str]:
         """Find potentially redundant or conflicting classes."""
         redundant = []
         class_set = set(classes)
@@ -338,7 +337,7 @@ class TailwindAgentLightning:
 
         return redundant
 
-    def _identify_performance_issues(self, classes: List[str]) -> List[Dict[str, Any]]:
+    def _identify_performance_issues(self, classes: list[str]) -> list[dict[str, Any]]:
         """Identify performance-heavy CSS patterns."""
         issues = []
 
@@ -371,8 +370,8 @@ class TailwindAgentLightning:
         return recommendations.get(property_name, "Review usage and test performance")
 
     def _generate_optimization_recommendations(
-        self, classes: List[str], opportunities: List[Dict[str, Any]], pattern_analysis: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        self, classes: list[str], opportunities: list[dict[str, Any]], pattern_analysis: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """Generate specific optimization recommendations."""
         recommendations = []
 
@@ -435,7 +434,7 @@ class TailwindAgentLightning:
 
         return recommendations
 
-    def _generate_cleanup_example(self, redundant_classes: List[str]) -> str:
+    def _generate_cleanup_example(self, redundant_classes: list[str]) -> str:
         """Generate code example for class cleanup."""
         example = """
 <!-- Before -->
@@ -450,7 +449,7 @@ class TailwindAgentLightning:
         """
         return example.strip()
 
-    def _generate_performance_example(self, performance_issues: List[Dict[str, Any]]) -> str:
+    def _generate_performance_example(self, performance_issues: list[dict[str, Any]]) -> str:
         """Generate code example for performance optimization."""
         example = """
 <!-- Before: Performance heavy -->
@@ -465,7 +464,7 @@ class TailwindAgentLightning:
         """
         return example.strip()
 
-    def _generate_abstraction_example(self, classes: List[str]) -> str:
+    def _generate_abstraction_example(self, classes: list[str]) -> str:
         """Generate code example for component abstraction."""
         example = """
 /* CSS with @apply */
@@ -478,7 +477,7 @@ class TailwindAgentLightning:
         """
         return example.strip()
 
-    def _estimate_performance_impact(self, recommendations: List[Dict[str, Any]]) -> Dict[str, float]:
+    def _estimate_performance_impact(self, recommendations: list[dict[str, Any]]) -> dict[str, float]:
         """Estimate performance impact of recommendations."""
         impact = {"bundle_size_reduction": 0.0, "render_improvement": 0.0, "maintainability_improvement": 0.0}
 
@@ -498,7 +497,7 @@ class TailwindAgentLightning:
 
         return impact
 
-    def _calculate_confidence_score(self, recommendations: List[Dict[str, Any]]) -> float:
+    def _calculate_confidence_score(self, recommendations: list[dict[str, Any]]) -> float:
         """Calculate confidence score for recommendations."""
         if not recommendations:
             return 100.0
@@ -514,7 +513,7 @@ class TailwindAgentLightning:
 
         return min(100, base_confidence)
 
-    def _learn_from_analysis(self, html_content: str, classes: List[str], recommendations: List[Dict[str, Any]]):
+    def _learn_from_analysis(self, html_content: str, classes: list[str], recommendations: list[dict[str, Any]]):
         """Learn from analysis to improve future recommendations."""
         # Update class usage frequency
         for cls in classes:
@@ -549,7 +548,7 @@ class TailwindAgentLightning:
         if len(self.performance_metrics.render_performance_trend) > 50:
             self.performance_metrics.render_performance_trend.pop(0)
 
-    def get_optimization_insights(self) -> Dict[str, Any]:
+    def get_optimization_insights(self) -> dict[str, Any]:
         """Get insights from learned optimization patterns."""
         if not self.learned_patterns:
             return {"message": "No learning data available yet"}
@@ -585,7 +584,7 @@ class TailwindAgentLightning:
             },
         }
 
-    def export_knowledge(self) -> Dict[str, Any]:
+    def export_knowledge(self) -> dict[str, Any]:
         """Export learned knowledge for sharing across projects."""
         return {
             "patterns": [asdict(pattern) for pattern in self.pattern_library.values()],
@@ -595,7 +594,7 @@ class TailwindAgentLightning:
             "export_timestamp": time.time(),
         }
 
-    def import_knowledge(self, knowledge_data: Dict[str, Any]) -> bool:
+    def import_knowledge(self, knowledge_data: dict[str, Any]) -> bool:
         """Import knowledge from another project or session."""
         try:
             # Import patterns

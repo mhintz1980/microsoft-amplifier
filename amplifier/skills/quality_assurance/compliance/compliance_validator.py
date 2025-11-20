@@ -8,18 +8,16 @@ and quality across all 57 skills.
 
 import ast
 import re
-import json
 import subprocess
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
 from datetime import datetime
-import configparser
+from enum import Enum
+from pathlib import Path
+from typing import Any
+
 import toml
 
-from amplifier.mcp.code_execution import execute_in_docker
 from amplifier.mcp.persistent_storage import store_result
 
 
@@ -58,7 +56,7 @@ class ComplianceRule:
     validation_function: str
     severity: str  # "error", "warning", "info"
     auto_fixable: bool = False
-    reference_link: Optional[str] = None
+    reference_link: str | None = None
 
 
 @dataclass
@@ -85,12 +83,12 @@ class ComplianceReport:
     validation_timestamp: datetime
     overall_compliance: ComplianceLevel
     compliance_score: float
-    standard_results: Dict[StandardType, Dict[str, Any]]
-    violations: List[ComplianceViolation]
-    passed_rules: List[str]
-    failed_rules: List[str]
+    standard_results: dict[StandardType, dict[str, Any]]
+    violations: list[ComplianceViolation]
+    passed_rules: list[str]
+    failed_rules: list[str]
     auto_fix_available: bool
-    recommendations: List[str]
+    recommendations: list[str]
 
 
 class ComplianceValidator:
@@ -129,7 +127,7 @@ class ComplianceValidator:
         # Install validation tools
         self._install_validation_tools()
 
-    def _load_project_config(self) -> Dict[str, Any]:
+    def _load_project_config(self) -> dict[str, Any]:
         """Load project configuration from pyproject.toml."""
         config_path = self.project_root / self.config_file
 
@@ -137,12 +135,12 @@ class ComplianceValidator:
             return {}
 
         try:
-            with open(config_path, "r", encoding="utf-8") as f:
+            with open(config_path, encoding="utf-8") as f:
                 return toml.load(f)
         except Exception:
             return {}
 
-    def _initialize_compliance_rules(self) -> Dict[str, ComplianceRule]:
+    def _initialize_compliance_rules(self) -> dict[str, ComplianceRule]:
         """Initialize default compliance rules."""
         rules = {}
 
@@ -515,7 +513,7 @@ class ComplianceValidator:
             recommendations=recommendations,
         )
 
-    def _collect_files(self, skill_path: Path) -> List[Path]:
+    def _collect_files(self, skill_path: Path) -> list[Path]:
         """Collect relevant files for validation."""
         file_extensions = {".py", ".md", ".txt", ".toml", ".yaml", ".yml", ".cfg", ".ini"}
         files_to_validate = []
@@ -529,7 +527,7 @@ class ComplianceValidator:
 
         return files_to_validate
 
-    def _calculate_overall_compliance(self, standard_results: Dict[StandardType, Dict]) -> float:
+    def _calculate_overall_compliance(self, standard_results: dict[StandardType, dict]) -> float:
         """Calculate overall compliance score."""
         if not standard_results:
             return 1.0
@@ -548,14 +546,13 @@ class ComplianceValidator:
         """Get compliance level from score."""
         if score >= 0.95:
             return ComplianceLevel.COMPLIANT
-        elif score >= 0.8:
+        if score >= 0.8:
             return ComplianceLevel.PARTIALLY_COMPLIANT
-        else:
-            return ComplianceLevel.NON_COMPLIANT
+        return ComplianceLevel.NON_COMPLIANT
 
     def _generate_compliance_recommendations(
-        self, violations: List[ComplianceViolation], standard_results: Dict[StandardType, Dict]
-    ) -> List[str]:
+        self, violations: list[ComplianceViolation], standard_results: dict[StandardType, dict]
+    ) -> list[str]:
         """Generate compliance improvement recommendations."""
         recommendations = []
 
@@ -594,7 +591,7 @@ class ComplianceValidator:
 
         return list(set(recommendations))  # Remove duplicates
 
-    async def _apply_auto_fixes(self, violations: List[ComplianceViolation]):
+    async def _apply_auto_fixes(self, violations: list[ComplianceViolation]):
         """Apply automatic fixes for fixable violations."""
         auto_fixable_violations = [v for v in violations if v.auto_fix_available]
 
@@ -637,7 +634,7 @@ class ComplianceValidator:
             pass
 
     # Validation function implementations
-    def _validate_pep8_compliance(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_pep8_compliance(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate PEP 8 compliance using ruff."""
         violations = []
 
@@ -660,7 +657,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_line_length(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_line_length(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate line length limit."""
         violations = []
         max_length = 120
@@ -670,7 +667,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     lines = f.readlines()
 
                 for line_num, line in enumerate(lines, 1):
@@ -695,7 +692,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_import_ordering(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_import_ordering(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate import ordering."""
         violations = []
 
@@ -704,7 +701,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 # Simple check for import ordering (simplified)
@@ -748,7 +745,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_docstring_presence(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_docstring_presence(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate presence of docstrings."""
         violations = []
 
@@ -757,7 +754,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 tree = ast.parse(content)
@@ -787,7 +784,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_readme_presence(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_readme_presence(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate presence of README file."""
         violations = []
         skill_path = Path(files[0]).parent if files else Path.cwd()
@@ -811,7 +808,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_test_coverage(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_test_coverage(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate test coverage (simplified)."""
         violations = []
 
@@ -836,7 +833,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_test_file_presence(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_test_file_presence(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate presence of test files."""
         violations = []
         skill_path = Path(files[0]).parent if files else Path.cwd()
@@ -860,7 +857,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_function_naming(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_function_naming(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate function naming conventions."""
         violations = []
 
@@ -869,7 +866,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 tree = ast.parse(content)
@@ -897,7 +894,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_class_naming(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_class_naming(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate class naming conventions."""
         violations = []
 
@@ -906,7 +903,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 tree = ast.parse(content)
@@ -934,7 +931,7 @@ class ComplianceValidator:
 
         return violations
 
-    def _validate_no_bare_except(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_no_bare_except(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate no bare except clauses."""
         violations = []
 
@@ -943,7 +940,7 @@ class ComplianceValidator:
                 continue
 
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     content = f.read()
 
                 # Simple regex check for bare except
@@ -1008,47 +1005,47 @@ class ComplianceValidator:
         )
 
     # Placeholder validation functions (would be implemented fully)
-    def _validate_changelog_presence(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_changelog_presence(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate presence of changelog."""
         return []  # Implementation would check for CHANGELOG.md
 
-    def _validate_test_naming(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_test_naming(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate test naming conventions."""
         return []  # Implementation would check test naming patterns
 
-    def _validate_single_responsibility(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_single_responsibility(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate single responsibility principle."""
         return []  # Implementation would analyze function complexity
 
-    def _validate_no_circular_imports(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_no_circular_imports(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate no circular imports."""
         return []  # Implementation would build dependency graph
 
-    def _validate_module_structure(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_module_structure(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate module structure."""
         return []  # Implementation would check module organization
 
-    def _validate_constant_naming(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_constant_naming(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate constant naming conventions."""
         return []  # Implementation would check UPPER_CASE constants
 
-    def _validate_exception_handling(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_exception_handling(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate proper exception handling."""
         return []  # Implementation would check exception handling patterns
 
-    def _validate_specific_exceptions(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_specific_exceptions(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate specific exception types."""
         return []  # Implementation would check for specific vs generic exceptions
 
-    def _validate_dependency_declaration(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_dependency_declaration(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate dependency declarations."""
         return []  # Implementation would check pyproject.toml dependencies
 
-    def _validate_version_constraints(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_version_constraints(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate version constraints."""
         return []  # Implementation would check dependency versions
 
-    def _validate_no_unused_imports(self, files: List[Path], rule: ComplianceRule) -> List[ComplianceViolation]:
+    def _validate_no_unused_imports(self, files: list[Path], rule: ComplianceRule) -> list[ComplianceViolation]:
         """Validate no unused imports."""
         violations = []
 

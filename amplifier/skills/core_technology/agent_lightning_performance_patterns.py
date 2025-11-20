@@ -8,9 +8,9 @@ effectiveness and zero-hallucination recommendations.
 import json
 import statistics
 import time
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
-from pathlib import Path
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Any
 
 
 @dataclass
@@ -21,12 +21,12 @@ class PerformancePattern:
     category: str
     title: str
     success_rate: float  # 0.0 to 1.0
-    average_improvement: Dict[str, float]  # metric -> improvement percentage
+    average_improvement: dict[str, float]  # metric -> improvement percentage
     implementation_complexity: str  # low, medium, high
     confidence_level: float  # 0.0 to 1.0
     sample_size: int
-    validation_results: List[Dict[str, Any]] = field(default_factory=list)
-    optimization_notes: List[str] = field(default_factory=list)
+    validation_results: list[dict[str, Any]] = field(default_factory=list)
+    optimization_notes: list[str] = field(default_factory=list)
 
 
 class AgentLightningPerformancePatterns:
@@ -42,7 +42,7 @@ class AgentLightningPerformancePatterns:
         self.success_tracking = {}
         self.optimization_history = []
 
-    def _load_validated_patterns(self) -> Dict[str, PerformancePattern]:
+    def _load_validated_patterns(self) -> dict[str, PerformancePattern]:
         """Load validated performance patterns from Agent Lightning training."""
         return {
             # Image Optimization Patterns
@@ -227,7 +227,7 @@ class AgentLightningPerformancePatterns:
             ),
         }
 
-    def get_recommended_patterns(self, context: Dict[str, Any]) -> List[PerformancePattern]:
+    def get_recommended_patterns(self, context: dict[str, Any]) -> list[PerformancePattern]:
         """
         Get recommended patterns based on current performance context.
 
@@ -252,7 +252,7 @@ class AgentLightningPerformancePatterns:
 
         return self._deduplicate_patterns(recommendations)[:10]  # Top 10 recommendations
 
-    def _analyze_performance_issues(self, context: Dict[str, Any]) -> List[str]:
+    def _analyze_performance_issues(self, context: dict[str, Any]) -> list[str]:
         """Analyze performance context to identify key issues."""
         issues = []
 
@@ -282,7 +282,7 @@ class AgentLightningPerformancePatterns:
 
         return issues
 
-    def _find_patterns_for_issue(self, issue: str) -> List[PerformancePattern]:
+    def _find_patterns_for_issue(self, issue: str) -> list[PerformancePattern]:
         """Find patterns that address specific performance issues."""
         issue_to_patterns = {
             "slow_lcp": [
@@ -303,7 +303,7 @@ class AgentLightningPerformancePatterns:
         pattern_ids = issue_to_patterns.get(issue, [])
         return [self.patterns[pid] for pid in pattern_ids if pid in self.patterns]
 
-    def _deduplicate_patterns(self, patterns: List[PerformancePattern]) -> List[PerformancePattern]:
+    def _deduplicate_patterns(self, patterns: list[PerformancePattern]) -> list[PerformancePattern]:
         """Remove duplicate patterns, keeping the highest confidence version."""
         seen = set()
         deduplicated = []
@@ -315,7 +315,7 @@ class AgentLightningPerformancePatterns:
 
         return deduplicated
 
-    def implement_pattern(self, pattern_id: str, context: Dict[str, Any]) -> Dict[str, Any]:
+    def implement_pattern(self, pattern_id: str, context: dict[str, Any]) -> dict[str, Any]:
         """
         Generate implementation plan for a specific pattern.
 
@@ -360,7 +360,7 @@ class AgentLightningPerformancePatterns:
             "notes": pattern.optimization_notes,
         }
 
-    def _generate_webp_implementation(self) -> Dict[str, Any]:
+    def _generate_webp_implementation(self) -> dict[str, Any]:
         """Generate WebP implementation plan."""
         return {
             "steps": [
@@ -391,7 +391,7 @@ find images/ -name "*.png" -exec cwebp -q 80 {} -o {.}.webp \\;""",
             "estimated_time": "2-4 hours",
         }
 
-    def _generate_code_splitting_implementation(self) -> Dict[str, Any]:
+    def _generate_code_splitting_implementation(self) -> dict[str, Any]:
         """Generate code splitting implementation plan."""
         return {
             "steps": [
@@ -451,7 +451,7 @@ module.exports = {
             "estimated_time": "4-8 hours",
         }
 
-    def _generate_critical_css_implementation(self) -> Dict[str, Any]:
+    def _generate_critical_css_implementation(self) -> dict[str, Any]:
         """Generate critical CSS implementation plan."""
         return {
             "steps": [
@@ -500,7 +500,7 @@ penthouse({
             "estimated_time": "3-6 hours",
         }
 
-    def _generate_cdn_implementation(self) -> Dict[str, Any]:
+    def _generate_cdn_implementation(self) -> dict[str, Any]:
         """Generate CDN implementation plan."""
         return {
             "steps": [
@@ -541,7 +541,7 @@ server {
             "estimated_time": "8-16 hours",
         }
 
-    def _generate_compression_implementation(self) -> Dict[str, Any]:
+    def _generate_compression_implementation(self) -> dict[str, Any]:
         """Generate compression implementation plan."""
         return {
             "steps": [
@@ -591,7 +591,7 @@ server {
             "estimated_time": "1-2 hours",
         }
 
-    def _generate_font_optimization_implementation(self) -> Dict[str, Any]:
+    def _generate_font_optimization_implementation(self) -> dict[str, Any]:
         """Generate font optimization implementation plan."""
         return {
             "steps": [
@@ -640,7 +640,7 @@ fontObserver.load().then(() => {
             "estimated_time": "2-4 hours",
         }
 
-    def _generate_rum_implementation(self) -> Dict[str, Any]:
+    def _generate_rum_implementation(self) -> dict[str, Any]:
         """Generate Real User Monitoring implementation plan."""
         return {
             "steps": [
@@ -688,7 +688,7 @@ observer.observe({entryTypes: ['resource']});""",
             "estimated_time": "4-8 hours",
         }
 
-    def _generate_budget_implementation(self) -> Dict[str, Any]:
+    def _generate_budget_implementation(self) -> dict[str, Any]:
         """Generate performance budget implementation plan."""
         return {
             "steps": [
@@ -745,7 +745,7 @@ jobs:
             "estimated_time": "3-6 hours",
         }
 
-    def _generate_validation_plan(self, pattern: PerformancePattern) -> Dict[str, Any]:
+    def _generate_validation_plan(self, pattern: PerformancePattern) -> dict[str, Any]:
         """Generate validation plan for a pattern."""
         return {
             "pre_implementation": [
@@ -770,7 +770,7 @@ jobs:
             ],
         }
 
-    def _generate_monitoring_plan(self, pattern: PerformancePattern) -> Dict[str, Any]:
+    def _generate_monitoring_plan(self, pattern: PerformancePattern) -> dict[str, Any]:
         """Generate monitoring plan for a pattern."""
         return {
             "key_metrics": list(pattern.average_improvement.keys()),
@@ -787,7 +787,7 @@ jobs:
         }
 
     def track_pattern_success(
-        self, pattern_id: str, actual_improvement: Dict[str, float], success: bool, notes: Optional[str] = None
+        self, pattern_id: str, actual_improvement: dict[str, float], success: bool, notes: str | None = None
     ) -> None:
         """
         Track the success of pattern implementation to improve future recommendations.
@@ -858,7 +858,7 @@ jobs:
                 if values:
                     pattern.average_improvement[metric] = statistics.mean(values)
 
-    def get_pattern_insights(self, pattern_id: Optional[str] = None) -> Dict[str, Any]:
+    def get_pattern_insights(self, pattern_id: str | None = None) -> dict[str, Any]:
         """
         Get insights about pattern performance and trends.
 
@@ -929,7 +929,7 @@ jobs:
 
     def import_patterns(self, file_path: str) -> None:
         """Import patterns and tracking data from file."""
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             import_data = json.load(f)
 
         # Import patterns

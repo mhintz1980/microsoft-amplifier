@@ -12,17 +12,12 @@ Philosophy: Data-driven optimization that maximizes parallel execution efficienc
 """
 
 import asyncio
-import time
 from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
 from datetime import timedelta
 from enum import Enum
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
 
 from ...utils.logger import get_logger
 
@@ -78,8 +73,8 @@ class PerformanceMetric:
     value: float
     unit: str
     timestamp: datetime = field(default_factory=datetime.now)
-    tags: Dict[str, str] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    tags: dict[str, str] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -112,7 +107,7 @@ class OptimizationRecommendation:
     implementation_difficulty: str  # easy, medium, hard
     priority: int  # 1-10
     estimated_impact: str
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
 
 
@@ -121,11 +116,11 @@ class PerformanceMonitor:
 
     def __init__(self, monitoring_interval_seconds: int = 30):
         self.monitoring_interval = monitoring_interval_seconds
-        self.metrics_history: List[PerformanceMetric] = []
-        self.agent_snapshots: Dict[str, List[AgentPerformanceSnapshot]] = {}
-        self.baseline_metrics: Dict[MetricType, float] = {}
-        self.efficiency_history: List[EfficiencyMetrics] = []
-        self._monitoring_task: Optional[asyncio.Task] = None
+        self.metrics_history: list[PerformanceMetric] = []
+        self.agent_snapshots: dict[str, list[AgentPerformanceSnapshot]] = {}
+        self.baseline_metrics: dict[MetricType, float] = {}
+        self.efficiency_history: list[EfficiencyMetrics] = []
+        self._monitoring_task: asyncio.Task | None = None
         self._lock = asyncio.Lock()
 
     async def start_monitoring(self, agent_pool_manager, task_router, result_aggregator) -> None:
@@ -208,7 +203,7 @@ class PerformanceMonitor:
         # Collect agent-specific metrics
         await self._collect_agent_snapshots(pool_status, timestamp)
 
-    async def _record_pool_metrics(self, pool_status: Dict[str, Any], timestamp: datetime) -> None:
+    async def _record_pool_metrics(self, pool_status: dict[str, Any], timestamp: datetime) -> None:
         """Record agent pool performance metrics."""
         total_agents = pool_status.get("total_agents", 0)
         busy_agents = pool_status.get("busy_agents", 0)
@@ -227,7 +222,7 @@ class PerformanceMonitor:
         async with self._lock:
             self.metrics_history.extend(metrics)
 
-    async def _record_routing_metrics(self, routing_stats: Dict[str, Any], timestamp: datetime) -> None:
+    async def _record_routing_metrics(self, routing_stats: dict[str, Any], timestamp: datetime) -> None:
         """Record task routing performance metrics."""
         total_routings = routing_stats.get("total_routings", 0)
         routing_success_rate = routing_stats.get("routing_success_rate", 0.0)
@@ -243,7 +238,7 @@ class PerformanceMonitor:
         async with self._lock:
             self.metrics_history.extend(metrics)
 
-    async def _record_aggregation_metrics(self, aggregation_stats: Dict[str, Any], timestamp: datetime) -> None:
+    async def _record_aggregation_metrics(self, aggregation_stats: dict[str, Any], timestamp: datetime) -> None:
         """Record result aggregation performance metrics."""
         total_aggregations = aggregation_stats.get("total_aggregations", 0)
         aggregation_success_rate = aggregation_stats.get("success_rate", 0.0)
@@ -267,7 +262,7 @@ class PerformanceMonitor:
         async with self._lock:
             self.metrics_history.extend(metrics)
 
-    async def _collect_agent_snapshots(self, pool_status: Dict[str, Any], timestamp: datetime) -> None:
+    async def _collect_agent_snapshots(self, pool_status: dict[str, Any], timestamp: datetime) -> None:
         """Collect performance snapshots for individual agents."""
         agents_data = pool_status.get("agents", {})
 
@@ -355,7 +350,7 @@ class PerformanceMonitor:
             if parallel_efficiency_gain > 0.3:  # 30% efficiency gain
                 logger.info(f"High efficiency achieved: {parallel_efficiency_gain:.1%} parallel gain")
 
-    def _get_average_metric(self, metrics: List[PerformanceMetric], metric_type: MetricType) -> float:
+    def _get_average_metric(self, metrics: list[PerformanceMetric], metric_type: MetricType) -> float:
         """Get average value for a specific metric type."""
         relevant_metrics = [m for m in metrics if m.metric_type == metric_type]
         return sum(m.value for m in relevant_metrics) / len(relevant_metrics) if relevant_metrics else 0.0
@@ -369,7 +364,7 @@ class PerformanceMonitor:
         efficiency_gain = (current_utilization - baseline_utilization) / baseline_utilization
         return max(0.0, min(efficiency_gain, 1.0))  # Clamp between 0 and 1
 
-    def _calculate_throughput_improvement(self, metrics: List[PerformanceMetric]) -> float:
+    def _calculate_throughput_improvement(self, metrics: list[PerformanceMetric]) -> float:
         """Calculate throughput improvement."""
         throughput_metrics = [m for m in metrics if m.metric_type == MetricType.THROUGHPUT]
         if not throughput_metrics:
@@ -391,7 +386,7 @@ class PerformanceMonitor:
 
         return (new_throughput - old_throughput) / old_throughput
 
-    def _calculate_latency_reduction(self, metrics: List[PerformanceMetric]) -> float:
+    def _calculate_latency_reduction(self, metrics: list[PerformanceMetric]) -> float:
         """Calculate latency reduction."""
         # Simplified - would track actual latency metrics
         return 0.2  # Assume 20% latency reduction
@@ -414,12 +409,12 @@ class PerformanceMonitor:
         # This would track actual token usage vs baseline
         return 0.65  # Assume 65% token reduction from techniques
 
-    async def get_current_efficiency(self) -> Optional[EfficiencyMetrics]:
+    async def get_current_efficiency(self) -> EfficiencyMetrics | None:
         """Get current efficiency metrics."""
         async with self._lock:
             return self.efficiency_history[-1] if self.efficiency_history else None
 
-    async def get_efficiency_trend(self, minutes: int = 30) -> List[EfficiencyMetrics]:
+    async def get_efficiency_trend(self, minutes: int = 30) -> list[EfficiencyMetrics]:
         """Get efficiency trend over time."""
         async with self._lock:
             cutoff_time = datetime.now() - timedelta(minutes=minutes)
@@ -431,10 +426,10 @@ class PerformanceOptimizer:
 
     def __init__(self, performance_monitor: PerformanceMonitor):
         self.performance_monitor = performance_monitor
-        self.optimization_history: List[OptimizationRecommendation] = []
-        self.applied_optimizations: List[OptimizationRecommendation] = []
+        self.optimization_history: list[OptimizationRecommendation] = []
+        self.applied_optimizations: list[OptimizationRecommendation] = []
 
-    async def analyze_and_recommend(self) -> List[OptimizationRecommendation]:
+    async def analyze_and_recommend(self) -> list[OptimizationRecommendation]:
         """Analyze performance and generate optimization recommendations."""
         recommendations = []
 
@@ -457,7 +452,7 @@ class PerformanceOptimizer:
 
         return recommendations
 
-    async def _analyze_agent_utilization(self, efficiency: EfficiencyMetrics) -> List[OptimizationRecommendation]:
+    async def _analyze_agent_utilization(self, efficiency: EfficiencyMetrics) -> list[OptimizationRecommendation]:
         """Analyze agent utilization and recommend optimizations."""
         recommendations = []
 
@@ -487,7 +482,7 @@ class PerformanceOptimizer:
 
         return recommendations
 
-    async def _analyze_parallel_efficiency(self, efficiency: EfficiencyMetrics) -> List[OptimizationRecommendation]:
+    async def _analyze_parallel_efficiency(self, efficiency: EfficiencyMetrics) -> list[OptimizationRecommendation]:
         """Analyze parallel execution efficiency."""
         recommendations = []
 
@@ -517,7 +512,7 @@ class PerformanceOptimizer:
 
         return recommendations
 
-    async def _analyze_quality_maintenance(self, efficiency: EfficiencyMetrics) -> List[OptimizationRecommendation]:
+    async def _analyze_quality_maintenance(self, efficiency: EfficiencyMetrics) -> list[OptimizationRecommendation]:
         """Analyze quality maintenance during optimization."""
         recommendations = []
 
@@ -535,7 +530,7 @@ class PerformanceOptimizer:
 
         return recommendations
 
-    async def _analyze_resource_usage(self, efficiency: EfficiencyMetrics) -> List[OptimizationRecommendation]:
+    async def _analyze_resource_usage(self, efficiency: EfficiencyMetrics) -> list[OptimizationRecommendation]:
         """Analyze resource usage efficiency."""
         recommendations = []
 
@@ -553,7 +548,7 @@ class PerformanceOptimizer:
 
         return recommendations
 
-    async def _analyze_bottlenecks(self, efficiency: EfficiencyMetrics) -> List[OptimizationRecommendation]:
+    async def _analyze_bottlenecks(self, efficiency: EfficiencyMetrics) -> list[OptimizationRecommendation]:
         """Analyze system bottlenecks."""
         recommendations = []
 
@@ -582,9 +577,8 @@ class PerformanceOptimizer:
                 self.applied_optimizations.append(recommendation)
                 logger.info(f"Successfully applied optimization: {recommendation.optimization_type.value}")
                 return True
-            else:
-                logger.warning(f"Failed to apply optimization: {recommendation.optimization_type.value}")
-                return False
+            logger.warning(f"Failed to apply optimization: {recommendation.optimization_type.value}")
+            return False
 
         except Exception as e:
             logger.error(f"Error applying optimization {recommendation.optimization_type.value}: {e}")
@@ -597,7 +591,7 @@ class PerformanceOptimizer:
         await asyncio.sleep(1)  # Simulate optimization work
         return True
 
-    async def get_optimization_summary(self) -> Dict[str, Any]:
+    async def get_optimization_summary(self) -> dict[str, Any]:
         """Get summary of optimization activities."""
         return {
             "total_recommendations": len(self.optimization_history),

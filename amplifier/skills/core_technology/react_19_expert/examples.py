@@ -5,11 +5,8 @@ Comprehensive collection of production-ready React 19 examples
 with zero hallucination guarantee and complete implementations.
 """
 
-from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from enum import Enum
-import json
-import re
 
 
 class ExampleType(Enum):
@@ -28,13 +25,13 @@ class ReactExample:
     name: str
     type: ExampleType
     description: str
-    features: List[str]
+    features: list[str]
     code: str
     typescript_types: str
     explanation: str
     performance_notes: str
-    best_practices: List[str]
-    common_mistakes: List[str]
+    best_practices: list[str]
+    common_mistakes: list[str]
 
 
 class BasicExamples:
@@ -43,7 +40,7 @@ class BasicExamples:
     def __init__(self):
         self.examples = self._init_basic_examples()
 
-    def _init_basic_examples(self) -> Dict[str, ReactExample]:
+    def _init_basic_examples(self) -> dict[str, ReactExample]:
         """Initialize basic React 19 examples."""
         return {
             "optimistic_counter": ReactExample(
@@ -375,11 +372,11 @@ Key concepts:
             ),
         }
 
-    def get_example(self, name: str) -> Optional[ReactExample]:
+    def get_example(self, name: str) -> ReactExample | None:
         """Get a basic example by name."""
         return self.examples.get(name)
 
-    def list_examples(self) -> List[str]:
+    def list_examples(self) -> list[str]:
         """List all available basic examples."""
         return list(self.examples.keys())
 
@@ -390,7 +387,7 @@ class AdvancedExamples:
     def __init__(self):
         self.examples = self._init_advanced_examples()
 
-    def _init_advanced_examples(self) -> Dict[str, ReactExample]:
+    def _init_advanced_examples(self) -> dict[str, ReactExample]:
         """Initialize advanced React 19 examples."""
         return {
             "real_time_collaboration": ReactExample(
@@ -679,11 +676,11 @@ Key features:
             ),
         }
 
-    def get_example(self, name: str) -> Optional[ReactExample]:
+    def get_example(self, name: str) -> ReactExample | None:
         """Get an advanced example by name."""
         return self.examples.get(name)
 
-    def list_examples(self) -> List[str]:
+    def list_examples(self) -> list[str]:
         """List all available advanced examples."""
         return list(self.examples.keys())
 
@@ -694,7 +691,7 @@ class ProductionExamples:
     def __init__(self):
         self.examples = self._init_production_examples()
 
-    def _init_production_examples(self) -> Dict[str, ReactExample]:
+    def _init_production_examples(self) -> dict[str, ReactExample]:
         """Initialize production React 19 examples."""
         return {
             "ecommerce_product_page": ReactExample(
@@ -1275,11 +1272,11 @@ Key features:
             ),
         }
 
-    def get_example(self, name: str) -> Optional[ReactExample]:
+    def get_example(self, name: str) -> ReactExample | None:
         """Get a production example by name."""
         return self.examples.get(name)
 
-    def list_examples(self) -> List[str]:
+    def list_examples(self) -> list[str]:
         """List all available production examples."""
         return list(self.examples.keys())
 
@@ -1290,7 +1287,7 @@ class PerformanceExamples:
     def __init__(self):
         self.examples = self._init_performance_examples()
 
-    def _init_performance_examples(self) -> Dict[str, ReactExample]:
+    def _init_performance_examples(self) -> dict[str, ReactExample]:
         """Initialize performance React 19 examples."""
         return {
             "virtualized_list": ReactExample(
@@ -1752,10 +1749,10 @@ Key features:
             ),
         }
 
-    def get_example(self, name: str) -> Optional[ReactExample]:
+    def get_example(self, name: str) -> ReactExample | None:
         """Get a performance example by name."""
         return self.examples.get(name)
 
-    def list_examples(self) -> List[str]:
+    def list_examples(self) -> list[str]:
         """List all available performance examples."""
         return list(self.examples.keys())

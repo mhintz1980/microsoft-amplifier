@@ -5,12 +5,13 @@ Continuous learning and optimization system that learns from usage patterns
 and improves component recommendations and code generation over time.
 """
 
-import json
 import time
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field
+from collections import Counter
+from collections import defaultdict
+from dataclasses import dataclass
+from dataclasses import field
 from enum import Enum
-from collections import defaultdict, Counter
+from typing import Any
 
 
 class LearningType(Enum):
@@ -41,7 +42,7 @@ class LearningMetric:
     component: str
     value: float
     timestamp: float
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
     improvement_suggestion: str = ""
 
 
@@ -51,7 +52,7 @@ class PerformancePattern:
 
     pattern_id: str
     description: str
-    component_types: List[str]
+    component_types: list[str]
     optimization_applied: str
     improvement_percentage: float
     usage_count: int
@@ -170,7 +171,7 @@ class AgentLightningIntegration:
             ),
         ]
 
-    def record_generation(self, component_type: str, features: List[str], success: bool = True):
+    def record_generation(self, component_type: str, features: list[str], success: bool = True):
         """Record component generation for learning."""
         self.component_stats[component_type]["usage"] += 1
         if success:
@@ -190,7 +191,7 @@ class AgentLightningIntegration:
         # Learn from usage patterns
         self._analyze_usage_patterns(component_type, features, success)
 
-    def record_error(self, component_type: str, error_type: str, context: Dict[str, Any]):
+    def record_error(self, component_type: str, error_type: str, context: dict[str, Any]):
         """Record component error for learning and prevention."""
         self.component_stats[component_type]["errors"] += 1
 
@@ -229,7 +230,7 @@ class AgentLightningIntegration:
 
         self._update_performance_patterns(component_type, optimization, improvement)
 
-    def record_preference(self, user_id: str, preference: Dict[str, Any]):
+    def record_preference(self, user_id: str, preference: dict[str, Any]):
         """Record user preference for personalization."""
         self.user_preferences[user_id].append({"preference": preference, "timestamp": time.time()})
 
@@ -242,7 +243,7 @@ class AgentLightningIntegration:
         )
         self.learning_metrics.append(metric)
 
-    def get_optimization_recommendations(self, component_type: str, current_code: str) -> List[Dict[str, Any]]:
+    def get_optimization_recommendations(self, component_type: str, current_code: str) -> list[dict[str, Any]]:
         """
         Get optimization recommendations based on learned patterns.
 
@@ -280,7 +281,7 @@ class AgentLightningIntegration:
 
         return recommendations[:5]  # Return top 5 recommendations
 
-    def get_error_prevention_strategies(self, component_type: str) -> List[Dict[str, Any]]:
+    def get_error_prevention_strategies(self, component_type: str) -> list[dict[str, Any]]:
         """
         Get error prevention strategies based on learned patterns.
 
@@ -309,7 +310,7 @@ class AgentLightningIntegration:
 
         return strategies
 
-    def get_component_insights(self, component_type: str) -> Dict[str, Any]:
+    def get_component_insights(self, component_type: str) -> dict[str, Any]:
         """
         Get comprehensive insights about a component type.
 
@@ -355,7 +356,7 @@ class AgentLightningIntegration:
             "recommendations": self._generate_component_recommendations(component_type, stats),
         }
 
-    def _analyze_usage_patterns(self, component_type: str, features: List[str], success: bool):
+    def _analyze_usage_patterns(self, component_type: str, features: list[str], success: bool):
         """Analyze component usage patterns for learning."""
         # Track feature success rates
         for feature in features:
@@ -410,7 +411,7 @@ class AgentLightningIntegration:
             )
             self.performance_patterns.append(new_pattern)
 
-    def _analyze_code_for_optimizations(self, component_type: str, code: str) -> List[Dict[str, Any]]:
+    def _analyze_code_for_optimizations(self, component_type: str, code: str) -> list[dict[str, Any]]:
         """Analyze code for specific optimization opportunities."""
         recommendations = []
 
@@ -481,12 +482,11 @@ class AgentLightningIntegration:
         change = (recent_week - previous_week) / previous_week
         if change > 0.2:
             return "increasing"
-        elif change < -0.2:
+        if change < -0.2:
             return "decreasing"
-        else:
-            return "stable"
+        return "stable"
 
-    def _generate_component_recommendations(self, component_type: str, stats: Dict[str, Any]) -> List[str]:
+    def _generate_component_recommendations(self, component_type: str, stats: dict[str, Any]) -> list[str]:
         """Generate recommendations for component improvement."""
         recommendations = []
 
@@ -504,7 +504,7 @@ class AgentLightningIntegration:
 
         return recommendations
 
-    def export_learning_data(self) -> Dict[str, Any]:
+    def export_learning_data(self) -> dict[str, Any]:
         """Export learning data for backup and analysis."""
         return {
             "learning_metrics": [
@@ -545,7 +545,7 @@ class AgentLightningIntegration:
             "export_timestamp": time.time(),
         }
 
-    def get_learning_summary(self) -> Dict[str, Any]:
+    def get_learning_summary(self) -> dict[str, Any]:
         """Get summary of learning and optimization achievements."""
         if not self.learning_metrics:
             return {
@@ -588,7 +588,7 @@ class AgentLightningIntegration:
 
         return max(component_optimizations.items(), key=lambda x: x[1])[0] if component_optimizations else "None"
 
-    def _get_top_performance_patterns(self) -> List[Dict[str, Any]]:
+    def _get_top_performance_patterns(self) -> list[dict[str, Any]]:
         """Get top performing patterns."""
         return sorted(
             [
@@ -604,7 +604,7 @@ class AgentLightningIntegration:
             reverse=True,
         )[:5]
 
-    def _get_common_error_patterns(self) -> List[Dict[str, Any]]:
+    def _get_common_error_patterns(self) -> list[dict[str, Any]]:
         """Get most common error patterns."""
         return sorted(
             [

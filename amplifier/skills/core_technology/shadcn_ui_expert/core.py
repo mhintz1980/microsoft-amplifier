@@ -5,14 +5,13 @@ Provides comprehensive ShadCN/ui expertise with zero hallucinations.
 Integrates with Agent Lightning for continuous learning and optimization.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
-from pathlib import Path
+from typing import Any
 
-from .components import ComponentLibrary
 from .accessibility import AccessibilityExpert
-from .validation import ValidationEngine
 from .agent_lightning import AgentLightningIntegration
+from .components import ComponentLibrary
+from .validation import ValidationEngine
 
 
 @dataclass
@@ -23,9 +22,9 @@ class React19Feature:
     description: str
     api_signature: str
     usage_example: str
-    best_practices: List[str]
-    common_pitfalls: List[str]
-    performance_considerations: List[str]
+    best_practices: list[str]
+    common_pitfalls: list[str]
+    performance_considerations: list[str]
     typescript_types: str
     since_version: str = "19.0.0"
 
@@ -72,7 +71,7 @@ class ShadCNExpert:
         """
         return self.components.get_component(component_name)
 
-    def validate_shadcn_code(self, code: str) -> Dict[str, Any]:
+    def validate_shadcn_code(self, code: str) -> dict[str, Any]:
         """
         Validate ShadCN/ui code for best practices and potential issues.
 
@@ -107,7 +106,7 @@ class ShadCNExpert:
 
         return validation_result
 
-    def generate_optimized_component(self, specification: Dict[str, Any]) -> Dict[str, Any]:
+    def generate_optimized_component(self, specification: dict[str, Any]) -> dict[str, Any]:
         """
         Generate an optimized ShadCN/ui component based on specification.
 
@@ -148,23 +147,22 @@ class ShadCNExpert:
             "theme_customization": self._get_theme_customization(theme),
         }
 
-    def _generate_component_code(self, specification: Dict[str, Any]) -> str:
+    def _generate_component_code(self, specification: dict[str, Any]) -> str:
         """Generate ShadCN/ui component code based on specification."""
         component_type = specification.get("component_type", "button")
         component_name = specification.get("name", "ShadCNComponent")
 
         if component_type == "button":
             return self._generate_button_component(specification)
-        elif component_type == "form":
+        if component_type == "form":
             return self._generate_form_component(specification)
-        elif component_type == "card":
+        if component_type == "card":
             return self._generate_card_component(specification)
-        elif component_type == "dialog":
+        if component_type == "dialog":
             return self._generate_dialog_component(specification)
-        else:
-            return self._generate_generic_component(specification)
+        return self._generate_generic_component(specification)
 
-    def _generate_button_component(self, specification: Dict[str, Any]) -> str:
+    def _generate_button_component(self, specification: dict[str, Any]) -> str:
         """Generate a button component."""
         return """
 import { Button } from "@/components/ui/button"
@@ -180,7 +178,7 @@ function GeneratedButton(props) {
 export default GeneratedButton
         """
 
-    def _generate_form_component(self, specification: Dict[str, Any]) -> str:
+    def _generate_form_component(self, specification: dict[str, Any]) -> str:
         """Generate a form component with validation."""
         return """
 import { useState } from "react"
@@ -227,7 +225,7 @@ function GeneratedForm({ fields, onSubmit, title = "Form", description = "Please
 export default GeneratedForm
         """
 
-    def _generate_card_component(self, specification: Dict[str, Any]) -> str:
+    def _generate_card_component(self, specification: dict[str, Any]) -> str:
         """Generate a card component."""
         return """
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -250,7 +248,7 @@ function GeneratedCard({ title, description, footer, children, className }) {
 export default GeneratedCard
         """
 
-    def _generate_dialog_component(self, specification: Dict[str, Any]) -> str:
+    def _generate_dialog_component(self, specification: dict[str, Any]) -> str:
         """Generate a dialog component."""
         return """
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -280,7 +278,7 @@ function GeneratedDialog({ trigger, title, description, children, footer, open, 
 export default GeneratedDialog
         """
 
-    def _generate_generic_component(self, specification: Dict[str, Any]) -> str:
+    def _generate_generic_component(self, specification: dict[str, Any]) -> str:
         """Generate a generic ShadCN/ui component."""
         component_name = specification.get("name", "Component")
 
@@ -309,7 +307,7 @@ function {component_name}({{ children, className, ...props }}: {component_name}P
 export default {component_name}
         """
 
-    def _generate_typescript_types(self, specification: Dict[str, Any]) -> str:
+    def _generate_typescript_types(self, specification: dict[str, Any]) -> str:
         """Generate TypeScript types for the component."""
         component_name = specification.get("name", "Component")
 
@@ -330,7 +328,7 @@ export interface {component_name}Ref {{
 }}
         """
 
-    def _generate_explanation(self, specification: Dict[str, Any]) -> str:
+    def _generate_explanation(self, specification: dict[str, Any]) -> str:
         """Generate explanation for the generated component."""
         comp_type = specification.get("component_type", "component")
         features = ", ".join(specification.get("features", []))
@@ -353,7 +351,7 @@ ShadCN/ui Component Generated:
   * Screen reader support
         """
 
-    def _get_performance_recommendations(self, component_code: str) -> List[str]:
+    def _get_performance_recommendations(self, component_code: str) -> list[str]:
         """Get specific performance recommendations for the component."""
         recommendations = []
 
@@ -371,7 +369,7 @@ ShadCN/ui Component Generated:
 
         return recommendations
 
-    def _get_theme_customization(self, theme_name: str) -> Dict[str, Any]:
+    def _get_theme_customization(self, theme_name: str) -> dict[str, Any]:
         """Get theme customization options."""
         return {
             "colors": {
@@ -400,7 +398,7 @@ ShadCN/ui Component Generated:
             self.performance_metrics[action] += value
         self.agent_lightning.record_activity(action, value)
 
-    def get_skill_metrics(self) -> Dict[str, Any]:
+    def get_skill_metrics(self) -> dict[str, Any]:
         """Get comprehensive skill performance metrics."""
         return {
             "performance_metrics": self.performance_metrics,

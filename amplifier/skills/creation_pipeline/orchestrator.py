@@ -12,16 +12,15 @@ Architecture: Brick-based with clear contract interfaces
 """
 
 import asyncio
-import json
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...mcp.code_execution import execute_in_docker
-from ...mcp.persistent_storage import store_result, retrieve_result
+from ...mcp.persistent_storage import store_result
 from ...utils.logger import get_logger
 from ...utils.token_utils import estimate_tokens
 
@@ -49,11 +48,11 @@ class SkillRequest:
     skill_name: str
     description: str
     category: str
-    requirements: List[str] = field(default_factory=list)
-    input_schema: Dict[str, Any] = field(default_factory=dict)
-    output_schema: Dict[str, Any] = field(default_factory=dict)
-    examples: List[Dict[str, Any]] = field(default_factory=list)
-    constraints: List[str] = field(default_factory=list)
+    requirements: list[str] = field(default_factory=list)
+    input_schema: dict[str, Any] = field(default_factory=dict)
+    output_schema: dict[str, Any] = field(default_factory=dict)
+    examples: list[dict[str, Any]] = field(default_factory=list)
+    constraints: list[str] = field(default_factory=list)
     priority: str = "normal"  # low, normal, high, critical
     session_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     requested_at: datetime = field(default_factory=datetime.now)
@@ -67,7 +66,7 @@ class SkillArtifact:
     skill_name: str
     artifact_type: str  # code, test, documentation, validation
     content: Any
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
     tokens_saved: int = 0
 
@@ -77,14 +76,14 @@ class PipelineContext:
     """Execution context for the skill creation pipeline."""
 
     request: SkillRequest
-    artifacts: List[SkillArtifact] = field(default_factory=list)
-    checkpoints: List[Dict[str, Any]] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    artifacts: list[SkillArtifact] = field(default_factory=list)
+    checkpoints: list[dict[str, Any]] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     status: OrchestratorStatus = OrchestratorStatus.IDLE
 
-    def add_artifact(self, artifact_type: str, content: Any, metadata: Dict[str, Any] = None) -> SkillArtifact:
+    def add_artifact(self, artifact_type: str, content: Any, metadata: dict[str, Any] = None) -> SkillArtifact:
         """Add an artifact to the context."""
         artifact = SkillArtifact(
             artifact_id=str(uuid.uuid4()),
@@ -97,7 +96,7 @@ class PipelineContext:
         self.artifacts.append(artifact)
         return artifact
 
-    def add_checkpoint(self, stage: str, data: Dict[str, Any]) -> None:
+    def add_checkpoint(self, stage: str, data: dict[str, Any]) -> None:
         """Add a checkpoint for recovery."""
         checkpoint = {
             "stage": stage,
@@ -113,7 +112,7 @@ class PipelineContext:
             store_result(f"{self.request.session_id}_{stage}", {"checkpoint": checkpoint, "context": self.to_dict()})
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary for storage."""
         return {
             "request": {
@@ -144,7 +143,7 @@ class SkillCreationOrchestrator:
     """
 
     def __init__(self):
-        self.active_contexts: Dict[str, PipelineContext] = {}
+        self.active_contexts: dict[str, PipelineContext] = {}
         self.mcp_manager = None
         self.parallel_agents = {
             "code_generator": None,  # Will be initialized on demand
@@ -246,7 +245,7 @@ class SkillCreationOrchestrator:
 
             return context
 
-    async def _execute_parallel_generation(self, context: PipelineContext) -> Dict[str, Any]:
+    async def _execute_parallel_generation(self, context: PipelineContext) -> dict[str, Any]:
         """
         Execute parallel skill generation with specialized agents.
 
@@ -295,7 +294,7 @@ class SkillCreationOrchestrator:
         logger.info(f"Parallel generation completed: {context.metrics['parallel_efficiency']:.1%} efficiency")
         return generation_results
 
-    async def _generate_code_parallel(self, context: PipelineContext) -> Dict[str, Any]:
+    async def _generate_code_parallel(self, context: PipelineContext) -> dict[str, Any]:
         """Generate skill code in parallel."""
         code_prompt = f"""
         Generate Python code for a skill with these specifications:
@@ -324,10 +323,9 @@ class SkillCreationOrchestrator:
 
         if result["status"] == "completed":
             return {"code": result["result"], "tokens_used": result["tokens_used"]}
-        else:
-            raise Exception(f"Code generation failed: {result['result']}")
+        raise Exception(f"Code generation failed: {result['result']}")
 
-    async def _generate_tests_parallel(self, context: PipelineContext) -> Dict[str, Any]:
+    async def _generate_tests_parallel(self, context: PipelineContext) -> dict[str, Any]:
         """Generate comprehensive tests in parallel."""
         test_prompt = f"""
         Generate comprehensive pytest tests for skill:
@@ -353,10 +351,9 @@ class SkillCreationOrchestrator:
 
         if result["status"] == "completed":
             return {"tests": result["result"], "tokens_used": result["tokens_used"]}
-        else:
-            raise Exception(f"Test generation failed: {result['result']}")
+        raise Exception(f"Test generation failed: {result['result']}")
 
-    async def _generate_doc_outline_parallel(self, context: PipelineContext) -> Dict[str, Any]:
+    async def _generate_doc_outline_parallel(self, context: PipelineContext) -> dict[str, Any]:
         """Generate documentation outline in parallel."""
         return {
             "outline": {
@@ -367,7 +364,7 @@ class SkillCreationOrchestrator:
             }
         }
 
-    async def _generate_validation_criteria_parallel(self, context: PipelineContext) -> Dict[str, Any]:
+    async def _generate_validation_criteria_parallel(self, context: PipelineContext) -> dict[str, Any]:
         """Generate validation criteria in parallel."""
         return {
             "criteria": {
@@ -382,7 +379,7 @@ class SkillCreationOrchestrator:
             }
         }
 
-    async def _validate_skill(self, context: PipelineContext, generation_results: Dict[str, Any]) -> Dict[str, Any]:
+    async def _validate_skill(self, context: PipelineContext, generation_results: dict[str, Any]) -> dict[str, Any]:
         """Validate generated skill with zero hallucination protocols."""
         logger.info("Validating skill with zero hallucination protocols")
 
@@ -413,7 +410,7 @@ class SkillCreationOrchestrator:
 
         return validation_result.to_dict()
 
-    async def _test_skill(self, context: PipelineContext, validation_results: Dict[str, Any]) -> Dict[str, Any]:
+    async def _test_skill(self, context: PipelineContext, validation_results: dict[str, Any]) -> dict[str, Any]:
         """Run automated testing framework."""
         logger.info("Running automated testing")
 
@@ -442,7 +439,7 @@ class SkillCreationOrchestrator:
 
         return test_results
 
-    async def _generate_documentation(self, context: PipelineContext, test_results: Dict[str, Any]) -> Dict[str, Any]:
+    async def _generate_documentation(self, context: PipelineContext, test_results: dict[str, Any]) -> dict[str, Any]:
         """Generate comprehensive documentation."""
         logger.info("Generating comprehensive documentation")
 
@@ -468,7 +465,7 @@ class SkillCreationOrchestrator:
 
         return documentation
 
-    async def _assemble_final_skill(self, context: PipelineContext, documentation: Dict[str, Any]) -> None:
+    async def _assemble_final_skill(self, context: PipelineContext, documentation: dict[str, Any]) -> None:
         """Assemble final skill package."""
         logger.info("Assembling final skill package")
 
@@ -604,7 +601,7 @@ print(json.dumps({"tests": test_code, "status": "success"}))
                 "total_skills_created"
             ]
 
-    async def get_skill_status(self, session_id: str) -> Optional[PipelineContext]:
+    async def get_skill_status(self, session_id: str) -> PipelineContext | None:
         """Get status of skill creation by session ID."""
         return self.active_contexts.get(session_id)
 
@@ -624,7 +621,7 @@ print(json.dumps({"tests": test_code, "status": "success"}))
             return True
         return False
 
-    def get_performance_metrics(self) -> Dict[str, Any]:
+    def get_performance_metrics(self) -> dict[str, Any]:
         """Get orchestrator performance metrics."""
         return {
             **self.performance_metrics,
@@ -651,10 +648,10 @@ async def create_skill_request(
     skill_name: str,
     description: str,
     category: str,
-    requirements: List[str] = None,
-    input_schema: Dict[str, Any] = None,
-    output_schema: Dict[str, Any] = None,
-    examples: List[Dict[str, Any]] = None,
+    requirements: list[str] = None,
+    input_schema: dict[str, Any] = None,
+    output_schema: dict[str, Any] = None,
+    examples: list[dict[str, Any]] = None,
 ) -> PipelineContext:
     """Convenient function to create a skill."""
     orchestrator = await get_orchestrator()

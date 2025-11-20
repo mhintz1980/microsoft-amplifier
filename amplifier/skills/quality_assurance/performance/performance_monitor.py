@@ -5,20 +5,22 @@ Comprehensive performance monitoring system that tracks skill execution metrics,
 token efficiency, response times, and user satisfaction to optimize performance.
 """
 
-import time
-import psutil
-import threading
 import asyncio
-import json
 import statistics
-from typing import Dict, List, Any, Optional, Callable, Union
-from dataclasses import dataclass, field
-from enum import Enum
-from datetime import datetime, timedelta
-from collections import defaultdict, deque
+import threading
+import time
 import uuid
+from collections import defaultdict
+from collections import deque
+from dataclasses import dataclass
+from dataclasses import field
+from datetime import datetime
+from datetime import timedelta
+from enum import Enum
+from typing import Any
 
-from amplifier.mcp.code_execution import execute_in_docker
+import psutil
+
 from amplifier.mcp.persistent_storage import store_result
 
 
@@ -56,7 +58,7 @@ class PerformanceMetric:
     timestamp: datetime
     skill_name: str
     execution_id: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -64,10 +66,10 @@ class PerformanceThreshold:
     """Performance threshold configuration."""
 
     metric_type: MetricType
-    min_value: Optional[float] = None
-    max_value: Optional[float] = None
-    target_value: Optional[float] = None
-    tier_mapping: Dict[PerformanceTier, tuple] = field(default_factory=dict)
+    min_value: float | None = None
+    max_value: float | None = None
+    target_value: float | None = None
+    tier_mapping: dict[PerformanceTier, tuple] = field(default_factory=dict)
 
 
 @dataclass
@@ -77,10 +79,10 @@ class PerformanceReport:
     skill_name: str
     time_period: tuple
     overall_tier: PerformanceTier
-    metrics_summary: Dict[MetricType, Dict[str, float]]
-    trends: Dict[MetricType, str]
-    bottlenecks: List[str]
-    recommendations: List[str]
+    metrics_summary: dict[MetricType, dict[str, float]]
+    trends: dict[MetricType, str]
+    bottlenecks: list[str]
+    recommendations: list[str]
     optimization_score: float
     timestamp: datetime
 
@@ -151,9 +153,9 @@ class PerformanceMonitor:
         self.auto_optimize = auto_optimize
 
         # Metrics storage
-        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=history_size))
-        self.real_time_metrics: Dict[str, float] = {}
-        self.skill_metrics: Dict[str, List[PerformanceMetric]] = defaultdict(list)
+        self.metrics: dict[str, deque] = defaultdict(lambda: deque(maxlen=history_size))
+        self.real_time_metrics: dict[str, float] = {}
+        self.skill_metrics: dict[str, list[PerformanceMetric]] = defaultdict(list)
 
         # Performance thresholds
         self.thresholds = self._initialize_thresholds()
@@ -161,13 +163,13 @@ class PerformanceMonitor:
         # Monitoring state
         self.monitoring_active = False
         self.monitoring_thread = None
-        self.optimization_tasks: List[asyncio.Task] = []
+        self.optimization_tasks: list[asyncio.Task] = []
 
         # Performance cache
-        self.performance_cache: Dict[str, PerformanceReport] = {}
+        self.performance_cache: dict[str, PerformanceReport] = {}
         self.cache_ttl = timedelta(minutes=5)
 
-    def _initialize_thresholds(self) -> Dict[MetricType, PerformanceThreshold]:
+    def _initialize_thresholds(self) -> dict[MetricType, PerformanceThreshold]:
         """Initialize default performance thresholds."""
         return {
             MetricType.EXECUTION_TIME: PerformanceThreshold(
@@ -275,7 +277,7 @@ class PerformanceMonitor:
         unit: str,
         skill_name: str,
         execution_id: str = None,
-        metadata: Dict[str, Any] = None,
+        metadata: dict[str, Any] = None,
     ) -> PerformanceMetric:
         """
         Record a performance metric.
@@ -336,7 +338,7 @@ class PerformanceMonitor:
         # Clean up completed tasks
         self.optimization_tasks = [task for task in self.optimization_tasks if not task.done()]
 
-    async def optimize_skill_performance(self, skill_name: str, metric_type: MetricType) -> Dict[str, Any]:
+    async def optimize_skill_performance(self, skill_name: str, metric_type: MetricType) -> dict[str, Any]:
         """
         Optimize skill performance based on metric analysis.
 
@@ -372,7 +374,7 @@ class PerformanceMonitor:
             "performance_gain": self._estimate_performance_gain(applied_optimizations),
         }
 
-    def _analyze_performance_patterns(self, metrics: List[PerformanceMetric]) -> Dict[str, Any]:
+    def _analyze_performance_patterns(self, metrics: list[PerformanceMetric]) -> dict[str, Any]:
         """Analyze performance patterns from metrics."""
         values = [m.value for m in metrics]
 
@@ -395,7 +397,7 @@ class PerformanceMonitor:
 
         return analysis
 
-    def _calculate_trend(self, values: List[float]) -> str:
+    def _calculate_trend(self, values: list[float]) -> str:
         """Calculate trend direction from values."""
         if len(values) < 2:
             return "insufficient_data"
@@ -412,14 +414,13 @@ class PerformanceMonitor:
 
         if slope > 0.01:
             return "improving"
-        elif slope < -0.01:
+        if slope < -0.01:
             return "degrading"
-        else:
-            return "stable"
+        return "stable"
 
     def _generate_optimization_recommendations(
-        self, skill_name: str, metric_type: MetricType, analysis: Dict[str, Any]
-    ) -> List[str]:
+        self, skill_name: str, metric_type: MetricType, analysis: dict[str, Any]
+    ) -> list[str]:
         """Generate specific optimization recommendations."""
         recommendations = []
 
@@ -450,8 +451,8 @@ class PerformanceMonitor:
         return recommendations
 
     async def _apply_automatic_optimizations(
-        self, skill_name: str, metric_type: MetricType, recommendations: List[str]
-    ) -> List[str]:
+        self, skill_name: str, metric_type: MetricType, recommendations: list[str]
+    ) -> list[str]:
         """Apply automatic optimizations based on recommendations."""
         applied = []
 
@@ -562,7 +563,7 @@ def optimize_prompt(prompt: str) -> str:
         except Exception:
             return False
 
-    def _estimate_performance_gain(self, optimizations: List[str]) -> float:
+    def _estimate_performance_gain(self, optimizations: list[str]) -> float:
         """Estimate performance gain from applied optimizations."""
         gain_multiplier = {
             "caching": 1.2,  # 20% improvement
@@ -578,7 +579,7 @@ def optimize_prompt(prompt: str) -> str:
 
     def get_skill_metrics(
         self, skill_name: str, metric_type: MetricType = None, hours: int = 24
-    ) -> List[PerformanceMetric]:
+    ) -> list[PerformanceMetric]:
         """
         Get metrics for a specific skill.
 
@@ -708,18 +709,17 @@ def optimize_prompt(prompt: str) -> str:
         """Convert numeric score to performance tier."""
         if score >= 0.9:
             return PerformanceTier.EXCELLENT
-        elif score >= 0.7:
+        if score >= 0.7:
             return PerformanceTier.GOOD
-        elif score >= 0.5:
+        if score >= 0.5:
             return PerformanceTier.ACCEPTABLE
-        elif score >= 0.3:
+        if score >= 0.3:
             return PerformanceTier.NEEDS_IMPROVEMENT
-        else:
-            return PerformanceTier.CRITICAL
+        return PerformanceTier.CRITICAL
 
     def _generate_overall_recommendations(
-        self, tier: PerformanceTier, metrics_summary: Dict[MetricType, Dict]
-    ) -> List[str]:
+        self, tier: PerformanceTier, metrics_summary: dict[MetricType, dict]
+    ) -> list[str]:
         """Generate overall performance recommendations."""
         recommendations = []
 

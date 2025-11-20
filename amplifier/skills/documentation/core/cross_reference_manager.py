@@ -6,15 +6,16 @@ across the entire skill ecosystem. Handles compound interactions and
 dependency tracking.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
-from pathlib import Path
 import json
-import networkx as nx
-from collections import defaultdict, deque
+from collections import defaultdict
+from collections import deque
+from dataclasses import dataclass
+from dataclasses import field
+from enum import Enum
+from pathlib import Path
+from typing import Any
 
-from ..utils.token_utils import estimate_tokens
+import networkx as nx
 
 
 class RelationshipType(Enum):
@@ -48,7 +49,7 @@ class SkillRelationship:
     strength: RelationshipStrength
     description: str = ""
     bidirectional: bool = False
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -56,10 +57,10 @@ class SkillCluster:
     """A cluster of related skills."""
 
     name: str
-    skills: Set[str] = field(default_factory=set)
+    skills: set[str] = field(default_factory=set)
     description: str = ""
-    common_patterns: List[str] = field(default_factory=list)
-    typical_use_cases: List[str] = field(default_factory=list)
+    common_patterns: list[str] = field(default_factory=list)
+    typical_use_cases: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -67,23 +68,23 @@ class ReferenceValidationResult:
     """Result of cross-reference validation."""
 
     is_valid: bool
-    broken_references: List[str] = field(default_factory=list)
-    circular_dependencies: List[List[str]] = field(default_factory=list)
-    missing_relationships: List[str] = field(default_factory=list)
-    suggestions: List[str] = field(default_factory=list)
-    relationship_graph: Optional[nx.DiGraph] = None
+    broken_references: list[str] = field(default_factory=list)
+    circular_dependencies: list[list[str]] = field(default_factory=list)
+    missing_relationships: list[str] = field(default_factory=list)
+    suggestions: list[str] = field(default_factory=list)
+    relationship_graph: nx.DiGraph | None = None
 
 
 class CrossReferenceManager:
     """Manages cross-references and relationships between skills."""
 
-    def __init__(self, storage_path: Optional[Path] = None):
+    def __init__(self, storage_path: Path | None = None):
         self.storage_path = storage_path or Path(__file__).parent.parent / "data" / "relationships"
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.relationships: Dict[str, List[SkillRelationship]] = defaultdict(list)
-        self.reverse_relationships: Dict[str, List[SkillRelationship]] = defaultdict(list)
-        self.skill_clusters: Dict[str, SkillCluster] = {}
+        self.relationships: dict[str, list[SkillRelationship]] = defaultdict(list)
+        self.reverse_relationships: dict[str, list[SkillRelationship]] = defaultdict(list)
+        self.skill_clusters: dict[str, SkillCluster] = {}
         self.relationship_graph = nx.DiGraph()
 
         self._load_relationships()
@@ -129,8 +130,8 @@ class CrossReferenceManager:
             )
 
     def get_relationships(
-        self, skill_name: str, relationship_type: Optional[RelationshipType] = None
-    ) -> List[SkillRelationship]:
+        self, skill_name: str, relationship_type: RelationshipType | None = None
+    ) -> list[SkillRelationship]:
         """Get all relationships for a skill, optionally filtered by type."""
 
         relationships = self.relationships.get(skill_name, [])
@@ -141,8 +142,8 @@ class CrossReferenceManager:
         return relationships
 
     def get_related_skills(
-        self, skill_name: str, max_depth: int = 2, relationship_types: Optional[List[RelationshipType]] = None
-    ) -> Dict[str, List[SkillRelationship]]:
+        self, skill_name: str, max_depth: int = 2, relationship_types: list[RelationshipType] | None = None
+    ) -> dict[str, list[SkillRelationship]]:
         """Get all related skills up to specified depth."""
 
         visited = set()
@@ -174,7 +175,7 @@ class CrossReferenceManager:
 
         return dict(result)
 
-    def find_skill_chains(self, start_skill: str, end_skill: str, max_length: int = 5) -> List[List[str]]:
+    def find_skill_chains(self, start_skill: str, end_skill: str, max_length: int = 5) -> list[list[str]]:
         """Find chains of skills that connect start to end skill."""
 
         try:
@@ -195,7 +196,7 @@ class CrossReferenceManager:
         except nx.NetworkXNoPath:
             return []
 
-    def discover_skill_clusters(self, min_cluster_size: int = 3) -> Dict[str, SkillCluster]:
+    def discover_skill_clusters(self, min_cluster_size: int = 3) -> dict[str, SkillCluster]:
         """Automatically discover clusters of related skills."""
 
         if len(self.relationship_graph.nodes) < min_cluster_size:
@@ -246,8 +247,8 @@ class CrossReferenceManager:
             return clusters
 
     def get_skill_recommendations(
-        self, skill_name: str, context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, List[Dict[str, Any]]]:
+        self, skill_name: str, context: dict[str, Any] | None = None
+    ) -> dict[str, list[dict[str, Any]]]:
         """Get recommendations for related skills based on context."""
 
         recommendations = {"dependencies": [], "compatible": [], "alternatives": [], "extensions": [], "sequences": []}
@@ -281,7 +282,7 @@ class CrossReferenceManager:
 
         return recommendations
 
-    def validate_references(self, skill_names: List[str], strict_mode: bool = True) -> ReferenceValidationResult:
+    def validate_references(self, skill_names: list[str], strict_mode: bool = True) -> ReferenceValidationResult:
         """Validate cross-references for a set of skills."""
 
         broken_references = []
@@ -337,7 +338,7 @@ class CrossReferenceManager:
             relationship_graph=self.relationship_graph.copy(),
         )
 
-    def generate_documentation_cross_references(self, skill_name: str, documentation: Dict[str, Any]) -> Dict[str, Any]:
+    def generate_documentation_cross_references(self, skill_name: str, documentation: dict[str, Any]) -> dict[str, Any]:
         """Generate cross-reference sections for skill documentation."""
 
         related_skills = self.get_related_skills(skill_name, max_depth=2)
@@ -392,7 +393,7 @@ class CrossReferenceManager:
             if not name.replace("_", "").replace("-", "").isalnum():
                 raise ValueError(f"Skill name contains invalid characters: {name}")
 
-    def _analyze_cluster_patterns(self, skills: Set[str]) -> List[str]:
+    def _analyze_cluster_patterns(self, skills: set[str]) -> list[str]:
         """Analyze common patterns in a skill cluster."""
         patterns = []
 
@@ -413,7 +414,7 @@ class CrossReferenceManager:
 
         return patterns
 
-    def _analyze_cluster_use_cases(self, skills: Set[str]) -> List[str]:
+    def _analyze_cluster_use_cases(self, skills: set[str]) -> list[str]:
         """Analyze typical use cases for a skill cluster."""
         use_cases = []
 
@@ -434,7 +435,7 @@ class CrossReferenceManager:
 
         return use_cases[:3]  # Limit to top 3
 
-    def _get_recommendation_reason(self, relationship: SkillRelationship, context: Optional[Dict[str, Any]]) -> str:
+    def _get_recommendation_reason(self, relationship: SkillRelationship, context: dict[str, Any] | None) -> str:
         """Get a human-readable reason for a recommendation."""
 
         base_reason = relationship.description or f"{relationship.relationship_type.value} relationship"
@@ -444,7 +445,7 @@ class CrossReferenceManager:
             if context.get("task_type") == "optimization":
                 if relationship.relationship_type == RelationshipType.ALTERNATIVE:
                     return f"{base_reason} - alternative approach for optimization"
-                elif relationship.relationship_type == RelationshipType.COMPATIBLE:
+                if relationship.relationship_type == RelationshipType.COMPATIBLE:
                     return f"{base_reason} - can enhance optimization workflow"
 
             if context.get("complexity") == "high":
@@ -488,7 +489,7 @@ class CrossReferenceManager:
 
         if relationships_file.exists():
             try:
-                with open(relationships_file, "r") as f:
+                with open(relationships_file) as f:
                     data = json.load(f)
 
                 for rel_data in data.get("relationships", []):
@@ -591,7 +592,7 @@ class CrossReferenceManager:
 
         return str(output_path)
 
-    def get_relationship_statistics(self) -> Dict[str, Any]:
+    def get_relationship_statistics(self) -> dict[str, Any]:
         """Get statistics about the relationship network."""
 
         stats = {
