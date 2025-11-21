@@ -182,7 +182,7 @@ async def record_abstract_method_implementations(fix_recorder: DevelopmentFixRec
             "missing_methods": ["get_capabilities", "validate_input"],
             "implementation_template": {
                 "get_capabilities": "Returns dict with skill capabilities",
-                "validate_input": "Validates input parameters and raises ValueError if invalid"
+                "validate_input": "Validates input parameters and raises ValueError if invalid",
             },
             "error_handling": "Proper exception handling with descriptive messages",
             "validation_rules": "Input type checking and constraint validation",
@@ -244,7 +244,7 @@ async def record_registration_system_incompatibility(fix_recorder: DevelopmentFi
                 "Skill ID format validation",
                 "Required method presence check",
                 "Capability validation",
-                "Framework compatibility check"
+                "Framework compatibility check",
             ],
             "error_improvements": "Detailed registration failure messages",
             "backward_compatibility": "Support for legacy skill formats",
@@ -287,9 +287,9 @@ async def record_all_critical_fixes():
         stats = await fix_recorder.get_system_statistics()
 
         # Print summary
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("DEVELOPMENT FIX RECORDING SUMMARY")
-        print("="*80)
+        print("=" * 80)
 
         print(f"\nTotal Fixes Recorded: {len(fixes)}")
         print(f"Total Patterns Extracted: {stats.get('total_patterns', 0)}")
@@ -305,11 +305,11 @@ async def record_all_critical_fixes():
             print(f"   Patterns Extracted: {len(fix.related_patterns)}")
 
         print("\nFixes by Type:")
-        for fix_type, count in stats.get('fixes_by_type', {}).items():
+        for fix_type, count in stats.get("fixes_by_type", {}).items():
             print(f"  - {fix_type}: {count}")
 
         print("\nFixes by Severity:")
-        for severity, count in stats.get('fixes_by_severity', {}).items():
+        for severity, count in stats.get("fixes_by_severity", {}).items():
             print(f"  - {severity}: {count}")
 
         print("\nPattern Extraction Results:")
@@ -326,9 +326,9 @@ async def record_all_critical_fixes():
             print(f"  - {rule.rule_name} (Severity: {rule.severity.value})")
             print(f"    Auto-fix available: {rule.auto_fix_available}")
 
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("CRITICAL FIXES SUCCESSFULLY RECORDED")
-        print("="*80)
+        print("=" * 80)
 
         return fixes, stats
 

@@ -14,27 +14,19 @@ from ..skills_framework.base_skill import SkillResult
 
 
 class GraphQLExpertSkill(BaseSkill):
-
     def __init__(self):
         super().__init__(
-            skill_id="graphqlexpert_",
-            name="GraphQLExpert Expert",
-            description="Expert skill for graphqlexpert"
+            skill_id="graphqlexpert_", name="GraphQLExpert Expert", description="Expert skill for graphqlexpert"
         )
+
     def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities"""
-        return [
-            "graphqlexpert expertise",
-            "Best practices",
-            "Production solutions"
-        ]
+        return ["graphqlexpert expertise", "Best practices", "Production solutions"]
 
-    
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
         return isinstance(input_data, str) and len(input_data.strip()) > 0
 
-    
     """
     Expert-level GraphQL implementation patterns for building scalable APIs.
 
@@ -42,10 +34,6 @@ class GraphQLExpertSkill(BaseSkill):
     federation patterns, subscription implementation, and performance
     optimization techniques. All patterns are production-tested.
     """
-
-
-
-
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the GraphQL query."""

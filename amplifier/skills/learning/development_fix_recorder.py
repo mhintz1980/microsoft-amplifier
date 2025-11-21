@@ -50,20 +50,20 @@ class SeverityLevel(Enum):
     """Severity levels for fixes"""
 
     CRITICAL = "critical"  # Blocks skill development completely
-    HIGH = "high"         # Major functionality impact
-    MEDIUM = "medium"     # Moderate impact, workaround exists
-    LOW = "low"          # Minor issue, cosmetic or small improvement
+    HIGH = "high"  # Major functionality impact
+    MEDIUM = "medium"  # Moderate impact, workaround exists
+    LOW = "low"  # Minor issue, cosmetic or small improvement
 
 
 class PreventionStrategy(Enum):
     """Types of prevention strategies"""
 
     AUTATED_VALIDATION = "automated_validation"  # Add automated checks
-    TEMPLATE_UPDATE = "template_update"          # Update code templates
-    DOCUMENTATION = "documentation"              # Improve documentation
-    FRAMEWORK_CHANGE = "framework_change"        # Modify frameworks
+    TEMPLATE_UPDATE = "template_update"  # Update code templates
+    DOCUMENTATION = "documentation"  # Improve documentation
+    FRAMEWORK_CHANGE = "framework_change"  # Modify frameworks
     TESTING_REQUIREMENT = "testing_requirement"  # Add mandatory tests
-    CODE_GENERATION = "code_generation"          # Generate code to prevent issue
+    CODE_GENERATION = "code_generation"  # Generate code to prevent issue
 
 
 @dataclass
@@ -232,7 +232,9 @@ class DevelopmentFixRecorder:
             # Persist data
             await self._save_fix_data()
 
-            logger.info(f"Successfully recorded fix {fix.fix_id} and extracted pattern {pattern.pattern_id if pattern else 'None'}")
+            logger.info(
+                f"Successfully recorded fix {fix.fix_id} and extracted pattern {pattern.pattern_id if pattern else 'None'}"
+            )
             return fix
 
         except Exception as e:
@@ -266,20 +268,24 @@ class DevelopmentFixRecorder:
 
                     # Add prevention suggestions
                     if rule.auto_fix_available:
-                        validation_results["auto_fixes_available"].append({
-                            "rule_id": rule.rule_id,
-                            "pattern_id": rule.pattern_id,
-                            "fix_description": rule.auto_fix_implementation,
-                            "severity": rule.severity.value,
-                        })
+                        validation_results["auto_fixes_available"].append(
+                            {
+                                "rule_id": rule.rule_id,
+                                "pattern_id": rule.pattern_id,
+                                "fix_description": rule.auto_fix_implementation,
+                                "severity": rule.severity.value,
+                            }
+                        )
                     else:
-                        validation_results["prevention_suggestions"].append({
-                            "rule_id": rule.rule_id,
-                            "pattern_id": rule.pattern_id,
-                            "prevention_strategy": "Manual review required",
-                            "description": rule.validation_logic,
-                            "severity": rule.severity.value,
-                        })
+                        validation_results["prevention_suggestions"].append(
+                            {
+                                "rule_id": rule.rule_id,
+                                "pattern_id": rule.pattern_id,
+                                "prevention_strategy": "Manual review required",
+                                "description": rule.validation_logic,
+                                "severity": rule.severity.value,
+                            }
+                        )
 
                     # Track high-risk issues
                     if rule.severity in [SeverityLevel.CRITICAL, SeverityLevel.HIGH]:
@@ -287,16 +293,28 @@ class DevelopmentFixRecorder:
 
             # Calculate overall risk score
             if self.validation_rules:
-                critical_count = sum(1 for issue in validation_results["issues_found"]
-                                   if any(r.severity == SeverityLevel.CRITICAL
-                                         for r in self.validation_rules.values()
-                                         if r.validation_logic in str(issue)))
-                high_count = sum(1 for issue in validation_results["issues_found"]
-                                if any(r.severity == SeverityLevel.HIGH
-                                     for r in self.validation_rules.values()
-                                     if r.validation_logic in str(issue)))
+                critical_count = sum(
+                    1
+                    for issue in validation_results["issues_found"]
+                    if any(
+                        r.severity == SeverityLevel.CRITICAL
+                        for r in self.validation_rules.values()
+                        if r.validation_logic in str(issue)
+                    )
+                )
+                high_count = sum(
+                    1
+                    for issue in validation_results["issues_found"]
+                    if any(
+                        r.severity == SeverityLevel.HIGH
+                        for r in self.validation_rules.values()
+                        if r.validation_logic in str(issue)
+                    )
+                )
 
-                validation_results["overall_risk_score"] = min(1.0, (critical_count * 0.8 + high_count * 0.4) / len(self.validation_rules))
+                validation_results["overall_risk_score"] = min(
+                    1.0, (critical_count * 0.8 + high_count * 0.4) / len(self.validation_rules)
+                )
 
             # Record validation
             if validation_results["issues_found"]:
@@ -332,10 +350,7 @@ class DevelopmentFixRecorder:
                     relevant_patterns.append(pattern)
 
             # Sort by effectiveness and transferability
-            relevant_patterns.sort(
-                key=lambda p: p.effectiveness_score * p.transferability_score,
-                reverse=True
-            )
+            relevant_patterns.sort(key=lambda p: p.effectiveness_score * p.transferability_score, reverse=True)
 
             # Generate recommendations
             for pattern in relevant_patterns[:5]:  # Top 5 recommendations
@@ -353,20 +368,25 @@ class DevelopmentFixRecorder:
                     recommendations["high_priority_patterns"].append(recommendation)
 
             # Add automated validations
-            automated_rules = [rule for rule in self.validation_rules.values()
-                             if rule.auto_fix_available and rule.active]
+            automated_rules = [
+                rule for rule in self.validation_rules.values() if rule.auto_fix_available and rule.active
+            ]
 
             for rule in automated_rules:
-                recommendations["automated_validations"].append({
-                    "rule_id": rule.rule_id,
-                    "rule_name": rule.rule_name,
-                    "auto_fix_description": rule.auto_fix_implementation,
-                    "severity": rule.severity.value,
-                })
+                recommendations["automated_validations"].append(
+                    {
+                        "rule_id": rule.rule_id,
+                        "rule_name": rule.rule_name,
+                        "auto_fix_description": rule.auto_fix_implementation,
+                        "severity": rule.severity.value,
+                    }
+                )
 
             # Calculate estimated risk reduction
             if recommendations["recommendations"]:
-                avg_benefit = sum(r["expected_benefit"] for r in recommendations["recommendations"]) / len(recommendations["recommendations"])
+                avg_benefit = sum(r["expected_benefit"] for r in recommendations["recommendations"]) / len(
+                    recommendations["recommendations"]
+                )
                 recommendations["estimated_risk_reduction"] = min(0.9, avg_benefit)
 
             return recommendations
@@ -469,7 +489,8 @@ class DevelopmentFixRecorder:
                 rule_name=f"Prevent {pattern.fix_type.value}",
                 validation_logic=self._generate_validation_logic(pattern),
                 severity=SeverityLevel.HIGH if pattern.effectiveness_score > 0.8 else SeverityLevel.MEDIUM,
-                auto_fix_available=pattern.prevention_strategy in [
+                auto_fix_available=pattern.prevention_strategy
+                in [
                     PreventionStrategy.AUTATED_VALIDATION,
                     PreventionStrategy.CODE_GENERATION,
                 ],
@@ -656,27 +677,21 @@ class DevelopmentFixRecorder:
             await store_result(
                 namespace="development_fixes",
                 key="all_fixes",
-                data={
-                    fix_id: asdict(fix) for fix_id, fix in self.fixes.items()
-                },
+                data={fix_id: asdict(fix) for fix_id, fix in self.fixes.items()},
             )
 
             # Save patterns
             await store_result(
                 namespace="development_fixes",
                 key="all_patterns",
-                data={
-                    pattern_id: asdict(pattern) for pattern_id, pattern in self.patterns.items()
-                },
+                data={pattern_id: asdict(pattern) for pattern_id, pattern in self.patterns.items()},
             )
 
             # Save validation rules
             await store_result(
                 namespace="development_fixes",
                 key="validation_rules",
-                data={
-                    rule_id: asdict(rule) for rule_id, rule in self.validation_rules.items()
-                },
+                data={rule_id: asdict(rule) for rule_id, rule in self.validation_rules.items()},
             )
 
             # Save statistics
@@ -700,6 +715,7 @@ class DevelopmentFixRecorder:
             "total_validations": len(self.applications),
             "prevention_success_rate": (
                 len([a for a in self.applications.values() if a.success]) / len(self.applications)
-                if self.applications else 0.0
+                if self.applications
+                else 0.0
             ),
         }

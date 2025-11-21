@@ -227,16 +227,20 @@ class KnowledgeTransferBridge:
                     if export_result.get("success", False):
                         export_results["patterns_exported"] += 1
                     else:
-                        export_results["export_errors"].append({
-                            "pattern_id": pattern_id,
-                            "error": export_result.get("error", "Unknown error"),
-                        })
+                        export_results["export_errors"].append(
+                            {
+                                "pattern_id": pattern_id,
+                                "error": export_result.get("error", "Unknown error"),
+                            }
+                        )
 
                 except Exception as e:
-                    export_results["export_errors"].append({
-                        "pattern_id": pattern_id,
-                        "error": str(e),
-                    })
+                    export_results["export_errors"].append(
+                        {
+                            "pattern_id": pattern_id,
+                            "error": str(e),
+                        }
+                    )
 
             self.sync_stats["patterns_exported"] += export_results["patterns_exported"]
             return export_results
@@ -276,10 +280,12 @@ class KnowledgeTransferBridge:
                         import_results["patterns_skipped"] += 1
 
                 except Exception as e:
-                    import_results["import_errors"].append({
-                        "pattern_id": al_pattern.get("pattern_id", "unknown"),
-                        "error": str(e),
-                    })
+                    import_results["import_errors"].append(
+                        {
+                            "pattern_id": al_pattern.get("pattern_id", "unknown"),
+                            "error": str(e),
+                        }
+                    )
 
             self.sync_stats["patterns_imported"] += import_results["patterns_imported"]
             return import_results
@@ -306,9 +312,7 @@ class KnowledgeTransferBridge:
                 "security_fix": PatternType.ERROR_HANDLING,
             }
 
-            al_pattern_type = pattern_type_mapping.get(
-                pattern.fix_type.value, PatternType.ERROR_HANDLING
-            )
+            al_pattern_type = pattern_type_mapping.get(pattern.fix_type.value, PatternType.ERROR_HANDLING)
 
             # Create Agent Lightning skill pattern
             al_pattern = SkillPattern(
@@ -386,8 +390,7 @@ class KnowledgeTransferBridge:
             # Filter by skill type if specified
             if skill_type:
                 successful_patterns = [
-                    p for p in successful_patterns
-                    if skill_type.lower() in p["source_skill_id"].lower()
+                    p for p in successful_patterns if skill_type.lower() in p["source_skill_id"].lower()
                 ]
 
             return successful_patterns
@@ -543,8 +546,7 @@ class KnowledgeTransferBridge:
             rec_type = recommendation.get("fix_type", "general")
 
             other_system_recommendations = [
-                r for r in all_recommendations
-                if r.get("source") != source and rec_type in r.get("fix_type", "")
+                r for r in all_recommendations if r.get("source") != source and rec_type in r.get("fix_type", "")
             ]
 
             return len(other_system_recommendations) > 0

@@ -26,7 +26,7 @@ class ApiDesignExpertSkill(BaseSkill):
         super().__init__(
             skill_id="api_design_expert",
             name="API Design Expert",
-            description="Production-tested API design patterns including REST, GraphQL, OpenAPI, and comprehensive security practices"
+            description="Production-tested API design patterns including REST, GraphQL, OpenAPI, and comprehensive security practices",
         )
 
     async def execute(self, input_data: Any, context: SkillContext = None) -> SkillResult:
@@ -44,7 +44,7 @@ class ApiDesignExpertSkill(BaseSkill):
                     success=True,
                     data=result,
                     execution_time=0.0,
-                    tokens_used=len(result.split())  # Simple token estimation
+                    tokens_used=len(result.split()),  # Simple token estimation
                 )
             return SkillResult(success=False, error="Input must be a string")
 
@@ -70,7 +70,7 @@ class ApiDesignExpertSkill(BaseSkill):
             "Testing strategies",
             "Performance optimization",
             "API gateway patterns",
-            "Microservices integration"
+            "Microservices integration",
         ]
 
     async def _process_string_query(self, query: str) -> str:

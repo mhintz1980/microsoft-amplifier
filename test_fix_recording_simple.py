@@ -75,17 +75,17 @@ class SimpleFixRecorder:
         fix_record = FixRecord(
             fix_id=f"fix_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             timestamp=datetime.now().isoformat(),
-            fix_type=FixType(fix_data['fix_type']),
-            severity=SeverityLevel(fix_data['severity']),
-            title=fix_data['title'],
-            issue_description=fix_data['issue_description'],
-            root_cause_analysis=fix_data['root_cause_analysis'],
-            solution_implementation=fix_data['solution_implementation'],
-            affected_skills=[AffectedSkill(**skill) for skill in fix_data['affected_skills']],
-            prevention_strategies=[PreventionStrategy(**strategy) for strategy in fix_data['prevention_strategies']],
-            impact_score=fix_data.get('impact_score', 8.5),
-            transferable_patterns=fix_data.get('transferable_patterns', []),
-            tags=fix_data.get('tags', [])
+            fix_type=FixType(fix_data["fix_type"]),
+            severity=SeverityLevel(fix_data["severity"]),
+            title=fix_data["title"],
+            issue_description=fix_data["issue_description"],
+            root_cause_analysis=fix_data["root_cause_analysis"],
+            solution_implementation=fix_data["solution_implementation"],
+            affected_skills=[AffectedSkill(**skill) for skill in fix_data["affected_skills"]],
+            prevention_strategies=[PreventionStrategy(**strategy) for strategy in fix_data["prevention_strategies"]],
+            impact_score=fix_data.get("impact_score", 8.5),
+            transferable_patterns=fix_data.get("transferable_patterns", []),
+            tags=fix_data.get("tags", []),
         )
 
         self.fixes.append(fix_record)
@@ -124,7 +124,7 @@ class SimpleFixRecorder:
         filename = f"{fix_record.fix_id}.json"
         filepath = fixes_dir / filename
 
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             json.dump(asdict(fix_record), f, indent=2, default=str)
 
     def get_validation_rules(self) -> List[Dict[str, Any]]:
@@ -133,19 +133,23 @@ class SimpleFixRecorder:
 
         for fix in self.fixes:
             if fix.fix_type == FixType.FRAMEWORK_UNIFICATION:
-                rules.append({
-                    "rule_type": "parameter_validation",
-                    "description": "Validate BaseSkill constructor parameters",
-                    "check": "skill_id, name, description parameters required",
-                    "prevention": "Use unified Framework A pattern for all skills"
-                })
+                rules.append(
+                    {
+                        "rule_type": "parameter_validation",
+                        "description": "Validate BaseSkill constructor parameters",
+                        "check": "skill_id, name, description parameters required",
+                        "prevention": "Use unified Framework A pattern for all skills",
+                    }
+                )
             elif fix.fix_type == FixType.IMPORT_CASCADING_FAILURE:
-                rules.append({
-                    "rule_type": "import_validation",
-                    "description": "Validate all imports exist in target framework",
-                    "check": "Verify imported classes exist before using",
-                    "prevention": "Test imports in isolation before skill integration"
-                })
+                rules.append(
+                    {
+                        "rule_type": "import_validation",
+                        "description": "Validate all imports exist in target framework",
+                        "check": "Verify imported classes exist before using",
+                        "prevention": "Test imports in isolation before skill integration",
+                    }
+                )
 
         return rules
 
@@ -184,7 +188,7 @@ async def test_fix_recording():
                 "issue_description": "Parameter mismatch in __init__",
                 "fix_applied": "Updated to Framework A with skill_id, name, description",
                 "status_before": "registration_error",
-                "status_after": "working"
+                "status_after": "working",
             },
             {
                 "skill_id": "nodejs_expert",
@@ -192,26 +196,26 @@ async def test_fix_recording():
                 "issue_description": "Parameter mismatch in __init__",
                 "fix_applied": "Updated to Framework A with skill_id, name, description",
                 "status_before": "registration_error",
-                "status_after": "working"
-            }
+                "status_after": "working",
+            },
         ],
         "prevention_strategies": [
             {
                 "strategy_type": "framework_validation",
                 "description": "Validate all skills use consistent BaseSkill framework",
                 "implementation": "Check __init__ signature matches Framework A pattern",
-                "automation_possible": True
+                "automation_possible": True,
             },
             {
                 "strategy_type": "import_standardization",
                 "description": "Standardize all skill imports to use Framework A",
                 "implementation": "Use single BaseSkill import path across all skills",
-                "automation_possible": True
-            }
+                "automation_possible": True,
+            },
         ],
         "impact_score": 9.2,
         "transferable_patterns": ["framework_parameter_validation", "unified_baseclass_pattern"],
-        "tags": ["base_skill", "framework", "compatibility", "registration"]
+        "tags": ["base_skill", "framework", "compatibility", "registration"],
     }
 
     fix_record = recorder.record_fix(fix_data)

@@ -111,13 +111,13 @@ class SkillRegistry:
 
         # Update tag index - handle both BaseSkill interfaces
         tags = []
-        if hasattr(skill, 'tags'):
+        if hasattr(skill, "tags"):
             tags = skill.tags
-        elif hasattr(skill, '_config') and 'tags' in skill._config:
-            tags = skill._config['tags']
-        elif hasattr(skill, 'skill_id'):  # Newer BaseSkill - derive default tags
+        elif hasattr(skill, "_config") and "tags" in skill._config:
+            tags = skill._config["tags"]
+        elif hasattr(skill, "skill_id"):  # Newer BaseSkill - derive default tags
             # Create tags from skill_id
-            tags = skill.skill_id.split('_')[:2]  # First two parts of skill_id
+            tags = skill.skill_id.split("_")[:2]  # First two parts of skill_id
 
         for tag in tags:
             if tag not in self._tag_index:

@@ -126,12 +126,11 @@ class OptimizationStrategy:
 
 
 class PerformanceTestingExpertSkill(BaseSkill):
-
     def __init__(self):
         super().__init__(
             skill_id="performance_testing_expert",
             name="Performance Testing Expert",
-            description="Expert skill for performance testing and optimization"
+            description="Expert skill for performance testing and optimization",
         )
 
         # Required attributes for skill registration
@@ -139,18 +138,12 @@ class PerformanceTestingExpertSkill(BaseSkill):
 
     def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities"""
-        return [
-            "performancetestingexpert expertise",
-            "Best practices",
-            "Production solutions"
-        ]
+        return ["performancetestingexpert expertise", "Best practices", "Production solutions"]
 
-    
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
         return isinstance(input_data, str) and len(input_data.strip()) > 0
 
-    
     """
     Comprehensive performance testing and optimization expert.
 
@@ -171,9 +164,6 @@ class PerformanceTestingExpertSkill(BaseSkill):
         self.performance_cache = {}
         self.tool_validations = {}
         self.optimization_patterns = self._load_optimization_patterns()
-
-        
-
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the performance testing request."""
@@ -227,7 +217,9 @@ class PerformanceTestingExpertSkill(BaseSkill):
             execution_time = time.time() - start_time
             tokens_used = estimate_tokens(result)
 
-            return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result))
+            return SkillResult(
+                success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result)
+            )
 
         except Exception as e:
             # Ensure we always return a valid result

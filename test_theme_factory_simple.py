@@ -31,7 +31,7 @@ def test_theme_definitions():
             "border_radius": "6px",
             "shadow_style": "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
             "gradient_primary": "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-            "gradient_secondary": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)"
+            "gradient_secondary": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
         },
         "creative": {
             "name": "creative",
@@ -49,7 +49,7 @@ def test_theme_definitions():
             "border_radius": "12px",
             "shadow_style": "0 4px 12px rgba(124,58,237,0.15)",
             "gradient_primary": "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)",
-            "gradient_secondary": "linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)"
+            "gradient_secondary": "linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)",
         },
         "minimal": {
             "name": "minimal",
@@ -67,19 +67,30 @@ def test_theme_definitions():
             "border_radius": "4px",
             "shadow_style": "0 1px 2px rgba(0,0,0,0.05)",
             "gradient_primary": "linear-gradient(135deg, #171717 0%, #404040 100%)",
-            "gradient_secondary": "linear-gradient(135deg, #404040 0%, #737373 100%)"
-        }
+            "gradient_secondary": "linear-gradient(135deg, #404040 0%, #737373 100%)",
+        },
     }
 
     print(f"✅ Defined {len(themes)} themes")
 
     # Test theme structure
     required_fields = [
-        "name", "description", "primary_color", "secondary_color",
-        "accent_color", "background_color", "surface_color",
-        "text_primary", "text_secondary", "border_color",
-        "font_family_primary", "font_family_secondary",
-        "border_radius", "shadow_style", "gradient_primary", "gradient_secondary"
+        "name",
+        "description",
+        "primary_color",
+        "secondary_color",
+        "accent_color",
+        "background_color",
+        "surface_color",
+        "text_primary",
+        "text_secondary",
+        "border_color",
+        "font_family_primary",
+        "font_family_secondary",
+        "border_radius",
+        "shadow_style",
+        "gradient_primary",
+        "gradient_secondary",
     ]
 
     for theme_name, theme_data in themes.items():
@@ -128,7 +139,7 @@ def generate_css_content(theme_name, theme_data, custom_properties):
     """Generate complete CSS content for a theme"""
     css_vars = "\n".join([f"  {key}: {value};" for key, value in custom_properties.items()])
 
-    return f"""/* Theme: {theme_name} - {theme_data['description']} */
+    return f"""/* Theme: {theme_name} - {theme_data["description"]} */
 
 :root {{
 {css_vars}
@@ -292,7 +303,7 @@ def test_css_generation():
             ".btn {",
             ".card {",
             "@media (max-width: 768px)",
-            "outline: 2px solid var(--theme-accent)"
+            "outline: 2px solid var(--theme-accent)",
         ]
 
         for element in required_css_elements:
@@ -334,7 +345,7 @@ def test_html_generation():
     <div class="container">
         <div class="card">
             <h1>{theme_name.title()} Theme</h1>
-            <p>{theme_data['description']}</p>
+            <p>{theme_data["description"]}</p>
             <button class="btn">Primary Button</button>
             <button class="btn btn-secondary">Secondary Button</button>
         </div>
@@ -347,10 +358,19 @@ def test_html_generation():
     # Validate HTML structure
     required_html_elements = [
         "<!DOCTYPE html>",
-        "<html lang=\"en\">",
-        "<head>", "<title>", "<style>", "</head>",
-        "<body>", "<div class=\"container\">", "<div class=\"card\">",
-        "<h1>", "<p>", "<button class=\"btn\">", "</body>", "</html>"
+        '<html lang="en">',
+        "<head>",
+        "<title>",
+        "<style>",
+        "</head>",
+        "<body>",
+        '<div class="container">',
+        '<div class="card">',
+        "<h1>",
+        "<p>",
+        '<button class="btn">',
+        "</body>",
+        "</html>",
     ]
 
     for element in required_html_elements:
@@ -361,7 +381,7 @@ def test_html_generation():
     print(f"  ✅ HTML validation passed")
 
     # Save sample output for manual review
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".html", delete=False) as f:
         f.write(html_content)
         html_file = f.name
 
@@ -381,16 +401,16 @@ def test_theme_quality():
     quality_checks = {
         "enterprise": {
             "expected_primary": "#1e40af",  # Professional blue
-            "category": "Corporate"
+            "category": "Corporate",
         },
         "creative": {
             "expected_primary": "#7c3aed",  # Creative purple
-            "category": "Artistic"
+            "category": "Artistic",
         },
         "minimal": {
             "expected_primary": "#171717",  # Dark gray
-            "category": "Minimalist"
-        }
+            "category": "Minimalist",
+        },
     }
 
     for theme_name, theme_data in themes.items():
@@ -470,6 +490,7 @@ def main():
     except Exception as e:
         print(f"\n❌ TEST FAILED: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

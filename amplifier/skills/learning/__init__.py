@@ -31,14 +31,12 @@ __all__ = [
     # Core recording system
     "DevelopmentFixRecorder",
     "SkillCreationIntegrator",
-
     # Data models
     "DevelopmentFix",
     "FixPattern",
     "AffectedSkill",
     "ValidationRule",
     "FixApplication",
-
     # Enums
     "FixType",
     "SeverityLevel",
@@ -60,6 +58,7 @@ SYSTEM_CAPABILITIES = {
     "automated_prevention": True,
     "template_integration": True,
 }
+
 
 def get_system_info() -> dict:
     """Get system information and capabilities"""

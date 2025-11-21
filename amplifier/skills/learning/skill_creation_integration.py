@@ -111,9 +111,7 @@ class SkillCreationIntegrator:
             )
 
             # Add skill creation specific validation
-            creation_specific_validation = await self._creation_specific_validation(
-                skill_id, skill_code, skill_type
-            )
+            creation_specific_validation = await self._creation_specific_validation(skill_id, skill_code, skill_type)
 
             # Combine results
             combined_validation = {
@@ -157,11 +155,13 @@ class SkillCreationIntegrator:
                     prevention_results["auto_fixes_applied"].append(auto_fix_result)
                 else:
                     # Add to manual interventions
-                    prevention_results["manual_interventions_required"].append({
-                        "issue": issue,
-                        "recommended_action": issue.get("prevention_strategy", "Manual review required"),
-                        "severity": issue.get("severity", "medium"),
-                    })
+                    prevention_results["manual_interventions_required"].append(
+                        {
+                            "issue": issue,
+                            "recommended_action": issue.get("prevention_strategy", "Manual review required"),
+                            "severity": issue.get("severity", "medium"),
+                        }
+                    )
 
             # Apply pattern-based prevention
             pattern_preventions = await self._apply_pattern_based_prevention(skill_id, issues_found)
@@ -297,18 +297,22 @@ class SkillCreationIntegrator:
 
             # Recommend specific template modifications
             if enhanced_specification.get("framework_fixes"):
-                recommendations["template_modifications"].append({
-                    "modification_type": "framework_compatibility",
-                    "description": "Apply framework unification fixes",
-                    "patterns_applied": enhanced_specification["framework_fixes"],
-                })
+                recommendations["template_modifications"].append(
+                    {
+                        "modification_type": "framework_compatibility",
+                        "description": "Apply framework unification fixes",
+                        "patterns_applied": enhanced_specification["framework_fixes"],
+                    }
+                )
 
             if enhanced_specification.get("method_fixes"):
-                recommendations["template_modifications"].append({
-                    "modification_type": "method_signature",
-                    "description": "Fix method signature compatibility",
-                    "patterns_applied": enhanced_specification["method_fixes"],
-                })
+                recommendations["template_modifications"].append(
+                    {
+                        "modification_type": "method_signature",
+                        "description": "Fix method signature compatibility",
+                        "patterns_applied": enhanced_specification["method_fixes"],
+                    }
+                )
 
             # Track applied patterns
             all_patterns = []
@@ -385,9 +389,7 @@ class SkillCreationIntegrator:
                 post_validation["pattern_feedback"] = pattern_feedback
 
                 # Extract learnings for continuous improvement
-                learnings = await self._extract_creation_learnings(
-                    skill_id, enhanced_specification, pattern_feedback
-                )
+                learnings = await self._extract_creation_learnings(skill_id, enhanced_specification, pattern_feedback)
                 post_validation["learnings_extracted"] = learnings
 
             return post_validation
@@ -396,9 +398,7 @@ class SkillCreationIntegrator:
             logger.error(f"Failed post-creation validation: {e}")
             return {"error": str(e)}
 
-    async def _creation_specific_validation(
-        self, skill_id: str, skill_code: str, skill_type: str
-    ) -> Dict[str, Any]:
+    async def _creation_specific_validation(self, skill_id: str, skill_code: str, skill_type: str) -> Dict[str, Any]:
         """Perform creation-specific validation"""
         try:
             validation_results = {
@@ -410,39 +410,45 @@ class SkillCreationIntegrator:
             }
 
             # Check for creation pipeline specific issues
-            lines = skill_code.split('\n')
+            lines = skill_code.split("\n")
 
             # Check for common creation issues
             for i, line in enumerate(lines, 1):
                 line_stripped = line.strip()
 
                 # Check for placeholder implementations
-                if line_stripped.startswith('raise NotImplementedError'):
-                    validation_results["creation_issues"].append({
-                        "line_number": i,
-                        "issue_type": "placeholder_implementation",
-                        "description": "Placeholder NotImplementedError found",
-                        "severity": "medium",
-                    })
+                if line_stripped.startswith("raise NotImplementedError"):
+                    validation_results["creation_issues"].append(
+                        {
+                            "line_number": i,
+                            "issue_type": "placeholder_implementation",
+                            "description": "Placeholder NotImplementedError found",
+                            "severity": "medium",
+                        }
+                    )
 
                 # Check for missing documentation
-                if 'def ' in line_stripped and not line_stripped.startswith('def _'):
+                if "def " in line_stripped and not line_stripped.startswith("def _"):
                     if i + 1 < len(lines) and not lines[i].strip().startswith('"""'):
-                        validation_results["warnings"].append({
-                            "line_number": i,
-                            "warning_type": "missing_documentation",
-                            "description": "Public method missing documentation",
-                            "severity": "low",
-                        })
+                        validation_results["warnings"].append(
+                            {
+                                "line_number": i,
+                                "warning_type": "missing_documentation",
+                                "description": "Public method missing documentation",
+                                "severity": "low",
+                            }
+                        )
 
                 # Check for TODO comments
-                if 'TODO' in line_stripped:
-                    validation_results["creation_issues"].append({
-                        "line_number": i,
-                        "issue_type": "incomplete_implementation",
-                        "description": "TODO comment indicates incomplete implementation",
-                        "severity": "medium",
-                    })
+                if "TODO" in line_stripped:
+                    validation_results["creation_issues"].append(
+                        {
+                            "line_number": i,
+                            "issue_type": "incomplete_implementation",
+                            "description": "TODO comment indicates incomplete implementation",
+                            "severity": "medium",
+                        }
+                    )
 
             # Generate recommendations
             if validation_results["creation_issues"]:
@@ -470,40 +476,48 @@ class SkillCreationIntegrator:
         try:
             # Auto-fix actions
             for auto_fix in validation_results.get("auto_fixes_available", []):
-                actions.append({
-                    "action_type": "auto_fix",
-                    "priority": "high" if auto_fix["severity"] in ["critical", "high"] else "medium",
-                    "description": auto_fix["fix_description"],
-                    "rule_id": auto_fix["rule_id"],
-                    "pattern_id": auto_fix["pattern_id"],
-                })
+                actions.append(
+                    {
+                        "action_type": "auto_fix",
+                        "priority": "high" if auto_fix["severity"] in ["critical", "high"] else "medium",
+                        "description": auto_fix["fix_description"],
+                        "rule_id": auto_fix["rule_id"],
+                        "pattern_id": auto_fix["pattern_id"],
+                    }
+                )
 
             # Prevention actions
             for prevention in validation_results.get("prevention_suggestions", []):
-                actions.append({
-                    "action_type": "prevention",
-                    "priority": "high" if prevention["severity"] in ["critical", "high"] else "medium",
-                    "description": prevention["description"],
-                    "rule_id": prevention["rule_id"],
-                    "pattern_id": prevention["pattern_id"],
-                })
+                actions.append(
+                    {
+                        "action_type": "prevention",
+                        "priority": "high" if prevention["severity"] in ["critical", "high"] else "medium",
+                        "description": prevention["description"],
+                        "rule_id": prevention["rule_id"],
+                        "pattern_id": prevention["pattern_id"],
+                    }
+                )
 
             # Risk-based actions
             if validation_results.get("overall_risk_score", 0) > 0.7:
-                actions.append({
-                    "action_type": "high_risk_review",
-                    "priority": "critical",
-                    "description": "High overall risk score requires manual review",
-                    "risk_score": validation_results["overall_risk_score"],
-                })
+                actions.append(
+                    {
+                        "action_type": "high_risk_review",
+                        "priority": "critical",
+                        "description": "High overall risk score requires manual review",
+                        "risk_score": validation_results["overall_risk_score"],
+                    }
+                )
 
             # Skill type specific actions
             if skill_type in ["core_technology", "framework"]:
-                actions.append({
-                    "action_type": "enhanced_validation",
-                    "priority": "high",
-                    "description": "Core technology skills require enhanced validation",
-                })
+                actions.append(
+                    {
+                        "action_type": "enhanced_validation",
+                        "priority": "high",
+                        "description": "Core technology skills require enhanced validation",
+                    }
+                )
 
         except Exception as e:
             logger.error(f"Failed to generate recommended actions: {e}")
@@ -570,11 +584,13 @@ class SkillCreationIntegrator:
             if framework:
                 # Check framework compatibility
                 if framework.get("version") not in ["1.0.0", "2.0.0"]:
-                    issues.append({
-                        "issue_type": "framework_version_compatibility",
-                        "description": f"Framework version {framework.get('version')} may have compatibility issues",
-                        "severity": "medium",
-                    })
+                    issues.append(
+                        {
+                            "issue_type": "framework_version_compatibility",
+                            "description": f"Framework version {framework.get('version')} may have compatibility issues",
+                            "severity": "medium",
+                        }
+                    )
 
                 # Check framework parameters
                 required_params = ["skill_id", "name", "description"]
@@ -582,11 +598,13 @@ class SkillCreationIntegrator:
                 missing_params = [p for p in required_params if p not in framework_params]
 
                 if missing_params:
-                    issues.append({
-                        "issue_type": "missing_framework_parameters",
-                        "description": f"Missing required framework parameters: {missing_params}",
-                        "severity": "high",
-                    })
+                    issues.append(
+                        {
+                            "issue_type": "missing_framework_parameters",
+                            "description": f"Missing required framework parameters: {missing_params}",
+                            "severity": "high",
+                        }
+                    )
 
         except Exception as e:
             logger.error(f"Failed to check framework specification: {e}")
@@ -608,13 +626,15 @@ class SkillCreationIntegrator:
             for dep in dependencies:
                 for pattern in problematic_patterns:
                     if pattern in dep:
-                        issues.append({
-                            "issue_type": "problematic_dependency",
-                            "description": f"Dependency '{dep}' contains known problematic pattern '{pattern}'",
-                            "severity": "high",
-                            "dependency": dep,
-                            "pattern": pattern,
-                        })
+                        issues.append(
+                            {
+                                "issue_type": "problematic_dependency",
+                                "description": f"Dependency '{dep}' contains known problematic pattern '{pattern}'",
+                                "severity": "high",
+                                "dependency": dep,
+                                "pattern": pattern,
+                            }
+                        )
 
         except Exception as e:
             logger.error(f"Failed to check dependencies: {e}")
@@ -629,23 +649,27 @@ class SkillCreationIntegrator:
             # Check for abstract method implementation issues
             for method in methods:
                 if method.get("is_abstract") and not method.get("implemented"):
-                    issues.append({
-                        "issue_type": "unimplemented_abstract_method",
-                        "description": f"Abstract method '{method.get('name', 'unknown')}' is not implemented",
-                        "severity": "high",
-                        "method": method.get("name"),
-                    })
+                    issues.append(
+                        {
+                            "issue_type": "unimplemented_abstract_method",
+                            "description": f"Abstract method '{method.get('name', 'unknown')}' is not implemented",
+                            "severity": "high",
+                            "method": method.get("name"),
+                        }
+                    )
 
                 # Check method signature compatibility
                 if method.get("signature"):
                     signature = method["signature"]
                     if "different_signature" in signature:  # Known issue pattern
-                        issues.append({
-                            "issue_type": "method_signature_incompatibility",
-                            "description": f"Method '{method.get('name', 'unknown')}' has incompatible signature",
-                            "severity": "medium",
-                            "method": method.get("name"),
-                        })
+                        issues.append(
+                            {
+                                "issue_type": "method_signature_incompatibility",
+                                "description": f"Method '{method.get('name', 'unknown')}' has incompatible signature",
+                                "severity": "medium",
+                                "method": method.get("name"),
+                            }
+                        )
 
         except Exception as e:
             logger.error(f"Failed to check method signatures: {e}")
@@ -688,12 +712,14 @@ class SkillCreationIntegrator:
         try:
             for pattern_id in applied_patterns:
                 # This would check actual pattern application
-                feedback.append({
-                    "pattern_id": pattern_id,
-                    "application_status": "applied",
-                    "validation_result": "success",
-                    "issues": [],
-                })
+                feedback.append(
+                    {
+                        "pattern_id": pattern_id,
+                        "application_status": "applied",
+                        "validation_result": "success",
+                        "issues": [],
+                    }
+                )
 
         except Exception as e:
             logger.error(f"Failed to validate pattern application: {e}")

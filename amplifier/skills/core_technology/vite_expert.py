@@ -41,12 +41,11 @@ class BuildMetrics:
 
 
 class ViteExpertSkill(BaseSkill):
-
     def __init__(self):
         super().__init__(
             skill_id="vite_expert",
             name="Vite Expert",
-            description="Expert skill for Vite build tool and development server"
+            description="Expert skill for Vite build tool and development server",
         )
         self._performance_cache: dict[str, BuildMetrics] = {}
         self._config_patterns = self._load_config_patterns()
@@ -54,20 +53,15 @@ class ViteExpertSkill(BaseSkill):
 
         # Required attributes for skill registration
         self.tags = ["vite", "build-tools", "frontend", "development"]
+
     def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities"""
-        return [
-            "viteexpert expertise",
-            "Best practices",
-            "Production solutions"
-        ]
+        return ["viteexpert expertise", "Best practices", "Production solutions"]
 
-    
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
         return isinstance(input_data, str) and len(input_data.strip()) > 0
 
-    
     """
     Comprehensive Vite expertise skill providing:
 
@@ -85,10 +79,6 @@ class ViteExpertSkill(BaseSkill):
     - Performance recommendations benchmarked
     - Build optimizations production-tested
     """
-
-
-
-
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the Vite-related query."""
@@ -155,7 +145,9 @@ class ViteExpertSkill(BaseSkill):
             execution_time = time.time() - start_time
             tokens_used = estimate_tokens(content)
 
-            return SkillResult(success=True, data=content, execution_time=execution_time, tokens_used=estimate_tokens(content))
+            return SkillResult(
+                success=True, data=content, execution_time=execution_time, tokens_used=estimate_tokens(content)
+            )
 
         except Exception as e:
             execution_time = time.time() - start_time

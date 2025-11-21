@@ -26,7 +26,7 @@ class ApiDesignExpertSkill(BaseSkill):
         super().__init__(
             skill_id="api_design_expert",
             name="API Design Expert",
-            description="Production-tested API design patterns including REST, GraphQL, OpenAPI, and comprehensive security practices"
+            description="Production-tested API design patterns including REST, GraphQL, OpenAPI, and comprehensive security practices",
         )
 
     @property

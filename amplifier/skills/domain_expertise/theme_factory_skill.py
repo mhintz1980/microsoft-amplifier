@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ThemeConfig:
     """Configuration for a professional theme"""
+
     name: str
     description: str
     primary_color: str
@@ -61,6 +62,7 @@ class ThemeConfig:
 @dataclass
 class ThemeApplication:
     """Result of theme application"""
+
     html_content: str
     css_content: str
     theme_name: str
@@ -90,7 +92,7 @@ class ThemeFactorySkill(FrameworkBaseSkill):
             "themes_generated": 0,
             "css_generated": 0,
             "applications_completed": 0,
-            "average_generation_time": 0.0
+            "average_generation_time": 0.0,
         }
 
         # Agent Lightning integration
@@ -104,7 +106,7 @@ class ThemeFactorySkill(FrameworkBaseSkill):
             if not await self.validate_input(input_data):
                 return FrameworkSkillResult(
                     success=False,
-                    error="Invalid input data. Expected dict with 'action' and 'theme_name' or 'custom_theme'"
+                    error="Invalid input data. Expected dict with 'action' and 'theme_name' or 'custom_theme'",
                 )
 
             start_time = time.time()
@@ -139,20 +141,12 @@ class ThemeFactorySkill(FrameworkBaseSkill):
             self._update_performance_metrics(action, execution_time)
 
             return FrameworkSkillResult(
-                success=True,
-                data=result,
-                execution_time=execution_time,
-                tokens_used=tokens_used
+                success=True, data=result, execution_time=execution_time, tokens_used=tokens_used
             )
 
         except Exception as e:
             logger.error(f"ThemeFactorySkill execution error: {e}")
-            return FrameworkSkillResult(
-                success=False,
-                error=str(e),
-                execution_time=0.0,
-                tokens_used=0
-            )
+            return FrameworkSkillResult(success=False, error=str(e), execution_time=0.0, tokens_used=0)
 
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
@@ -198,11 +192,11 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                     "name": theme.name,
                     "description": theme.description,
                     "primary_color": theme.primary_color,
-                    "category": self._get_theme_category(theme.name)
+                    "category": self._get_theme_category(theme.name),
                 }
                 for theme in self.themes.values()
             ],
-            "total_themes": len(self.themes)
+            "total_themes": len(self.themes),
         }
 
     async def _generate_theme(self, theme_name: str, target_content: str = "") -> Dict[str, Any]:
@@ -233,8 +227,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
             "theme_info": {
                 "name": theme.name,
                 "description": theme.description,
-                "custom_properties": custom_properties
-            }
+                "custom_properties": custom_properties,
+            },
         }
 
     async def _generate_css_only(self, theme_name: str) -> Dict[str, Any]:
@@ -246,11 +240,7 @@ class ThemeFactorySkill(FrameworkBaseSkill):
         custom_properties = self._generate_css_custom_properties(theme)
         css_content = self._generate_css_content(theme, custom_properties)
 
-        return {
-            "css_content": css_content,
-            "custom_properties": custom_properties,
-            "theme_name": theme_name
-        }
+        return {"css_content": css_content, "custom_properties": custom_properties, "theme_name": theme_name}
 
     async def _generate_custom_theme(self, custom_config: Dict[str, Any]) -> Dict[str, Any]:
         """Generate theme from custom configuration"""
@@ -277,8 +267,13 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 font_family_secondary=custom_config.get("font_family_secondary", "Georgia, serif"),
                 border_radius=custom_config.get("border_radius", "8px"),
                 shadow_style=custom_config.get("shadow_style", "0 2px 8px rgba(0,0,0,0.1)"),
-                gradient_primary=custom_config.get("gradient_primary", f"{custom_config['primary_color']} 0%, {custom_config['secondary_color']} 100%"),
-                gradient_secondary=custom_config.get("gradient_secondary", f"{custom_config['secondary_color']} 0%, {custom_config['primary_color']} 100%")
+                gradient_primary=custom_config.get(
+                    "gradient_primary", f"{custom_config['primary_color']} 0%, {custom_config['secondary_color']} 100%"
+                ),
+                gradient_secondary=custom_config.get(
+                    "gradient_secondary",
+                    f"{custom_config['secondary_color']} 0%, {custom_config['primary_color']} 100%",
+                ),
             )
 
             custom_properties = self._generate_css_custom_properties(theme_config)
@@ -287,7 +282,7 @@ class ThemeFactorySkill(FrameworkBaseSkill):
             return {
                 "css_content": css_content,
                 "custom_properties": custom_properties,
-                "theme_config": theme_config.__dict__
+                "theme_config": theme_config.__dict__,
             }
 
         except Exception as e:
@@ -312,9 +307,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="6px",
                 shadow_style="0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
                 gradient_primary="linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-                gradient_secondary="linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)"
+                gradient_secondary="linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
             ),
-
             "creative": ThemeConfig(
                 name="creative",
                 description="Vibrant artistic theme with purple gradients and bold typography",
@@ -331,9 +325,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="12px",
                 shadow_style="0 4px 12px rgba(124,58,237,0.15)",
                 gradient_primary="linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)",
-                gradient_secondary="linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)"
+                gradient_secondary="linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)",
             ),
-
             "minimal": ThemeConfig(
                 name="minimal",
                 description="Clean minimalist theme with subtle grays and sharp typography",
@@ -350,9 +343,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="4px",
                 shadow_style="0 1px 2px rgba(0,0,0,0.05)",
                 gradient_primary="linear-gradient(135deg, #171717 0%, #404040 100%)",
-                gradient_secondary="linear-gradient(135deg, #404040 0%, #737373 100%)"
+                gradient_secondary="linear-gradient(135deg, #404040 0%, #737373 100%)",
             ),
-
             "warm": ThemeConfig(
                 name="warm",
                 description="Cozy warm theme with orange accents and friendly colors",
@@ -369,9 +361,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="8px",
                 shadow_style="0 2px 8px rgba(234,88,12,0.15)",
                 gradient_primary="linear-gradient(135deg, #ea580c 0%, #fb923c 100%)",
-                gradient_secondary="linear-gradient(135deg, #fb923c 0%, #fed7aa 100%)"
+                gradient_secondary="linear-gradient(135deg, #fb923c 0%, #fed7aa 100%)",
             ),
-
             "nature": ThemeConfig(
                 name="nature",
                 description="Fresh nature-inspired theme with green tones and organic feel",
@@ -388,9 +379,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="6px",
                 shadow_style="0 2px 8px rgba(5,150,105,0.1)",
                 gradient_primary="linear-gradient(135deg, #059669 0%, #10b981 100%)",
-                gradient_secondary="linear-gradient(135deg, #10b981 0%, #34d399 100%)"
+                gradient_secondary="linear-gradient(135deg, #10b981 0%, #34d399 100%)",
             ),
-
             "ocean": ThemeConfig(
                 name="ocean",
                 description="Calm ocean theme with blue gradients and serene atmosphere",
@@ -407,9 +397,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="8px",
                 shadow_style="0 2px 8px rgba(12,74,110,0.1)",
                 gradient_primary="linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)",
-                gradient_secondary="linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)"
+                gradient_secondary="linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)",
             ),
-
             "sunset": ThemeConfig(
                 name="sunset",
                 description="Dramatic sunset theme with warm gradients and romantic colors",
@@ -426,9 +415,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="12px",
                 shadow_style="0 4px 12px rgba(220,38,38,0.15)",
                 gradient_primary="linear-gradient(135deg, #dc2626 0%, #f97316 100%)",
-                gradient_secondary="linear-gradient(135deg, #f97316 0%, #fb923c 100%)"
+                gradient_secondary="linear-gradient(135deg, #f97316 0%, #fb923c 100%)",
             ),
-
             "midnight": ThemeConfig(
                 name="midnight",
                 description="Dark professional theme with deep blues and subtle accents",
@@ -445,9 +433,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="8px",
                 shadow_style="0 2px 8px rgba(0,0,0,0.3)",
                 gradient_primary="linear-gradient(135deg, #1e293b 0%, #334155 100%)",
-                gradient_secondary="linear-gradient(135deg, #334155 0%, #64748b 100%)"
+                gradient_secondary="linear-gradient(135deg, #334155 0%, #64748b 100%)",
             ),
-
             "elegant": ThemeConfig(
                 name="elegant",
                 description="Sophisticated theme with gold accents and luxury feel",
@@ -464,9 +451,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="4px",
                 shadow_style="0 2px 8px rgba(180,83,9,0.1)",
                 gradient_primary="linear-gradient(135deg, #b45309 0%, #f59e0b 100%)",
-                gradient_secondary="linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)"
+                gradient_secondary="linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)",
             ),
-
             "tech": ThemeConfig(
                 name="tech",
                 description="Modern tech theme with vibrant colors and digital aesthetic",
@@ -483,8 +469,8 @@ class ThemeFactorySkill(FrameworkBaseSkill):
                 border_radius="2px",
                 shadow_style="0 0 20px rgba(239,68,68,0.3), inset 0 0 0 1px rgba(239,68,68,0.1)",
                 gradient_primary="linear-gradient(135deg, #7c2d12 0%, #dc2626 100%)",
-                gradient_secondary="linear-gradient(135deg, #dc2626 0%, #ef4444 100%)"
-            )
+                gradient_secondary="linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+            ),
         }
 
     def _generate_css_custom_properties(self, theme: ThemeConfig) -> Dict[str, str]:
@@ -898,7 +884,7 @@ input:focus, textarea:focus, select:focus {{
             "sunset": "Dramatic",
             "midnight": "Dark",
             "elegant": "Luxury",
-            "tech": "Technology"
+            "tech": "Technology",
         }
         return categories.get(theme_name, "General")
 

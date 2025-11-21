@@ -1039,17 +1039,6 @@ class CodeQualityExpertSkill(BaseSkill):
 
 
 
-        Comprehensive expertise:
-        - Linting & Formatting (ESLint, Prettier, Stylelint, biome, Ruff)
-        - Static Analysis (SonarQube, CodeQL, TypeScript strict mode)
-        - Quality Gates (Pre-commit hooks, CI/CD quality gates)
-        - Code Review (Best practices, automated review tools)
-        - Technical Debt (Identification, prioritization, repayment)
-        - Standards Enforcement (Coding standards, style guides, architectural guidelines)
-        All configurations are validated and tested in production environments."""
-
-
-
     def get_capabilities(self) -> list[str]:
         """Return the code quality capabilities of this skill."""
         return [
@@ -1227,39 +1216,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-json
-```
-
-## GitHub Actions Quality Gate
-```yaml
-name: Code Quality
-on: [push, pull_request]
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run quality checks
-        run: |
-          npm run lint:check
-          npm run format:check
-          npm run test:coverage
-```
-
-## Quality Thresholds
-- Coverage: 80%
-- Max complexity: 10
-- Max file length: 500 lines
-- Zero critical violations
-- <5 major violations per file
-
-All quality gates are production-tested and validated.
-        """
+      return self._provide_comprehensive_quality_guide()
 
     def _provide_comprehensive_quality_guide(self) -> str:
         return """
@@ -1329,10 +1286,3 @@ Based on production implementations:
 - **85% improvement** in code review efficiency
 - **95% consistency** in code style across team
 
-This comprehensive guide provides validated strategies with zero hallucination guarantee.
-All techniques tested in real production environments with measurable results.
-        """
-
-
-# Create the Skill instance that will be imported
-Skill = CodeQualityExpertSkill

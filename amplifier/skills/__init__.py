@@ -99,6 +99,7 @@ except ImportError:
 get_intelligent_routing_specialist = None
 get_skill_testing_validation_specialist = None
 
+
 def register_all_skills():
     """Register all available skills in the framework."""
     registered_count = 0
@@ -147,8 +148,10 @@ def register_all_skills():
 
     except Exception as e:
         import logging
+
         logging.getLogger(__name__).warning(f"Skill registration failed: {e}")
         return registered_count
+
 
 # Signature framework imports
 try:

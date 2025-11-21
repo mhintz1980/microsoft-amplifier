@@ -34,10 +34,7 @@ async def test_theme_factory_basic():
     # Test generating a specific theme
     print("\n2. Testing theme generation...")
     test_theme = "enterprise"
-    generate_result = await theme_skill.execute({
-        "action": "generate",
-        "theme_name": test_theme
-    })
+    generate_result = await theme_skill.execute({"action": "generate", "theme_name": test_theme})
     assert generate_result.success, f"Failed to generate theme: {generate_result.error}"
 
     html_content = generate_result.data["html_content"]
@@ -49,10 +46,7 @@ async def test_theme_factory_basic():
 
     # Test CSS-only generation
     print("\n3. Testing CSS-only generation...")
-    css_result = await theme_skill.execute({
-        "action": "generate_css",
-        "theme_name": "creative"
-    })
+    css_result = await theme_skill.execute({"action": "generate_css", "theme_name": "creative"})
     assert css_result.success, f"Failed to generate CSS: {css_result.error}"
 
     css_only = css_result.data["css_content"]
@@ -63,16 +57,18 @@ async def test_theme_factory_basic():
 
     # Test custom theme generation
     print("\n4. Testing custom theme generation...")
-    custom_result = await theme_skill.execute({
-        "action": "custom_theme",
-        "custom_theme": {
-            "name": "test_custom",
-            "description": "Test custom theme",
-            "primary_color": "#ff6b6b",
-            "secondary_color": "#4ecdc4",
-            "background_color": "#ffffff"
+    custom_result = await theme_skill.execute(
+        {
+            "action": "custom_theme",
+            "custom_theme": {
+                "name": "test_custom",
+                "description": "Test custom theme",
+                "primary_color": "#ff6b6b",
+                "secondary_color": "#4ecdc4",
+                "background_color": "#ffffff",
+            },
         }
-    })
+    )
     assert custom_result.success, f"Failed to generate custom theme: {custom_result.error}"
 
     custom_css = custom_result.data["css_content"]
@@ -81,11 +77,13 @@ async def test_theme_factory_basic():
 
     # Test content wrapping
     print("\n5. Testing content wrapping...")
-    wrap_result = await theme_skill.execute({
-        "action": "generate",
-        "theme_name": "minimal",
-        "target_content": "<h1>Test Content</h1><p>This is test content wrapped with theme.</p>"
-    })
+    wrap_result = await theme_skill.execute(
+        {
+            "action": "generate",
+            "theme_name": "minimal",
+            "target_content": "<h1>Test Content</h1><p>This is test content wrapped with theme.</p>",
+        }
+    )
     assert wrap_result.success, f"Failed to wrap content: {wrap_result.error}"
 
     wrapped_html = wrap_result.data["html_content"]
@@ -121,11 +119,10 @@ async def test_theme_validation():
 
     # Test invalid theme name
     print("1. Testing invalid theme name...")
-    invalid_result = await theme_skill.execute({
-        "action": "generate",
-        "theme_name": "nonexistent_theme"
-    })
-    assert not invalid_result.success or "not found" in invalid_result.data.get("error", ""), "Should fail with invalid theme"
+    invalid_result = await theme_skill.execute({"action": "generate", "theme_name": "nonexistent_theme"})
+    assert not invalid_result.success or "not found" in invalid_result.data.get("error", ""), (
+        "Should fail with invalid theme"
+    )
     print("✅ Invalid theme name properly handled")
 
     # Test invalid input
@@ -136,14 +133,18 @@ async def test_theme_validation():
 
     # Test incomplete custom theme
     print("3. Testing incomplete custom theme...")
-    incomplete_result = await theme_skill.execute({
-        "action": "custom_theme",
-        "custom_theme": {
-            "name": "incomplete"
-            # Missing required fields
+    incomplete_result = await theme_skill.execute(
+        {
+            "action": "custom_theme",
+            "custom_theme": {
+                "name": "incomplete"
+                # Missing required fields
+            },
         }
-    })
-    assert not incomplete_result.success or "Missing" in incomplete_result.data.get("error", ""), "Should fail with incomplete theme"
+    )
+    assert not incomplete_result.success or "Missing" in incomplete_result.data.get("error", ""), (
+        "Should fail with incomplete theme"
+    )
     print("✅ Incomplete custom theme properly handled")
 
     print("✅ All validation tests passed!")
@@ -162,10 +163,7 @@ async def test_theme_quality():
     for theme_name in test_themes:
         print(f"1. Testing {theme_name} theme quality...")
 
-        result = await theme_skill.execute({
-            "action": "generate",
-            "theme_name": theme_name
-        })
+        result = await theme_skill.execute({"action": "generate", "theme_name": theme_name})
         assert result.success, f"Failed to generate {theme_name} theme"
 
         html = result.data["html_content"]
@@ -202,18 +200,15 @@ def save_sample_output():
         theme_skill = ThemeFactorySkill()
 
         # Generate sample theme
-        result = await theme_skill.execute({
-            "action": "generate",
-            "theme_name": "enterprise"
-        })
+        result = await theme_skill.execute({"action": "generate", "theme_name": "enterprise"})
 
         if result.success:
             # Save to temporary files
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".html", delete=False) as f:
                 f.write(result.data["html_content"])
                 html_file = f.name
 
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.css', delete=False) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".css", delete=False) as f:
                 f.write(result.data["css_content"])
                 css_file = f.name
 
@@ -253,6 +248,7 @@ async def main():
     except Exception as e:
         print(f"\n❌ TEST FAILED: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

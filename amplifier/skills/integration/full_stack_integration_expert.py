@@ -14,27 +14,21 @@ from ..skills_framework.base_skill import SkillResult
 
 
 class FullStackIntegrationExpertSkill(BaseSkill):
-
     def __init__(self):
         super().__init__(
             skill_id="fullstackintegrationexpert_",
             name="FullStackIntegrationExpert Expert",
-            description="Expert skill for fullstackintegrationexpert"
+            description="Expert skill for fullstackintegrationexpert",
         )
+
     def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities"""
-        return [
-            "fullstackintegrationexpert expertise",
-            "Best practices",
-            "Production solutions"
-        ]
+        return ["fullstackintegrationexpert expertise", "Best practices", "Production solutions"]
 
-    
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
         return isinstance(input_data, str) and len(input_data.strip()) > 0
 
-    
     """
     Expert-level full-stack integration patterns for building robust, scalable applications.
 
@@ -42,10 +36,6 @@ class FullStackIntegrationExpertSkill(BaseSkill):
     authentication flows, deployment strategies, and production deployment patterns.
     All patterns are tested and production-proven.
     """
-
-
-
-
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the integration query."""

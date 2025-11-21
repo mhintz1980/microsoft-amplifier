@@ -30,7 +30,7 @@ THEMES = {
         "border_radius": "6px",
         "shadow_style": "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
         "gradient_primary": "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
     },
     "creative": {
         "name": "creative",
@@ -48,7 +48,7 @@ THEMES = {
         "border_radius": "12px",
         "shadow_style": "0 4px 12px rgba(124,58,237,0.15)",
         "gradient_primary": "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)",
     },
     "minimal": {
         "name": "minimal",
@@ -66,7 +66,7 @@ THEMES = {
         "border_radius": "4px",
         "shadow_style": "0 1px 2px rgba(0,0,0,0.05)",
         "gradient_primary": "linear-gradient(135deg, #171717 0%, #404040 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #404040 0%, #737373 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #404040 0%, #737373 100%)",
     },
     "warm": {
         "name": "warm",
@@ -84,7 +84,7 @@ THEMES = {
         "border_radius": "8px",
         "shadow_style": "0 2px 8px rgba(234,88,12,0.15)",
         "gradient_primary": "linear-gradient(135deg, #ea580c 0%, #fb923c 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #fb923c 0%, #fed7aa 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #fb923c 0%, #fed7aa 100%)",
     },
     "nature": {
         "name": "nature",
@@ -102,7 +102,7 @@ THEMES = {
         "border_radius": "6px",
         "shadow_style": "0 2px 8px rgba(5,150,105,0.1)",
         "gradient_primary": "linear-gradient(135deg, #059669 0%, #10b981 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #10b981 0%, #34d399 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #10b981 0%, #34d399 100%)",
     },
     "ocean": {
         "name": "ocean",
@@ -120,7 +120,7 @@ THEMES = {
         "border_radius": "8px",
         "shadow_style": "0 2px 8px rgba(12,74,110,0.1)",
         "gradient_primary": "linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)",
     },
     "sunset": {
         "name": "sunset",
@@ -138,7 +138,7 @@ THEMES = {
         "border_radius": "12px",
         "shadow_style": "0 4px 12px rgba(220,38,38,0.15)",
         "gradient_primary": "linear-gradient(135deg, #dc2626 0%, #f97316 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #f97316 0%, #fb923c 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #f97316 0%, #fb923c 100%)",
     },
     "midnight": {
         "name": "midnight",
@@ -156,7 +156,7 @@ THEMES = {
         "border_radius": "8px",
         "shadow_style": "0 2px 8px rgba(0,0,0,0.3)",
         "gradient_primary": "linear-gradient(135deg, #1e293b 0%, #334155 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #334155 0%, #64748b 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #334155 0%, #64748b 100%)",
     },
     "elegant": {
         "name": "elegant",
@@ -174,7 +174,7 @@ THEMES = {
         "border_radius": "4px",
         "shadow_style": "0 2px 8px rgba(180,83,9,0.1)",
         "gradient_primary": "linear-gradient(135deg, #b45309 0%, #f59e0b 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)"
+        "gradient_secondary": "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)",
     },
     "tech": {
         "name": "tech",
@@ -192,8 +192,8 @@ THEMES = {
         "border_radius": "2px",
         "shadow_style": "0 0 20px rgba(239,68,68,0.3), inset 0 0 0 1px rgba(239,68,68,0.1)",
         "gradient_primary": "linear-gradient(135deg, #7c2d12 0%, #dc2626 100%)",
-        "gradient_secondary": "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)"
-    }
+        "gradient_secondary": "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+    },
 }
 
 
@@ -218,7 +218,7 @@ def generate_css(theme_data):
 
     css_vars = "\n".join([f"  {key}: {value};" for key, value in custom_props.items()])
 
-    return f"""/* Theme: {theme_data['name']} - {theme_data['description']} */
+    return f"""/* Theme: {theme_data["name"]} - {theme_data["description"]} */
 
 :root {{
 {css_vars}
@@ -447,12 +447,12 @@ def generate_demo_html(theme_name, theme_data, css_content):
     <div class="container">
         <div class="card">
             <h2>{theme_name.title()} Theme</h2>
-            <p><strong>{theme_data['description']}</strong></p>
+            <p><strong>{theme_data["description"]}</strong></p>
             <p>This professional theme provides instant visual polish with carefully chosen colors, typography, and spacing. Perfect for web applications, documentation, and modern interfaces.</p>
             <div style="margin-bottom: 1rem;">
-                <span class="badge">Primary: {theme_data['primary_color']}</span>
-                <span class="badge">Secondary: {theme_data['secondary_color']}</span>
-                <span class="badge">Font: {theme_data['font_family_primary'].split(',')[0]}</span>
+                <span class="badge">Primary: {theme_data["primary_color"]}</span>
+                <span class="badge">Secondary: {theme_data["secondary_color"]}</span>
+                <span class="badge">Font: {theme_data["font_family_primary"].split(",")[0]}</span>
             </div>
             <div>
                 <button class="btn">Primary Action</button>
@@ -498,10 +498,10 @@ def generate_demo_html(theme_name, theme_data, css_content):
             <div class="card">
                 <h3>Technical Details</h3>
                 <p style="color: var(--theme-text-secondary);">
-                    <strong>Background:</strong> {theme_data['background_color']}<br>
-                    <strong>Surface:</strong> {theme_data['surface_color']}<br>
-                    <strong>Border Radius:</strong> {theme_data['border_radius']}<br>
-                    <strong>Shadow:</strong> {theme_data['shadow_style']}
+                    <strong>Background:</strong> {theme_data["background_color"]}<br>
+                    <strong>Surface:</strong> {theme_data["surface_color"]}<br>
+                    <strong>Border Radius:</strong> {theme_data["border_radius"]}<br>
+                    <strong>Shadow:</strong> {theme_data["shadow_style"]}
                 </p>
             </div>
         </div>
@@ -511,19 +511,19 @@ def generate_demo_html(theme_name, theme_data, css_content):
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
                 <div style="padding: 1rem; background: var(--theme-primary); color: white; border-radius: var(--theme-border-radius); text-align: center;">
                     <strong>Primary</strong><br>
-                    {theme_data['primary_color']}
+                    {theme_data["primary_color"]}
                 </div>
                 <div style="padding: 1rem; background: var(--theme-secondary); color: white; border-radius: var(--theme-border-radius); text-align: center;">
                     <strong>Secondary</strong><br>
-                    {theme_data['secondary_color']}
+                    {theme_data["secondary_color"]}
                 </div>
                 <div style="padding: 1rem; background: var(--theme-accent); color: white; border-radius: var(--theme-border-radius); text-align: center;">
                     <strong>Accent</strong><br>
-                    {theme_data['accent_color']}
+                    {theme_data["accent_color"]}
                 </div>
                 <div style="padding: 1rem; background: var(--theme-surface); color: var(--theme-text-primary); border-radius: var(--theme-border-radius); text-align: center; border: 1px solid var(--theme-border);">
                     <strong>Surface</strong><br>
-                    {theme_data['surface_color']}
+                    {theme_data["surface_color"]}
                 </div>
             </div>
         </div>
@@ -650,16 +650,12 @@ def create_theme_gallery():
         html_content = generate_demo_html(theme_name, theme_data, css_content)
 
         # Save individual theme file
-        with tempfile.NamedTemporaryFile(mode='w', suffix=f'_{theme_name}.html', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=f"_{theme_name}.html", delete=False) as f:
             f.write(html_content)
             theme_files.append((theme_name, f.name))
 
         # Add to gallery
-        colors = [
-            theme_data["primary_color"],
-            theme_data["secondary_color"],
-            theme_data["accent_color"]
-        ]
+        colors = [theme_data["primary_color"], theme_data["secondary_color"], theme_data["accent_color"]]
 
         color_dots = ""
         for color in colors:
@@ -685,7 +681,7 @@ def create_theme_gallery():
         gallery_html += f"""
             <div class="theme-card">
                 <div class="theme-name">{theme_name.title()}</div>
-                <div class="theme-description">{theme_data['description']}</div>
+                <div class="theme-description">{theme_data["description"]}</div>
                 <div class="color-preview">
                     {color_dots}
                 </div>
@@ -713,7 +709,7 @@ def create_theme_gallery():
 </html>"""
 
     # Save gallery
-    with tempfile.NamedTemporaryFile(mode='w', suffix='_gallery.html', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix="_gallery.html", delete=False) as f:
         f.write(gallery_html)
         gallery_file = f.name
 
@@ -748,7 +744,7 @@ def main():
         "Friendly": ["warm", "nature"],
         "Dramatic": ["sunset"],
         "Professional": ["ocean"],
-        "Dark Mode": ["midnight", "tech"]
+        "Dark Mode": ["midnight", "tech"],
     }
 
     for category, theme_list in categories.items():
