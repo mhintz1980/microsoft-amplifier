@@ -1,0 +1,377 @@
+# Claude Code Action Setup Composite Action
+name: 'Setup Claude Code Action'
+description: 'Composite action to set up Claude Code Action with intelligent configuration'
+author: 'Microsoft Amplifier Team'
+
+inputs:
+  claude_mode:
+    description: 'Claude execution mode (auto, review, fix, test, docs)'
+    required: false
+    default: 'auto'
+    type: string
+  auth_method:
+    description: 'Authentication method (github-app, personal-token, oidc-aws, oidc-gcp)'
+    required: false
+    default: 'github-app'
+    type: string
+  anthropic_api_key:
+    description: 'Anthropic API key'
+    required: false
+    type: string
+  claude_app_id:
+    description: 'Claude GitHub App ID'
+    required: false
+    type: string
+  claude_app_private_key:
+    description: 'Claude GitHub App private key'
+    required: false
+    type: string
+  allowed_tools:
+    description: 'Allowed tools for Claude (comma-separated)'
+    required: false
+    default: 'Read,Write,Bash,GlobTool,GrepTool'
+    type: string
+  denied_tools:
+    description: 'Denied tools for Claude (comma-separated)'
+    required: false
+    default: 'WebFetch,WebSearch'
+    type: string
+  model:
+    description: 'Claude model to use'
+    required: false
+    default: 'claude-3-5-sonnet-20241022'
+    type: string
+  environment_vars:
+    description: 'Additional environment variables (JSON format)'
+    required: false
+    default: '{}'
+    type: string
+  timeout_minutes:
+    description: 'Timeout for Claude execution in minutes'
+    required: false
+    default: '10'
+    type: string
+
+outputs:
+  github_token:
+    description: 'GitHub token for Claude Code Action'
+    value: ${{ steps.auth.outputs.token }}
+  claude_settings:
+    description: 'Path to Claude settings file'
+    value: ${{ steps.config.outputs.settings_file }}
+  claude_args:
+    description: 'Claude arguments string'
+    value: ${{ steps.config.outputs.claude_args }}
+  authentication_method:
+    description: 'Authentication method used'
+    value: ${{ steps.auth.outputs.method }}
+  setup_complete:
+    description: 'Whether setup completed successfully'
+    value: ${{ steps.summary.outputs.success }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        echo "🔍 Validating Claude Code Action inputs..."
+
+        # Validate mode
+        case "${{ inputs.claude_mode }}" in
+          auto|review|fix|test|docs)
+            echo "✅ Valid mode: ${{ inputs.claude_mode }}"
+            ;;
+          *)
+            echo "❌ Invalid mode: ${{ inputs.claude_mode }}"
+            echo "Valid modes: auto, review, fix, test, docs"
+            exit 1
+            ;;
+        esac
+
+        # Validate authentication method
+        case "${{ inputs.auth_method }}" in
+          github-app|personal-token|oidc-aws|oidc-gcp)
+            echo "✅ Valid auth method: ${{ inputs.auth_method }}"
+            ;;
+          *)
+            echo "❌ Invalid auth method: ${{ inputs.auth_method }}"
+            echo "Valid methods: github-app, personal-token, oidc-aws, oidc-gcp"
+            exit 1
+            ;;
+        esac
+
+        # Validate required credentials
+        if [ "${{ inputs.auth_method }}" == "github-app" ]; then
+          if [ -z "${{ inputs.claude_app_id }}" ] || [ -z "${{ inputs.claude_app_private_key }}" ]; then
+            echo "❌ GitHub App auth requires claude_app_id and claude_app_private_key"
+            exit 1
+          fi
+        fi
+
+        echo "✅ All inputs validated successfully"
+
+    - name: Setup authentication
+      id: auth
+      shell: bash
+      run: |
+        echo "🔐 Setting up authentication..."
+
+        AUTH_METHOD="${{ inputs.auth_method }}"
+        TOKEN=""
+
+        case "$AUTH_METHOD" in
+          "github-app")
+            echo "Setting up GitHub App authentication..."
+
+            # Create temporary token file
+            cat > /tmp/app-credentials.json << EOF
+        {
+          "app_id": "${{ inputs.claude_app_id }}",
+          "private_key": "${{ inputs.claude_app_private_key }}"
+        }
+        EOF
+
+            # Generate token using the app
+            TOKEN=$(python3 << 'PYTHON'
+import jwt
+import time
+import requests
+import json
+
+# Load credentials
+with open('/tmp/app-credentials.json', 'r') as f:
+    creds = json.load(f)
+
+app_id = creds['app_id']
+private_key = creds['private_key']
+
+# Create JWT
+payload = {
+    'iat': int(time.time()),
+    'exp': int(time.time()) + 600,  # 10 minutes
+    'iss': app_id
+}
+
+jwt_token = jwt.encode(payload, private_key, algorithm='RS256')
+
+# Get installation token
+headers = {
+    'Authorization': f'Bearer {jwt_token}',
+    'Accept': 'application/vnd.github.v3+json'
+}
+
+# Get installations
+response = requests.get('https://api.github.com/app/installations', headers=headers)
+installations = response.json()
+
+if installations:
+    installation_id = installations[0]['id']
+
+    # Get access token
+    response = requests.post(
+        f'https://api.github.com/app/installations/{installation_id}/access_tokens',
+        headers=headers
+    )
+
+    if response.status_code == 201:
+        token = response.json()['token']
+        print(token)
+    else:
+        print(f"Error getting token: {response.status_code}")
+        print(response.text)
+        exit(1)
+else:
+    print("No installations found")
+    exit(1)
+PYTHON
+)
+            ;;
+          "personal-token")
+            echo "Using personal token authentication..."
+            TOKEN="${{ github.token }}"
+            ;;
+          "oidc-aws"|"oidc-gcp")
+            echo "OIDC authentication - token will be provided by workflow"
+            TOKEN="${{ github.token }}"
+            ;;
+        esac
+
+        if [ -n "$TOKEN" ] || [ "$AUTH_METHOD" == "oidc-aws" ] || [ "$AUTH_METHOD" == "oidc-gcp" ]; then
+          echo "✅ Authentication configured successfully"
+          echo "method=$AUTH_METHOD" >> $GITHUB_OUTPUT
+          echo "token=$TOKEN" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Authentication configuration failed"
+          exit 1
+        fi
+
+    - name: Create Claude configuration
+      id: config
+      shell: bash
+      run: |
+        echo "⚙️ Creating Claude configuration..."
+
+        MODE="${{ inputs.claude_mode }}"
+        MODEL="${{ inputs.model }}"
+        ALLOWED_TOOLS="${{ inputs.allowed_tools }}"
+        DENIED_TOOLS="${{ inputs.denied_tools }}"
+        ENV_VARS="${{ inputs.environment_vars }}"
+        TIMEOUT="${{ inputs.timeout_minutes }}"
+
+        # Create settings file
+        SETTINGS_FILE="/tmp/claude-settings-${{ github.run_id }}.json"
+
+        cat > "$SETTINGS_FILE" << EOF
+        {
+          "model": "$MODEL",
+          "permissions": {
+            "allow": [$(echo "$ALLOWED_TOOLS" | sed 's/,/","/g' | sed 's/^/"/' | sed 's/$/"/')],
+            "deny": [$(echo "$DENIED_TOOLS" | sed 's/,/","/g' | sed 's/^/"/' | sed 's/$/"/')]
+          },
+          "env": {
+            "PYTHONPATH": ".",
+            "VIRTUAL_ENV": ".venv",
+            "CLAUDE_MODE": "$MODE",
+            "GITHUB_REPOSITORY": "${{ github.repository }}",
+            "GITHUB_RUN_ID": "${{ github.run_id }}",
+            "TIMEOUT_MINUTES": "$TIMEOUT"
+        EOF
+
+        # Add custom environment variables
+        if [ "$ENV_VARS" != "{}" ]; then
+          echo "," >> "$SETTINGS_FILE"
+          python3 << PYTHON
+import json
+import sys
+
+env_vars = json.loads('''${{ inputs.environment_vars }}''')
+if env_vars:
+    for key, value in env_vars.items():
+        print(f'            "{key}": "{value}",')
+PYTHON
+          sed -i '$ s/,$//' "$SETTINGS_FILE"
+        fi
+
+        cat >> "$SETTINGS_FILE" << EOF
+          },
+          "hooks": {
+            "PreToolUse": [{
+              "matcher": "Bash",
+              "hooks": [{
+                "type": "command",
+                "command": "echo '🔧 Claude executing: \$1'"
+              }]
+            }]
+          }
+        }
+        EOF
+
+        # Create Claude arguments
+        CLAUDE_ARGS="--model $MODEL --allowedTools $ALLOWED_TOOLS --timeout $((TIMEOUT * 60))"
+
+        if [ "${{ inputs.auth_method }}" == "oidc-aws" ]; then
+          CLAUDE_ARGS="$CLAUDE_ARGS --use-bedrock"
+        elif [ "${{ inputs.auth_method }}" == "oidc-gcp" ]; then
+          CLAUDE_ARGS="$CLAUDE_ARGS --use-vertex"
+        fi
+
+        echo "settings_file=$SETTINGS_FILE" >> $GITHUB_OUTPUT
+        echo "claude_args=$CLAUDE_ARGS" >> $GITHUB_OUTPUT
+
+        echo "✅ Claude configuration created"
+        echo "  Settings file: $SETTINGS_FILE"
+        echo "  Claude args: $CLAUDE_ARGS"
+
+    - name: Validate configuration
+      shell: bash
+      run: |
+        echo "🔍 Validating Claude configuration..."
+
+        SETTINGS_FILE="${{ steps.config.outputs.settings_file }}"
+
+        # Validate JSON syntax
+        if python3 -m json.tool "$SETTINGS_FILE" > /dev/null 2>&1; then
+          echo "✅ Settings file is valid JSON"
+        else
+          echo "❌ Settings file contains invalid JSON"
+          exit 1
+        fi
+
+        # Check required fields
+        MODEL=$(python3 -c "import json; data=json.load(open('$SETTINGS_FILE')); print(data.get('model', ''))")
+        if [ -n "$MODEL" ]; then
+          echo "✅ Model configured: $MODEL"
+        else
+          echo "❌ Model not configured"
+          exit 1
+        fi
+
+        echo "✅ Configuration validation passed"
+
+    - name: Setup summary
+      id: summary
+      shell: bash
+      run: |
+        echo "📊 Claude Code Action Setup Summary"
+        echo "=================================="
+        echo ""
+        echo "Configuration:"
+        echo "  Mode: ${{ inputs.claude_mode }}"
+        echo "  Auth Method: ${{ inputs.auth_method }}"
+        echo "  Model: ${{ inputs.model }}"
+        echo "  Timeout: ${{ inputs.timeout_minutes }} minutes"
+        echo "  Allowed Tools: ${{ inputs.allowed_tools }}"
+        echo "  Denied Tools: ${{ inputs.denied_tools }}"
+        echo ""
+        echo "Authentication:"
+        echo "  Method: ${{ steps.auth.outputs.method }}"
+        if [ -n "${{ steps.auth.outputs.token }}" ]; then
+          echo "  Token: ✓ Generated successfully"
+        else
+          echo "  Token: ⚠ Will be provided by OIDC"
+        fi
+        echo ""
+        echo "Files Created:"
+        echo "  Settings: ${{ steps.config.outputs.settings_file }}"
+        echo "  Claude Args: ${{ steps.config.outputs.claude_args }}"
+        echo ""
+
+        SUCCESS="true"
+
+        if [ "${{ steps.auth.outputs.method }}" == "github-app" ] && [ -z "${{ steps.auth.outputs.token }}" ]; then
+          SUCCESS="false"
+        fi
+
+        if [ ! -f "${{ steps.config.outputs.settings_file }}" ]; then
+          SUCCESS="false"
+        fi
+
+        echo "Setup Status: $([ "$SUCCESS" == "true" ] && echo "✅ Complete" || echo "❌ Failed")"
+        echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+
+    - name: Debug information
+      if: always()
+      shell: bash
+      run: |
+        echo "🔍 Debug Information:"
+        echo "==================="
+        echo "GitHub Context:"
+        echo "  Repository: ${{ github.repository }}"
+        echo "  Run ID: ${{ github.run_id }}"
+        echo "  Actor: ${{ github.actor }}"
+        echo ""
+        echo "Action Inputs:"
+        for input in claude_mode auth_method model allowed_tools denied_tools timeout_minutes; do
+          echo "  $input: ${{ inputs[$input] }}"
+        done
+        echo ""
+        echo "Authentication:"
+        echo "  Method: ${{ steps.auth.outputs.method }}"
+        echo "  Token length: ${{ steps.auth.outputs.token && echo ${{ steps.auth.outputs.token }} | wc -c || echo '0' }}"
+        echo ""
+        echo "Configuration:"
+        echo "  Settings file: ${{ steps.config.outputs.settings_file }}"
+        echo "  Claude args: ${{ steps.config.outputs.claude_args }}"
+        echo ""
+        echo "Setup Status: ${{ steps.summary.outputs.success }}"

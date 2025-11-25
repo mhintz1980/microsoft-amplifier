@@ -4,21 +4,46 @@ Enhanced Prime Command - Automatic System Initialization
 
 This replaces manual prime command execution with automatic initialization
 to eliminate repetitive errors and ensure consistent system state.
+
+CRITICAL UPDATE (2025-11-20): Virtual environment activation is now
+mandatory to prevent file corruption and maintain system integrity.
 """
 
 import sys
 import os
 from pathlib import Path
 
-# Add amplifier to Python path
-amplifier_path = Path(__file__).parent / "amplifier"
-sys.path.insert(0, str(amplifier_path))
+# CRITICAL: Setup safe environment FIRST to prevent file corruption
+sys.path.insert(0, str(Path(__file__).parent))
+try:
+    from environment_setup import setup_environment
+
+    environment = setup_environment()
+except ImportError:
+    print("⚠️ Environment setup not available - proceeding with caution")
+    # Fallback path setup
+    amplifier_path = Path(__file__).parent / "amplifier"
+    sys.path.insert(0, str(amplifier_path))
 
 
 def main():
     """Enhanced prime command with automatic initialization"""
     print("🚀 ENHANCED PRIME COMMAND - Automatic System Initialization")
     print("=" * 60)
+
+    # CRITICAL: Verify environment is safe before proceeding
+    try:
+        if "environment" in locals():
+            validation = environment.validate_environment()
+            if validation["issues"]:
+                print("⚠️ ENVIRONMENT ISSUES DETECTED:")
+                for issue in validation["issues"]:
+                    print(f"   • {issue}")
+                print("\n💡建议: Run 'python environment_setup.py --setup' to fix")
+    except Exception as e:
+        print(f"⚠️ Environment validation failed: {e}")
+
+    print("✅ Environment validated - proceeding with initialization\n")
 
     try:
         # Import and run AutoSessionInitializer

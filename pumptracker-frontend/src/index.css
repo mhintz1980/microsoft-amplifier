@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Manufacturing-inspired color palette - Light mode */
+    --background: 210 15% 98%;
+    --foreground: 210 25% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 25% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 25% 18%;
+
+    /* Industrial teal as primary - deep, professional */
+    --primary: 193 71% 18%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Copper warmth as secondary */
+    --secondary: 27 59% 47%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Safety orange for actions and alerts */
+    --accent: 18 100% 62%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Warm muted tones */
+    --muted: 210 15% 95%;
+    --muted-foreground: 210 15% 45%;
+
+    /* Manufacturing status colors */
+    --destructive: 0 74% 52%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Industrial borders and inputs */
+    --border: 210 15% 88%;
+    --input: 210 15% 88%;
+    --ring: 193 71% 18%;
+
+    /* Enhanced spacing and radius */
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    /* Manufacturing-inspired color palette - Dark mode */
+    --background: 210 25% 12%;
+    --foreground: 210 15% 92%;
+    --card: 213 23% 16%;
+    --card-foreground: 210 15% 92%;
+    --popover: 213 23% 16%;
+    --popover-foreground: 210 15% 92%;
+
+    /* Industrial teal - slightly lighter in dark */
+    --primary: 193 71% 28%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Copper - warmer in dark mode */
+    --secondary: 27 59% 57%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Safety orange - vibrant in dark */
+    --accent: 18 100% 72%;
+    --accent-foreground: 210 25% 12%;
+
+    /* Dark muted tones */
+    --muted: 213 23% 22%;
+    --muted-foreground: 210 15% 65%;
+
+    /* Manufacturing status colors - adjusted for dark */
+    --destructive: 0 63% 42%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Dark borders and inputs */
+    --border: 213 23% 22%;
+    --input: 213 23% 22%;
+    --ring: 193 71% 28%;
+  }
+}
+
+@layer base {
+  body {
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    margin: 0;
+    min-height: 100vh;
+    /* Industrial texture */
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.1) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  /* Typography system */
+  .font-display {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .font-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  /* Industrial heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  /* Manufacturing data displays */
+  .data-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Industrial UI enhancements */
+  .industrial-card {
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--muted)));
+    border: 1px solid hsl(var(--border));
+    box-shadow:
+      0 1px 3px rgba(10, 76, 92, 0.1),
+      0 1px 2px rgba(184, 115, 51, 0.05);
+  }
+
+  .industrial-button {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.9));
+    border: 1px solid hsl(var(--ring));
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .industrial-button:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--primary)));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(10, 76, 92, 0.2);
+  }
+
+  .industrial-button:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-fade-in-delay-1 {
+    animation: fade-in 0.6s ease-out 0.1s both;
+  }
+
+  .animate-fade-in-delay-2 {
+    animation: fade-in 0.6s ease-out 0.2s both;
+  }
+
+  .animate-fade-in-delay-3 {
+    animation: fade-in 0.6s ease-out 0.3s both;
+  }
+
+  .animate-fade-in-delay-4 {
+    animation: fade-in 0.6s ease-out 0.4s both;
+  }
+}
+
+/* Custom scrollbar for filters */
+.scroll-locked {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Enhanced kanban board styles */
+.kanban-column {
+  min-height: 400px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(180deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+  border-radius: var(--radius);
+}
+
+.kanban-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: move;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.kanban-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 25px rgba(10, 76, 92, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Manufacturing KPI displays */
+.kpi-card {
+  background: linear-gradient(135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--muted)) 100%);
+  border-left: 4px solid hsl(var(--primary));
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    hsl(var(--primary) / 0.8),
+    hsl(var(--accent) / 0.6),
+    transparent);
+}
+
+/* Manufacturing status indicators */
+.status-good { background: linear-gradient(135deg, #00b894, #00a085); }
+.status-warning { background: linear-gradient(135deg, #fdcb6e, #f39c12); }
+.status-critical { background: linear-gradient(135deg, #ff6b35, #d63031); }
+
+/* Custom scrollbar for filters */
+.scroll-locked {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Kanban board custom styles */
+.kanban-column {
+  min-height: 400px;
+  transition: all 0.3s ease;
+}
+
+.kanban-card {
+  transition: all 0.2s ease;
+  cursor: move;
+}
+
+.kanban-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

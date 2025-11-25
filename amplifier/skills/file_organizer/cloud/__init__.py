@@ -20,10 +20,7 @@ Basic Usage:
 from .cloud_sync_manager import CloudSyncManager
 from .sync_engine import SyncEngine, SyncDirection
 from .models.sync_models import SyncResult, SyncConflict, SyncStatus
-from .models.cloud_models import (
-    CloudFile, CloudProvider, CloudConfig, SyncConfig,
-    ConflictResolution, AuthStatus
-)
+from .models.cloud_models import CloudFile, CloudProvider, CloudConfig, SyncConfig, ConflictResolution, AuthStatus
 
 __all__ = [
     "CloudSyncManager",

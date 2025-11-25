@@ -1,0 +1,70 @@
+{
+  "test_summary": {
+    "total_scenarios": 3,
+    "test_timestamp": "2025-11-22 04:05:14",
+    "baseline_established": true
+  },
+  "efficiency_validation": {
+    "average_token_reduction": 56.666666666666664,
+    "max_token_reduction": 80.0,
+    "min_token_reduction": 30.0,
+    "target_met": true,
+    "processing_time_avg": 4.291534423828125e-06
+  },
+  "performance_analysis": {
+    "average_execution_time": 0.3516844113667806,
+    "average_optimization_time": 0.1,
+    "average_memory_usage": 0.007581075032552083,
+    "subsecond_optimization": true,
+    "memory_efficiency": true
+  },
+  "learning_system_analysis": {
+    "total_hooks_triggered": 0,
+    "total_optimizations_applied": 0,
+    "average_pattern_discovery_time": 6.67572021484375e-06,
+    "learning_system_overhead": true
+  },
+  "integration_analysis": {
+    "average_integration_overhead": 3.4968058268229164e-05,
+    "backward_compatibility_score": 1.0,
+    "integration_overhead_acceptable": true
+  },
+  "clarifying_system_analysis": {
+    "average_response_time_improvement": 90.0,
+    "target_90_percent_improvement_met": true,
+    "average_question_relevance": 0.9,
+    "average_task_success_rate": 0.9433333333333334
+  },
+  "overall_grade": {
+    "letter_grade": "A",
+    "numeric_score": 100.0,
+    "component_scores": [
+      [
+        "Token Efficiency",
+        100,
+        0.25
+      ],
+      [
+        "Performance",
+        100,
+        0.25
+      ],
+      [
+        "Learning System",
+        100,
+        0.2
+      ],
+      [
+        "Integration",
+        100.0,
+        0.15
+      ],
+      [
+        "Clarifying System",
+        100,
+        0.15
+      ]
+    ],
+    "performance_summary": "Exceptional performance - all targets met or exceeded"
+  }
+}

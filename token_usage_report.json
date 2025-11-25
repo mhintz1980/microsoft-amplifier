@@ -1,0 +1,64 @@
+{
+  "session_info": {
+    "start_time": "2025-11-22T11:02:52.588430",
+    "total_operations": 6,
+    "total_tokens": 371
+  },
+  "operations": [
+    {
+      "timestamp": "2025-11-22T11:02:52.588494",
+      "operation": "Simple question",
+      "input_tokens": 7,
+      "output_tokens": 0,
+      "total_tokens": 7,
+      "input_length": 30,
+      "output_length": 0
+    },
+    {
+      "timestamp": "2025-11-22T11:02:52.588598",
+      "operation": "Complex request",
+      "input_tokens": 32,
+      "output_tokens": 0,
+      "total_tokens": 32,
+      "input_length": 131,
+      "output_length": 0
+    },
+    {
+      "timestamp": "2025-11-22T11:02:52.588632",
+      "operation": "Code review",
+      "input_tokens": 20,
+      "output_tokens": 0,
+      "total_tokens": 20,
+      "input_length": 82,
+      "output_length": 0
+    },
+    {
+      "timestamp": "2025-11-22T11:02:52.588654",
+      "operation": "Optimization test",
+      "input_tokens": 51,
+      "output_tokens": 0,
+      "total_tokens": 51,
+      "input_length": 205,
+      "output_length": 0
+    },
+    {
+      "timestamp": "2025-11-22T11:02:52.588870",
+      "operation": "Original prompt",
+      "input_tokens": 208,
+      "output_tokens": 0,
+      "total_tokens": 208,
+      "input_length": 835,
+      "output_length": 0
+    },
+    {
+      "timestamp": "2025-11-22T11:02:52.588880",
+      "operation": "Optimized prompt",
+      "input_tokens": 53,
+      "output_tokens": 0,
+      "total_tokens": 53,
+      "input_length": 214,
+      "output_length": 0
+    }
+  ],
+  "generated_at": "2025-11-22T11:02:52.589282"
+}

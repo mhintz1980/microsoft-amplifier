@@ -1,0 +1,318 @@
+# Enhanced Pre-commit Configuration
+# Integrates with Docker, MCP, and Enhanced SDK capabilities
+
+repos:
+  # Built-in hooks for basic file operations
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        description: Remove trailing whitespace
+        exclude: '\.md$'
+
+      - id: end-of-file-fixer
+        description: Ensure files end with newline
+        exclude: '\.md$'
+
+      - id: check-yaml
+        description: Validate YAML syntax
+        args: ['--unsafe']  # Allow custom YAML tags
+
+      - id: check-json
+        description: Validate JSON syntax
+
+      - id: check-toml
+        description: Validate TOML syntax
+
+      - id: check-xml
+        description: Validate XML syntax
+
+      - id: check-merge-conflict
+        description: Check for merge conflict markers
+
+      - id: check-case-conflict
+        description: Check for case conflicts on case-insensitive filesystems
+
+      - id: check-added-large-files
+        description: Prevent large files from being committed
+        args: ['--maxkb=1000', '--enforce-all']
+
+      - id: check-executables-have-shebangs
+        description: Check that executables have shebangs
+
+      - id: check-shebang-scripts-are-executable
+        description: Check that shebang scripts are executable
+
+      - id: detect-private-key
+        description: Detect private keys
+        exclude: 'tests/.*\.py$'  # Allow in test files
+
+      - id: check-vcs-permalinks
+        description: Check for VCS permalinks
+
+  # Python formatting and linting
+  - repo: https://github.com/psf/black
+    rev: 23.10.0
+    hooks:
+      - id: black
+        language_version: python3.11
+        description: Format Python code with Black
+        args: ['--line-length=120']
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        description: Sort imports with isort
+        args: ['--profile', 'black', '--line-length=120']
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        description: Lint Python code with flake8
+        additional_dependencies:
+          - flake8-docstrings
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+        args:
+          - '--max-line-length=120'
+          - '--extend-ignore=E203,W503'
+          - '--per-file-ignores=__init__.py:F401'
+
+  # Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        description: Type check Python code with mypy
+        additional_dependencies:
+          - types-all
+          - types-requests
+        args:
+          - '--ignore-missing-imports'
+          - '--strict-optional'
+          - '--warn-return-any'
+        exclude: 'tests/.*\.py$'
+
+  # Security scanning
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        description: Security scan Python code with bandit
+        args: ['-r', 'amplifier/', '-f', 'json', '-o', 'bandit-report.json']
+        pass_filenames: false
+
+  # Python dependency management
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        description: Check for known security vulnerabilities in dependencies
+
+  # JavaScript/TypeScript formatting
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.52.0
+    hooks:
+      - id: eslint
+        types: [file]
+        files: \.(js|jsx|ts|tsx)$
+        additional_dependencies:
+          - eslint@8.52.0
+          - eslint-config-prettier@9.0.0
+          - eslint-plugin-react@7.33.2
+          - eslint-plugin-react-hooks@4.6.0
+          - eslint-plugin-typescript@6.7.0
+          - '@typescript-eslint/eslint-plugin@6.9.0'
+          - '@typescript-eslint/parser@6.9.0'
+
+  # General code formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        description: Format code with Prettier
+        types_or: [css, javascript, jsx, json, markdown, typescript, tsx, yaml]
+        args: ['--tab-width=2', '--use-tabs=false']
+
+  # Docker configuration
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        description: Lint Dockerfiles with hadolint
+        args: ['--ignore', 'DL3008', '--ignore', 'DL3013']
+
+  # YAML/JSON validation
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.32.0
+    hooks:
+      - id: yamllint
+        description: Lint YAML files with yamllint
+        args: ['-d', 'relaxed', '-c', '.yamllint.yml']
+
+  # Documentation checks
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        description: Check Python docstring style
+        args: ['--convention=google', '--add-ignore=D100,D104,D105,D107']
+        exclude: 'tests/.*\.py$|setup\.py'
+
+  # Local hooks for project-specific automation
+  - repo: local
+    hooks:
+      # Enhanced SDK validation
+      - id: enhanced-sdk-check
+        name: Validate Enhanced SDK
+        entry: python3 -c "import sys; sys.path.insert(0, '.'); from amplifier.core.auto_session import auto_initialize_session; auto_initialize_session()"
+        language: system
+        pass_filenames: false
+        always_run: true
+        description: Validate Enhanced SDK configuration
+
+      # Token efficiency check
+      - id: token-efficiency-check
+        name: Token Efficiency Check
+        entry: python3 -c "import sys; sys.path.insert(0, '.'); from amplifier.optimization.token_efficiency_integration import token_efficiency_integrator; print('✅ Token efficiency integration active')"
+        language: system
+        pass_filenames: false
+        always_run: true
+        description: Verify token efficiency integration
+
+      # MCP server validation
+      - id: mcp-server-check
+        name: MCP Server Validation
+        entry: python3 -c "
+import sys
+sys.path.insert(0, '.')
+try:
+    from amplifier.mcp.config import validate_mcp_servers
+    validate_mcp_servers()
+    print('✅ MCP servers validated')
+except Exception as e:
+    print(f'⚠️ MCP validation: {e}')
+"
+        language: system
+        pass_filenames: false
+        always_run: true
+        description: Validate MCP server configuration
+
+      # Docker integration check
+      - id: docker-integration-check
+        name: Docker Integration Check
+        entry: bash -c "
+if command -v docker &> /dev/null; then
+    echo '✅ Docker: Available'
+    if docker info &> /dev/null; then
+        echo '✅ Docker daemon: Running'
+    else
+        echo '⚠️ Docker daemon: Not running'
+        exit 1
+    fi
+else
+    echo '❌ Docker: Not installed'
+    exit 1
+fi
+"
+        language: system
+        pass_filenames: false
+        always_run: true
+        description: Verify Docker integration
+
+      # Make command validation
+      - id: make-command-check
+        name: Make Commands Validation
+        entry: bash -c "
+echo '🔍 Validating make commands...'
+if ! make install &> /dev/null; then
+    echo '❌ make install failed'
+    exit 1
+fi
+echo '✅ make install: OK'
+"
+        language: system
+        pass_filenames: false
+        always_run: false
+        description: Validate make commands work
+
+      # Syntax error detection
+      - id: python-syntax-check
+        name: Python Syntax Check
+        entry: python3 -m py_compile
+        language: system
+        files: \.py$
+        exclude: ^tests/.*\.py$|^\.venv/.*\.py$
+
+      # Import validation
+      - id: python-import-check
+        name: Python Import Check
+        entry: python3 -c "
+import sys
+import ast
+import os
+
+def check_imports(filepath):
+    try:
+        with open(filepath, 'r') as f:
+            content = f.read()
+        ast.parse(content)
+        print(f'✅ {filepath}')
+        return 0
+    except SyntaxError as e:
+        print(f'❌ Syntax error in {filepath}: {e}')
+        return 1
+    except Exception as e:
+        print(f'⚠️ Could not check {filepath}: {e}')
+        return 1
+
+sys.exit(check_imports('$@'))
+"
+        language: system
+        files: \.py$
+        exclude: ^tests/.*\.py$
+
+      # Documentation link validation
+      - id: markdown-link-check
+        name: Markdown Link Check
+        entry: markdown-link-check
+        language: system
+        files: \.md$
+        args: ['--verbose', '--timeout=10']
+
+      # Package size check
+      - id: package-size-check
+        name: Package Size Check
+        entry: bash -c "
+echo '📦 Checking package size...'
+du -sh .venv/ || echo 'No .venv directory'
+du -sh node_modules/ || echo 'No node_modules directory'
+du -sh dist/ 2>/dev/null || echo 'No dist directory'
+echo '✅ Package size check complete'
+"
+        language: system
+        pass_filenames: false
+        always_run: false
+        description: Check package and dependency sizes
+
+# Configuration for pre-commit
+default_stages: [commit]
+default_language_version:
+  python: python3.11
+fail_fast: false
+
+# CI configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [python-import-check, markdown-link-check]
+  submodules: false

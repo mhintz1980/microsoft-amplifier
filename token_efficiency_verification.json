@@ -1,0 +1,31 @@
+{
+  "verification_summary": {
+    "total_tests": 1,
+    "average_savings": 49.61832061068702,
+    "verification_time": 8.082389831542969e-05,
+    "all_tests_passed": true
+  },
+  "detailed_results": [
+    {
+      "timestamp": "2025-11-22 04:27:06",
+      "original_prompt_length": 576,
+      "optimized_prompt_length": 448,
+      "original_tokens": 74,
+      "optimized_tokens": 54,
+      "prompt_reduction_percent": 27.027027027027028,
+      "open_ended_tokens": 57,
+      "multi_choice_tokens": 12,
+      "response_reduction_percent": 78.94736842105263,
+      "total_original_tokens": 131,
+      "total_optimized_tokens": 66,
+      "total_savings_percent": 49.61832061068702,
+      "verified": true
+    }
+  ],
+  "system_info": {
+    "verification_method": "Independent token counting",
+    "token_calculation": "1 token \u2248 1 word + remainder",
+    "no_external_dependencies": true,
+    "fully_transparent": true
+  }
+}

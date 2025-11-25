@@ -5,6 +5,8 @@ A comprehensive, type-safe framework for AI skill development with signature-bas
 execution, zero-hallucination enforcement, and BootstrapFewShot optimization.
 """
 
+import logging
+
 # Legacy skill system
 try:
     from .skills_framework.base_skill import BaseSkill
@@ -98,6 +100,111 @@ except ImportError:
 # Set to None to avoid import issues
 get_intelligent_routing_specialist = None
 get_skill_testing_validation_specialist = None
+
+# Skill Seekers Integration System - NEW
+try:
+    from .integration.skill_seekers_integration import (
+        SkillSeekersIntegrationSkill,
+        TechnicalDataSource,
+        SkillGenerationRequest,
+        GeneratedSkill,
+    )
+    from .integration.technical_data_pipeline import (
+        TechnicalDataPipeline,
+        PipelineConfig,
+        create_skill_from_documentation,
+        create_skill_from_github_repo,
+        create_skill_from_pdf,
+    )
+    from .integration.ast_conflict_analyzer import (
+        ASTAnalyzer,
+        ConflictDetector,
+        CodeElement,
+        Conflict,
+        ConflictType,
+        ConflictSeverity,
+    )
+    from .integration.pdf_ocr_processor import PDFProcessor, PDFPage, PDFAnalysisResult, ProcessingMode
+    from .integration.github_analyzer import (
+        GitHubAnalyzer,
+        GitHubRepo,
+        RepositoryAnalysis,
+        AnalysisDepth,
+        RepositoryType,
+    )
+    from .integration.skill_packager import SkillPackager, SkillMetadata, PackageResult, SkillFormat, UploadStatus
+    from .integration.core_skills_integration import (
+        CoreSkillsIntegrator,
+        SkillEnhancementRequest,
+        EnhancedSkill,
+        CoreSkillCategory,
+    )
+    from .integration.virtual_environment_safety import (
+        VirtualEnvironmentSafety,
+        SafetyLevel,
+        SecurityViolationType,
+        ResourceLimits,
+        SecurityViolation,
+        ExecutionResult,
+    )
+
+    SKILL_SEEKERS_INTEGRATION_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"Skill Seekers integration not available: {e}")
+    # Set all to None for graceful fallback
+    SkillSeekersIntegrationSkill = None
+    TechnicalDataSource = None
+    SkillGenerationRequest = None
+    GeneratedSkill = None
+    TechnicalDataPipeline = None
+    PipelineConfig = None
+    ASTAnalyzer = None
+    ConflictDetector = None
+    CodeElement = None
+    Conflict = None
+    ConflictType = None
+    ConflictSeverity = None
+    PDFProcessor = None
+    PDFPage = None
+    PDFAnalysisResult = None
+    ProcessingMode = None
+    GitHubAnalyzer = None
+    GitHubRepo = None
+    RepositoryAnalysis = None
+    AnalysisDepth = None
+    RepositoryType = None
+    SkillPackager = None
+    SkillMetadata = None
+    PackageResult = None
+    SkillFormat = None
+    UploadStatus = None
+    CoreSkillsIntegrator = None
+    SkillEnhancementRequest = None
+    EnhancedSkill = None
+    CoreSkillCategory = None
+    VirtualEnvironmentSafety = None
+    SafetyLevel = None
+    SecurityViolationType = None
+    ResourceLimits = None
+    SecurityViolation = None
+    ExecutionResult = None
+    SKILL_SEEKERS_INTEGRATION_AVAILABLE = False
+
+# Convenience functions for the integration system
+create_skill_from_documentation = None
+create_skill_from_github_repo = None
+create_skill_from_pdf = None
+
+# Set convenience functions if integration is available
+if SKILL_SEEKERS_INTEGRATION_AVAILABLE:
+    try:
+        from .integration.technical_data_pipeline import (
+            create_skill_from_documentation,
+            create_skill_from_github_repo,
+            create_skill_from_pdf,
+        )
+    except ImportError:
+        pass
 
 
 def register_all_skills():
@@ -417,6 +524,44 @@ __all__ = [
     "get_skill_recommendations",
     # Registration system
     "register_all_skills",
+    # Skill Seekers Integration System (NEW)
+    "SkillSeekersIntegrationSkill",
+    "TechnicalDataSource",
+    "SkillGenerationRequest",
+    "GeneratedSkill",
+    "TechnicalDataPipeline",
+    "PipelineConfig",
+    "ASTAnalyzer",
+    "ConflictDetector",
+    "CodeElement",
+    "Conflict",
+    "ConflictType",
+    "ConflictSeverity",
+    "PDFProcessor",
+    "PDFPage",
+    "PDFAnalysisResult",
+    "ProcessingMode",
+    "GitHubAnalyzer",
+    "GitHubRepo",
+    "RepositoryAnalysis",
+    "AnalysisDepth",
+    "RepositoryType",
+    "SkillPackager",
+    "SkillMetadata",
+    "PackageResult",
+    "SkillFormat",
+    "UploadStatus",
+    "CoreSkillsIntegrator",
+    "SkillEnhancementRequest",
+    "EnhancedSkill",
+    "CoreSkillCategory",
+    "VirtualEnvironmentSafety",
+    "SafetyLevel",
+    "SecurityViolationType",
+    "ResourceLimits",
+    "SecurityViolation",
+    "ExecutionResult",
+    "SKILL_SEEKERS_INTEGRATION_AVAILABLE",
 ]
 
 # Add legacy components only if they're available

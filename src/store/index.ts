@@ -11,20 +11,64 @@ import {
   Stage,
   Priority,
   StoredData,
+  Department,
+  Vendor,
+  EmployeeConfiguration,
+  SystemSettings,
+  DepartmentSettings,
+  DailyCapacity,
+  ManHoursCalculation,
 } from '../types';
 import { localStorageUtils } from '../lib/storage';
+import {
+  loadSystemSettings as loadSystemSettingsFromStorage,
+  saveSystemSettings as saveSystemSettingsToStorage,
+  loadDepartments as loadDepartmentsFromStorage,
+  saveDepartment as saveDepartmentToStorage,
+  deleteDepartment as deleteDepartmentFromStorage,
+  loadVendors as loadVendorsFromStorage,
+  saveVendor as saveVendorToStorage,
+  deleteVendor as deleteVendorFromStorage,
+  loadEmployees as loadEmployeesFromStorage,
+  saveEmployee as saveEmployeeToStorage,
+  deleteEmployee as deleteEmployeeFromStorage,
+  getVendorsForDepartment as getVendorsForDepartmentFromStorage,
+  getEmployeesForDepartment as getEmployeesForDepartmentFromStorage,
+  loadDepartmentSettings as loadDepartmentSettingsFromStorage,
+  saveDepartmentSettings as saveDepartmentSettingsToStorage,
+  needsFirstTimeSetup,
+  needsMigration,
+  runMigration,
+} from '../lib/settings-storage';
+import {
+  calculateDailyCapacity,
+  calculateManHours,
+  calculateVendorAllocation,
+} from '../lib/calculations';
 
 interface StoreState {
-  // Data
+  // Core Data
   pumps: Pump[];
   purchaseOrders: PurchaseOrder[];
   purchaseOrderLines: PurchaseOrderLine[];
   pumpEvents: PumpEvent[];
   models: Record<string, Model>;
 
+  // Department Configuration Data
+  departments: Department[];
+  vendors: Vendor[];
+  employees: EmployeeConfiguration[];
+  systemSettings: SystemSettings;
+  departmentSettings: Record<string, DepartmentSettings>;
+
+  // Computed Capacity Data
+  dailyCapacities: Record<string, DailyCapacity[]>; // departmentId -> array of daily capacities
+  manHoursCalculations: Record<string, ManHoursCalculation>; // departmentId -> calculation
+
   // Loading state
   isLoading: boolean;
   error: string | null;
+  isConfigurationLoading: boolean;
 
   // UI state
   filters: {
@@ -36,10 +80,49 @@ interface StoreState {
   collapsedStages: Set<Stage>;
 
   // Actions
-  // Data loading
+  // Core Data loading
   loadData: () => Promise<void>;
   loadModels: () => Promise<void>;
   setError: (error: string | null) => void;
+
+  // Configuration loading and initialization
+  loadConfiguration: () => Promise<void>;
+  initializeConfiguration: () => Promise<void>;
+  isFirstTimeSetup: () => boolean;
+  checkAndRunMigration: () => Promise<void>;
+
+  // Department Management
+  loadDepartments: () => void;
+  saveDepartment: (department: Department) => void;
+  deleteDepartment: (departmentId: string) => void;
+  getDepartmentById: (id: string) => Department | undefined;
+
+  // Vendor Management
+  loadVendors: () => void;
+  saveVendor: (vendor: Vendor) => void;
+  deleteVendor: (vendorId: string) => void;
+  getVendorsForDepartment: (departmentId: string) => Vendor[];
+  allocatePumpsToVendors: (departmentId: string, pumpsCount: number, priorityVendorId?: string) => Array<{vendorId: string; pumps: number}>;
+
+  // Employee Management
+  loadEmployees: () => void;
+  saveEmployee: (employee: EmployeeConfiguration) => void;
+  deleteEmployee: (employeeId: string) => void;
+  getEmployeesForDepartment: (departmentId: string) => EmployeeConfiguration[];
+
+  // System Settings Management
+  saveSystemSettings: (settings: Partial<SystemSettings>) => void;
+  loadSystemSettings: () => void;
+
+  // Department Settings Management
+  saveDepartmentSettings: (departmentId: string, settings: DepartmentSettings) => void;
+  getDepartmentSettings: (departmentId: string) => DepartmentSettings | null;
+
+  // Capacity Calculations
+  calculateDailyCapacity: (departmentId: string, date?: Date) => DailyCapacity;
+  calculateWeeklyCapacity: (departmentId: string, startDate?: Date) => DailyCapacity[];
+  calculateManHours: (departmentId: string, startDate: Date, endDate: Date) => ManHoursCalculation;
+  refreshCapacityData: () => void;
 
   // Pump actions
   addPump: (pump: Omit<Pump, 'id' | 'last_update'>) => void;
@@ -79,7 +162,21 @@ export const useStore = create<StoreState>()(
       purchaseOrderLines: [],
       pumpEvents: [],
       models: {},
+
+      // Department configuration state
+      departments: [],
+      vendors: [],
+      employees: [],
+      systemSettings: {} as SystemSettings,
+      departmentSettings: {},
+
+      // Computed capacity data
+      dailyCapacities: {},
+      manHoursCalculations: {},
+
+      // Loading state
       isLoading: false,
+      isConfigurationLoading: false,
       error: null,
 
       filters: {},
@@ -292,6 +389,318 @@ export const useStore = create<StoreState>()(
 
         localStorageUtils.storage.saveData(data);
       },
+
+      // Configuration loading and initialization
+      loadConfiguration: async () => {
+        set({ isConfigurationLoading: true, error: null });
+
+        try {
+          // Check if first-time setup is needed
+          if (needsFirstTimeSetup()) {
+            await get().initializeConfiguration();
+          } else {
+            // Check if migration is needed
+            if (needsMigration()) {
+              await get().checkAndRunMigration();
+            }
+
+            // Load existing configuration
+            get().loadSystemSettings();
+            get().loadDepartments();
+            get().loadVendors();
+            get().loadEmployees();
+          }
+
+          set({ isConfigurationLoading: false });
+        } catch (error) {
+          console.error('Failed to load configuration:', error);
+          set({
+            error: error instanceof Error ? error.message : 'Failed to load configuration',
+            isConfigurationLoading: false,
+          });
+        }
+      },
+
+      initializeConfiguration: async () => {
+        console.log('Initializing first-time configuration...');
+        // The storage layer will create defaults automatically
+        get().loadSystemSettings();
+        get().loadDepartments();
+        get().loadVendors();
+        get().loadEmployees();
+        console.log('First-time configuration completed');
+      },
+
+      isFirstTimeSetup: () => needsFirstTimeSetup(),
+
+      checkAndRunMigration: async () => {
+        console.log('Running configuration migration...');
+        await runMigration();
+        get().loadConfiguration(); // Reload after migration
+      },
+
+      // Department Management
+      loadDepartments: () => {
+        try {
+          const depts = loadDepartmentsFromStorage();
+          set({ departments: depts });
+        } catch (error) {
+          console.error('Failed to load departments:', error);
+          set({ error: 'Failed to load departments' });
+        }
+      },
+
+      saveDepartment: (department) => {
+        try {
+          saveDepartmentToStorage(department);
+          const departments = loadDepartmentsFromStorage();
+          set({ departments });
+        } catch (error) {
+          console.error('Failed to save department:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to save department' });
+        }
+      },
+
+      deleteDepartment: (departmentId) => {
+        try {
+          deleteDepartmentFromStorage(departmentId);
+          const departments = loadDepartmentsFromStorage();
+          set({ departments });
+        } catch (error) {
+          console.error('Failed to delete department:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to delete department' });
+        }
+      },
+
+      getDepartmentById: (id) => {
+        return get().departments.find(dept => dept.id === id);
+      },
+
+      // Vendor Management
+      loadVendors: () => {
+        try {
+          const vendors = loadVendorsFromStorage();
+          set({ vendors });
+        } catch (error) {
+          console.error('Failed to load vendors:', error);
+          set({ error: 'Failed to load vendors' });
+        }
+      },
+
+      saveVendor: (vendor) => {
+        try {
+          saveVendorToStorage(vendor);
+          const vendors = loadVendorsFromStorage();
+          set({ vendors });
+        } catch (error) {
+          console.error('Failed to save vendor:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to save vendor' });
+        }
+      },
+
+      deleteVendor: (vendorId) => {
+        try {
+          deleteVendorFromStorage(vendorId);
+          const vendors = loadVendorsFromStorage();
+          set({ vendors });
+        } catch (error) {
+          console.error('Failed to delete vendor:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to delete vendor' });
+        }
+      },
+
+      getVendorsForDepartment: (departmentId) => {
+        return getVendorsForDepartmentFromStorage(departmentId);
+      },
+
+      allocatePumpsToVendors: (departmentId, pumpsCount, priorityVendorId) => {
+        const departmentVendors = get().getVendorsForDepartment(departmentId);
+        const allocation = calculateVendorAllocation(departmentVendors, pumpsCount, priorityVendorId);
+
+        // Update vendor current loads
+        allocation.forEach(({ vendorId, pumps }) => {
+          const vendor = get().vendors.find(v => v.id === vendorId);
+          if (vendor) {
+            get().saveVendor({
+              ...vendor,
+              currentLoad: vendor.currentLoad + pumps,
+            });
+          }
+        });
+
+        return allocation;
+      },
+
+      // Employee Management
+      loadEmployees: () => {
+        try {
+          const employees = loadEmployeesFromStorage();
+          set({ employees });
+        } catch (error) {
+          console.error('Failed to load employees:', error);
+          set({ error: 'Failed to load employees' });
+        }
+      },
+
+      saveEmployee: (employee) => {
+        try {
+          saveEmployeeToStorage(employee);
+          const employees = loadEmployeesFromStorage();
+          set({ employees });
+        } catch (error) {
+          console.error('Failed to save employee:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to save employee' });
+        }
+      },
+
+      deleteEmployee: (employeeId) => {
+        try {
+          deleteEmployeeFromStorage(employeeId);
+          const employees = loadEmployeesFromStorage();
+          set({ employees });
+        } catch (error) {
+          console.error('Failed to delete employee:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to delete employee' });
+        }
+      },
+
+      getEmployeesForDepartment: (departmentId) => {
+        return getEmployeesForDepartmentFromStorage(departmentId);
+      },
+
+      // System Settings Management
+      saveSystemSettings: (settings) => {
+        try {
+          saveSystemSettingsToStorage(settings);
+          const systemSettings = loadSystemSettingsFromStorage();
+          set({ systemSettings });
+        } catch (error) {
+          console.error('Failed to save system settings:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to save system settings' });
+        }
+      },
+
+      loadSystemSettings: () => {
+        try {
+          const settings = loadSystemSettingsFromStorage();
+          set({ systemSettings: settings });
+        } catch (error) {
+          console.error('Failed to load system settings:', error);
+          set({ error: 'Failed to load system settings' });
+        }
+      },
+
+      // Department Settings Management
+      saveDepartmentSettings: (departmentId, settings) => {
+        try {
+          saveDepartmentSettingsToStorage(departmentId, settings);
+          const currentSettings = get().departmentSettings;
+          set({
+            departmentSettings: {
+              ...currentSettings,
+              [departmentId]: settings,
+            },
+          });
+        } catch (error) {
+          console.error('Failed to save department settings:', error);
+          set({ error: error instanceof Error ? error.message : 'Failed to save department settings' });
+        }
+      },
+
+      getDepartmentSettings: (departmentId) => {
+        const cached = get().departmentSettings[departmentId];
+        if (cached) return cached;
+
+        const settings = loadDepartmentSettingsFromStorage(departmentId);
+        if (settings) {
+          const currentSettings = get().departmentSettings;
+          set({
+            departmentSettings: {
+              ...currentSettings,
+              [departmentId]: settings,
+            },
+          });
+        }
+
+        return settings;
+      },
+
+      // Capacity Calculations
+      calculateDailyCapacity: (departmentId, date = new Date()) => {
+        const department = get().getDepartmentById(departmentId);
+        const employees = get().getEmployeesForDepartment(departmentId);
+        const vendors = get().getVendorsForDepartment(departmentId);
+
+        if (!department) {
+          throw new Error(`Department with ID '${departmentId}' not found`);
+        }
+
+        return calculateDailyCapacity(department, employees, vendors, date);
+      },
+
+      calculateWeeklyCapacity: (departmentId, startDate = new Date()) => {
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6); // 7 days total
+
+        const department = get().getDepartmentById(departmentId);
+        const employees = get().getEmployeesForDepartment(departmentId);
+        const vendors = get().getVendorsForDepartment(departmentId);
+
+        if (!department) {
+          throw new Error(`Department with ID '${departmentId}' not found`);
+        }
+
+        const dailyCapacities: DailyCapacity[] = [];
+        const current = new Date(startDate);
+
+        while (current <= endDate) {
+          dailyCapacities.push(
+            calculateDailyCapacity(department, employees, vendors, new Date(current))
+          );
+          current.setDate(current.getDate() + 1);
+        }
+
+        return dailyCapacities;
+      },
+
+      calculateManHours: (departmentId, startDate, endDate) => {
+        const department = get().getDepartmentById(departmentId);
+        const employees = get().getEmployeesForDepartment(departmentId);
+
+        if (!department) {
+          throw new Error(`Department with ID '${departmentId}' not found`);
+        }
+
+        return calculateManHours(department, employees, startDate, endDate);
+      },
+
+      refreshCapacityData: () => {
+        const departments = get().departments;
+        const dailyCapacities: Record<string, DailyCapacity[]> = {};
+        const manHoursCalculations: Record<string, ManHoursCalculation> = {};
+
+        departments.forEach(department => {
+          // Calculate weekly capacity
+          const startDate = new Date();
+          startDate.setDate(startDate.getDate() - startDate.getDay()); // Start of week
+          const weeklyCapacity = get().calculateWeeklyCapacity(department.id, startDate);
+
+          dailyCapacities[department.id] = weeklyCapacity;
+
+          // Calculate man-hours for current week
+          const endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 6);
+
+          try {
+            const manHours = get().calculateManHours(department.id, startDate, endDate);
+            manHoursCalculations[department.id] = manHours;
+          } catch (error) {
+            console.error(`Failed to calculate man-hours for ${department.id}:`, error);
+          }
+        });
+
+        set({ dailyCapacities, manHoursCalculations });
+      },
     }),
     {
       name: 'pumptracker-store',
@@ -366,6 +775,74 @@ export const usePumpCountByStage = () => {
     acc[stage] = pumpsByStage[stage].length;
     return acc;
   }, {} as Record<Stage, number>);
+};
+
+// Department Configuration Selectors
+export const useDepartments = () => useStore((state) => state.departments);
+export const useVendors = () => useStore((state) => state.vendors);
+export const useEmployees = () => useStore((state) => state.employees);
+export const useSystemSettings = () => useStore((state) => state.systemSettings);
+export const useDepartmentSettings = () => useStore((state) => state.departmentSettings);
+export const useDailyCapacities = () => useStore((state) => state.dailyCapacities);
+export const useManHoursCalculations = () => useStore((state) => state.manHoursCalculations);
+export const useIsConfigurationLoading = () => useStore((state) => state.isConfigurationLoading);
+
+// Derived selectors for departments
+export const useActiveDepartments = () => {
+  const departments = useDepartments();
+  return departments.filter(dept => dept.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+};
+
+export const useDepartmentById = (id: string) => {
+  const departments = useDepartments();
+  return departments.find(dept => dept.id === id);
+};
+
+export const useVendorsForDepartment = (departmentId: string) => {
+  const vendors = useVendors();
+  return vendors
+    .filter(vendor => vendor.departmentId === departmentId && vendor.isActive)
+    .sort((a, b) => {
+      if (a.isPreferred && !b.isPreferred) return -1;
+      if (!a.isPreferred && b.isPreferred) return 1;
+      return a.swimlanePosition - b.swimlanePosition;
+    });
+};
+
+export const useEmployeesForDepartment = (departmentId: string) => {
+  const employees = useEmployees();
+  return employees.filter(emp => emp.departmentId === departmentId && emp.isActive);
+};
+
+export const useDepartmentCapacity = (departmentId: string) => {
+  const store = useStore();
+  const dailyCapacities = useDailyCapacities();
+  const manHoursCalculations = useManHoursCalculations();
+
+  return {
+    dailyCapacity: dailyCapacities[departmentId] || [],
+    manHoursCalculation: manHoursCalculations[departmentId] || null,
+    refreshData: () => store.refreshCapacityData(),
+  };
+};
+
+export const useSystemHealth = () => {
+  const departments = useActiveDepartments();
+  const vendors = useVendors();
+  const employees = useEmployees();
+
+  // Calculate health metrics
+  const activeVendorCount = vendors.filter(v => v.isActive).length;
+  const activeEmployeeCount = employees.filter(e => e.isActive).length;
+  const vendorsWithHighLoad = vendors.filter(v => v.currentLoad > v.weeklyCapacity * 0.8).length;
+
+  return {
+    departmentCount: departments.length,
+    vendorCount: activeVendorCount,
+    employeeCount: activeEmployeeCount,
+    vendorsAtCapacity: vendorsWithHighLoad,
+    systemStatus: activeVendorCount > 0 && activeEmployeeCount > 0 ? 'healthy' : 'warning',
+  };
 };
 
 export default useStore;

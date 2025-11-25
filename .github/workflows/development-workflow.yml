@@ -1,0 +1,636 @@
+# Development Workflow Automation with Claude Code Action
+name: 🚀 Development Workflow
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      workflow_type:
+        description: 'Development workflow type'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - quick
+          - integration
+          - security
+          - performance
+      target_branch:
+        description: 'Target branch (optional)'
+        required: false
+        default: 'auto'
+        type: string
+  schedule:
+    # Run nightly builds at 3 AM UTC
+    - cron: '0 3 * * *'
+
+env:
+  WORKFLOW_TIMEOUT: '30'
+  ENABLE_CACHING: 'true'
+  PARALLEL_TESTS: 'true'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  packages: write
+  id-token: write  # Required for OIDC
+
+jobs:
+  # Workflow Configuration
+  configure:
+    name: ⚙️ Configure Workflow
+    runs-on: ubuntu-latest
+    outputs:
+      workflow_type: ${{ steps.config.outputs.workflow_type }}
+      target_branch: ${{ steps.config.outputs.target_branch }}
+      run_integration: ${{ steps.config.outputs.run_integration }}
+      run_security: ${{ steps.config.outputs.run_security }}
+      run_performance: ${{ steps.config.outputs.run_performance }}
+      cache_key: ${{ steps.config.outputs.cache_key }}
+      matrix_size: ${{ steps.config.outputs.matrix_size }}
+    steps:
+      - name: Configure workflow
+        id: config
+        run: |
+          # Determine workflow type
+          WORKFLOW_TYPE="${{ github.event.inputs.workflow_type || 'auto' }}"
+
+          if [ "$WORKFLOW_TYPE" == "auto" ]; then
+            # Auto-detect based on trigger
+            if [ "${{ github.event_name }}" == "schedule" ]; then
+              WORKFLOW_TYPE="full"
+            elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+              WORKFLOW_TYPE="${{ github.event.inputs.workflow_type }}"
+            elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              WORKFLOW_TYPE="full"
+            elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+              WORKFLOW_TYPE="integration"
+            else
+              WORKFLOW_TYPE="quick"
+            fi
+          fi
+
+          # Determine target branch
+          TARGET_BRANCH="${{ github.event.inputs.target_branch }}"
+          if [ "$TARGET_BRANCH" == "auto" ] || [ -z "$TARGET_BRANCH" ]; then
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
+              TARGET_BRANCH="${{ github.base_ref }}"
+            else
+              TARGET_BRANCH="${{ github.ref_name }}"
+            fi
+          fi
+
+          # Determine which workflows to run
+          RUN_INTEGRATION="false"
+          RUN_SECURITY="false"
+          RUN_PERFORMANCE="false"
+
+          case "$WORKFLOW_TYPE" in
+            "full")
+              RUN_INTEGRATION="true"
+              RUN_SECURITY="true"
+              RUN_PERFORMANCE="true"
+              ;;
+            "integration")
+              RUN_INTEGRATION="true"
+              ;;
+            "security")
+              RUN_SECURITY="true"
+              ;;
+            "performance")
+              RUN_PERFORMANCE="true"
+              ;;
+          esac
+
+          # Generate cache key
+          CACHE_KEY="${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock', 'Makefile') }}"
+
+          # Determine matrix size for testing
+          if [ "$WORKFLOW_TYPE" == "quick" ]; then
+            MATRIX_SIZE="1"
+          else
+            MATRIX_SIZE="3"
+          fi
+
+          echo "workflow_type=$WORKFLOW_TYPE" >> $GITHUB_OUTPUT
+          echo "target_branch=$TARGET_BRANCH" >> $GITHUB_OUTPUT
+          echo "run_integration=$RUN_INTEGRATION" >> $GITHUB_OUTPUT
+          echo "run_security=$RUN_SECURITY" >> $GITHUB_OUTPUT
+          echo "run_performance=$RUN_PERFORMANCE" >> $GITHUB_OUTPUT
+          echo "cache_key=$CACHE_KEY" >> $GITHUB_OUTPUT
+          echo "matrix_size=$MATRIX_SIZE" >> $GITHUB_OUTPUT
+
+          echo "⚙️ Workflow Configuration:"
+          echo "  Type: $WORKFLOW_TYPE"
+          echo "  Target Branch: $TARGET_BRANCH"
+          echo "  Integration: $RUN_INTEGRATION"
+          echo "  Security: $RUN_SECURITY"
+          echo "  Performance: $RUN_PERFORMANCE"
+          echo "  Cache Key: $CACHE_KEY"
+          echo "  Matrix Size: $MATRIX_SIZE"
+
+  # Environment Setup with Caching
+  setup:
+    name: 🏗️ Setup Development Environment
+    runs-on: ubuntu-latest
+    needs: configure
+    outputs:
+      cache_hit: ${{ steps.cache.outputs.cache-hit }}
+      environment_ready: ${{ steps.verify.outputs.ready }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'uv'
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+            node_modules
+          key: ${{ needs.configure.outputs.cache_key }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          echo "📦 Installing dependencies..."
+          uv sync --group dev
+          npm install -g pnpm
+
+          # Verify installation
+          echo "✅ Python dependencies installed"
+          echo "✅ Global npm packages installed"
+
+      - name: Verify environment
+        id: verify
+        run: |
+          # Check if virtual environment is working
+          if [ -d ".venv" ]; then
+            ENV_READY="true"
+            echo "✅ Virtual environment found"
+          else
+            ENV_READY="false"
+            echo "❌ Virtual environment not found"
+          fi
+
+          # Check if make commands are available
+          if command -v make &> /dev/null; then
+            echo "✅ Make command available"
+          else
+            echo "❌ Make command not available"
+            ENV_READY="false"
+          fi
+
+          # Check if uv is working
+          if command -v uv &> /dev/null; then
+            echo "✅ UV package manager available"
+          else
+            echo "❌ UV package manager not available"
+            ENV_READY="false"
+          fi
+
+          echo "ready=$ENV_READY" >> $GITHUB_OUTPUT
+
+  # Core Development Tests
+  test-core:
+    name: 🧪 Core Tests
+    runs-on: ${{ matrix.os }}
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.11']
+        include:
+          - os: macos-latest
+            python-version: '3.11'
+          - os: ubuntu-latest
+            python-version: '3.12'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ needs.configure.outputs.cache_key }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run code quality checks
+        run: |
+          echo "🔍 Running code quality checks..."
+          make check
+
+      - name: Run test suite
+        run: |
+          echo "🧪 Running test suite..."
+          make test
+
+      - name: Run smoke tests
+        run: |
+          echo "💨 Running smoke tests..."
+          make smoke-test
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            .coverage
+            htmlcov/
+            test-results.xml
+          retention-days: 7
+
+  # Integration Tests
+  test-integration:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [setup, test-core]
+    if: needs.configure.outputs.run_integration == 'true'
+    strategy:
+      matrix:
+        integration_type:
+          - skill-system
+          - mcp-integration
+          - cli-tools
+          - knowledge-base
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ needs.configure.outputs.cache_key }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run integration tests
+        run: |
+          echo "🔗 Running ${{ matrix.integration_type }} integration tests..."
+
+          case "${{ matrix.integration_type }}" in
+            "skill-system")
+              echo "Testing 7/7 core skills framework..."
+              # Add skill system integration tests
+              python -m pytest tests/integration/test_skill_system.py -v
+              ;;
+            "mcp-integration")
+              echo "Testing MCP server integration..."
+              # Add MCP integration tests
+              python -m pytest tests/integration/test_mcp_integration.py -v
+              ;;
+            "cli-tools")
+              echo "Testing CLI tool integration..."
+              # Test make commands work correctly
+              make knowledge-stats || true
+              make workspace-info || true
+              ;;
+            "knowledge-base")
+              echo "Testing knowledge base integration..."
+              # Test knowledge synthesis components
+              make ai-context-files || true
+              ;;
+          esac
+
+      - name: Upload integration results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-results-${{ matrix.integration_type }}
+          path: |
+            integration-reports/
+            test-results.xml
+          retention-days: 7
+
+  # Security Scanning
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.configure.outputs.run_security == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Run Claude security review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            Please perform a security review of the Microsoft Amplifier codebase. Focus on:
+
+            1. **Input Validation**: Check for proper sanitization of user inputs
+            2. **Secrets Management**: Ensure no hardcoded secrets or API keys
+            3. **File Operations**: Verify safe file handling with proper permissions
+            4. **Command Injection**: Check for unsafe command execution
+            5. **Dependencies**: Review third-party packages for vulnerabilities
+            6. **Authentication**: Check authentication and authorization patterns
+            7. **Error Handling**: Ensure errors don't leak sensitive information
+
+            Please provide:
+            - List of security concerns found (if any)
+            - Severity assessment for each issue
+            - Specific remediation recommendations
+            - Security best practices recommendations
+
+            This is for the Microsoft Amplifier AI-powered development framework.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool,Bash
+
+      - name: Run additional security scans
+        run: |
+          echo "🔒 Running additional security scans..."
+
+          # Check for common security issues
+          echo "Scanning for hardcoded secrets..."
+          grep -r -i "password\|secret\|key\|token" --include="*.py" --include="*.yml" --include="*.json" . || true
+
+          echo "Scanning for eval() usage..."
+          grep -r "eval(" --include="*.py" . || true
+
+          echo "Scanning for shell command usage..."
+          grep -r "os.system\|subprocess.call" --include="*.py" . || true
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: |
+            security-reports/
+            trivy-results.sarif
+          retention-days: 30
+
+  # Performance Testing
+  performance-test:
+    name: 📈 Performance Testing
+    runs-on: ubuntu-latest
+    needs: [setup, test-core]
+    if: needs.configure.outputs.run_performance == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ needs.configure.outputs.cache_key }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Run Claude performance analysis
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            Please analyze the performance characteristics of Microsoft Amplifier. Focus on:
+
+            1. **Startup Time**: Analyze application startup performance
+            2. **Memory Usage**: Check for memory leaks or inefficiencies
+            3. **CPU Usage**: Identify CPU-intensive operations
+            4. **I/O Operations**: Review file and network I/O patterns
+            5. **Concurrency**: Check async/await usage patterns
+            6. **Caching**: Evaluate caching effectiveness
+            7. **Dependencies**: Review third-party library performance
+
+            Please provide:
+            - Performance bottlenecks identification
+            - Optimization recommendations
+            - Benchmark suggestions
+            - Resource usage analysis
+
+            This is for the Microsoft Amplifier AI-powered development framework.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool,Bash
+
+      - name: Run performance benchmarks
+        run: |
+          echo "📈 Running performance benchmarks..."
+
+          # Measure basic performance metrics
+          echo "Measuring import time..."
+          time python -c "import amplifier; print('Import successful')"
+
+          echo "Measuring smoke test time..."
+          time make smoke-test
+
+          echo "Measuring test suite time..."
+          time make test || true
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: |
+            performance-reports/
+            benchmark-results.json
+          retention-days: 30
+
+  # Build and Package
+  build:
+    name: 📦 Build Package
+    runs-on: ubuntu-latest
+    needs: [test-core]
+    if: needs.test-core.result == 'success'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ needs.configure.outputs.cache_key }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Build package
+        run: |
+          echo "📦 Building Microsoft Amplifier package..."
+          uv build
+
+      - name: Validate package
+        run: |
+          echo "✅ Validating built package..."
+          twine check dist/*
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: dist/
+          retention-days: 7
+
+  # Development Workflow Summary
+  workflow-summary:
+    name: 📊 Workflow Summary
+    runs-on: ubuntu-latest
+    needs: [configure, setup, test-core, test-integration, security-scan, performance-test, build]
+    if: always()
+    steps:
+      - name: Generate workflow summary
+        run: |
+          echo "🚀 Microsoft Amplifier Development Workflow Summary"
+          echo "="
+          echo "Workflow Type: ${{ needs.configure.outputs.workflow_type }}"
+          echo "Target Branch: ${{ needs.configure.outputs.target_branch }}"
+          echo ""
+
+          echo "📊 Job Results:"
+          echo "  Setup: ${{ needs.setup.result }}"
+          echo "  Core Tests: ${{ needs.test-core.result }}"
+          echo "  Integration Tests: ${{ needs.test-integration.result || 'skipped' }}"
+          echo "  Security Scan: ${{ needs.security-scan.result || 'skipped' }}"
+          echo "  Performance Test: ${{ needs.performance-test.result || 'skipped' }}"
+          echo "  Build: ${{ needs.build.result }}"
+          echo ""
+
+          # Determine overall status
+          OVERALL_STATUS="success"
+
+          if [ "${{ needs.setup.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          elif [ "${{ needs.test-core.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          elif [ "${{ needs.configure.outputs.run_integration }}" == "true" ] && [ "${{ needs.test-integration.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          elif [ "${{ needs.configure.outputs.run_security }}" == "true" ] && [ "${{ needs.security-scan.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          elif [ "${{ needs.configure.outputs.run_performance }}" == "true" ] && [ "${{ needs.performance-test.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          elif [ "${{ needs.build.result }}" != "success" ]; then
+            OVERALL_STATUS="failed"
+          fi
+
+          echo "🏆 Overall Status: $OVERALL_STATUS"
+
+          # Create status badge
+          if [ "$OVERALL_STATUS" == "success" ]; then
+            echo "✅ All checks passed!"
+          else
+            echo "❌ Some checks failed. Please review the logs."
+          fi
+
+      - name: Post comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        run: |
+          PR_NUMBER="${{ github.event.number }}"
+
+          gh pr comment $PR_NUMBER \
+            --body "🚀 **Development Workflow Complete**
+
+            **Workflow Type:** ${{ needs.configure.outputs.workflow_type }}
+            **Target Branch:** ${{ needs.configure.outputs.target_branch }}
+
+            **Results:**
+            - ✅ Setup: ${{ needs.setup.result }}
+            - ✅ Core Tests: ${{ needs.test-core.result }}
+            - ${{ needs.configure.outputs.run_integration == 'true' && format('✅ Integration Tests: {0}', needs.test-integration.result) || '- Integration Tests: skipped' }}
+            - ${{ needs.configure.outputs.run_security == 'true' && format('✅ Security Scan: {0}', needs.security-scan.result) || '- Security Scan: skipped' }}
+            - ${{ needs.configure.outputs.run_performance == 'true' && format('✅ Performance Test: {0}', needs.performance-test.result) || '- Performance Test: skipped' }}
+            - ✅ Build: ${{ needs.build.result }}
+
+            **Artifacts:** Check the Actions tab for downloadable artifacts and detailed reports.
+
+            ---
+            *Workflow completed at $(date -u)*"

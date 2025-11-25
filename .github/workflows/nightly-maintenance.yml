@@ -1,0 +1,596 @@
+# Nightly Maintenance and Health Checks
+name: 🌙 Nightly Maintenance
+
+on:
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      maintenance_type:
+        description: 'Type of maintenance to perform'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - cleanup
+          - health-check
+          - dependency-update
+          - security-scan
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+  id-token: write
+
+jobs:
+  # Maintenance Configuration
+  configure:
+    name: ⚙️ Configure Maintenance
+    runs-on: ubuntu-latest
+    outputs:
+      maintenance_type: ${{ steps.config.outputs.maintenance_type }}
+      run_cleanup: ${{ steps.config.outputs.run_cleanup }}
+      run_health_check: ${{ steps.config.outputs.run_health_check }}
+      run_dependency_update: ${{ steps.config.outputs.run_dependency_update }}
+      run_security_scan: ${{ steps.config.outputs.run_security_scan }}
+      create_pr: ${{ steps.config.outputs.create_pr }}
+    steps:
+      - name: Configure maintenance
+        id: config
+        run: |
+          MAINTENANCE_TYPE="${{ github.event.inputs.maintenance_type || 'full' }}"
+
+          RUN_CLEANUP="false"
+          RUN_HEALTH_CHECK="false"
+          RUN_DEPENDENCY_UPDATE="false"
+          RUN_SECURITY_SCAN="false"
+          CREATE_PR="false"
+
+          case "$MAINTENANCE_TYPE" in
+            "full")
+              RUN_CLEANUP="true"
+              RUN_HEALTH_CHECK="true"
+              RUN_DEPENDENCY_UPDATE="true"
+              RUN_SECURITY_SCAN="true"
+              CREATE_PR="true"
+              ;;
+            "cleanup")
+              RUN_CLEANUP="true"
+              ;;
+            "health-check")
+              RUN_HEALTH_CHECK="true"
+              ;;
+            "dependency-update")
+              RUN_DEPENDENCY_UPDATE="true"
+              CREATE_PR="true"
+              ;;
+            "security-scan")
+              RUN_SECURITY_SCAN="true"
+              ;;
+          esac
+
+          echo "maintenance_type=$MAINTENANCE_TYPE" >> $GITHUB_OUTPUT
+          echo "run_cleanup=$RUN_CLEANUP" >> $GITHUB_OUTPUT
+          echo "run_health_check=$RUN_HEALTH_CHECK" >> $GITHUB_OUTPUT
+          echo "run_dependency_update=$RUN_DEPENDENCY_UPDATE" >> $GITHUB_OUTPUT
+          echo "run_security_scan=$RUN_SECURITY_SCAN" >> $GITHUB_OUTPUT
+          echo "create_pr=$CREATE_PR" >> $GITHUB_OUTPUT
+
+          echo "🌙 Nightly Maintenance Configuration:"
+          echo "  Type: $MAINTENANCE_TYPE"
+          echo "  Cleanup: $RUN_CLEANUP"
+          echo "  Health Check: $RUN_HEALTH_CHECK"
+          echo "  Dependency Update: $RUN_DEPENDENCY_UPDATE"
+          echo "  Security Scan: $RUN_SECURITY_SCAN"
+          echo "  Create PR: $CREATE_PR"
+
+  # Repository Cleanup
+  cleanup:
+    name: 🧹 Repository Cleanup
+    runs-on: ubuntu-latest
+    needs: configure
+    if: needs.configure.outputs.run_cleanup == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Run Claude cleanup assistant
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            Please perform repository cleanup and maintenance for Microsoft Amplifier:
+
+            **Tasks:**
+            1. **Issue Cleanup:**
+               - Close stale issues (no activity for 30+ days)
+               - Add "stale" label to inactive issues (14+ days)
+               - Identify and suggest consolidation of duplicate issues
+               - Update issues that have been resolved by recent PRs
+
+            2. **PR Cleanup:**
+               - Close abandoned PRs (no activity for 60+ days)
+               - Mark inactive PRs as stale (30+ days)
+               - Identify PRs that need rebase or conflict resolution
+
+            3. **Branch Cleanup:**
+               - List merged branches that can be deleted
+               - Identify stale feature branches
+
+            4. **Label Management:**
+               - Clean up unused or redundant labels
+               - Suggest new labels for better categorization
+               - Standardize label usage patterns
+
+            **Guidelines:**
+            - Be conservative with closing issues/PRs
+            - Provide clear reasons for cleanup actions
+            - Focus on maintaining repository health
+            - Preserve important historical context
+
+            Focus on maintaining a clean, organized repository that's easy for contributors to navigate.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,Bash,GrepTool
+
+      - name: Create cleanup report
+        run: |
+          echo "🧹 Cleanup completed at $(date -u)"
+          echo "Report generated by Claude Code Assistant"
+
+  # Health Check
+  health-check:
+    name: 🔍 Health Check
+    runs-on: ubuntu-latest
+    needs: [configure, setup]
+    if: needs.configure.outputs.run_health_check == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run basic health checks
+        run: |
+          echo "🔍 Running Microsoft Amplifier health checks..."
+
+          # Check if make commands work
+          echo "Checking make commands..."
+          make --version || echo "⚠️ Make not available"
+
+          # Check basic Python functionality
+          echo "Checking Python environment..."
+          python --version
+          uv --version
+
+          # Check project structure
+          echo "Checking project structure..."
+          if [ -f "pyproject.toml" ]; then
+            echo "✅ pyproject.toml exists"
+          else
+            echo "❌ pyproject.toml missing"
+          fi
+
+          if [ -f "Makefile" ]; then
+            echo "✅ Makefile exists"
+          else
+            echo "❌ Makefile missing"
+          fi
+
+          # Check key directories
+          for dir in amplifier tests docs .github; do
+            if [ -d "$dir" ]; then
+              echo "✅ $dir directory exists"
+            else
+              echo "❌ $dir directory missing"
+            fi
+          done
+
+      - name: Run comprehensive health check with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
+          prompt: |
+            Please perform a comprehensive health check of the Microsoft Amplifier project:
+
+            **Health Check Areas:**
+
+            1. **Code Quality:**
+               - Check for obvious syntax errors or import issues
+               - Verify basic code structure integrity
+               - Identify any critical issues that need immediate attention
+
+            2. **Configuration:**
+               - Validate pyproject.toml structure
+               - Check Makefile commands functionality
+               - Verify GitHub Actions workflow syntax
+
+            3. **Dependencies:**
+               - Check for any known vulnerable dependencies
+               - Verify dependency compatibility
+               - Identify outdated packages that need updates
+
+            4. **Documentation:**
+               - Check for broken documentation links
+               - Verify README accuracy
+               - Identify missing critical documentation
+
+            5. **Project Structure:**
+               - Verify core directory structure
+               - Check for missing essential files
+               - Identify structural inconsistencies
+
+            **Output Format:**
+            Provide a structured health report with:
+            - Overall health status (Healthy/Warning/Critical)
+            - Specific issues found with severity levels
+            - Recommended actions for each issue
+            - Priority ranking of issues to address
+
+            This is a preventative maintenance check to ensure the project remains in good health.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool,Bash
+
+  # Dependency Updates
+  dependency-update:
+    name: 📦 Dependency Updates
+    runs-on: ubuntu-latest
+    needs: [configure, setup]
+    if: needs.configure.outputs.run_dependency_update == 'true'
+    outputs:
+      updates_available: ${{ steps.update.outputs.updates_available }}
+      pr_number: ${{ steps.pr.outputs.number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astric-sh/setup-uv@v3
+
+      - name: Check for dependency updates
+        id: update
+        run: |
+          echo "📦 Checking for dependency updates..."
+
+          # Check uv lock updates
+          echo "Checking Python package updates..."
+          uv lock --upgrade 2>&1 | tee /tmp/uv-update.log
+
+          # Check if updates were applied
+          if grep -q "Updated" /tmp/uv-update.log; then
+            echo "updates_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Dependency updates available"
+          else
+            echo "updates_available=false" >> $GITHUB_OUTPUT
+            echo "✅ All dependencies up to date"
+          fi
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Analyze updates with Claude
+        if: steps.update.outputs.updates_available == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            Analyze the dependency updates for Microsoft Amplifier and provide guidance:
+
+            **Context:**
+            - Updates were detected using `uv lock --upgrade`
+            - This is an AI-powered development framework
+            - Must maintain compatibility with 7/7 core skills framework
+            - Should follow defensive programming principles
+
+            **Analysis Required:**
+            1. **Update Impact:** Assess what each dependency update changes
+            2. **Compatibility:** Check for breaking changes or deprecations
+            3. **Security:** Identify any security improvements
+            4. **Performance:** Note any performance improvements
+            5. **Integration:** Verify compatibility with existing codebase
+
+            **Recommendations:**
+            - Which updates are safe to apply
+            - Which updates require code changes
+            - Which updates should be deferred
+            - Any specific migration steps needed
+
+            Provide a detailed analysis with actionable recommendations for applying these updates safely.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool
+
+      - name: Create dependency update PR
+        id: pr
+        if: steps.update.outputs.updates_available == 'true' && needs.configure.outputs.create_pr == 'true'
+        run: |
+          BRANCH_NAME="dependency-update-$(date +%Y%m%d)"
+
+          # Create new branch
+          git checkout -b "$BRANCH_NAME"
+
+          # Commit updates
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pyproject.toml uv.lock
+          git commit -m "📦 Update dependencies
+
+          - Update Python packages using uv lock --upgrade
+          - analyzed by Claude Code for compatibility
+          - automated dependency maintenance
+
+          🤖 Generated with [Claude Code](https://claude.ai/claude-code)
+
+          Co-Authored-By: Claude <noreply@anthropic.com>"
+
+          # Push branch
+          git push origin "$BRANCH_NAME"
+
+          # Create PR
+          PR_URL=$(gh pr create --title "📦 Dependency Updates ($(date +%Y-%m-%d))" \
+            --body "## 📦 Dependency Updates
+
+          This PR contains automated dependency updates for Microsoft Amplifier.
+
+          ### 🔄 Changes
+          - Updated Python packages using \`uv lock --upgrade\`
+          - Changes analyzed by Claude Code for compatibility
+          - Focuses on maintaining 7/7 core skills framework compatibility
+
+          ### ✅ Pre-flight Checks
+          - [ ] Compatibility analysis completed
+          - [ ] Breaking changes identified (if any)
+          - [ ] Security improvements noted
+          - [ ] Performance impact assessed
+
+          ### 🧪 Testing Required
+          - [ ] Run \`make check\` to verify code quality
+          - [ ] Run \`make test\` to verify functionality
+          - [ ] Run \`make smoke-test\` for basic validation
+
+          ### 📋 Notes
+          This PR was created automatically by the nightly maintenance workflow.
+          Review the changes and merge if all tests pass.
+
+          ---
+          *🤖 Generated with [Claude Code](https://claude.ai/claude-code)*" \
+            --assignee "${{ github.actor }}")
+
+          # Extract PR number
+          PR_NUMBER=$(echo "$PR_URL" | grep -o '[0-9]\+' | head -1)
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+          echo "✅ Created dependency update PR: $PR_URL"
+
+  # Security Scanning
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: configure
+    if: needs.configure.outputs.run_security_scan == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Run comprehensive security analysis
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            Please perform a comprehensive security analysis of the Microsoft Amplifier codebase:
+
+            **Security Analysis Areas:**
+
+            1. **Code Security:**
+               - Check for injection vulnerabilities (SQL, command, code injection)
+               - Identify hardcoded secrets or credentials
+               - Verify input validation and sanitization
+               - Check for unsafe file operations
+               - Analyze authentication and authorization patterns
+
+            2. **Dependency Security:**
+               - Scan for known vulnerabilities in dependencies
+               - Check for outdated packages with security issues
+               - Verify transitive dependency security
+
+            3. **Configuration Security:**
+               - Review GitHub Actions workflows for security issues
+               - Check for insecure configurations
+               - Verify secret management practices
+
+            4. **Infrastructure Security:**
+               - Analyze Docker security (if applicable)
+               - Check deployment configurations
+               - Review network security considerations
+
+            **Output Requirements:**
+            - List of security findings with severity (Critical/High/Medium/Low)
+            - Specific code locations for each issue
+            - Detailed remediation steps
+            - Prevention recommendations
+            - Priority order for addressing issues
+
+            **Context:** Microsoft Amplifier is an AI-powered development framework with focus on defensive programming and security.
+
+            Provide actionable security insights that will help maintain and improve the project's security posture.
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool,Bash
+
+      - name: Run additional security tools
+        run: |
+          echo "🔒 Running additional security scans..."
+
+          # Check for common security issues
+          echo "Scanning for hardcoded secrets..."
+          grep -r -i -E "(password|secret|key|token|api_key)" \
+            --include="*.py" --include="*.yml" --include="*.yaml" --include="*.json" \
+            --exclude-dir=".git" --exclude-dir="node_modules" . || true
+
+          echo "Scanning for eval() usage..."
+          grep -r "eval(" --include="*.py" . || true
+
+          echo "Scanning for unsafe subprocess calls..."
+          grep -r -E "(os\.system|subprocess\.call.*shell=True)" --include="*.py" . || true
+
+          echo "Scanning for file permissions issues..."
+          grep -r -E "(os\.chmod|0o777|world-writable)" --include="*.py" . || true
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-report-$(date +%Y%m%d)
+          path: |
+            security-reports/
+            trivy-results.sarif
+          retention-days: 30
+
+  # Maintenance Summary
+  maintenance-summary:
+    name: 📊 Maintenance Summary
+    runs-on: ubuntu-latest
+    needs: [configure, cleanup, health-check, dependency-update, security-scan]
+    if: always()
+    steps:
+      - name: Generate maintenance summary
+        run: |
+          echo "🌙 Nightly Maintenance Summary"
+          echo "=========================="
+          echo ""
+          echo "Date: $(date -u)"
+          echo "Maintenance Type: ${{ needs.configure.outputs.maintenance_type }}"
+          echo ""
+
+          echo "📊 Task Results:"
+          echo "  Repository Cleanup: ${{ needs.cleanup.result || 'skipped' }}"
+          echo "  Health Check: ${{ needs.health-check.result || 'skipped' }}"
+          echo "  Dependency Updates: ${{ needs.dependency-update.result || 'skipped' }}"
+          echo "  Security Scan: ${{ needs.security-scan.result || 'skipped' }}"
+          echo ""
+
+          if [ "${{ needs.dependency-update.outputs.updates_available }}" == "true" ]; then
+            echo "📦 Dependency Updates: Available"
+            if [ "${{ needs.dependency-update.outputs.pr_number }}" != "" ]; then
+              echo "  PR Created: #${{ needs.dependency-update.outputs.pr_number }}"
+            fi
+          else
+            echo "📦 Dependency Updates: All up to date"
+          fi
+
+          echo ""
+          echo "🔗 Links:"
+          echo "  - Security reports available in Actions artifacts"
+          echo "  - Health check logs available in Actions logs"
+          if [ "${{ needs.dependency-update.outputs.pr_number }}" != "" ]; then
+            echo "  - Dependency PR: #${{ needs.dependency-update.outputs.pr_number }}"
+          fi
+
+          echo ""
+          echo "🎯 Next Steps:"
+          if [ "${{ needs.dependency-update.outputs.updates_available }}" == "true" ]; then
+            echo "  - Review and merge dependency update PR"
+          fi
+          if [ "${{ needs.security-scan.result }}" != "skipped" ]; then
+            echo "  - Review security scan results"
+          fi
+          echo "  - Address any health check warnings"
+
+      - name: Create maintenance issue if problems found
+        if: |
+          needs.dependency-update.outputs.updates_available == 'true' ||
+          needs.health-check.result == 'failure' ||
+          needs.security-scan.result == 'failure'
+        run: |
+          TITLE="🌙 Nightly Maintenance Issues - $(date +%Y-%m-%d)"
+
+          BODY="## 🌙 Nightly Maintenance Issues
+
+          **Date:** $(date -u)
+          **Maintenance Type:** ${{ needs.configure.outputs.maintenance_type }}
+
+          ### 📊 Issues Found
+
+          $(if [ "${{ needs.dependency-update.outputs.updates_available }}" == "true" ]; then echo "
+          **📦 Dependencies**
+          - Updates are available and have been processed
+          - PR: #${{ needs.dependency-update.outputs.pr_number || 'Not created'}
+          "; fi)
+
+          $(if [ "${{ needs.health-check.result }}" == "failure" ]; then echo "
+          **🔍 Health Check**
+          - Health check failed - review logs for details
+          - Check workflow logs for specific issues
+          "; fi)
+
+          $(if [ "${{ needs.security-scan.result }}" == "failure" ]; then echo "
+          **🔒 Security Scan**
+          - Security issues detected - review security report artifact
+          - Download and analyze the security-scan-report artifact
+          "; fi)
+
+          ### 🎯 Required Actions
+
+          1. **Review all issues** in the detailed workflow logs
+          2. **Address critical issues** immediately
+          3. **Merge dependency updates** if available
+          4. **Update documentation** if needed
+
+          ### 📋 Resources
+
+          - [Workflow Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - [Security Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - [Dependency PR](https://github.com/${{ github.repository }}/pull/${{ needs.dependency-update.outputs.pr_number }})
+
+          ---
+          *This issue was automatically generated by the nightly maintenance workflow*
+          "
+
+          # Create the issue
+          gh issue create \
+            --title "$TITLE" \
+            --body "$BODY" \
+            --label "maintenance" \
+            --label "automated" || echo "Issue already exists or creation failed"

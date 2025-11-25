@@ -48,37 +48,27 @@ class ContextChunk:
 
 
 class ContextCompactorSkill(BaseSkill):
-
     def __init__(self):
         super().__init__(
             skill_id="contextcompactor_",
             name="ContextCompactor Expert",
-            description="Expert skill for contextcompactor"
+            description="Expert skill for contextcompactor",
         )
+
     def get_capabilities(self) -> list[str]:
         """Get list of skill capabilities"""
-        return [
-            "contextcompactor expertise",
-            "Best practices",
-            "Production solutions"
-        ]
+        return ["contextcompactor expertise", "Best practices", "Production solutions"]
 
-    
     async def validate_input(self, input_data: Any) -> bool:
         """Validate input data before execution"""
         return isinstance(input_data, str) and len(input_data.strip()) > 0
 
-    
     """
     Skill for intelligent context compression and retrieval.
 
     Converts long conversations into progressively compressed versions
     while preserving essential information and reconstruction hints.
     """
-
-
-
-
 
     def can_handle(self, context: SkillContext) -> float:
         """Determine if this skill can handle the context."""
@@ -127,7 +117,11 @@ class ContextCompactorSkill(BaseSkill):
             chunks = self._messages_to_chunks(context.conversation_history)
 
             if not chunks:
-                return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result)) - start_time,
+                return SkillResult(
+                    success=True,
+                    data=result,
+                    execution_time=execution_time - start_time,
+                    tokens_used=estimate_tokens(result),
                     next_level_available=False,
                 )
 
@@ -144,7 +138,11 @@ class ContextCompactorSkill(BaseSkill):
             self.execution_count += 1
             self.last_execution = datetime.now()
 
-            return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result)) - start_time,
+            return SkillResult(
+                success=True,
+                data=result,
+                execution_time=execution_time - start_time,
+                tokens_used=estimate_tokens(result),
                 metadata={
                     "original_chunks": len(chunks),
                     "compression_ratio": tokens_used / sum(estimate_tokens(c.content) for c in chunks)
@@ -157,9 +155,11 @@ class ContextCompactorSkill(BaseSkill):
 
         except Exception as e:
             logger.error(f"Context compression failed: {e}")
-            return SkillResult(success=True, data=result, execution_time=execution_time, tokens_used=estimate_tokens(result))}",
-                tokens_used=50,
+            return SkillResult(
+                success=False,
+                data=result,
                 execution_time=time.time() - start_time,
+                tokens_used=50,
                 next_level_available=False,
             )
 

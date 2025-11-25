@@ -1,0 +1,509 @@
+# Issue Automation with Claude Code Action Integration
+name: 🎯 Issue Automation
+
+on:
+  issues:
+    types: [opened, edited, labeled, closed]
+  issue_comment:
+    types: [created]
+  schedule:
+    # Run daily at 2 AM UTC for issue maintenance
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Issue automation action'
+        required: true
+        default: 'triage'
+        type: choice
+        options:
+          - triage
+          - progress-update
+          - label-cleanup
+          - milestone-review
+          - backlog-grooming
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  # Issue Analysis and Classification
+  analyze-issue:
+    name: 🔍 Analyze Issue
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    outputs:
+      issue_type: ${{ steps.analysis.outputs.issue_type }}
+      priority: ${{ steps.analysis.outputs.priority }}
+      complexity: ${{ steps.analysis.outputs.complexity }}
+      suggested_labels: ${{ steps.analysis.outputs.suggested_labels }}
+      suggested_assignee: ${{ steps.analysis.outputs.suggested_assignee }}
+      auto_resolvable: ${{ steps.analysis.outputs.auto_resolvable }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Analyze new issue
+        id: analysis
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+
+          # Initialize defaults
+          ISSUE_TYPE="general"
+          PRIORITY="medium"
+          COMPLEXITY="medium"
+          SUGGESTED_LABELS=""
+          SUGGESTED_ASSIGNEE=""
+          AUTO_RESOLVABLE="false"
+
+          # Analyze title and body for patterns
+          LOWER_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]')
+          LOWER_BODY=$(echo "$ISSUE_BODY" | tr '[:upper:]' '[:lower:]')
+
+          # Issue Type Detection
+          if echo "$LOWER_TITLE" | grep -E "(bug|error|crash|fail|broken|not working)" > /dev/null; then
+            ISSUE_TYPE="bug"
+            PRIORITY="high"
+          elif echo "$LOWER_TITLE" | grep -E "(feature|enhancement|add|implement|new)" > /dev/null; then
+            ISSUE_TYPE="feature"
+            PRIORITY="medium"
+          elif echo "$LOWER_TITLE" | grep -E "(doc|documentation|readme|guide)" > /dev/null; then
+            ISSUE_TYPE="documentation"
+            PRIORITY="low"
+          elif echo "$LOWER_TITLE" | grep -E "(refactor|improve|cleanup|optimize)" > /dev/null; then
+            ISSUE_TYPE="improvement"
+            PRIORITY="medium"
+          elif echo "$LOWER_TITLE" | grep -E "(test|testing|coverage|spec)" > /dev/null; then
+            ISSUE_TYPE="testing"
+            PRIORITY="medium"
+          elif echo "$LOWER_TITLE" | grep -E "(security|vulnerability|auth|permission)" > /dev/null; then
+            ISSUE_TYPE="security"
+            PRIORITY="critical"
+          fi
+
+          # Priority Detection
+          if echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(urgent|critical|blocking|production)" > /dev/null; then
+            PRIORITY="critical"
+          elif echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(high|important|soon)" > /dev/null; then
+            PRIORITY="high"
+          elif echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(low|minor|nice to have)" > /dev/null; then
+            PRIORITY="low"
+          fi
+
+          # Complexity Detection
+          BODY_LENGTH=$(echo "$LOWER_BODY" | wc -c)
+          if [ "$BODY_LENGTH" -lt 200 ]; then
+            COMPLEXITY="simple"
+          elif [ "$BODY_LENGTH" -lt 1000 ]; then
+            COMPLEXITY="medium"
+          else
+            COMPLEXITY="complex"
+          fi
+
+          # Check for auto-resolvable patterns
+          if echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(question|help|how to|what is)" > /dev/null && [ "$BODY_LENGTH" -lt 500 ]; then
+            AUTO_RESOLVABLE="true"
+          elif echo "$LOWER_TITLE" | grep -E "(duplicate|already reported)" > /dev/null; then
+            AUTO_RESOLVABLE="true"
+          fi
+
+          # Suggest labels
+          SUGGESTED_LABELS="$ISSUE_TYPE,priority-$PRIORITY,complexity-$COMPLEXITY"
+
+          # Add component-specific labels
+          if echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(claude|ai|agent)" > /dev/null; then
+            SUGGESTED_LABELS="$SUGGESTED_LABELS,claude-code"
+          elif echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(github|workflow|action)" > /dev/null; then
+            SUGGESTED_LABELS="$SUGGESTED_LABELS,github-actions"
+          elif echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(skill|amplifier)" > /dev/null; then
+            SUGGESTED_LABELS="$SUGGESTED_LABELS,amplifier-skills"
+          elif echo "$LOWER_TITLE $LOWER_BODY" | grep -E "(test|testing)" > /dev/null; then
+            SUGGESTED_LABELS="$SUGGESTED_LABELS,testing"
+          fi
+
+          echo "issue_type=$ISSUE_TYPE" >> $GITHUB_OUTPUT
+          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
+          echo "complexity=$COMPLEXITY" >> $GITHUB_OUTPUT
+          echo "suggested_labels=$SUGGESTED_LABELS" >> $GITHUB_OUTPUT
+          echo "auto_resolvable=$AUTO_RESOLVABLE" >> $GITHUB_OUTPUT
+
+          echo "🔍 Issue Analysis Results:"
+          echo "  Type: $ISSUE_TYPE"
+          echo "  Priority: $PRIORITY"
+          echo "  Complexity: $COMPLEXITY"
+          echo "  Labels: $SUGGESTED_LABELS"
+          echo "  Auto-resolvable: $AUTO_RESOLVABLE"
+
+  # Apply Initial Labels and Triage
+  triage-issue:
+    name: 🏷️ Triage Issue
+    runs-on: ubuntu-latest
+    needs: analyze-issue
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    steps:
+      - name: Add triage labels
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          SUGGESTED_LABELS="${{ needs.analyze-issue.outputs.suggested_labels }}"
+          AUTO_RESOLVABLE="${{ needs.analyze-issue.outputs.auto_resolvable }}"
+
+          # Add labels
+          IFS=',' read -ra LABELS <<< "$SUGGESTED_LABELS"
+          for label in "${LABELS[@]}"; do
+            gh issue edit $ISSUE_NUMBER --add-label "$label"
+          done
+
+          # Add triage status
+          gh issue edit $ISSUE_NUMBER --add-label "needs-triage"
+
+          # Add auto-resolvable tag if applicable
+          if [ "$AUTO_RESOLVABLE" == "true" ]; then
+            gh issue edit $ISSUE_NUMBER --add-label "auto-resolvable"
+          fi
+
+      - name: Post triage comment
+        if: needs.analyze-issue.outputs.auto_resolvable == 'true'
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          ISSUE_TYPE="${{ needs.analyze-issue.outputs.issue_type }}"
+
+          gh issue comment $ISSUE_NUMBER \
+            --body "🤖 **Automatic Triage**
+
+          **Issue Analysis:**
+          - Type: $ISSUE_TYPE
+          - Priority: ${{ needs.analyze-issue.outputs.priority }}
+          - Complexity: ${{ needs.analyze-issue.outputs.complexity }}
+
+          This issue appears to be auto-resolvable. A maintainer will review it shortly.
+
+          **Next Steps:**
+          - If this is a question, check existing documentation
+          - If this is a duplicate, it will be marked accordingly
+          - If more information is needed, you'll be contacted
+
+          ---
+          *Automated analysis by Claude Code Action*"
+
+  # Intelligent Issue Processing with Claude
+  claude-issue-handler:
+    name: 🤖 Claude Issue Handler
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' ||
+      (github.event_name == 'issues' && github.event.action == 'opened') ||
+      github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Create issue processing prompt
+        id: prompt
+        run: |
+          ACTION_TYPE=""
+          ISSUE_CONTENT=""
+          ISSUE_NUMBER=""
+
+          # Determine action type and prepare content
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            ACTION_TYPE="comment_response"
+            ISSUE_CONTENT="${{ github.event.comment.body }}"
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+            PREVIOUS_COMMENTS=$(gh issue view $ISSUE_NUMBER --comments --json body --jq '.comments[].body' | tr '\n' ' ' | head -c 2000)
+          elif [ "${{ github.event_name }}" == "issues" ]; then
+            ACTION_TYPE="new_issue"
+            ISSUE_CONTENT="${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}"
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+            PREVIOUS_COMMENTS=""
+          else
+            ACTION_TYPE="${{ github.event.inputs.action }}"
+            ISSUE_CONTENT="Manual trigger: ${{ github.event.inputs.action }}"
+            ISSUE_NUMBER="0"
+            PREVIOUS_COMMENTS=""
+          fi
+
+          # Check for specific trigger commands
+          if echo "$ISSUE_CONTENT" | grep -q "/claude-help\|@claude-code"; then
+            ACTION_TYPE="help_request"
+          elif echo "$ISSUE_CONTENT" | grep -q "/claude-diagnose\|/claude-debug"; then
+            ACTION_TYPE="diagnosis"
+          elif echo "$ISSUE_CONTENT" | grep -q "/claude-suggest\|/claude-recommend"; then
+            ACTION_TYPE="suggestion"
+          elif echo "$ISSUE_CONTENT" | grep -q "/claude-status\|/claude-progress"; then
+            ACTION_TYPE="status_update"
+          fi
+
+          # Create prompt based on action type
+          case "$ACTION_TYPE" in
+            "help_request")
+              PROMPT="You are Claude Code, helping with a request in the Microsoft Amplifier repository.
+
+              **User Request:**
+              $ISSUE_CONTENT
+
+              **Context:**
+              - This is the Microsoft Amplifier AI-powered development framework
+              - Built with defensive programming, POSIX compliance, and agent-first development
+              - Uses 7/7 core skills framework and virtual environment safety system
+              - Current issue: #$ISSUE_NUMBER
+
+              **Your Role:**
+              1. Analyze the user's request carefully
+              2. Provide helpful, accurate information about Microsoft Amplifier
+              3. If it's a question about usage, provide clear examples
+              4. If it's a technical problem, suggest solutions
+              5. Reference relevant documentation or code examples when helpful
+              6. If you need more information, ask specific clarifying questions
+
+              Please provide a helpful response that addresses the user's needs."
+              ;;
+            "diagnosis")
+              PROMPT="You are Claude Code, providing technical diagnosis for Microsoft Amplifier.
+
+              **Issue Details:**
+              $ISSUE_CONTENT
+
+              **Previous Context:**
+              $PREVIOUS_COMMENTS
+
+              **Context:**
+              - Microsoft Amplifier AI-powered development framework
+              - Issue #$ISSUE_NUMBER requires technical diagnosis
+              - Focus on defensive programming and error handling
+              - Virtual environment safety with uv dependency management
+
+              **Diagnosis Steps:**
+              1. Analyze the described problem or error
+              2. Identify potential root causes
+              3. Suggest debugging steps or commands
+              4. Provide specific code solutions if applicable
+              5. Reference relevant parts of the codebase
+              6. Suggest preventive measures
+
+              Please provide a thorough technical diagnosis with actionable solutions."
+              ;;
+            "suggestion")
+              PROMPT="You are Claude Code, providing improvement suggestions for Microsoft Amplifier.
+
+              **Suggestion Request:**
+              $ISSUE_CONTENT
+
+              **Context:**
+              - Microsoft Amplifier AI-powered development framework
+              - Built with ruthless simplicity and modular design philosophy
+              - Issue #$ISSUE_NUMBER is seeking suggestions
+              - Focus on agent-first development and LLM optimization
+
+              **Guidelines for Suggestions:**
+              1. Align with the project's implementation philosophy
+              2. Consider the 7/7 core skills framework
+              3. Prioritize simplicity and maintainability
+              4. Ensure compatibility with existing architecture
+              5. Provide specific implementation guidance
+              6. Consider security and performance implications
+
+              Please provide thoughtful, actionable suggestions that improve the framework."
+              ;;
+            "status_update")
+              PROMPT="You are Claude Code, providing status updates for Microsoft Amplifier issues.
+
+              **Status Request:**
+              $ISSUE_CONTENT
+
+              **Previous Context:**
+              $PREVIOUS_COMMENTS
+
+              **Context:**
+              - Issue #$ISSUE_NUMBER status request
+              - Microsoft Amplifier AI-powered development framework
+              - Provide accurate, up-to-date status information
+
+              **Status Information to Provide:**
+              1. Current status of the issue/request
+              2. Progress made so far
+              3. Next steps or blockers
+              4. Estimated timeline if applicable
+              5. Related issues or dependencies
+              6. Any additional information needed
+
+              Please provide a clear, informative status update."
+              ;;
+            *)
+              PROMPT="You are Claude Code, managing issues in the Microsoft Amplifier repository.
+
+              **Issue Content:**
+              $ISSUE_CONTENT
+
+              **Previous Context:**
+              $PREVIOUS_COMMENTS
+
+              **Context:**
+              - Issue #$ISSUE_NUMBER in Microsoft Amplifier repository
+              - Microsoft Amplifier is an AI-powered development framework
+              - Built with defensive programming and agent-first development
+              - Uses 7/7 core skills framework
+
+              **Your Response Should:**
+              1. Acknowledge the issue or comment
+              2. Provide helpful, relevant information
+              3. If it's a problem, suggest solutions
+              4. If it's a question, answer it thoroughly
+              5. If more information is needed, ask specifically
+              6. Reference relevant documentation or code when helpful
+
+              Please provide a helpful response that moves the issue forward."
+              ;;
+          esac
+
+          echo "📝 Created prompt for action type: $ACTION_TYPE"
+          echo "$PROMPT" > /tmp/issue-prompt.txt
+          echo "prompt_file=/tmp/issue-prompt.txt" >> $GITHUB_OUTPUT
+          echo "action_type=$ACTION_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Create Claude settings
+        run: |
+          cat > /tmp/claude-settings.json << EOF
+          {
+            "model": "claude-3-5-sonnet-20241022",
+            "permissions": {
+              "allow": ["Read", "GrepTool"],
+              "deny": ["Write", "Bash", "WebFetch", "WebSearch"]
+            },
+            "env": {
+              "REPO_NAME": "Microsoft Amplifier",
+              "ACTION_TYPE": "${{ steps.prompt.outputs.action_type }}"
+            }
+          }
+          EOF
+
+      - name: Execute Claude Issue Handler
+        if: steps.prompt.outputs.action_type != ''
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: ${{ steps.prompt.outputs.prompt_file }}
+          settings: /tmp/claude-settings.json
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool
+
+      - name: Issue processing complete
+        run: |
+          echo "🤖 Issue Processing Completed"
+          echo "📊 Action Type: ${{ steps.prompt.outputs.action_type }}"
+          echo "🔗 Issue: #${{ github.event.issue.number || 'workflow_dispatch' }}"
+
+  # Issue Maintenance and Cleanup
+  maintenance:
+    name: 🧹 Issue Maintenance
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Create maintenance prompt
+        run: |
+          ACTION="${{ github.event.inputs.action || 'backlog-grooming' }}"
+
+          case "$ACTION" in
+            "triage")
+              PROMPT="You are helping triage issues in the Microsoft Amplifier repository.
+
+              Please review all open issues labeled 'needs-triage' and:
+              1. Categorize them by type (bug, feature, documentation, etc.)
+              2. Assess their priority and complexity
+              3. Suggest appropriate labels
+              4. Identify any that can be auto-resolved
+              5. Recommend next steps for each
+
+              Focus on providing actionable triage guidance."
+              ;;
+            "progress-update")
+              PROMPT="You are providing progress updates for Microsoft Amplifier issues.
+
+              Please review all open issues and:
+              1. Check if any have been resolved by recent PRs
+              2. Identify issues that need progress updates
+              3. Suggest status comments for long-running issues
+              4. Highlight any blockers or dependencies
+              5. Recommend issues that can be closed
+
+              Focus on keeping the issue board current and informative."
+              ;;
+            "label-cleanup")
+              PROMPT="You are helping clean up issue labels in Microsoft Amplifier.
+
+              Please review all open issues and:
+              1. Identify inconsistent or outdated labels
+              2. Suggest standardization of label usage
+              3. Find issues that need additional context labels
+              4. Recommend removal of unused or redundant labels
+              5. Suggest new labels that would help categorization
+
+              Focus on improving issue organization and searchability."
+              ;;
+            "milestone-review")
+              PROMPT="You are reviewing milestone progress in Microsoft Amplifier.
+
+              Please:
+              1. Review current milestone assignments
+              2. Check if any issues are ready for milestone completion
+              3. Suggest milestone adjustments based on current progress
+              4. Identify issues blocking milestone completion
+              5. Recommend new milestones or milestone reorganization
+
+              Focus on keeping milestones meaningful and achievable."
+              ;;
+            *)
+              PROMPT="You are performing backlog grooming for Microsoft Amplifier.
+
+              Please review the issue backlog and:
+              1. Identify stale or inactive issues
+              2. Suggest consolidation of duplicate issues
+              3. Recommend prioritization of important issues
+              4. Identify issues that need more information
+              5. Suggest issues that can be closed or archived
+
+              Focus on maintaining a healthy, actionable backlog."
+              ;;
+          esac
+
+          echo "$PROMPT" > /tmp/maintenance-prompt.txt
+
+      - name: Execute maintenance tasks
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: /tmp/maintenance-prompt.txt
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,GrepTool
+
+      - name: Maintenance complete
+        run: |
+          echo "🧹 Issue Maintenance Completed"
+          echo "📊 Action: ${{ github.event.inputs.action || 'backlog-grooming' }}"
+          echo "⏰ Triggered by: ${{ github.event_name }}"

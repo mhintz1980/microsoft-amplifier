@@ -1,0 +1,233 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Split tests across multiple shards for faster CI
+        shard: [1, 2, 3]
+        total-shards: [3]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npm run test:e2e:install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run E2E tests
+      env:
+        BASE_URL: http://localhost:5175
+        CI: true
+      run: |
+        npm run test:e2e:ci -- --shard=${{ matrix.shard }}/${{ matrix.total-shards }}
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-results-${{ matrix.shard }}
+        path: |
+          test-results/
+          playwright-report/
+        retention-days: 7
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      if: matrix.shard == 1
+      with:
+        file: ./test-results/coverage.json
+        flags: e2e
+        name: e2e-coverage
+
+  e2e-tests-cross-browser:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: e2e-tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npm run test:e2e:install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run cross-browser tests
+      env:
+        BASE_URL: http://localhost:5175
+        CI: true
+      run: |
+        npm run test:e2e:chromium -- --reporter=junit --output-file=test-results/chromium-results.xml
+        npm run test:e2e:firefox -- --reporter=junit --output-file=test-results/firefox-results.xml
+        npm run test:e2e:webkit -- --reporter=junit --output-file=test-results/webkit-results.xml
+
+    - name: Upload cross-browser results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-cross-browser-results
+        path: |
+          test-results/*.xml
+          playwright-report/
+        retention-days: 7
+
+  mobile-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: e2e-tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npm run test:e2e:install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run mobile tests
+      env:
+        BASE_URL: http://localhost:5175
+        CI: true
+      run: npm run test:e2e:mobile -- --reporter=junit --output-file=test-results/mobile-results.xml
+
+    - name: Upload mobile results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-mobile-results
+        path: |
+          test-results/mobile-results.xml
+          playwright-report/
+        retention-days: 7
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: e2e-tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npm run test:e2e:install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run performance tests
+      env:
+        BASE_URL: http://localhost:5175
+        CI: true
+      run: |
+        npm run test:e2e -- --grep "@performance" --reporter=json --output-file=test-results/performance-results.json
+
+    - name: Upload performance results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-performance-results
+        path: test-results/performance-results.json
+        retention-days: 30
+
+  test-results-summary:
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, e2e-tests-cross-browser, mobile-tests, performance-tests]
+    if: always()
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Generate test summary
+      run: |
+        echo "# E2E Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Core Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Cross-Browser Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ needs.e2e-tests-cross-browser.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Mobile Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ needs.mobile-tests.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Performance Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ needs.performance-tests.result }}" >> $GITHUB_STEP_SUMMARY
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          let commentBody = '# 🧪 E2E Test Results\n\n';
+
+          if (fs.existsSync('test-results/results.json')) {
+            const results = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
+            commentBody += `**Tests Run**: ${results.suites?.reduce((acc, suite) => acc + suite.specs?.length || 0, 0) || 0}\n`;
+            commentBody += `**Passed**: ${results.suites?.reduce((acc, suite) => acc + (suite.specs?.filter(s => s.ok)?.length || 0), 0) || 0}\n`;
+            commentBody += `**Failed**: ${results.suites?.reduce((acc, suite) => acc + (suite.specs?.filter(s => !s.ok)?.length || 0), 0) || 0}\n`;
+          }
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: commentBody
+          });

@@ -1,0 +1,477 @@
+# Multi-Method Authentication Configuration for Claude Code Action
+name: 🔐 Authentication Setup
+
+on:
+  workflow_call:
+    inputs:
+      auth_method:
+        description: 'Authentication method to use'
+        required: false
+        default: 'github-app'
+        type: string
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'production'
+        type: string
+      use_oidc:
+        description: 'Use OIDC authentication'
+        required: false
+        default: 'true'
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      auth_method:
+        description: 'Authentication method'
+        required: true
+        default: 'github-app'
+        type: choice
+        options:
+          - github-app
+          - personal-token
+          - oidc-aws
+          - oidc-gcp
+          - service-account
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'production'
+        type: string
+      test_connection:
+        description: 'Test authentication connection'
+        required: false
+        default: 'true'
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC
+  issues: write
+  pull-requests: write
+
+jobs:
+  # Authentication Configuration
+  auth-configure:
+    name: 🔧 Configure Authentication
+    runs-on: ubuntu-latest
+    outputs:
+      auth_method: ${{ steps.config.outputs.auth_method }}
+      token_endpoint: ${{ steps.config.outputs.token_endpoint }}
+      requires_oidc: ${{ steps.config.outputs.requires_oidc }}
+      cloud_provider: ${{ steps.config.outputs.cloud_provider }}
+      test_passed: ${{ steps.test.outputs.test_passed }}
+    steps:
+      - name: Configure authentication
+        id: config
+        run: |
+          AUTH_METHOD="${{ inputs.auth_method || github.event.inputs.auth_method || 'github-app' }}"
+          ENVIRONMENT="${{ inputs.environment || github.event.inputs.environment || 'production' }}"
+          USE_OIDC="${{ inputs.use_oidc || github.event.inputs.use_oidc || 'true' }}"
+
+          TOKEN_ENDPOINT=""
+          REQUIRES_OIDC="false"
+          CLOUD_PROVIDER="none"
+
+          # Configure based on auth method
+          case "$AUTH_METHOD" in
+            "github-app")
+              TOKEN_ENDPOINT="github_app"
+              REQUIRES_OIDC="true"
+              ;;
+            "personal-token")
+              TOKEN_ENDPOINT="personal_token"
+              REQUIRES_OIDC="false"
+              ;;
+            "oidc-aws")
+              TOKEN_ENDPOINT="aws_oidc"
+              REQUIRES_OIDC="true"
+              CLOUD_PROVIDER="aws"
+              ;;
+            "oidc-gcp")
+              TOKEN_ENDPOINT="gcp_oidc"
+              REQUIRES_OIDC="true"
+              CLOUD_PROVIDER="gcp"
+              ;;
+            "service-account")
+              TOKEN_ENDPOINT="service_account"
+              REQUIRES_OIDC="false"
+              ;;
+          esac
+
+          echo "auth_method=$AUTH_METHOD" >> $GITHUB_OUTPUT
+          echo "token_endpoint=$TOKEN_ENDPOINT" >> $GITHUB_OUTPUT
+          echo "requires_oidc=$REQUIRES_OIDC" >> $GITHUB_OUTPUT
+          echo "cloud_provider=$CLOUD_PROVIDER" >> $GITHUB_OUTPUT
+
+          echo "🔧 Authentication Configuration:"
+          echo "  Method: $AUTH_METHOD"
+          echo "  Environment: $ENVIRONMENT"
+          echo "  OIDC Required: $REQUIRES_OIDC"
+          echo "  Cloud Provider: $CLOUD_PROVIDER"
+
+      - name: Test authentication
+        id: test
+        if: github.event.inputs.test_connection == 'true' || inputs.test_connection == 'true'
+        run: |
+          AUTH_METHOD="${{ steps.config.outputs.auth_method }}"
+          REQUIRES_OIDC="${{ steps.config.outputs.requires_oidc }}"
+          CLOUD_PROVIDER="${{ steps.config.outputs.cloud_provider }}"
+
+          TEST_PASSED="false"
+
+          echo "🧪 Testing authentication for method: $AUTH_METHOD"
+
+          # Test GitHub App authentication
+          if [ "$AUTH_METHOD" == "github-app" ]; then
+            if [ "${{ secrets.CLAUDE_APP_ID }}" != "" ] && [ "${{ secrets.CLAUDE_APP_PRIVATE_KEY }}" != "" ]; then
+              echo "✅ GitHub App credentials found"
+              TEST_PASSED="true"
+            else
+              echo "❌ GitHub App credentials missing"
+              echo "   Required: CLAUDE_APP_ID, CLAUDE_APP_PRIVATE_KEY"
+            fi
+          fi
+
+          # Test Personal Token authentication
+          if [ "$AUTH_METHOD" == "personal-token" ]; then
+            if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
+              echo "✅ Personal token available"
+              TEST_PASSED="true"
+            else
+              echo "❌ Personal token not available"
+            fi
+          fi
+
+          # Test AWS OIDC authentication
+          if [ "$AUTH_METHOD" == "oidc-aws" ]; then
+            if [ "${{ secrets.AWS_ROLE_ARN }}" != "" ] && [ "$REQUIRES_OIDC" == "true" ]; then
+              echo "✅ AWS OIDC configuration found"
+              TEST_PASSED="true"
+            else
+              echo "❌ AWS OIDC configuration missing"
+              echo "   Required: AWS_ROLE_ARN, OIDC permissions"
+            fi
+          fi
+
+          # Test GCP OIDC authentication
+          if [ "$AUTH_METHOD" == "oidc-gcp" ]; then
+            if [ "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}" != "" ] && [ "$REQUIRES_OIDC" == "true" ]; then
+              echo "✅ GCP OIDC configuration found"
+              TEST_PASSED="true"
+            else
+              echo "❌ GCP OIDC configuration missing"
+              echo "   Required: GCP_WORKLOAD_IDENTITY_PROVIDER, OIDC permissions"
+            fi
+          fi
+
+          # Test Service Account authentication
+          if [ "$AUTH_METHOD" == "service-account" ]; then
+            if [ "${{ secrets.SERVICE_ACCOUNT_KEY }}" != "" ]; then
+              echo "✅ Service account key found"
+              TEST_PASSED="true"
+            else
+              echo "❌ Service account key missing"
+            fi
+          fi
+
+          echo "test_passed=$TEST_PASSED" >> $GITHUB_OUTPUT
+          echo "🧪 Authentication test result: $TEST_PASSED"
+
+  # GitHub App Authentication
+  auth-github-app:
+    name: 🔑 GitHub App Auth
+    runs-on: ubuntu-latest
+    needs: auth-configure
+    if: needs.auth-configure.outputs.auth_method == 'github-app'
+    outputs:
+      token: ${{ steps.github-app.outputs.token }}
+      app_id: ${{ steps.github-app.outputs.app_id }}
+    steps:
+      - name: Generate GitHub App token
+        id: github-app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+
+      - name: Validate token
+        run: |
+          TOKEN="${{ steps.github-app.outputs.token }}"
+          APP_ID="${{ steps.github-app.outputs.app_id }}"
+
+          if [ -n "$TOKEN" ]; then
+            echo "✅ GitHub App token generated successfully"
+            echo "   App ID: $APP_ID"
+            echo "   Token length: ${#TOKEN}"
+
+            # Test token validity
+            API_RESPONSE=$(curl -s -H "Authorization: Bearer $TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/app)
+
+            if echo "$API_RESPONSE" | grep -q '"id"'; then
+              echo "✅ Token is valid and functional"
+            else
+              echo "❌ Token validation failed"
+              exit 1
+            fi
+          else
+            echo "❌ Failed to generate GitHub App token"
+            exit 1
+          fi
+
+  # Personal Token Authentication
+  auth-personal-token:
+    name: 🔑 Personal Token Auth
+    runs-on: ubuntu-latest
+    needs: auth-configure
+    if: needs.auth-configure.outputs.auth_method == 'personal-token'
+    outputs:
+      token: ${{ steps.personal.outputs.token }}
+    steps:
+      - name: Use personal access token
+        id: personal
+        run: |
+          TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          if [ -n "$TOKEN" ]; then
+            echo "✅ Personal access token available"
+            echo "token=$TOKEN" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Personal access token not available"
+            echo "   Set GITHUB_TOKEN secret or use GitHub App authentication"
+            exit 1
+          fi
+
+  # AWS OIDC Authentication
+  auth-aws-oidc:
+    name: 🔑 AWS OIDC Auth
+    runs-on: ubuntu-latest
+    needs: auth-configure
+    if: needs.auth-configure.outputs.auth_method == 'oidc-aws'
+    permissions:
+      id-token: write  # Required for OIDC
+    outputs:
+      credentials_configured: ${{ steps.aws.outputs.configured }}
+    steps:
+      - name: Configure AWS credentials
+        id: aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-west-2' }}
+
+      - name: Validate AWS credentials
+        run: |
+          if command -v aws &> /dev/null; then
+            # Test AWS credentials
+            IDENTITY=$(aws sts get-caller-identity --query 'Account' --output text)
+            if [ -n "$IDENTITY" ]; then
+              echo "✅ AWS credentials configured successfully"
+              echo "   Account: $IDENTITY"
+              echo "configured=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ AWS credentials validation failed"
+              echo "configured=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "❌ AWS CLI not available"
+            echo "configured=false" >> $GITHUB_OUTPUT
+          fi
+
+  # GCP OIDC Authentication
+  auth-gcp-oidc:
+    name: 🔑 GCP OIDC Auth
+    runs-on: ubuntu-latest
+    needs: auth-configure
+    if: needs.auth-configure.outputs.auth_method == 'oidc-gcp'
+    permissions:
+      id-token: write  # Required for OIDC
+    outputs:
+      credentials_configured: ${{ steps.gcp.outputs.configured }}
+    steps:
+      - name: Authenticate to Google Cloud
+        id: gcp
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup GCP Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Validate GCP credentials
+        run: |
+          if command -v gcloud &> /dev/null; then
+            # Test GCP credentials
+            ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format="value(account)" | head -1)
+            if [ -n "$ACCOUNT" ]; then
+              echo "✅ GCP credentials configured successfully"
+              echo "   Account: $ACCOUNT"
+              echo "configured=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ GCP credentials validation failed"
+              echo "configured=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "❌ GCP Cloud SDK not available"
+            echo "configured=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Service Account Authentication
+  auth-service-account:
+    name: 🔑 Service Account Auth
+    runs-on: ubuntu-latest
+    needs: auth-configure
+    if: needs.auth-configure.outputs.auth_method == 'service-account'
+    outputs:
+      credentials_configured: ${{ steps.service.outputs.configured }}
+    steps:
+      - name: Setup service account
+        id: service
+        run: |
+          SERVICE_KEY="${{ secrets.SERVICE_ACCOUNT_KEY }}"
+
+          if [ -n "$SERVICE_KEY" ]; then
+            echo "✅ Service account key found"
+
+            # Validate JSON format
+            if echo "$SERVICE_KEY" | python -m json.tool > /dev/null 2>&1; then
+              echo "✅ Service account key is valid JSON"
+              echo "configured=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Service account key is not valid JSON"
+              echo "configured=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "❌ Service account key not found"
+            echo "   Set SERVICE_ACCOUNT_KEY secret"
+            echo "configured=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Authentication Summary
+  auth-summary:
+    name: 📊 Authentication Summary
+    runs-on: ubuntu-latest
+    needs: [auth-configure, auth-github-app, auth-personal-token, auth-aws-oidc, auth-gcp-oidc, auth-service-account]
+    if: always()
+    steps:
+      - name: Generate authentication summary
+        run: |
+          AUTH_METHOD="${{ needs.auth-configure.outputs.auth_method }}"
+          TEST_PASSED="${{ needs.auth-configure.outputs.test_passed }}"
+          CLOUD_PROVIDER="${{ needs.auth-configure.outputs.cloud_provider }}"
+
+          echo "🔐 Authentication Summary for Microsoft Amplifier"
+          echo "="
+          echo "Method: $AUTH_METHOD"
+          echo "Cloud Provider: $CLOUD_PROVIDER"
+          echo "Test Passed: $TEST_PASSED"
+          echo ""
+
+          echo "📊 Authentication Results:"
+
+          # GitHub App results
+          if [ "$AUTH_METHOD" == "github-app" ]; then
+            echo "  GitHub App: ${{ needs.auth-github-app.result || 'skipped' }}"
+            if [ "${{ needs.auth-github-app.result }}" == "success" ]; then
+              echo "    App ID: ${{ needs.auth-github-app.outputs.app_id }}"
+              echo "    Token: Generated successfully"
+            fi
+          fi
+
+          # Personal Token results
+          if [ "$AUTH_METHOD" == "personal-token" ]; then
+            echo "  Personal Token: ${{ needs.auth-personal-token.result || 'skipped' }}"
+          fi
+
+          # AWS OIDC results
+          if [ "$AUTH_METHOD" == "oidc-aws" ]; then
+            echo "  AWS OIDC: ${{ needs.auth-aws-oidc.result || 'skipped' }}"
+            echo "    Credentials: ${{ needs.auth-aws-oidc.outputs.credentials_configured }}"
+          fi
+
+          # GCP OIDC results
+          if [ "$AUTH_METHOD" == "oidc-gcp" ]; then
+            echo "  GCP OIDC: ${{ needs.auth-gcp-oidc.result || 'skipped' }}"
+            echo "    Credentials: ${{ needs.auth-gcp-oidc.outputs.credentials_configured }}"
+          fi
+
+          # Service Account results
+          if [ "$AUTH_METHOD" == "service-account" ]; then
+            echo "  Service Account: ${{ needs.auth-service-account.result || 'skipped' }}"
+            echo "    Credentials: ${{ needs.auth-service-account.outputs.credentials_configured }}"
+          fi
+
+          echo ""
+          echo "🔧 Configuration Status:"
+          if [ "$TEST_PASSED" == "true" ]; then
+            echo "✅ Authentication is properly configured and ready for use"
+          else
+            echo "❌ Authentication configuration has issues that need to be resolved"
+            echo ""
+            echo "📝 Required Secrets for $AUTH_METHOD:"
+            case "$AUTH_METHOD" in
+              "github-app")
+                echo "  - CLAUDE_APP_ID: GitHub App ID"
+                echo "  - CLAUDE_APP_PRIVATE_KEY: GitHub App private key"
+                ;;
+              "personal-token")
+                echo "  - GITHUB_TOKEN: Personal access token"
+                ;;
+              "oidc-aws")
+                echo "  - AWS_ROLE_ARN: AWS IAM role ARN"
+                echo "  - AWS_REGION: AWS region (optional, default: us-west-2)"
+                ;;
+              "oidc-gcp")
+                echo "  - GCP_WORKLOAD_IDENTITY_PROVIDER: GCP workload identity provider"
+                echo "  - GCP_SERVICE_ACCOUNT: GCP service account email"
+                ;;
+              "service-account")
+                echo "  - SERVICE_ACCOUNT_KEY: Service account JSON key"
+                ;;
+            esac
+          fi
+
+          echo ""
+          echo "📚 Usage Examples:"
+          echo ""
+          echo "# GitHub App (Recommended)"
+          echo "uses: anthropics/claude-code-action@v1"
+          echo "with:"
+          echo "  github_token: \${{ steps.github-app.outputs.token }}"
+          echo ""
+          echo "# Personal Token"
+          echo "uses: anthropics/claude-code-action@v1"
+          echo "with:"
+          echo "  github_token: \${{ secrets.GITHUB_TOKEN }}"
+          echo ""
+          echo "# AWS Bedrock with OIDC"
+          echo "uses: anthropics/claude-code-action@v1"
+          echo "with:"
+          echo "  use_bedrock: \"true\""
+          echo "  claude_args: |"
+          echo "    --model anthropic.claude-4-0-sonnet-20250805-v1:0"
+          echo ""
+          echo "# Google Vertex AI with OIDC"
+          echo "uses: anthropics/claude-code-action@v1"
+          echo "with:"
+          echo "  use_vertex: \"true\""
+          echo "  claude_args: |"
+          echo "    --model claude-4-0-sonnet@20250805"
+
+      - name: Create authentication status badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Create a status file that can be used for badges
+          TEST_PASSED="${{ needs.auth-configure.outputs.test_passed }}"
+
+          if [ "$TEST_PASSED" == "true" ]; then
+            echo "authentication-status=pass" >> $GITHUB_ENV
+            echo "✅ Authentication is working correctly"
+          else
+            echo "authentication-status=fail" >> $GITHUB_ENV
+            echo "❌ Authentication needs configuration"
+          fi

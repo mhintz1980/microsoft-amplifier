@@ -1,0 +1,470 @@
+# Advanced Code Review Automation with Claude Code Action
+name: 🤖 Code Review Automation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      review_type:
+        description: 'Type of review to perform'
+        required: true
+        default: 'comprehensive'
+        type: choice
+        options:
+          - comprehensive
+          - security
+          - performance
+          - architecture
+          - quick
+      target_files:
+        description: 'Specific files or patterns to review (optional)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write  # Required for OIDC
+
+jobs:
+  # Review Trigger Detection
+  detect-review:
+    name: 🔍 Detect Review Trigger
+    runs-on: ubuntu-latest
+    outputs:
+      should_review: ${{ steps.detection.outputs.should_review }}
+      review_type: ${{ steps.detection.outputs.review_type }}
+      target_files: ${{ steps.detection.outputs.target_files }}
+      triggered_by: ${{ steps.detection.outputs.triggered_by }}
+      comment_id: ${{ steps.detection.outputs.comment_id }}
+    steps:
+      - name: Detect review trigger
+        id: detection
+        run: |
+          SHOULD_REVIEW="false"
+          REVIEW_TYPE="comprehensive"
+          TARGET_FILES=""
+          TRIGGERED_BY="auto"
+          COMMENT_ID=""
+
+          # Check for manual workflow dispatch
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            SHOULD_REVIEW="true"
+            REVIEW_TYPE="${{ github.event.inputs.review_type }}"
+            TARGET_FILES="${{ github.event.inputs.target_files }}"
+            TRIGGERED_BY="workflow_dispatch"
+          # Check for PR trigger
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            SHOULD_REVIEW="true"
+            REVIEW_TYPE="comprehensive"
+            TRIGGERED_BY="pull_request"
+          # Check for comment triggers
+          elif [ "${{ github.event_name }}" == "issue_comment" ]; then
+            COMMENT="${{ github.event.comment.body }}"
+            COMMENT_ID="${{ github.event.comment.id }}"
+
+            case "$COMMENT" in
+              *"/review-comprehensive"*)
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="comprehensive"
+                TRIGGERED_BY="comment"
+                ;;
+              *"/review-security"*)
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="security"
+                TRIGGERED_BY="comment"
+                ;;
+              *"/review-performance"*)
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="performance"
+                TRIGGERED_BY="comment"
+                ;;
+              *"/review-architecture"*)
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="architecture"
+                TRIGGERED_BY="comment"
+                ;;
+              *"/review-quick"*)
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="quick"
+                TRIGGERED_BY="comment"
+                ;;
+              *"/review"*)
+                # Extract files if specified
+                if echo "$COMMENT" | grep -q "/review"; then
+                  TARGET_FILES=$(echo "$COMMENT" | sed 's/.*\/review[[:space:]]*//' | sed 's/[[:space:]]*$//')
+                fi
+                SHOULD_REVIEW="true"
+                REVIEW_TYPE="comprehensive"
+                TRIGGERED_BY="comment"
+                ;;
+            esac
+          fi
+
+          echo "should_review=$SHOULD_REVIEW" >> $GITHUB_OUTPUT
+          echo "review_type=$REVIEW_TYPE" >> $GITHUB_OUTPUT
+          echo "target_files=$TARGET_FILES" >> $GITHUB_OUTPUT
+          echo "triggered_by=$TRIGGERED_BY" >> $GITHUB_OUTPUT
+          echo "comment_id=$COMMENT_ID" >> $GITHUB_OUTPUT
+
+          echo "🔍 Review Detection Results:"
+          echo "  Should Review: $SHOULD_REVIEW"
+          echo "  Review Type: $REVIEW_TYPE"
+          echo "  Target Files: $TARGET_FILES"
+          echo "  Triggered By: $TRIGGERED_BY"
+          echo "  Comment ID: $COMMENT_ID"
+
+  # Prepare Review Context
+  prepare-review:
+    name: 📋 Prepare Review Context
+    runs-on: ubuntu-latest
+    needs: detect-review
+    if: needs.detect-review.outputs.should_review == 'true'
+    outputs:
+      changed_files: ${{ steps.context.outputs.changed_files }}
+      review_scope: ${{ steps.context.outputs.review_scope }}
+      pr_number: ${{ steps.context.outputs.pr_number }}
+      base_sha: ${{ steps.context.outputs.base_sha }}
+      head_sha: ${{ steps.context.outputs.head_sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare review context
+        id: context
+        run: |
+          # Get PR information
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            PR_NUMBER="${{ github.event.number }}"
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            # Try to get PR number from comment
+            PR_NUMBER=$(echo "${{ github.event.issue.html_url }}" | grep -o '[0-9]\+' | head -1)
+            if [ -z "$PR_NUMBER" ]; then
+              PR_NUMBER="0"
+            fi
+            # For comment triggers, get the PR details
+            if [ "$PR_NUMBER" != "0" ]; then
+              PR_DATA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER)
+              BASE_SHA=$(echo "$PR_DATA" | jq -r '.base.sha')
+              HEAD_SHA=$(echo "$PR_DATA" | jq -r '.head.sha')
+            else
+              BASE_SHA="HEAD~1"
+              HEAD_SHA="HEAD"
+            fi
+          fi
+
+          # Get changed files
+          if [ "$BASE_SHA" != "HEAD~1" ]; then
+            CHANGED_FILES=$(git diff --name-only $BASE_SHA..$HEAD_SHA)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          fi
+
+          # Determine review scope
+          REVIEW_TYPE="${{ needs.detect-review.outputs.review_type }}"
+          TARGET_FILES="${{ needs.detect-review.outputs.target_files }}"
+
+          if [ -n "$TARGET_FILES" ]; then
+            REVIEW_SCOPE="custom: $TARGET_FILES"
+          else
+            # Analyze file types for scope
+            PYTHON_FILES=$(echo "$CHANGED_FILES" | grep -E '\.py$' | wc -l)
+            JS_FILES=$(echo "$CHANGED_FILES" | grep -E '\.(js|ts|jsx|tsx)$' | wc -l)
+            CONFIG_FILES=$(echo "$CHANGED_FILES" | grep -E '\.(json|yaml|yml|toml)$' | wc -l)
+            DOCS_FILES=$(echo "$CHANGED_FILES" | grep -E '\.(md|rst)$' | wc -l)
+
+            if [ "$PYTHON_FILES" -gt 0 ]; then
+              REVIEW_SCOPE="python ($PYTHON_FILES files)"
+            elif [ "$JS_FILES" -gt 0 ]; then
+              REVIEW_SCOPE="javascript ($JS_FILES files)"
+            elif [ "$CONFIG_FILES" -gt 0 ]; then
+              REVIEW_SCOPE="config ($CONFIG_FILES files)"
+            elif [ "$DOCS_FILES" -gt 0 ]; then
+              REVIEW_SCOPE="documentation ($DOCS_FILES files)"
+            else
+              REVIEW_SCOPE="general ($(echo "$CHANGED_FILES" | wc -l) files)"
+            fi
+          fi
+
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "review_scope=$REVIEW_SCOPE" >> $GITHUB_OUTPUT
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "base_sha=$BASE_SHA" >> $GITHUB_OUTPUT
+          echo "head_sha=$HEAD_SHA" >> $GITHUB_OUTPUT
+
+          echo "📋 Review Context Prepared:"
+          echo "  PR Number: $PR_NUMBER"
+          echo "  Review Scope: $REVIEW_SCOPE"
+          echo "  Base SHA: $BASE_SHA"
+          echo "  Head SHA: $HEAD_SHA"
+
+  # Execute Code Review with Claude
+  execute-review:
+    name: 🤖 Execute Code Review
+    runs-on: ubuntu-latest
+    needs: [detect-review, prepare-review]
+    if: needs.detect-review.outputs.should_review == 'true'
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: |
+          uv sync --group dev
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Create review prompt
+        id: review-prompt
+        run: |
+          REVIEW_TYPE="${{ needs.detect-review.outputs.review_type }}"
+          CHANGED_FILES="${{ needs.prepare-review.outputs.changed_files }}"
+          REVIEW_SCOPE="${{ needs.prepare-review.outputs.review_scope }}"
+          PR_NUMBER="${{ needs.prepare-review.outputs.pr_number }}"
+          TARGET_FILES="${{ needs.detect-review.outputs.target_files }}"
+
+          # Base prompt template
+          PROMPT="You are conducting a $REVIEW_TYPE code review for Microsoft Amplifier (PR #$PR_NUMBER).
+
+          **Project Context:**
+          - This is the Microsoft Amplifier AI-powered development framework
+          - Focus on defensive programming with strict error handling
+          - POSIX compliance and cross-platform portability
+          - Built for LLM-based AI tools with modular design philosophy
+          - Uses 7/7 core skills framework
+          - Virtual environment safety system with uv dependency management
+
+          **Review Guidelines:**
+          - Follow the ruthless simplicity principle from IMPLEMENTATION_PHILOSOPHY.md
+          - Check compliance with MODULAR_DESIGN_PHILOSOPHY.md
+          - Verify defensive Bash programming patterns
+          - Ensure agent-first development approach
+          - Validate make check/test/build commands compatibility
+          - Check for proper error handling and logging"
+
+          # Add review type specific instructions
+          case "$REVIEW_TYPE" in
+            "security")
+              PROMPT="$PROMPT
+
+              **Security Focus:**
+              - Check for input validation and sanitization
+              - Verify secure handling of secrets and credentials
+              - Look for potential injection vulnerabilities
+              - Check file operation security
+              - Verify proper error handling that doesn't leak information
+              - Review authentication and authorization patterns"
+              ;;
+            "performance")
+              PROMPT="$PROMPT
+
+              **Performance Focus:**
+              - Identify performance bottlenecks
+              - Check for efficient data structures and algorithms
+              - Review resource management and cleanup
+              - Analyze database query efficiency
+              - Check for proper caching strategies
+              - Review async/await usage patterns"
+              ;;
+            "architecture")
+              PROMPT="$PROMPT
+
+              **Architecture Focus:**
+              - Validate modular design patterns
+              - Check separation of concerns
+              - Review API design and contracts
+              - Verify dependency injection patterns
+              - Check scalability considerations
+              - Review integration points and interfaces"
+              ;;
+            "quick")
+              PROMPT="$PROMPT
+
+              **Quick Review Focus:**
+              - Focus on critical issues only
+              - Check for obvious bugs and syntax errors
+              - Verify basic code quality standards
+              - Look for security vulnerabilities
+              - Check test coverage gaps"
+              ;;
+            "comprehensive"|*)
+              PROMPT="$PROMPT
+
+              **Comprehensive Review Focus:**
+              - Code quality and readability
+              - Security vulnerabilities and best practices
+              - Performance considerations
+              - Architecture and design patterns
+              - Test coverage and quality
+              - Documentation and comments
+              - Compliance with project standards"
+              ;;
+          esac
+
+          # Add file-specific context
+          if [ -n "$TARGET_FILES" ]; then
+            PROMPT="$PROMPT
+
+              **Target Files:**
+              Focus specifically on: $TARGET_FILES"
+          else
+            PROMPT="$PROMPT
+
+              **Changed Files:**
+              $CHANGED_FILES"
+          fi
+
+          # Add action items
+          PROMPT="$PROMPT
+
+              **Required Actions:**
+              1. Summarize your findings in a clear, structured format
+              2. Categorize issues by severity (Critical, High, Medium, Low)
+              3. Provide specific code examples for identified issues
+              4. Suggest concrete improvements with code snippets
+              5. Check compatibility with the 7/7 core skills framework
+              6. Verify integration with existing Microsoft Amplifier architecture
+
+              Please provide a thorough, constructive review that helps improve code quality while maintaining the project's high standards."
+
+          # Save prompt to file
+          echo "$PROMPT" > /tmp/review-prompt.txt
+
+          echo "📝 Created review prompt for $REVIEW_TYPE review"
+          echo "prompt_file=/tmp/review-prompt.txt" >> $GITHUB_OUTPUT
+
+      - name: Create Claude settings
+        run: |
+          cat > /tmp/claude-settings.json << EOF
+          {
+            "model": "claude-3-5-sonnet-20241022",
+            "permissions": {
+              "allow": ["Read", "Bash", "GlobTool", "GrepTool"],
+              "deny": ["Write", "WebFetch", "WebSearch"]
+            },
+            "env": {
+              "PYTHONPATH": ".",
+              "VIRTUAL_ENV": ".venv",
+              "REVIEW_TYPE": "${{ needs.detect-review.outputs.review_type }}",
+              "PR_NUMBER": "${{ needs.prepare-review.outputs.pr_number }}"
+            },
+            "hooks": {
+              "PreToolUse": [{
+                "matcher": "Bash",
+                "hooks": [{
+                  "type": "command",
+                  "command": "echo \"🔍 Review analysis: \$1\""
+                }]
+              }]
+            }
+          }
+          EOF
+
+      - name: Execute Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: ${{ steps.review-prompt.outputs.prompt_file }}
+          settings: /tmp/claude-settings.json
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,Bash,GlobTool,GrepTool
+            --cwd ${{ github.workspace }}
+
+      - name: Post Review Summary
+        if: always()
+        run: |
+          echo "🤖 Code Review Completed"
+          echo "📊 Review Type: ${{ needs.detect-review.outputs.review_type }}"
+          echo "📋 Review Scope: ${{ needs.prepare-review.outputs.review_scope }}"
+          echo "🔗 PR: #${{ needs.prepare-review.outputs.pr_number }}"
+          echo "⚡ Triggered by: ${{ needs.detect-review.outputs.triggered_by }}"
+
+  # Review Follow-up Actions
+  follow-up:
+    name: 📝 Review Follow-up
+    runs-on: ubuntu-latest
+    needs: [detect-review, execute-review]
+    if: |
+      always() &&
+      needs.detect-review.outputs.should_review == 'true' &&
+      needs.execute-review.result == 'success'
+    steps:
+      - name: Add review labels
+        if: github.event_name == 'pull_request'
+        run: |
+          REVIEW_TYPE="${{ needs.detect-review.outputs.review_type }}"
+          PR_NUMBER="${{ github.event.number }}"
+
+          # Add appropriate labels based on review type
+          case "$REVIEW_TYPE" in
+            "security")
+              gh pr edit $PR_NUMBER --add-label "security-review"
+              ;;
+            "performance")
+              gh pr edit $PR_NUMBER --add-label "performance-review"
+              ;;
+            "architecture")
+              gh pr edit $PR_NUMBER --add-label "architecture-review"
+              ;;
+            "quick")
+              gh pr edit $PR_NUMBER --add-label "quick-review"
+              ;;
+            *)
+              gh pr edit $PR_NUMBER --add-label "comprehensive-review"
+              ;;
+          esac
+
+          # Add reviewed label
+          gh pr edit $PR_NUMBER --add-label "claude-reviewed"
+
+      - name: Comment with review status
+        if: github.event_name == 'issue_comment'
+        run: |
+          COMMENT_ID="${{ needs.detect-review.outputs.comment_id }}"
+          REVIEW_TYPE="${{ needs.detect-review.outputs.review_type }}"
+
+          gh issue comment ${{ github.event.issue.number }} \
+            --body "🤖 **Claude Code Review ($REVIEW_TYPE) Completed**
+
+          The automated code review has been completed. Please check the PR review comments for detailed feedback and suggestions.
+
+          ---
+          *Review triggered by comment ${{ needs.detect-review.outputs.triggered_by }}*"
+
+      - name: Review Summary
+        run: |
+          echo "📋 Review Follow-up Actions Completed"
+          echo "✅ Labels added to PR (if applicable)"
+          echo "💬 Status comment posted (if applicable)"
+          echo "📊 Review type: ${{ needs.detect-review.outputs.review_type }}"

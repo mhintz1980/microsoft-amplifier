@@ -1,0 +1,556 @@
+# Microsoft Amplifier GitHub Actions Configuration
+# Production-ready automation with Claude Code Action integration
+
+name: Microsoft Amplifier CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      claude_mode:
+        description: 'Claude execution mode'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - review
+          - fix
+          - test
+          - docs
+      trigger_comment:
+        description: 'Custom trigger for Claude'
+        required: false
+        default: ''
+        type: string
+  issue_comment:
+    types: [created]
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+  UV_CACHE_VERSION: v1
+
+jobs:
+  # Intelligent Mode Detection - Determines optimal Claude execution mode
+  detect-mode:
+    name: 🔍 Detect Execution Mode
+    runs-on: ubuntu-latest
+    outputs:
+      claude_mode: ${{ steps.mode_detection.outputs.mode }}
+      is_pr: ${{ steps.mode_detection.outputs.is_pr }}
+      is_docs_change: ${{ steps.mode_detection.outputs.is_docs_change }}
+      is_test_change: ${{ steps.mode_detection.outputs.is_test_change }}
+      is_security_relevant: ${{ steps.mode_detection.outputs.is_security_relevant }}
+      trigger_phrase: ${{ steps.mode_detection.outputs.trigger_phrase }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect execution mode
+        id: mode_detection
+        run: |
+          # Initialize defaults
+          MODE="auto"
+          IS_PR="false"
+          IS_DOCS_CHANGE="false"
+          IS_TEST_CHANGE="false"
+          IS_SECURITY_RELEVANT="false"
+          TRIGGER_PHRASE=""
+
+          # Check if this is a PR
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            IS_PR="true"
+          fi
+
+          # Check for manual workflow input
+          if [ "${{ github.event.inputs.claude_mode }}" != "" ]; then
+            MODE="${{ github.event.inputs.claude_mode }}"
+          fi
+
+          # Check for trigger phrases in issue comments
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            COMMENT="${{ github.event.comment.body }}"
+            case "$COMMENT" in
+              *"/claude-review"*)
+                MODE="review"
+                TRIGGER_PHRASE="/claude-review"
+                ;;
+              *"/claude-fix"*)
+                MODE="fix"
+                TRIGGER_PHRASE="/claude-fix"
+                ;;
+              *"/claude-test"*)
+                MODE="test"
+                TRIGGER_PHRASE="/claude-test"
+                ;;
+              *"/claude-docs"*)
+                MODE="docs"
+                TRIGGER_PHRASE="/claude-docs"
+                ;;
+              *"/claude"*)
+                MODE="auto"
+                TRIGGER_PHRASE="/claude"
+                ;;
+            esac
+          fi
+
+          # Analyze changed files for context
+          if [ "$GITHUB_EVENT_NAME" == "push" ] || [ "$IS_PR" == "true" ]; then
+            # Get changed files
+            if [ "$IS_PR" == "true" ]; then
+              CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}..HEAD)
+            else
+              CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+            fi
+
+            # Check for documentation changes
+            if echo "$CHANGED_FILES" | grep -E "\.(md|rst|txt)$" > /dev/null; then
+              IS_DOCS_CHANGE="true"
+            fi
+
+            # Check for test changes
+            if echo "$CHANGED_FILES" | grep -E "(tests/|test_.*\.py|.*test\.py)" > /dev/null; then
+              IS_TEST_CHANGE="true"
+            fi
+
+            # Check for security-sensitive changes
+            if echo "$CHANGED_FILES" | grep -E "(requirements|pyproject\.toml|Dockerfile|\.env|security|auth)" > /dev/null; then
+              IS_SECURITY_RELEVABLE="true"
+            fi
+
+            # Auto-detect mode based on changes if not manually set
+            if [ "${{ github.event.inputs.claude_mode }}" == "" ] && [ "$TRIGGER_PHRASE" == "" ]; then
+              if echo "$CHANGED_FILES" | grep -E "(amplifier/skills/|src/)" > /dev/null; then
+                MODE="review"  # Code changes need review
+              elif echo "$CHANGED_FILES" | grep -E "(tests/)" > /dev/null; then
+                MODE="test"    # Test changes need testing
+              elif echo "$CHANGED_FILES" | grep -E "(docs/|\.md$)" > /dev/null; then
+                MODE="docs"    # Docs changes need documentation
+              fi
+            fi
+          fi
+
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "is_pr=$IS_PR" >> $GITHUB_OUTPUT
+          echo "is_docs_change=$IS_DOCS_CHANGE" >> $GITHUB_OUTPUT
+          echo "is_test_change=$IS_TEST_CHANGE" >> $GITHUB_OUTPUT
+          echo "is_security_relevant=$IS_SECURITY_RELEVABLE" >> $GITHUB_OUTPUT
+          echo "trigger_phrase=$TRIGGER_PHRASE" >> $GITHUB_OUTPUT
+
+          echo "🤖 Detected Mode: $MODE"
+          echo "📋 Is PR: $IS_PR"
+          echo "📚 Docs Changed: $IS_DOCS_CHANGE"
+          echo "🧪 Tests Changed: $IS_TEST_CHANGE"
+          echo "🔒 Security Relevant: $IS_SECURITY_RELEVABLE"
+          echo "⚡ Trigger Phrase: $TRIGGER_PHRASE"
+
+  # Environment Setup with Virtual Environment Safety
+  setup:
+    name: ⚙️ Setup Environment
+    runs-on: ubuntu-latest
+    needs: detect-mode
+    outputs:
+      cache-key: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'uv'
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Cache UV dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ env.UV_CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-${{ env.UV_CACHE_VERSION }}-
+
+      - name: Install dependencies
+        run: |
+          echo "🐍 Creating virtual environment..."
+          uv sync --group dev
+
+          echo "📦 Installing global packages..."
+          npm install -g pnpm
+
+          echo "✅ Environment setup complete"
+
+  # Core Testing Pipeline
+  test:
+    name: 🧪 Test Suite
+    runs-on: ${{ matrix.os }}
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.11', '3.12']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ env.UV_CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run make check
+        run: |
+          echo "🔍 Running code quality checks..."
+          make check
+
+      - name: Run make test
+        run: |
+          echo "🧪 Running test suite..."
+          make test
+
+      - name: Run smoke tests
+        run: |
+          echo "💨 Running smoke tests..."
+          make smoke-test
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  # Claude Code Action Integration
+  claude:
+    name: 🤖 Claude Code Action
+    runs-on: ubuntu-latest
+    needs: [detect-mode, setup]
+    if: |
+      needs.detect-mode.outputs.trigger_phrase != '' ||
+      needs.detect-mode.outputs.is_pr == 'true' ||
+      github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write  # Required for OIDC
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ env.UV_CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Create Claude configuration
+        id: claude-config
+        run: |
+          MODE="${{ needs.detect-mode.outputs.claude_mode }}"
+          IS_PR="${{ needs.detect-mode.outputs.is_pr }}"
+          TRIGGER_PHRASE="${{ needs.detect-mode.outputs.trigger_phrase }}"
+
+          # Create settings file based on detected mode
+          cat > /tmp/claude-settings.json << EOF
+          {
+            "model": "claude-3-5-sonnet-20241022",
+            "permissions": {
+              "allow": ["Read", "Write", "Bash", "GlobTool", "GrepTool"],
+              "deny": ["WebFetch", "WebSearch"]
+            },
+            "env": {
+              "PYTHONPATH": ".",
+              "VIRTUAL_ENV": ".venv",
+              "UV_CACHE_DIR": "~/.cache/uv"
+            },
+            "hooks": {
+              "PreToolUse": [{
+                "matcher": "Bash",
+                "hooks": [{
+                  "type": "command",
+                  "command": "echo \"🔧 Executing: \$1\""
+                }]
+              }]
+            }
+          }
+          EOF
+
+          # Create prompt based on mode
+          case "$MODE" in
+            "review")
+              PROMPT="Please review the recent changes in this repository. Focus on:
+              1. Code quality and adherence to the project's implementation philosophy
+              2. Potential security issues or bugs
+              3. Performance implications
+              4. Integration with the 7/7 core skills framework
+              5. Compliance with the Microsoft Amplifier architecture
+
+              Provide constructive feedback and suggestions for improvement."
+              ;;
+            "fix")
+              PROMPT="Please analyze and fix any issues in the recent changes:
+              1. Look for type errors, import issues, or syntax problems
+              2. Check for violations of the project's coding standards
+              3. Ensure compatibility with the virtual environment safety system
+              4. Verify make check/test/build commands still work
+              5. Fix any identified issues directly"
+              ;;
+            "test")
+              PROMPT="Please help with testing the recent changes:
+              1. Identify what tests need to be added or updated
+              2. Check test coverage for new functionality
+              3. Verify integration with the existing test suite
+              4. Suggest improvements to test quality
+              5. Help implement missing tests if needed"
+              ;;
+            "docs")
+              PROMPT="Please help with documentation:
+              1. Update relevant documentation for recent changes
+              2. Ensure API documentation is current
+              3. Update README files if necessary
+              4. Check that inline documentation is comprehensive
+              5. Verify documentation follows project standards"
+              ;;
+            *)
+              PROMPT="Please analyze the recent changes and provide appropriate assistance:
+              1. Review code quality and adherence to project standards
+              2. Identify any issues that need addressing
+              3. Suggest improvements or optimizations
+              4. Ensure compatibility with the Microsoft Amplifier framework
+              5. Help with any other relevant tasks based on the changes"
+              ;;
+          esac
+
+          # Add context about the trigger
+          if [ "$TRIGGER_PHRASE" != "" ]; then
+            PROMPT="$PROMPT
+
+            This analysis was triggered by the comment: $TRIGGER_PHRASE"
+          fi
+
+          # Save prompt to file
+          echo "$PROMPT" > /tmp/claude-prompt.txt
+
+          echo "📝 Created Claude configuration for mode: $MODE"
+
+          # Set outputs
+          echo "prompt_file=/tmp/claude-prompt.txt" >> $GITHUB_OUTPUT
+          echo "settings_file=/tmp/claude-settings.json" >> $GITHUB_OUTPUT
+
+      - name: Run Claude Code Action
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: ${{ steps.claude-config.outputs.prompt_file }}
+          settings: ${{ steps.claude-config.outputs.settings_file }}
+          claude_args: |
+            --model claude-3-5-sonnet-20241022
+            --allowedTools Read,Write,Bash,GlobTool,GrepTool
+            --cwd ${{ github.workspace }}
+
+      - name: Summary
+        run: |
+          echo "🤖 Claude Code Action completed successfully!"
+          echo "📊 Mode: ${{ needs.detect-mode.outputs.claude_mode }}"
+          echo "🔗 PR: ${{ needs.detect-mode.outputs.is_pr }}"
+          echo "⚡ Trigger: ${{ needs.detect-mode.outputs.trigger_phrase }}"
+
+  # Build and Package
+  build:
+    name: 📦 Build Package
+    runs-on: ubuntu-latest
+    needs: [test, detect-mode]
+    if: |
+      always() &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ env.UV_CACHE_VERSION }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Build package
+        run: |
+          echo "📦 Building Microsoft Amplifier package..."
+          uv build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: dist/
+          retention-days: 30
+
+  # Security Scanning
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Performance Monitoring
+  performance:
+    name: 📈 Performance Monitor
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: |
+      always() &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run performance benchmarks
+        run: |
+          echo "📊 Running performance benchmarks..."
+          # Add performance tests here
+          make smoke-test
+
+  # Release Automation
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    needs: [test, build, claude]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      needs.test.result == 'success' &&
+      needs.build.result == 'success'
+    permissions:
+      contents: write
+      releases: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: dist/
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Publish to PyPI (if configured)
+        if: ${{ secrets.PYPI_API_TOKEN != '' }}
+        run: |
+          echo "📦 Publishing to PyPI..."
+          uv publish --token ${{ secrets.PYPI_API_TOKEN }}

@@ -112,3 +112,6 @@ export interface ModelData {
   bom: BOM;
   lead_times: LeadTimes;
 }
+
+// Export all department configuration types
+export * from './department-config';
