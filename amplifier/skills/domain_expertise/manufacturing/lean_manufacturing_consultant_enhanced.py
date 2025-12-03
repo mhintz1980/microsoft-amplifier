@@ -913,7 +913,7 @@ kaizen_calendar = kaizen_framework.generate_kaizen_calendar(
 ```python
 class FiveSImplementation:
     """
-    Comprehensive 5S implementation methodology with detailed action plans
+    Comprehensive "5S" implementation methodology with detailed action plans
     """
 
     def __init__(self, workplace_areas, current_maturity_level):

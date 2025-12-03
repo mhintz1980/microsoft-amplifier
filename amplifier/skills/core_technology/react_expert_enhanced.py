@@ -592,8 +592,9 @@ class ReactExpertSkillEnhanced(SignatureSkill):
         """Handle React concurrent features expertise."""
         typescript_suffix = ".tsx" if request.typescript_enabled else ".jsx"
 
-        answer = f"""
-# React Concurrent Features - Complete Guide (React {request.react_version.value})
+        # Note: This needs to be a regular string, not an f-string, because it contains JavaScript code
+        answer = """
+# React Concurrent Features - Complete Guide (React {})""".format(request.react_version.value) + """
 
 React 18 introduced powerful concurrent features that enable smoother user experiences by allowing React to prepare multiple versions of the UI simultaneously.
 
@@ -601,48 +602,48 @@ React 18 introduced powerful concurrent features that enable smoother user exper
 
 The `useTransition` hook allows you to mark state updates as non-urgent, preventing UI blocking during slow operations.
 
-```typescript{typescript_suffix}
-import React, {{ useState, useTransition }} from 'react';
+```typescript
+import React, { useState, useTransition } from 'react';
 
-function SearchResults() {{
+function SearchResults() {
   const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {{
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
     // Mark the search as non-urgent
-    startTransition(() => {{
+    startTransition(() => {
       const searchResults = performSearch(value);
       setResults(searchResults);
-    }});
-  }};
+    });
+  };
 
   return (
     <div>
       <input
         type="text"
-        value={{query}}
-        onChange={{handleChange}}
+        value={query}
+        onChange={handleChange}
         placeholder="Search..."
       />
-      {{isPending && <div>Searching...</div>}}
-      <ResultsList results={{results}} />
+      {isPending && <div>Searching...</div>}
+      <ResultsList results={results} />
     </div>
   );
-}}
+}
 ```
 
 ## useDeferredValue Hook
 
 `useDeferredValue` allows you to defer updating non-critical parts of the UI.
 
-```typescript{typescript_suffix}
-import React, {{ useState, useDeferredValue }} from 'react';
+```typescript
+import React, { useState, useDeferredValue } from 'react';
 
-function TypeaheadSearch() {{
+function TypeaheadSearch() {
   const [query, setQuery] = useState('');
   // Deferr the query for the suggestions list
   const deferredQuery = useDeferredValue(query);
@@ -655,96 +656,96 @@ function TypeaheadSearch() {{
     <div>
       <input
         type="text"
-        value={{query}}
-        onChange={{(e) => setQuery(e.target.value)}}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder="Type to search..."
       />
-      <SuggestionsList suggestions={{suggestions}} />
+      <SuggestionsList suggestions={suggestions} />
     </div>
   );
-}}
+}
 ```
 
 ## Suspense for Data Fetching
 
 Suspense enables graceful loading states for components waiting for data.
 
-```typescript{typescript_suffix}
-import React, {{ Suspense }} from 'react';
+```typescript
+import React, { Suspense } from 'react';
 
 const UserProfile = React.lazy(() => import('./UserProfile'));
 const UserPosts = React.lazy(() => import('./UserPosts'));
 
-function UserDashboard() {{
+function UserDashboard() {
   return (
     <div>
       <h1>User Dashboard</h1>
-      <Suspense fallback={{<div>Loading profile...</div>}}>
-        <UserProfile userId={{123}} />
+      <Suspense fallback={<div>Loading profile...</div>}>
+        <UserProfile userId={123} />
       </Suspense>
-      <Suspense fallback={{<div>Loading posts...</div>}}>
-        <UserPosts userId={{123}} />
+      <Suspense fallback={<div>Loading posts...</div>}>
+        <UserPosts userId={123} />
       </Suspense>
     </div>
   );
-}}
+}
 ```
 
 ## Concurrent Rendering Patterns
 
 ### Optimistic Updates with useTransition
 
-```typescript{typescript_suffix}
-function TodoList() {{
+```typescript
+function TodoList() {
   const [todos, setTodos] = useState(initialTodos);
   const [isPending, startTransition] = useTransition();
 
-  const addTodo = async (text: string) => {{
+  const addTodo = async (text: string) => {
     // Optimistic update
-    const newTodo = {{ id: Date.now(), text, completed: false }};
+    const newTodo = { id: Date.now(), text, completed: false };
 
-    startTransition(() => {{
+    startTransition(() => {
       setTodos(prevTodos => [...prevTodos, newTodo]);
-    }});
+    });
 
-    try {{
+    try {
       await saveTodoToServer(newTodo);
-    }} catch (error) {{
+    } catch (error) {
       // Rollback on error
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== newTodo.id));
-    }}
-  }};
+    }
+  };
 
   return (
     <div>
-      <TodoForm onSubmit={{addTodo}} />
-      <TodoList items={{todos}} />
-      {{isPending && <div>Updating...</div>}}
+      <TodoForm onSubmit={addTodo} />
+      <TodoList items={todos} />
+      {isPending && <div>Updating...</div>}
     </div>
   );
-}}
+}
 ```
 
 ### Progressive Loading with Suspense
 
-```typescript{typescript_suffix}
-function LazyImage({{ src, alt }}: {{ src: string; alt: string }}) {{
+```typescript
+function LazyImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <Suspense fallback={{<ImagePlaceholder />}}>
-      <AsyncImage src={{src}} alt={{alt}} />
+    <Suspense fallback={<ImagePlaceholder />}>
+      <AsyncImage src={src} alt={alt} />
     </Suspense>
   );
-}}
+}
 
-function Gallery() {{
+function Gallery() {
   return (
     <div className="gallery">
-      {{images.map(image => (
-        <LazyImage key={{image.id}} src={{image.src}} alt={{image.alt}} />
-      ))}}
+      {images.map(image => (
+        <LazyImage key={image.id} src={image.src} alt={image.alt} />
+      ))}
     </div>
   );
-}}
+}
 ```
 
 ## Best Practices for Concurrent Features
@@ -775,10 +776,11 @@ These concurrent features provide powerful tools for creating responsive, smooth
         return ReactResponse(
             answer=answer,
             code_examples=[
-                f"import React, {{ useState, useTransition }} from 'react';\n\nfunction SearchResults() {{\n  const [isPending, startTransition] = useTransition();\n  const [query, setQuery] = useState('');\n  const [results, setResults] = useState([]);\n\n  const handleChange = (e) => {{\n    const value = e.target.value;\n    setQuery(value);\n\n    startTransition(() => {{\n      const searchResults = performSearch(value);\n      setResults(searchResults);\n    }});\n  }};\n\n  return (\n    <div>\n      <input type=\"text\" value={{query}} onChange={{handleChange}} />\n      {{isPending && <div>Searching...</div>}}\n      <ResultsList results={{results}} />\n    </div>\n  );\n}}",
-                f"import React, {{ useState, useDeferredValue, useMemo }} from 'react';\n\nfunction TypeaheadSearch() {{\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n\n  const suggestions = useMemo(() => \n    getSuggestions(deferredQuery), [deferredQuery]\n  );\n\n  return (\n    <div>\n      <input\n        type=\"text\"\n        value={{query}}\n        onChange={{(e) => setQuery(e.target.value)}}\n        placeholder=\"Type to search...\"\n      />\n      <SuggestionsList suggestions={{suggestions}} />\n    </div>\n  );\n}}",
-                f"import React, {{ Suspense }} from 'react';\n\nconst UserProfile = React.lazy(() => import('./UserProfile'));\nconst UserPosts = React.lazy(() => import('./UserPosts'));\n\nfunction UserDashboard() {{\n  return (\n    <div>\n      <h1>User Dashboard</h1>\n      <Suspense fallback={{<div>Loading profile...</div>}}>\n        <UserProfile userId={{123}} />\n      </Suspense>\n      <Suspense fallback={{<div>Loading posts...</div>}}>\n        <UserPosts userId={{123}} />\n      </Suspense>\n    </div>\n  );\n}}",
-                f"function TodoList() {{\n  const [todos, setTodos] = useState(initialTodos);\n  const [isPending, startTransition] = useTransition();\n\n  const addTodo = async (text) => {{\n    const newTodo = {{ id: Date.now(), text, completed: false }};\n    \n    startTransition(() => {{\n      setTodos(prevTodos => [...prevTodos, newTodo]);\n    }});\n\n    try {{\n      await saveTodoToServer(newTodo);\n    }} catch (error) {{\n      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== newTodo.id));\n    }}\n  }};\n\n  return (\n    <div>\n      <TodoForm onSubmit={{addTodo}} />\n      <TodoList items={{todos}} />\n      {{isPending && <div>Updating...</div>}}\n    </div>\n  );\n}}",
+                """import React, { useState, useTransition } from 'react';\n\nfunction SearchResults() {\n  const [isPending, startTransition] = useTransition();\n  const [query, setQuery] = useState('');\n  const [results, setResults] = useState([]);\n\n  const handleChange = (e) => {\n    const value = e.target.value;\n    setQuery(value);\n\n    startTransition(() => {\n      const searchResults = performSearch(value);\n      setResults(searchResults);\n    });\n  };\n\n  return (\n    <div>\n      <input type="text" value={query} onChange={handleChange} />\n      {isPending && <div>Searching...</div>}\n      <ResultsList results={results} />\n    </div>\n  );\n}""",
+                """import React, { useState, useDeferredValue, useMemo } from 'react';\n\nfunction TypeaheadSearch() {\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n\n  const suggestions = useMemo(() => \n    getSuggestions(deferredQuery), [deferredQuery]\n  );\n\n  return (\n    <div>\n      <input\n        type="text"\n        value={query}\n        onChange={(e) => setQuery(e.target.value)}\n        placeholder="Type to search..."\n      />\n      <SuggestionsList suggestions={suggestions} />\n    </div>\n  );\n}""",
+                """import React, { Suspense } from 'react';\n\nconst UserProfile = React.lazy(() => import('./UserProfile'));\nconst UserPosts = React.lazy(() => import('./UserPosts'));\n\nfunction UserDashboard() {\n  return (\n    <div>\n      <h1>User Dashboard</h1>\n      <Suspense fallback={<div>Loading profile...</div>}>\n        <UserProfile userId={123} />\n      </Suspense>\n      <Suspense fallback={<div>Loading posts...</div>}>\n        <UserPosts userId={123} />\n      </Suspense>\n    </div>\n  );\n}""",
+                """function TodoList() {\n  const [todos, setTodos] = useState(initialTodos);\n  const [isPending, startTransition] = useTransition();\n\n  const addTodo = async (text) => {\n    const newTodo = { id: Date.now(), text, completed: false };\n    \n    startTransition(() => {\n      setTodos(prevTodos => [...prevTodos, newTodo]);\n    });\n\n    try {\n      await saveTodoToServer(newTodo);\n    } catch (error) {\n      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== newTodo.id));\n    }\n  };\n\n  return (\n    <div>\n      <TodoForm onSubmit={addTodo} />\n      <TodoList items={todos} />\n      {isPending && <div>Updating...</div>}\n    </div>\n  );\n}"""
+            ],
             ],
             explanations=[
                 "useTransition allows React to mark state updates as non-urgent, keeping the UI responsive",
@@ -839,105 +841,105 @@ Next.js 15+ provides the most advanced React framework with Server Components, A
 
 ### Server Components (Default)
 
-```typescript{typescript_suffix}
+```typescript
 // app/dashboard/page.tsx - Server Component
-import {{ getUserData }} from '@/lib/auth';
+import { getUserData } from '@/lib/auth';
 import UserCard from '@/components/UserCard';
 
-export default async function DashboardPage() {{
+export default async function DashboardPage() {
   const userData = await getUserData();
 
   return (
     <div>
-      <h1>Welcome back, {{userData.name}}!</h1>
-      <UserCard user={{userData}} />
+      <h1>Welcome back, {userData.name}!</h1>
+      <UserCard user={userData} />
     </div>
   );
-}}
+}
 ```
 
 ### Client Components with "use client"
 
-```typescript{typescript_suffix}
+```typescript
 // components/UserCard.tsx - Client Component
 'use client';
 
-import {{ useState }} from 'react';
+import { useState } from 'react';
 
-interface UserCardProps {{
-  user: {{
+interface UserCardProps {
+  user: {
     name: string;
     email: string;
     avatar: string;
-  }};
-}}
+  };
+}
 
-export default function UserCard({{ user }}: UserCardProps) {{
+export default function UserCard({ user }: UserCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="user-card">
-      <img src={{user.avatar}} alt={{user.name}} />
-      <h2>{{user.name}}</h2>
-      <p>{{user.email}}</p>
+      <img src={user.avatar} alt={user.name} />
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
       <button
-        onClick={{() => setIsExpanded(!isExpanded)}}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
-        {{isExpanded ? 'Show Less' : 'Show More'}}
+        {isExpanded ? 'Show Less' : 'Show More'}
       </button>
-      {{isExpanded && <div>Additional user details...</div>}}
+      {isExpanded && <div>Additional user details...</div>}
     </div>
   );
-}}
+}
 ```
 
 ## Server Actions
 
 ### Form Actions
 
-```typescript{typescript_suffix}
+```typescript
 // app/actions/posts.ts
 'use server';
 
-import {{ revalidatePath }} from 'next/cache';
-import {{ redirect }} from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-export async function createPost(formData: FormData) {{
+export async function createPost(formData: FormData) {
   const title = formData.get('title') as string;
   const content = formData.get('content') as string;
 
-  try {{
+  try {
     // Database operation
-    const post = await db.post.create({{
-      data: {{
+    const post = await db.post.create({
+      data: {
         title,
         content,
         publishedAt: new Date(),
-      }},
-    }});
+      },
+    });
 
     // Revalidate the posts page
     revalidatePath('/posts');
 
     // Redirect to the new post
-    redirect(`/posts/${{post.id}}`);
-  }} catch (error) {{
-    return {{ error: 'Failed to create post' }};
-  }}
-}}
+    redirect(`/posts/${post.id}`);
+  } catch (error) {
+    return { error: 'Failed to create post' };
+  }
+}
 ```
 
 ### Using Server Actions in Components
 
-```typescript{typescript_suffix}
+```typescript
 // components/CreatePostForm.tsx
 'use client';
 
-import {{ createPost }} from '@/app/actions/posts';
+import { createPost } from '@/app/actions/posts';
 
-export default function CreatePostForm() {{
+export default function CreatePostForm() {
   return (
-    <form action={{createPost}}>
+    <form action={createPost}>
       <div>
         <label htmlFor="title">Title</label>
         <input id="title" name="title" type="text" required />
@@ -949,7 +951,7 @@ export default function CreatePostForm() {{
       <button type="submit">Create Post</button>
     </form>
   );
-}}
+}
 ```
 
 ## Advanced App Router Patterns
@@ -977,84 +979,84 @@ app/
 
 ### Parallel Routes
 
-```typescript{typescript_suffix}
+```typescript
 // app/@dashboard/layout.tsx
-export default function DashboardLayout({{
+export default function DashboardLayout({
   analytics,
   team,
   notifications,
-}}: {{
+}: {
   analytics: React.ReactNode;
   team: React.ReactNode;
   notifications: React.ReactNode;
-}}) {{
+}) {
   return (
     <div className="dashboard">
       <aside>
-        {{analytics}}
-        {{team}}
+        {analytics}
+        {team}
       </aside>
       <main>
-        {{notifications}}
+        {notifications}
       </main>
     </div>
   );
-}}
+}
 ```
 
 ### Intercepting Routes
 
-```typescript{typescript_suffix}
+```typescript
 // app/photos/[id]/page.tsx
-export default function PhotoPage({{ params }}: {{ params: {{ id: string }} }}) {{
-  return <PhotoView id={{params.id}} />;
-}}
+export default function PhotoPage({ params }: { params: { id: string } }) {
+  return <PhotoView id={params.id} />;
+}
 
 // app/photos/[id]/@modal/page.tsx
-export default function PhotoModal({{ params }}: {{ params: {{ id: string }} }}) {{
+export default function PhotoModal({ params }: { params: { id: string } }) {
   return (
     <dialog open>
-      <PhotoView id={{params.id}} />
+      <PhotoView id={params.id} />
       <form method="dialog">
         <button>Close</button>
       </form>
     </dialog>
   );
-}}
+}
 ```
 
 ## Data Fetching Patterns
 
 ### Server-side Fetching with Caching
 
-```typescript{typescript_suffix}
+```typescript
 // app/posts/page.tsx
-import {{ cache }} from 'react';
+import { cache } from 'react';
 
-async function getPosts() {{
-  const res = await fetch('https://api.example.com/posts', {{
-    next: {{ revalidate: 60 }}, // Revalidate every 60 seconds
-  }});
+async function getPosts() {
+  const res = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 60 }, // Revalidate every 60 seconds
+  });
   return res.json();
-}}
+}
 
 const cachedPosts = cache(getPosts);
 
-export default async function PostsPage() {{
+export default async function PostsPage() {
   const posts = await cachedPosts();
 
   return (
     <div>
       <h1>Posts</h1>
-      <PostsList posts={{posts}} />
+      <PostsList posts={posts} />
     </div>
   );
-}}
+}
 ```
 
 ### Client-side Data Fetching with SWR
 
-```typescript{typescript_suffix}
+```typescript
 // hooks/usePosts.ts
 'use client';
 
@@ -1062,148 +1064,148 @@ import useSWR from 'swr';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-export function usePosts() {{
-  const {{ data, error, isLoading, mutate }} = useSWR('/api/posts', fetcher, {{
+export function usePosts() {
+  const { data, error, isLoading, mutate } = useSWR('/api/posts', fetcher, {
     refreshInterval: 30000, // Refresh every 30 seconds
     revalidateOnFocus: true,
-  }});
+  });
 
-  return {{
+  return {
     posts: data,
     isLoading,
     error,
     mutate,
-  }};
-}}
+  };
+}
 ```
 
 ## Performance Optimizations
 
 ### Dynamic Imports and Code Splitting
 
-```typescript{typescript_suffix}
+```typescript
 // app/dashboard/page.tsx
 import dynamic from 'next/dynamic';
 
-const HeavyChart = dynamic(() => import('@/components/HeavyChart'), {{
+const HeavyChart = dynamic(() => import('@/components/HeavyChart'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false, // Disable server-side rendering for this component
-}});
+});
 
-export default function DashboardPage() {{
+export default function DashboardPage() {
   return (
     <div>
       <h1>Dashboard</h1>
       <HeavyChart />
     </div>
   );
-}}
+}
 ```
 
 ### Image Optimization
 
-```typescript{typescript_suffix}
+```typescript
 import Image from 'next/image';
 
-function ProductImage({{ src, alt }}: {{ src: string; alt: string }}) {{
+function ProductImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="product-image-container">
       <Image
-        src={{src}}
-        alt={{alt}}
-        width={{300}}
-        height={{200}}
-        priority={{false}}
+        src={src}
+        alt={alt}
+        width={300}
+        height={200}
+        priority={false}
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,..."
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        style={{{ objectFit: 'cover' }}}
+        style={{ objectFit: 'cover' }}
       />
     </div>
   );
-}}
+}
 ```
 
 ## Middleware and Route Protection
 
-```typescript{typescript_suffix}
+```typescript
 // middleware.ts
-import {{ NextResponse }} from 'next/server';
-import type {{ NextRequest }} from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {{
+export function middleware(request: NextRequest) {
   // Authentication check
   const token = request.cookies.get('auth-token')?.value;
 
-  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {{
+  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }}
+  }
 
   // Internationalization
   const pathname = request.nextUrl.pathname;
 
-  if (!pathname.startsWith('/en') && !pathname.startsWith('/es')) {{
+  if (!pathname.startsWith('/en') && !pathname.startsWith('/es')) {
     const locale = request.headers.get('accept-language')?.includes('es') ? 'es' : 'en';
-    return NextResponse.redirect(new URL(`/${{locale}}${{pathname}}`, request.url));
-  }}
+    return NextResponse.redirect(new URL(`/${locale}${pathname}`, request.url));
+  }
 
   return NextResponse.next();
-}}
+}
 
-export const config = {{
+export const config = {
   matcher: ['/dashboard/:path*', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
-}};
+};
 ```
 
 ## API Routes
 
-```typescript{typescript_suffix}
+```typescript
 // app/api/users/route.ts
-import {{ NextRequest, NextResponse }} from 'next/server';
-import {{ db }} from '@/lib/db';
-import {{ z }} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { z } from 'zod';
 
-const createUserSchema = z.object({{
+const createUserSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-}});
+});
 
-export async function GET() {{
-  try {{
+export async function GET() {
+  try {
     const users = await db.user.findMany();
     return NextResponse.json(users);
-  }} catch (error) {{
+  } catch (error) {
     return NextResponse.json(
-      {{ error: 'Failed to fetch users' }},
-      {{ status: 500 }}
+      { error: 'Failed to fetch users' },
+      { status: 500 }
     );
-  }}
-}}
+  }
+}
 
-export async function POST(request: NextRequest) {{
-  try {{
+export async function POST(request: NextRequest) {
+  try {
     const body = await request.json();
-    const {{ name, email }} = createUserSchema.parse(body);
+    const { name, email } = createUserSchema.parse(body);
 
-    const user = await db.user.create({{
-      data: {{ name, email }},
-    }});
+    const user = await db.user.create({
+      data: { name, email },
+    });
 
-    return NextResponse.json(user, {{ status: 201 }});
-  }} catch (error) {{
-    if (error instanceof z.ZodError) {{
+    return NextResponse.json(user, { status: 201 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
-        {{ error: 'Invalid input', details: error.errors }},
-        {{ status: 400 }}
+        { error: 'Invalid input', details: error.errors },
+        { status: 400 }
       );
-    }}
+    }
 
     return NextResponse.json(
-      {{ error: 'Failed to create user' }},
-      {{ status: 500 }}
+      { error: 'Failed to create user' },
+      { status: 500 }
     );
-  }}
-}}
+  }
+}
 ```
 
 This comprehensive Next.js integration guide covers the latest features and best practices for building modern React applications.
@@ -1212,10 +1214,10 @@ This comprehensive Next.js integration guide covers the latest features and best
         return ReactResponse(
             answer=answer,
             code_examples=[
-                f"'use client';\n\nimport {{ useState }} from 'react';\n\ninterface UserCardProps {{\n  user: {{\n    name: string;\n    email: string;\n    avatar: string;\n  }};\n}}\n\nexport default function UserCard({{ user }}: UserCardProps) {{\n  const [isExpanded, setIsExpanded] = useState(false);\n\n  return (\n    <div className=\"user-card\">\n      <img src={{user.avatar}} alt={{user.name}} />\n      <h2>{{user.name}}</h2>\n      <p>{{user.email}}</p>\n      <button onClick={{() => setIsExpanded(!isExpanded)}}>\n        {{isExpanded ? 'Show Less' : 'Show More'}}\n      </button>\n      {{isExpanded && <div>Additional user details...</div>}}\n    </div>\n  );\n}}",
-                f"'use server';\n\nimport {{ revalidatePath }} from 'next/cache';\nimport {{ redirect }} from 'next/navigation';\n\nexport async function createPost(formData: FormData) {{\n  const title = formData.get('title') as string;\n  const content = formData.get('content') as string;\n\n  try {{\n    const post = await db.post.create({{\n      data: {{ title, content, publishedAt: new Date() }},\n    }});\n\n    revalidatePath('/posts');\n    redirect(`/posts/${{post.id}}`);\n  }} catch (error) {{\n    return {{ error: 'Failed to create post' }};\n  }}\n}}",
-                f"import dynamic from 'next/dynamic';\n\nconst HeavyChart = dynamic(() => import('@/components/HeavyChart'), {{\n  loading: () => <div>Loading chart...</div>,\n  ssr: false,\n}});\n\nexport default function DashboardPage() {{\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      <HeavyChart />\n    </div>\n  );\n}}",
-                f"import Image from 'next/image';\n\nfunction ProductImage({{ src, alt }}: {{ src: string; alt: string }}) {{\n  return (\n    <div className=\"product-image-container\">\n      <Image\n        src={{src}}\n        alt={{alt}}\n        width={{300}}\n        height={{200}}\n        priority={{false}}\n        placeholder=\"blur\"\n        blurDataURL=\"data:image/jpeg;base64,...\"\n        sizes=\"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw\"\n        style={{{{ objectFit: 'cover' }}}} />\n    </div>\n  );\n}}",
+                f"'use client';\n\nimport { useState } from 'react';\n\ninterface UserCardProps {\n  user: {\n    name: string;\n    email: string;\n    avatar: string;\n  };\n}\n\nexport default function UserCard({ user }: UserCardProps) {\n  const [isExpanded, setIsExpanded] = useState(false);\n\n  return (\n    <div className=\"user-card\">\n      <img src={user.avatar} alt={user.name} />\n      <h2>{user.name}</h2>\n      <p>{user.email}</p>\n      <button onClick={() => setIsExpanded(!isExpanded)}>\n        {isExpanded ? 'Show Less' : 'Show More'}\n      </button>\n      {isExpanded && <div>Additional user details...</div>}\n    </div>\n  );\n}",
+                f"'use server';\n\nimport { revalidatePath } from 'next/cache';\nimport { redirect } from 'next/navigation';\n\nexport async function createPost(formData: FormData) {\n  const title = formData.get('title') as string;\n  const content = formData.get('content') as string;\n\n  try {\n    const post = await db.post.create({\n      data: { title, content, publishedAt: new Date() },\n    });\n\n    revalidatePath('/posts');\n    redirect(`/posts/${post.id}`);\n  } catch (error) {\n    return { error: 'Failed to create post' };\n  }\n}",
+                f"import dynamic from 'next/dynamic';\n\nconst HeavyChart = dynamic(() => import('@/components/HeavyChart'), {\n  loading: () => <div>Loading chart...</div>,\n  ssr: false,\n});\n\nexport default function DashboardPage() {\n  return (\n    <div>\n      <h1>Dashboard</h1>\n      <HeavyChart />\n    </div>\n  );\n}",
+                f"import Image from 'next/image';\n\nfunction ProductImage({ src, alt }: { src: string; alt: string }) {\n  return (\n    <div className=\"product-image-container\">\n      <Image\n        src={src}\n        alt={alt}\n        width={300}\n        height={200}\n        priority={false}\n        placeholder=\"blur\"\n        blurDataURL=\"data:image/jpeg;base64,...\"\n        sizes=\"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw\"\n        style={{ objectFit: 'cover' }} />\n    </div>\n  );\n}",
             ],
             explanations=[
                 "Server Components run only on the server and have access to server-side resources",
@@ -1277,85 +1279,85 @@ TypeScript provides excellent type safety for React applications, catching error
 ```typescript
 import React from 'react';
 
-interface ButtonProps {{
+interface ButtonProps {
   children: React.ReactNode;
   onClick: () => void;
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
-}}
+}
 
-const Button: React.FC<ButtonProps> = ({{
+const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
   variant = 'primary',
   disabled = false,
-}}) => {{
+}) => {
   return (
     <button
-      onClick={{onClick}}
-      disabled={{disabled}}
+      onClick={onClick}
+      disabled={disabled}
       className={"btn btn-" + variant}
     >
-      {{children}}
+      {children}
     </button>
   );
-}};
+};
 
 // Alternative syntax (preferred)
-function Button2({{
+function Button2({
   children,
   onClick,
   variant = 'primary',
   disabled = false,
-}}: ButtonProps): React.ReactElement {{
+}: ButtonProps): React.ReactElement {
   return (
     <button
-      onClick={{onClick}}
-      disabled={{disabled}}
-      className={{"btn btn-" + variant}}
+      onClick={onClick}
+      disabled={disabled}
+      className={"btn btn-" + variant}
     >
-      {{children}}
+      {children}
     </button>
   );
-}}
+}
 ```
 
 ### Generic Components
 
 ```typescript
-interface ListProps<T> {{
+interface ListProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
   keyExtractor: (item: T) => string;
-}}
+}
 
-function List<T>({{
+function List<T>({
   items,
   renderItem,
   keyExtractor,
-}}: ListProps<T>): React.ReactElement {{
+}: ListProps<T>): React.ReactElement {
   return (
     <ul>
-      {{items.map(item => (
-        <li key={{keyExtractor(item)}}>
-          {{renderItem(item)}}
+      {items.map(item => (
+        <li key={keyExtractor(item)}>
+          {renderItem(item)}
         </li>
-      ))}}
+      ))}
     </ul>
   );
-}}
+}
 
 // Usage
-const UserList: React.FC<{{
-  users: Array<{{
+const UserList: React.FC<{
+  users: Array<{
     id: string;
     name: string;
-  }}>;
-}}> = ({{ users }}) => (
+  }>;
+}> = ({ users }) => (
   <List
-    items={{users}}
-    renderItem={{user => <span>{{user.name}}</span>}}
-    keyExtractor={{user => user.id}}
+    items={users}
+    renderItem={user => <span>{user.name}</span>}
+    keyExtractor={user => user.id}
   />
 );
 ```
@@ -1369,32 +1371,32 @@ const UserList: React.FC<{{
 function useLocalStorage<T>(
   key: string,
   initialValue: T
-): [T, (value: T) => void] {{
-  const [storedValue, setStoredValue] = useState<T>(() => {{
-    if (typeof window === 'undefined') {{
+): [T, (value: T) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') {
       return initialValue;
-    }}
-    try {{
+    }
+    try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
-    }} catch (error) {{
+    } catch (error) {
       return initialValue;
-    }}
-  }});
+    }
+  });
 
-  const setValue = useCallback((value: T) => {{
-    try {{
+  const setValue = useCallback((value: T) => {
+    try {
       setStoredValue(value);
-      if (typeof window !== 'undefined') {{
+      if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(value));
-      }}
-    }} catch (error) {{
+      }
+    } catch (error) {
       console.error(error);
-    }}
-  }}, [key]);
+    }
+  }, [key]);
 
   return [storedValue, setValue];
-}}
+}
 
 // Usage
 const [name, setName] = useLocalStorage<string>('name', '');
@@ -1403,96 +1405,96 @@ const [name, setName] = useLocalStorage<string>('name', '');
 ### Event Handler Typing
 
 ```typescript
-function FormComponent(): React.ReactElement {{
+function FormComponent(): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {{
+    (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       // Form submission logic
-    }},
+    },
     []
   );
 
   const handleEmailChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {{
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       setEmail(event.target.value);
-    }},
+    },
     []
   );
 
   return (
-    <form onSubmit={{handleSubmit}}>
+    <form onSubmit={handleSubmit}>
       <input
         type="email"
-        value={{email}}
-        onChange={{handleEmailChange}}
+        value={email}
+        onChange={handleEmailChange}
         placeholder="Email"
       />
       <input
         type="password"
-        value={{password}}
-        onChange={{(e) => setPassword(e.target.value)}}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
       <button type="submit">Submit</button>
     </form>
   );
-}}
+}
 ```
 
 ## Context Typing
 
 ```typescript
 // Context with type safety
-interface ThemeContextType {{
+interface ThemeContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
-}}
+}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const ThemeProvider: React.FC<{{
+const ThemeProvider: React.FC<{
   children: React.ReactNode;
-}}> = ({{ children }}) => {{
+}> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  const toggleTheme = useCallback(() => {{
+  const toggleTheme = useCallback(() => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  }}, []);
+  }, []);
 
-  const value = useMemo(() => ({{
+  const value = useMemo(() => ({
     theme,
     toggleTheme,
-  }}), [theme, toggleTheme]);
+  }), [theme, toggleTheme]);
 
   return (
-    <ThemeContext.Provider value={{value}}>
-      {{children}}
+    <ThemeContext.Provider value={value}>
+      {children}
     </ThemeContext.Provider>
   );
-}};
+};
 
 // Custom hook for consuming context
-function useTheme(): ThemeContextType {{
+function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
-  if (context === undefined) {{
+  if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
-  }}
+  }
   return context;
-}}
+}
 
 // Usage in component
-function ThemeToggle(): React.ReactElement {{
-  const {{ theme, toggleTheme }} = useTheme();
+function ThemeToggle(): React.ReactElement {
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <button onClick={{toggleTheme}}>
-      Current theme: {{theme}}
+    <button onClick={toggleTheme}>
+      Current theme: {theme}
     </button>
   );
-}}
+}
 ```
 
 ## Advanced Patterns
@@ -1500,10 +1502,10 @@ function ThemeToggle(): React.ReactElement {{
 ### Higher-Order Components
 
 ```typescript
-interface WithLoadingProps {{
+interface WithLoadingProps {
   isLoading: boolean;
   error?: string;
-}}
+}
 
 function withLoading<P extends object>(
   Component: React.ComponentType<P & WithLoadingProps>
@@ -1522,16 +1524,16 @@ function withLoading<P extends object>(
     }
 
     return <Component {...props as P} />;
-  }};
-}}
+  };
+}
 
 // Usage
-const UserProfile = withLoading(({{
+const UserProfile = withLoading(({
   user,
-}}: {{ user: User }}) => (
+}: { user: User }) => (
   <div>
-    <h1>{{user.name}}</h1>
-    <p>{{user.email}}</p>
+    <h1>{user.name}</h1>
+    <p>{user.email}</p>
   </div>
 ));
 ```
@@ -1539,115 +1541,115 @@ const UserProfile = withLoading(({{
 ### React.forwardRef Typing
 
 ```typescript
-interface InputProps {{
+interface InputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
-}}
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   function Input(
-    {{ label, value, onChange, error, ...props }},
+    { label, value, onChange, error, ...props },
     ref
-  ): React.ReactElement {{
+  ): React.ReactElement {
     const handleChange = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {{
+      (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value);
-      }},
+      },
       [onChange]
     );
 
     return (
       <div>
-        <label>{{label}}</label>
+        <label>{label}</label>
         <input
-          ref={{ref}}
-          value={{value}}
-          onChange={{handleChange}}
-          {{...props}}
+          ref={ref}
+          value={value}
+          onChange={handleChange}
+          {...props}
         />
-        {{error && <span className="error">{{error}}</span>}}
+        {error && <span className="error">{error}</span>}
       </div>
     );
-  }}
+  }
 );
 
 // Usage
-const Form: React.FC = () => {{
+const Form: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const focusInput = useCallback(() => {{
+  const focusInput = useCallback(() => {
     inputRef.current?.focus();
-  }}, []);
+  }, []);
 
   return (
     <div>
       <Input
-        ref={{inputRef}}
+        ref={inputRef}
         label="Email"
-        value={{email}}
-        onChange={{setEmail}}
+        value={email}
+        onChange={setEmail}
       />
-      <button onClick={{focusInput}}>Focus Input</button>
+      <button onClick={focusInput}>Focus Input</button>
     </div>
   );
-}};
+};
 ```
 
 ### Form Handling with Zod
 
 ```typescript
-import {{ z }} from 'zod';
-import {{ useForm, SubmitHandler }} from 'react-hook-form';
-import {{ zodResolver }} from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-const userSchema = z.object({{
+const userSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   age: z.number().min(18, 'Must be at least 18 years old'),
-}});
+});
 
 type UserFormData = z.infer<typeof userSchema>;
 
-function UserForm(): React.ReactElement {{
-  const {{
+function UserForm(): React.ReactElement {
+  const {
     register,
     handleSubmit,
-    formState: {{ errors }},
-  }} = useForm<UserFormData>({{
+    formState: { errors },
+  } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
-  }});
+  });
 
   const onSubmit: SubmitHandler<UserFormData> = useCallback(
-    (data) => {{
+    (data) => {
       console.log(data);
       // Form submission logic
-    }},
+    },
     []
   );
 
   return (
-    <form onSubmit={{handleSubmit(onSubmit)}}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label>Name</label>
-        <input {{...register('name')}} />
-        {{errors.name && <span>{{errors.name.message}}</span>}}
+        <input {...register('name')} />
+        {errors.name && <span>{errors.name.message}</span>}
       </div>
       <div>
         <label>Email</label>
-        <input type="email" {{...register('email')}} />
-        {{errors.email && <span>{{errors.email.message}}</span>}}
+        <input type="email" {...register('email')} />
+        {errors.email && <span>{errors.email.message}</span>}
       </div>
       <div>
         <label>Age</label>
-        <input type="number" {{...register('age', {{ valueAsNumber: true }})}} />
-        {{errors.age && <span>{{errors.age.message}}</span>}}
+        <input type="number" {...register('age', { valueAsNumber: true })} />
+        {errors.age && <span>{errors.age.message}</span>}
       </div>
       <button type="submit">Submit</button>
     </form>
   );
-}}
+}
 ```
 
 ## Utility Types for React
@@ -1659,45 +1661,45 @@ type ComponentProps<T> = T extends React.ComponentType<infer P> ? P : never;
 type ButtonProps = ComponentProps<typeof Button>;
 
 // Utility for conditional props
-interface ConditionalInputProps {{
+interface ConditionalInputProps {
   type: 'text';
   value: string;
   onChange: (value: string) => void;
-}}
+}
 
-interface ConditionalNumberInputProps {{
+interface ConditionalNumberInputProps {
   type: 'number';
   value: number;
   onChange: (value: number) => void;
-}}
+}
 
 type ConditionalInputProps = ConditionalInputProps | ConditionalNumberInputProps;
 
-function ConditionalInput({{
+function ConditionalInput({
   type,
   value,
   onChange,
   ...props
-}}: ConditionalInputProps): React.ReactElement {{
+}: ConditionalInputProps): React.ReactElement {
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {{
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = type === 'number'
         ? parseFloat(event.target.value)
         : event.target.value;
       onChange(newValue as any);
-    }},
+    },
     [onChange, type]
   );
 
   return (
     <input
-      type={{type}}
-      value={{value}}
-      onChange={{handleChange}}
-      {{...props}}
+      type={type}
+      value={value}
+      onChange={handleChange}
+      {...props}
     />
   );
-}}
+}
 ```
 
 ## Best Practices
@@ -1725,7 +1727,7 @@ This TypeScript integration guide provides comprehensive patterns for building t
             answer=answer,
             code_examples=[
                 "interface ButtonProps {\n  children: React.ReactNode;\n  onClick: () => void;\n  variant?: 'primary' | 'secondary';\n  disabled?: boolean;\n}\n\nconst Button: React.FC<ButtonProps> = ({\n  children,\n  onClick,\n  variant = 'primary',\n  disabled = false,\n}) => {\n  return (\n    <button\n      onClick={onClick}\n      disabled={disabled}\n      className={`btn btn-${variant}`}\n    >\n      {children}\n    </button>\n  );\n};",
-                "function useLocalStorage<T>(\n  key: string,\n  initialValue: T\n): [T, (value: T) => void] {\n  const [storedValue, setStoredValue] = useState<T>(() => {\n    if (typeof window === 'undefined') {\n      return initialValue;\n    }\n    try {\n      const item = window.localStorage.getItem(key);\n      return item ? JSON.parse(item) : initialValue;\n    } catch (error) {\n      return initialValue;\n    }\n  }});\n\n  const setValue = useCallback((value: T) => {\n    try {\n      setStoredValue(value);\n      if (typeof window !== 'undefined') {\n        window.localStorage.setItem(key, JSON.stringify(value));\n      }\n    } catch (error) {\n      console.error(error);\n    }\n  }, [key]);\n\n  return [storedValue, setValue];\n}",
+                "function useLocalStorage<T>(\n  key: string,\n  initialValue: T\n): [T, (value: T) => void] {\n  const [storedValue, setStoredValue] = useState<T>(() => {\n    if (typeof window === 'undefined') {\n      return initialValue;\n    }\n    try {\n      const item = window.localStorage.getItem(key);\n      return item ? JSON.parse(item) : initialValue;\n    } catch (error) {\n      return initialValue;\n    }\n  });\n\n  const setValue = useCallback((value: T) => {\n    try {\n      setStoredValue(value);\n      if (typeof window !== 'undefined') {\n        window.localStorage.setItem(key, JSON.stringify(value));\n      }\n    } catch (error) {\n      console.error(error);\n    }\n  }, [key]);\n\n  return [storedValue, setValue];\n}",
                 "const Input = React.forwardRef<HTMLInputElement, InputProps>(\n  function Input(\n    { label, value, onChange, error, ...props },\n    ref\n  ): React.ReactElement {\n    const handleChange = useCallback(\n      (event: React.ChangeEvent<HTMLInputElement>) => {\n        onChange(event.target.value);\n      },\n      [onChange]\n    );\n\n    return (\n      <div>\n        <label>{label}</label>\n        <input\n          ref={ref}\n          value={value}\n          onChange={handleChange}\n          {...props}\n        />\n        {error && <span className=\"error\">{error}</span>}\n      </div>\n    );\n  }\n);",
                 "import { z } from 'zod';\nimport { useForm, SubmitHandler } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/zod';\n\nconst userSchema = z.object({\n  name: z.string().min(2, 'Name must be at least 2 characters'),\n  email: z.string().email('Invalid email address'),\n  age: z.number().min(18, 'Must be at least 18 years old'),\n});\n\ntype UserFormData = z.infer<typeof userSchema>;\n\nfunction UserForm(): React.ReactElement {\n  const {\n    register,\n    handleSubmit,\n    formState: { errors },\n  } = useForm<UserFormData>({\n    resolver: zodResolver(userSchema),\n  });\n\n  const onSubmit: SubmitHandler<UserFormData> = useCallback(\n    (data) => {\n      console.log(data);\n      // Form submission logic\n    },\n    []\n  );",
             ],
@@ -1789,13 +1791,13 @@ Performance optimization in React involves understanding how React renders, when
 ```typescript
 import React from 'react';
 
-interface UserProfileProps {{
-  user: {{
+interface UserProfileProps {
+  user: {
     id: string;
     name: string;
     email: string;
     avatar: string;
-  }};\n  onUpdate: (user: any) => void;\n  active: boolean;\n}}\n\nconst UserProfile: React.FC<UserProfileProps> = React.memo(({{ user, onUpdate, active }}) => {{\n  console.log('UserProfile re-rendered:', user.name);\n  \n  return (\n    <div className={`user-profile ${{active ? 'active' : ''}}`}}>\n      <img src={{user.avatar}} alt={{user.name}} />\n      <div>\n        <h3>{{user.name}}</h3>\n        <p>{{user.email}}</p>\n      </div>\n      <button onClick={{() => onUpdate(user)}}>\n        Update\n      </button>\n    </div>\n  );\n}});\n\n// Custom comparison function for fine-grained control\nconst OptimizedUserProfile = React.memo(\n  UserProfile,\n  (prevProps, nextProps) => {{\n    // Only re-render if user changed or active status changed\n    return (\n      prevProps.user.id === nextProps.user.id &&\n      prevProps.active === nextProps.active\n    );\n  }}\n);\n```\n\n### useCallback for Function Memoization\n\n```typescript\nimport React, {{ useState, useCallback }} from 'react';\n\ninterface SearchComponentProps {{\n  onSearch: (query: string) => void;\n}}\n\nconst SearchComponent: React.FC<SearchComponentProps> = React.memo(({{ onSearch }}) => {{\n  const [query, setQuery] = useState('');\n  \n  // Memoize the search function to prevent unnecessary re-renders of parent\n  const handleSearch = useCallback((searchQuery: string) => {{\n    console.log('Searching for:', searchQuery);\n    onSearch(searchQuery);\n  }}, [onSearch]);\n  \n  const handleSubmit = useCallback((event: React.FormEvent) => {{\n    event.preventDefault();\n    handleSearch(query);\n  }}, [query, handleSearch]);\n  \n  return (\n    <form onSubmit={{handleSubmit}}>\n      <input\n        type=\"text\"\n        value={{query}}\n        onChange={{(e) => setQuery(e.target.value)}}\n        placeholder=\"Search...\"\n      />\n      <button type=\"submit\">Search</button>\n    </form>\n  );\n}});\n```\n\n### useMemo for Expensive Calculations\n\n```typescript\nimport React, {{ useState, useMemo }} from 'react';\n\ninterface ExpensiveListProps {{\n  items: number[];\n  filter: string;\n}}\n\nconst ExpensiveList: React.FC<ExpensiveListProps> = (({{ items, filter }}) => {{\n  // Memoize expensive filtering operation\n  const filteredItems = useMemo(() => {{\n    console.log('Filtering items...');\n    return items.filter(item => \n      item.toString().includes(filter)\n    );\n  }}, [items, filter]);\n  \n  // Memoize expensive calculation\n  const expensiveCalculation = useMemo(() => {{\n    console.log('Performing expensive calculation...');\n    return filteredItems.reduce((sum, item) => {{\n      // Simulate expensive computation\n      for (let i = 0; i < 1000000; i++) {{\n        Math.sqrt(item);\n      }}\n      return sum + item;\n    }}, 0);\n  }}, [filteredItems]);\n  \n  return (\n    <div>\n      <h3>Filtered Items ({{filteredItems.length}})</h3>\n      <p>Sum: {{expensiveCalculation}}</p>\n      <ul>\n        {{filteredItems.slice(0, 10).map(item => (\n          <li key={{item}}>{{item}}</li>\n        ))}}\n      </ul>\n    </div>\n  );\n}});\n```\n\n## Code Splitting and Lazy Loading\n\n### Dynamic Imports with React.lazy\n\n```typescript\nimport React, {{ Suspense, lazy }} from 'react';\n\n// Lazy load components\nconst HeavyDashboard = lazy(() => import('./components/HeavyDashboard'));\nconst AdminPanel = lazy(() => import('./components/AdminPanel'));\nconst ChartComponent = lazy(() => import('./components/ChartComponent'));\n\nfunction App(): React.ReactElement {{\n  const [currentView, setCurrentView] = useState<'dashboard' | 'admin' | 'chart'>('dashboard');\n  \n  const renderView = useMemo(() => {{\n    switch (currentView) {{\n      case 'dashboard':\n        return <HeavyDashboard />;\n      case 'admin':\n        return <AdminPanel />;\n      case 'chart':\n        return <ChartComponent />;\n      default:\n        return <HeavyDashboard />;\n    }}\n  }}, [currentView]);\n  \n  return (\n    <div>\n      <nav>\n        <button onClick={{() => setCurrentView('dashboard')}}>Dashboard</button>\n        <button onClick={{() => setCurrentView('admin')}}>Admin</button>\n        <button onClick={{() => setCurrentView('chart')}}>Chart</button>\n      </nav>\n      \n      <Suspense fallback={{\n        <div className=\"loading-container\">\n          <div className=\"spinner\"></div>\n          <p>Loading component...</p>\n        </div>\n      }}>\n        {{renderView}}\n      </Suspense>\n    </div>\n  );\n}}\n```\n\n### Route-based Code Splitting\n\n```typescript\n// App.tsx\nimport React, {{ Suspense }} from 'react';\nimport {{ BrowserRouter as Router, Routes, Route }} from 'react-router-dom';\n\nconst Home = lazy(() => import('./pages/Home'));\nconst About = lazy(() => import('./pages/About'));\nconst Contact = lazy(() => import('./pages/Contact'));\nconst Products = lazy(() => import('./pages/Products'));\n\nconst App: React.FC = () => (\n  <Router>\n    <Suspense fallback={{<div>Loading page...</div>}}>\n      <Routes>\n        <Route path=\"/\" element={{<Home />}} />\n        <Route path=\"/about\" element={{<About />}} />\n        <Route path=\"/contact\" element={{<Contact />}} />\n        <Route path=\"/products\" element={{<Products />}} />\n      </Routes>\n    </Suspense>\n  </Router>\n);\n```\n\n## State Management Optimization\n\n### Optimized Context Usage\n\n```typescript\nimport React, {{ createContext, useContext, useReducer, useMemo }} from 'react';\n\n// Split context by feature for better performance\ntype AppState = {{\n  user: User | null;\n  theme: 'light' | 'dark';\n  notifications: Notification[];\n}};\n\ntype AppAction = \n  | {{ type: 'SET_USER'; payload: User | null }}\n  | {{ type: 'SET_THEME'; payload: 'light' | 'dark' }}\n  | {{ type: 'ADD_NOTIFICATION'; payload: Notification }}\n  | {{ type: 'REMOVE_NOTIFICATION'; payload: string }};\n\n// Separate contexts to prevent unnecessary re-renders\nconst UserContext = createContext<User | null>(null);\nconst ThemeContext = createContext<'light' | 'dark'>('light');\nconst NotificationContext = createContext<{\n  notifications: Notification[];\n  addNotification: (notification: Notification) => void;\n  removeNotification: (id: string) => void;\n}}>({\n  notifications: [],\n  addNotification: () => {{}},\n  removeNotification: () => {{}},\n}});\n\nfunction ThemeProvider({{ children }}: {{ children: React.ReactNode }}) {{\n  const [theme, setTheme] = useState<'light' | 'dark'>('light');\n  \n  const value = useMemo(() => ({{ theme, setTheme }}), [theme]);\n  \n  return (\n    <ThemeContext.Provider value={{theme}}>\n      {{children}}\n    </ThemeContext.Provider>\n  );\n}}\n\n// Custom hooks for optimized context consumption\nfunction useTheme() {{\n  return useContext(ThemeContext);\n}}\n\nfunction useUser() {{\n  return useContext(UserContext);\n}}\n\n// Component only re-renders when notifications change\nfunction NotificationCenter() {{\n  const {{ notifications, removeNotification }} = useContext(NotificationContext);\n  \n  return (\n    <div className=\"notifications\">\n      {{notifications.map(notification => (\n        <NotificationItem\n          key={{notification.id}}\n          notification={{notification}}\n          onClose={{() => removeNotification(notification.id)}}\n        />\n      ))}}\n    </div>\n  );\n}}\n```\n\n### Zustand for Optimized State Management\n\n```typescript\nimport {{ create }} from 'zustand';\nimport {{ subscribeWithSelector }} from 'zustand/middleware';\n\n// Optimized store with selectors\ninterface AppState {{\n  users: User[];\n  loading: boolean;\n  error: string | null;\n  fetchUsers: () => Promise<void>;\n  addUser: (user: User) => void;\n  removeUser: (id: string) => void;\n  // Selectors\n  getUsersByRole: (role: string) => User[];\n  getUserById: (id: string) => User | undefined;\n}}\n\nconst useAppStore = create<AppState>()(\n  subscribeWithSelector((set, get) => ({{\n    users: [],\n    loading: false,\n    error: null,\n    \n    fetchUsers: async () => {{\n      set({{ loading: true, error: null }});\n      try {{\n        const users = await fetchUsersFromAPI();\n        set({{ users, loading: false }});\n      }} catch (error) {{\n        set({{ error: error.message, loading: false }});\n      }}\n    }},\n    \n    addUser: (user) => set((state) => ({{\n      users: [...state.users, user]\n    }})),\n    \n    removeUser: (id) => set((state) => ({{\n      users: state.users.filter(user => user.id !== id)\n    }})),\n    \n    // Selector functions for optimized subscriptions\n    getUsersByRole: (role) => {{\n      const state = get();\n      return state.users.filter(user => user.role === role);\n    }},\n    \n    getUserById: (id) => {{\n      const state = get();\n      return state.users.find(user => user.id === id);\n    }},\n  }}))\n);\n\n// Optimized component with selective subscriptions\nfunction UserList() {{\n  // Only re-render when users change\n  const users = useAppStore(state => state.users);\n  const removeUser = useAppStore(state => state.removeUser);\n  \n  return (\n    <ul>\n      {{users.map(user => (\n        <UserItem\n          key={{user.id}}\n          user={{user}}\n          onDelete={{() => removeUser(user.id)}}\n        />\n      ))}}\n    </ul>\n  );\n}}\n\n// Component only re-renders when admin users change\nfunction AdminUserList() {{\n  const adminUsers = useAppStore(\n    state => state.getUsersByRole('admin'),\n    // Custom equality function for fine-grained control\n    (a, b) => a.length === b.length && a.every(u => b.some(v => v.id === u.id))\n  );\n  \n  return (\n    <div>\n      <h2>Admin Users ({{adminUsers.length}})</h2>\n      <ul>\n        {{adminUsers.map(user => (\n          <li key={{user.id}}>{{user.name}}</li>\n        ))}}\n      </ul>\n    </div>\n  );\n}}\n```\n\n## Rendering Optimization\n\n### Virtual Scrolling for Large Lists\n\n```typescript\nimport React, {{ useMemo, useState, useCallback, useRef }} from 'react';\n\ninterface VirtualListProps<T> {{\n  items: T[];\n  itemHeight: number;\n  containerHeight: number;\n  renderItem: (item: T, index: number) => React.ReactNode;\n}}\n\nfunction VirtualList<T>({{\n  items,\n  itemHeight,\n  containerHeight,\n  renderItem,\n}}: VirtualListProps<T>) {{\n  const [scrollTop, setScrollTop] = useState(0);\n  const containerRef = useRef<HTMLDivElement>(null);\n  \n  const visibleRange = useMemo(() => {{\n    const startIndex = Math.floor(scrollTop / itemHeight);\n    const endIndex = Math.min(\n      startIndex + Math.ceil(containerHeight / itemHeight) + 1,\n      items.length\n    );\n    \n    return {{ startIndex, endIndex }};\n  }}, [scrollTop, itemHeight, containerHeight, items.length]);\n  \n  const visibleItems = useMemo(() => {{\n    return items.slice(visibleRange.startIndex, visibleRange.endIndex).map((item, index) => ({{\n      item,\n      index: visibleRange.startIndex + index,\n    }}));\n  }}, [items, visibleRange]);\n  \n  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {{\n    setScrollTop(event.currentTarget.scrollTop);\n  }}, []);\n  \n  const totalHeight = items.length * itemHeight;\n  \n  return (\n    <div\n      ref={{containerRef}}\n      style={{\n        height: containerHeight,\n        overflow: 'auto',\n      }}\n      onScroll={{handleScroll}}\n    >\n      <div style={{ height: totalHeight, position: 'relative' }}>\n        {{visibleItems.map(({{ item, index }}) => (\n          <div\n            key={{index}}\n            style={{\n              position: 'absolute',\n              top: index * itemHeight,\n              height: itemHeight,\n              width: '100%',\n            }}\n          >\n            {{renderItem(item, index)}}\n          </div>\n        ))}}\n      </div>\n    </div>\n  );\n}}\n```\n\n### Optimized Image Loading\n\n```typescript\nimport React, {{ useState, useRef, useEffect }} from 'react';\n\ninterface OptimizedImageProps {{\n  src: string;\n  alt: string;\n  placeholder?: string;\n  className?: string;\n  onLoad?: () => void;\n  onError?: () => void;\n}}\n\nconst OptimizedImage: React.FC<OptimizedImageProps> = React.memo(({{\n  src,\n  alt,\n  placeholder = '/placeholder.jpg',\n  className,\n  onLoad,\n  onError,\n}}) => {{\n  const [imageSrc, setImageSrc] = useState(placeholder);\n  const [isLoading, setIsLoading] = useState(true);\n  const imgRef = useRef<HTMLImageElement>(null);\n  \n  useEffect(() => {{\n    const img = imgRef.current;\n    if (!img) return;\n    \n    const handleLoad = () => {{\n      setImageSrc(src);\n      setIsLoading(false);\n      onLoad?.();\n    }};\n    \n    const handleError = () => {{\n      setIsLoading(false);\n      onError?.();\n    }};\n    \n    img.addEventListener('load', handleLoad);\n    img.addEventListener('error', handleError);\n    \n    // Start loading the actual image\n    img.src = src;\n    \n    return () => {{\n      img.removeEventListener('load', handleLoad);\n      img.removeEventListener('error', handleError);\n    }};\n  }}, [src, onLoad, onError]);\n  \n  return (\n    <div className={`optimized-image-container ${{isLoading ? 'loading' : ''}} ${{className}}`}>\n      {isLoading && <div className=\"image-skeleton\" />}\n      <img\n        ref={{imgRef}}\n        src={{imageSrc}}\n        alt={{alt}}\n        style={{\n          opacity: isLoading ? 0 : 1,\n          transition: 'opacity 0.3s ease-in-out',\n        }}}\n        loading=\"lazy\"\n        decoding=\"async\"\n      />\n    </div>\n  );\n}});\n```\n\n## Performance Monitoring\n\n### Performance Profiling Hook\n\n```typescript\nimport {{ useEffect, useRef, useState }} from 'react';\n\ninterface PerformanceMetrics {{\n  renderTime: number;\n  reRenderCount: number;\n  lastRenderTime: number;\n}}\n\nfunction usePerformanceMonitor(componentName: string) {{\n  const renderStartTime = useRef<number>(Date.now());\n  const [metrics, setMetrics] = useState<PerformanceMetrics>({{\n    renderTime: 0,\n    reRenderCount: 0,\n    lastRenderTime: 0,\n  }});\n  \n  useEffect(() => {{\n    const renderTime = Date.now() - renderStartTime.current;\n    \n    setMetrics(prev => ({{\n      renderTime,\n      reRenderCount: prev.reRenderCount + 1,\n      lastRenderTime: Date.now(),\n    }}));\n    \n    if (process.env.NODE_ENV === 'development') {{\n      console.log(`[Performance] ${{componentName}}:`, {{\n        renderTime: `${{renderTime}}ms`,\n        reRenderCount: prev.reRenderCount + 1,\n      }});\n    }}\n    \n    renderStartTime.current = Date.now();\n  }});\n  \n  return metrics;\n}}\n\n// Usage in component\nfunction ExpensiveComponent() {{\n  const metrics = usePerformanceMonitor('ExpensiveComponent');\n  \n  // Component logic...\n  \n  return (\n    <div>\n      {process.env.NODE_ENV === 'development' && (\n        <div className=\"performance-info\">\n          Render time: {{metrics.renderTime}}ms\n          Renders: {{metrics.reRenderCount}}\n        </div>\n      )}\n      {/* Component content */}\n    </div>\n  );\n}}\n```\n\n## Best Practices\n\n1. **Profile before optimizing** - Use React DevTools Profiler to identify bottlenecks\n2. **Memoize strategically** - Don't over-memoize; it can hurt performance\n3. **Use React.lazy for route splitting** - Break your app into manageable chunks\n4. **Optimize context** - Split contexts and use selectors to prevent unnecessary re-renders\n5. **Virtualize large lists** - Use windowing for lists with hundreds of items\n6. **Implement proper loading states** - Use Suspense boundaries strategically\n\n## Common Pitfalls\n\n1. **Over-memoizing** - Memoization has overhead; use it judiciously\n2. **Incorrect dependencies** - Missing dependencies in useCallback/useMemo can cause bugs\n3. **Inline function definitions** - These break memoization of child components\n4. **Large context values** - Big context objects cause frequent re-renders\n5. **Not using React.lazy** - Loading everything upfront hurts initial load time\n\nThis comprehensive guide covers the most important React performance optimization techniques for building fast, responsive applications.\n"""
+  };\n  onUpdate: (user: any) => void;\n  active: boolean;\n}\n\nconst UserProfile: React.FC<UserProfileProps> = React.memo(({ user, onUpdate, active }) => {\n  console.log('UserProfile re-rendered:', user.name);\n  \n  return (\n    <div className={`user-profile ${active ? 'active' : ''}`}>\n      <img src={user.avatar} alt={user.name} />\n      <div>\n        <h3>{user.name}</h3>\n        <p>{user.email}</p>\n      </div>\n      <button onClick={() => onUpdate(user)}>\n        Update\n      </button>\n    </div>\n  );\n});\n\n// Custom comparison function for fine-grained control\nconst OptimizedUserProfile = React.memo(\n  UserProfile,\n  (prevProps, nextProps) => {\n    // Only re-render if user changed or active status changed\n    return (\n      prevProps.user.id === nextProps.user.id &&\n      prevProps.active === nextProps.active\n    );\n  }\n);\n```\n\n### useCallback for Function Memoization\n\n```typescript\nimport React, { useState, useCallback } from 'react';\n\ninterface SearchComponentProps {\n  onSearch: (query: string) => void;\n}\n\nconst SearchComponent: React.FC<SearchComponentProps> = React.memo(({ onSearch }) => {\n  const [query, setQuery] = useState('');\n  \n  // Memoize the search function to prevent unnecessary re-renders of parent\n  const handleSearch = useCallback((searchQuery: string) => {\n    console.log('Searching for:', searchQuery);\n    onSearch(searchQuery);\n  }, [onSearch]);\n  \n  const handleSubmit = useCallback((event: React.FormEvent) => {\n    event.preventDefault();\n    handleSearch(query);\n  }, [query, handleSearch]);\n  \n  return (\n    <form onSubmit={handleSubmit}>\n      <input\n        type=\"text\"\n        value={query}\n        onChange={(e) => setQuery(e.target.value)}\n        placeholder=\"Search...\"\n      />\n      <button type=\"submit\">Search</button>\n    </form>\n  );\n});\n```\n\n### useMemo for Expensive Calculations\n\n```typescript\nimport React, { useState, useMemo } from 'react';\n\ninterface ExpensiveListProps {\n  items: number[];\n  filter: string;\n}\n\nconst ExpensiveList: React.FC<ExpensiveListProps> = (({ items, filter }) => {\n  // Memoize expensive filtering operation\n  const filteredItems = useMemo(() => {\n    console.log('Filtering items...');\n    return items.filter(item => \n      item.toString().includes(filter)\n    );\n  }, [items, filter]);\n  \n  // Memoize expensive calculation\n  const expensiveCalculation = useMemo(() => {\n    console.log('Performing expensive calculation...');\n    return filteredItems.reduce((sum, item) => {\n      // Simulate expensive computation\n      for (let i = 0; i < 1000000; i++) {\n        Math.sqrt(item);\n      }\n      return sum + item;\n    }, 0);\n  }, [filteredItems]);\n  \n  return (\n    <div>\n      <h3>Filtered Items ({filteredItems.length})</h3>\n      <p>Sum: {expensiveCalculation}</p>\n      <ul>\n        {filteredItems.slice(0, 10).map(item => (\n          <li key={item}>{item}</li>\n        ))}\n      </ul>\n    </div>\n  );\n});\n```\n\n## Code Splitting and Lazy Loading\n\n### Dynamic Imports with React.lazy\n\n```typescript\nimport React, { Suspense, lazy } from 'react';\n\n// Lazy load components\nconst HeavyDashboard = lazy(() => import('./components/HeavyDashboard'));\nconst AdminPanel = lazy(() => import('./components/AdminPanel'));\nconst ChartComponent = lazy(() => import('./components/ChartComponent'));\n\nfunction App(): React.ReactElement {\n  const [currentView, setCurrentView] = useState<'dashboard' | 'admin' | 'chart'>('dashboard');\n  \n  const renderView = useMemo(() => {\n    switch (currentView) {\n      case 'dashboard':\n        return <HeavyDashboard />;\n      case 'admin':\n        return <AdminPanel />;\n      case 'chart':\n        return <ChartComponent />;\n      default:\n        return <HeavyDashboard />;\n    }\n  }, [currentView]);\n  \n  return (\n    <div>\n      <nav>\n        <button onClick={() => setCurrentView('dashboard')}>Dashboard</button>\n        <button onClick={() => setCurrentView('admin')}>Admin</button>\n        <button onClick={() => setCurrentView('chart')}>Chart</button>\n      </nav>\n      \n      <Suspense fallback={\n        <div className=\"loading-container\">\n          <div className=\"spinner\"></div>\n          <p>Loading component...</p>\n        </div>\n      }>\n        {renderView}\n      </Suspense>\n    </div>\n  );\n}\n```\n\n### Route-based Code Splitting\n\n```typescript\n// App.tsx\nimport React, { Suspense } from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\n\nconst Home = lazy(() => import('./pages/Home'));\nconst About = lazy(() => import('./pages/About'));\nconst Contact = lazy(() => import('./pages/Contact'));\nconst Products = lazy(() => import('./pages/Products'));\n\nconst App: React.FC = () => (\n  <Router>\n    <Suspense fallback={<div>Loading page...</div>}>\n      <Routes>\n        <Route path=\"/\" element={<Home />} />\n        <Route path=\"/about\" element={<About />} />\n        <Route path=\"/contact\" element={<Contact />} />\n        <Route path=\"/products\" element={<Products />} />\n      </Routes>\n    </Suspense>\n  </Router>\n);\n```\n\n## State Management Optimization\n\n### Optimized Context Usage\n\n```typescript\nimport React, { createContext, useContext, useReducer, useMemo } from 'react';\n\n// Split context by feature for better performance\ntype AppState = {\n  user: User | null;\n  theme: 'light' | 'dark';\n  notifications: Notification[];\n};\n\ntype AppAction = \n  | { type: 'SET_USER'; payload: User | null }\n  | { type: 'SET_THEME'; payload: 'light' | 'dark' }\n  | { type: 'ADD_NOTIFICATION'; payload: Notification }\n  | { type: 'REMOVE_NOTIFICATION'; payload: string };\n\n// Separate contexts to prevent unnecessary re-renders\nconst UserContext = createContext<User | null>(null);\nconst ThemeContext = createContext<'light' | 'dark'>('light');\nconst NotificationContext = createContext<{\n  notifications: Notification[];\n  addNotification: (notification: Notification) => void;\n  removeNotification: (id: string) => void;\n}>({\n  notifications: [],\n  addNotification: () => {},\n  removeNotification: () => {},\n});\n\nfunction ThemeProvider({ children }: { children: React.ReactNode }) {\n  const [theme, setTheme] = useState<'light' | 'dark'>('light');\n  \n  const value = useMemo(() => ({ theme, setTheme }), [theme]);\n  \n  return (\n    <ThemeContext.Provider value={theme}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\n// Custom hooks for optimized context consumption\nfunction useTheme() {\n  return useContext(ThemeContext);\n}\n\nfunction useUser() {\n  return useContext(UserContext);\n}\n\n// Component only re-renders when notifications change\nfunction NotificationCenter() {\n  const { notifications, removeNotification } = useContext(NotificationContext);\n  \n  return (\n    <div className=\"notifications\">\n      {notifications.map(notification => (\n        <NotificationItem\n          key={notification.id}\n          notification={notification}\n          onClose={() => removeNotification(notification.id)}\n        />\n      ))}\n    </div>\n  );\n}\n```\n\n### Zustand for Optimized State Management\n\n```typescript\nimport { create } from 'zustand';\nimport { subscribeWithSelector } from 'zustand/middleware';\n\n// Optimized store with selectors\ninterface AppState {\n  users: User[];\n  loading: boolean;\n  error: string | null;\n  fetchUsers: () => Promise<void>;\n  addUser: (user: User) => void;\n  removeUser: (id: string) => void;\n  // Selectors\n  getUsersByRole: (role: string) => User[];\n  getUserById: (id: string) => User | undefined;\n}\n\nconst useAppStore = create<AppState>()(\n  subscribeWithSelector((set, get) => ({\n    users: [],\n    loading: false,\n    error: null,\n    \n    fetchUsers: async () => {\n      set({ loading: true, error: null });\n      try {\n        const users = await fetchUsersFromAPI();\n        set({ users, loading: false });\n      } catch (error) {\n        set({ error: error.message, loading: false });\n      }\n    },\n    \n    addUser: (user) => set((state) => ({\n      users: [...state.users, user]\n    })),\n    \n    removeUser: (id) => set((state) => ({\n      users: state.users.filter(user => user.id !== id)\n    })),\n    \n    // Selector functions for optimized subscriptions\n    getUsersByRole: (role) => {\n      const state = get();\n      return state.users.filter(user => user.role === role);\n    },\n    \n    getUserById: (id) => {\n      const state = get();\n      return state.users.find(user => user.id === id);\n    },\n  }))\n);\n\n// Optimized component with selective subscriptions\nfunction UserList() {\n  // Only re-render when users change\n  const users = useAppStore(state => state.users);\n  const removeUser = useAppStore(state => state.removeUser);\n  \n  return (\n    <ul>\n      {users.map(user => (\n        <UserItem\n          key={user.id}\n          user={user}\n          onDelete={() => removeUser(user.id)}\n        />\n      ))}\n    </ul>\n  );\n}\n\n// Component only re-renders when admin users change\nfunction AdminUserList() {\n  const adminUsers = useAppStore(\n    state => state.getUsersByRole('admin'),\n    // Custom equality function for fine-grained control\n    (a, b) => a.length === b.length && a.every(u => b.some(v => v.id === u.id))\n  );\n  \n  return (\n    <div>\n      <h2>Admin Users ({adminUsers.length})</h2>\n      <ul>\n        {adminUsers.map(user => (\n          <li key={user.id}>{user.name}</li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n```\n\n## Rendering Optimization\n\n### Virtual Scrolling for Large Lists\n\n```typescript\nimport React, { useMemo, useState, useCallback, useRef } from 'react';\n\ninterface VirtualListProps<T> {\n  items: T[];\n  itemHeight: number;\n  containerHeight: number;\n  renderItem: (item: T, index: number) => React.ReactNode;\n}\n\nfunction VirtualList<T>({\n  items,\n  itemHeight,\n  containerHeight,\n  renderItem,\n}: VirtualListProps<T>) {\n  const [scrollTop, setScrollTop] = useState(0);\n  const containerRef = useRef<HTMLDivElement>(null);\n  \n  const visibleRange = useMemo(() => {\n    const startIndex = Math.floor(scrollTop / itemHeight);\n    const endIndex = Math.min(\n      startIndex + Math.ceil(containerHeight / itemHeight) + 1,\n      items.length\n    );\n    \n    return { startIndex, endIndex };\n  }, [scrollTop, itemHeight, containerHeight, items.length]);\n  \n  const visibleItems = useMemo(() => {\n    return items.slice(visibleRange.startIndex, visibleRange.endIndex).map((item, index) => ({\n      item,\n      index: visibleRange.startIndex + index,\n    }));\n  }, [items, visibleRange]);\n  \n  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {\n    setScrollTop(event.currentTarget.scrollTop);\n  }, []);\n  \n  const totalHeight = items.length * itemHeight;\n  \n  return (\n    <div\n      ref={containerRef}\n      style={\n        height: containerHeight,\n        overflow: 'auto',\n      }\n      onScroll={handleScroll}\n    >\n      <div style={ height: totalHeight, position: 'relative' }>\n        {visibleItems.map(({ item, index }) => (\n          <div\n            key={index}\n            style={\n              position: 'absolute',\n              top: index * itemHeight,\n              height: itemHeight,\n              width: '100%',\n            }\n          >\n            {renderItem(item, index)}\n          </div>\n        ))}\n      </div>\n    </div>\n  );\n}\n```\n\n### Optimized Image Loading\n\n```typescript\nimport React, { useState, useRef, useEffect } from 'react';\n\ninterface OptimizedImageProps {\n  src: string;\n  alt: string;\n  placeholder?: string;\n  className?: string;\n  onLoad?: () => void;\n  onError?: () => void;\n}\n\nconst OptimizedImage: React.FC<OptimizedImageProps> = React.memo(({\n  src,\n  alt,\n  placeholder = '/placeholder.jpg',\n  className,\n  onLoad,\n  onError,\n}) => {\n  const [imageSrc, setImageSrc] = useState(placeholder);\n  const [isLoading, setIsLoading] = useState(true);\n  const imgRef = useRef<HTMLImageElement>(null);\n  \n  useEffect(() => {\n    const img = imgRef.current;\n    if (!img) return;\n    \n    const handleLoad = () => {\n      setImageSrc(src);\n      setIsLoading(false);\n      onLoad?.();\n    };\n    \n    const handleError = () => {\n      setIsLoading(false);\n      onError?.();\n    };\n    \n    img.addEventListener('load', handleLoad);\n    img.addEventListener('error', handleError);\n    \n    // Start loading the actual image\n    img.src = src;\n    \n    return () => {\n      img.removeEventListener('load', handleLoad);\n      img.removeEventListener('error', handleError);\n    };\n  }, [src, onLoad, onError]);\n  \n  return (\n    <div className={`optimized-image-container ${isLoading ? 'loading' : ''} ${className}`}>\n      {isLoading && <div className=\"image-skeleton\" />}\n      <img\n        ref={imgRef}\n        src={imageSrc}\n        alt={alt}\n        style={\n          opacity: isLoading ? 0 : 1,\n          transition: 'opacity 0.3s ease-in-out',\n        }}\n        loading=\"lazy\"\n        decoding=\"async\"\n      />\n    </div>\n  );\n});\n```\n\n## Performance Monitoring\n\n### Performance Profiling Hook\n\n```typescript\nimport { useEffect, useRef, useState } from 'react';\n\ninterface PerformanceMetrics {\n  renderTime: number;\n  reRenderCount: number;\n  lastRenderTime: number;\n}\n\nfunction usePerformanceMonitor(componentName: string) {\n  const renderStartTime = useRef<number>(Date.now());\n  const [metrics, setMetrics] = useState<PerformanceMetrics>({\n    renderTime: 0,\n    reRenderCount: 0,\n    lastRenderTime: 0,\n  });\n  \n  useEffect(() => {\n    const renderTime = Date.now() - renderStartTime.current;\n    \n    setMetrics(prev => ({\n      renderTime,\n      reRenderCount: prev.reRenderCount + 1,\n      lastRenderTime: Date.now(),\n    }));\n    \n    if (process.env.NODE_ENV === 'development') {\n      console.log(`[Performance] ${componentName}:`, {\n        renderTime: `${renderTime}ms`,\n        reRenderCount: prev.reRenderCount + 1,\n      });\n    }\n    \n    renderStartTime.current = Date.now();\n  });\n  \n  return metrics;\n}\n\n// Usage in component\nfunction ExpensiveComponent() {\n  const metrics = usePerformanceMonitor('ExpensiveComponent');\n  \n  // Component logic...\n  \n  return (\n    <div>\n      {process.env.NODE_ENV === 'development' && (\n        <div className=\"performance-info\">\n          Render time: {metrics.renderTime}ms\n          Renders: {metrics.reRenderCount}\n        </div>\n      )}\n      {/* Component content */}\n    </div>\n  );\n}\n```\n\n## Best Practices\n\n1. **Profile before optimizing** - Use React DevTools Profiler to identify bottlenecks\n2. **Memoize strategically** - Don't over-memoize; it can hurt performance\n3. **Use React.lazy for route splitting** - Break your app into manageable chunks\n4. **Optimize context** - Split contexts and use selectors to prevent unnecessary re-renders\n5. **Virtualize large lists** - Use windowing for lists with hundreds of items\n6. **Implement proper loading states** - Use Suspense boundaries strategically\n\n## Common Pitfalls\n\n1. **Over-memoizing** - Memoization has overhead; use it judiciously\n2. **Incorrect dependencies** - Missing dependencies in useCallback/useMemo can cause bugs\n3. **Inline function definitions** - These break memoization of child components\n4. **Large context values** - Big context objects cause frequent re-renders\n5. **Not using React.lazy** - Loading everything upfront hurts initial load time\n\nThis comprehensive guide covers the most important React performance optimization techniques for building fast, responsive applications.\n"""
 
         return ReactResponse(
             answer=answer,
@@ -2258,7 +2260,7 @@ async def _handle_animation_motion(self, request: ReactRequest, examples: list[d
     """Handle React animation and motion expertise."""
     return ReactResponse(
         answer="React animation solutions include Framer Motion, React Spring, and CSS animations for smooth user interactions.",
-        code_examples=["<motion.div animate={{ scale: 2 }} />", "useSpring({ x: springX })"],
+        code_examples=["<motion.div animate={ scale: 2 } />", "useSpring({ x: springX })"],
         confidence_score=0.8,
         react_version=request.react_version.value,
     )

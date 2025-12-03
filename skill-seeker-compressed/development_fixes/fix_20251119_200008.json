@@ -1,0 +1,53 @@
+{
+  "fix_id": "fix_20251119_200008",
+  "timestamp": "2025-11-19T20:00:08.139820",
+  "fix_type": "FixType.FRAMEWORK_UNIFICATION",
+  "severity": "SeverityLevel.HIGH",
+  "title": "BaseSkill Framework Parameter Compatibility",
+  "issue_description": "Two different BaseSkill classes causing registration failures",
+  "root_cause_analysis": "Framework A accepts skill_id/name/description, Framework B accepts no parameters",
+  "solution_implementation": "Unified all skills to use Framework A pattern with consistent parameters",
+  "affected_skills": [
+    {
+      "skill_id": "typescript_expert",
+      "skill_name": "TypeScript Expert Skill",
+      "issue_description": "Parameter mismatch in __init__",
+      "fix_applied": "Updated to Framework A with skill_id, name, description",
+      "status_before": "registration_error",
+      "status_after": "working"
+    },
+    {
+      "skill_id": "nodejs_expert",
+      "skill_name": "NodeJS Expert Skill",
+      "issue_description": "Parameter mismatch in __init__",
+      "fix_applied": "Updated to Framework A with skill_id, name, description",
+      "status_before": "registration_error",
+      "status_after": "working"
+    }
+  ],
+  "prevention_strategies": [
+    {
+      "strategy_type": "framework_validation",
+      "description": "Validate all skills use consistent BaseSkill framework",
+      "implementation": "Check __init__ signature matches Framework A pattern",
+      "automation_possible": true
+    },
+    {
+      "strategy_type": "import_standardization",
+      "description": "Standardize all skill imports to use Framework A",
+      "implementation": "Use single BaseSkill import path across all skills",
+      "automation_possible": true
+    }
+  ],
+  "impact_score": 9.2,
+  "transferable_patterns": [
+    "framework_parameter_validation",
+    "unified_baseclass_pattern"
+  ],
+  "tags": [
+    "base_skill",
+    "framework",
+    "compatibility",
+    "registration"
+  ]
+}

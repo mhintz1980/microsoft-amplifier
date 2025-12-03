@@ -430,7 +430,7 @@ class ISO9001Implementation:
 
     def gap_analysis(self, current_state):
         """
-        Comprehensive gap analysis for ISO 9001 requirements
+        Comprehensive gap analysis for ISO "9001" requirements
         """
         iso_requirements = {
             'quality_policy': {

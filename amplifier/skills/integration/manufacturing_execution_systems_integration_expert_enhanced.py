@@ -601,7 +601,7 @@ class ManufacturingExecutionSystemsIntegrationExpert(SignatureSkill[MESIntegrati
         )
 
     def calculate_control_limits(self, measurements: List[float]) -> Dict[str, float]:
-        \"\"\"Calculate X-bar chart control limits\"\"\"
+        """Calculate X-bar chart control limits"""
         if len(measurements) < 2:
             return {"ucl": 0, "lcl": 0, "center": 0}
 
@@ -620,7 +620,7 @@ class ManufacturingExecutionSystemsIntegrationExpert(SignatureSkill[MESIntegrati
         }
 
     def check_out_of_control(self, measurement: float, control_limits: Dict[str, float]) -> Dict:
-        \"\"\"Check if measurement is out of control\"\"\"
+        """Check if measurement is out of control"""
         is_out_of_control = (
             measurement > control_limits["ucl"] or
             measurement < control_limits["lcl"]
@@ -636,7 +636,7 @@ class ManufacturingExecutionSystemsIntegrationExpert(SignatureSkill[MESIntegrati
 
     def calculate_process_capability(self, measurements: List[float],
                                    usl: float, lsl: float) -> Dict[str, float]:
-        \"\"\"Calculate process capability indices (Cp, Cpk)\"\"\"
+        """Calculate process capability indices (Cp, Cpk)"""
         if len(measurements) < 2:
             return {"cp": 0, "cpk": 0}
 
@@ -674,7 +674,7 @@ if result["is_out_of_control"]:
     await self.trigger_quality_alert(result)
 
 print(f"Control Limits: UCL={control_limits['ucl']:.3f}, LCL={control_limits['lcl']:.3f}")
-                    """
+    """
                 }
             ],
             best_practices=[
@@ -755,7 +755,7 @@ print(f"Control Limits: UCL={control_limits['ucl']:.3f}, LCL={control_limits['lc
                 "Network communication performance"
             ],
             code_examples=[{"title":"Example","language":"python","code":"Example implementation"}]) -> Dict[str, float]:
-        \"\"\"Read real-time production data from OPC UA nodes\"\"\"
+        """Read real-time production data from OPC UA nodes"""
         if not self.client:
             raise RuntimeError("Not connected to OPC UA server")
 
@@ -771,7 +771,7 @@ print(f"Control Limits: UCL={control_limits['ucl']:.3f}, LCL={control_limits['lc
         return production_data
 
     async def send_to_mes(self, production_data: Dict[str, float]):
-        \"\"\"Send production data to MES system\"\"\"
+        """Send production data to MES system"""
         mes_payload = {
             "timestamp": datetime.now().isoformat(),
             "equipment_id": "EQ-001",
@@ -793,7 +793,7 @@ print(f"Control Limits: UCL={control_limits['ucl']:.3f}, LCL={control_limits['lc
                     print(f"Failed to send data to MES: {response.status}")
 
     async def monitor_equipment(self, node_ids: List[str], interval: float = 5.0):
-        \"\"\"Monitor equipment and send data to MES\"\"\"
+        """Monitor equipment and send data to MES"""
         await self.connect_to_opcua()
 
         try:
@@ -910,7 +910,7 @@ node_ids = [
                 "System response times"
             ],
             code_examples=[{"title":"Example","language":"python","code":"Example implementation"}]:
-        \"\"\"Read production data from PLC tags\"\"\"
+        """Read production data from PLC tags"""
         if not self.plc:
             return {}
 
@@ -925,7 +925,7 @@ node_ids = [
         return production_data
 
     def send_production_command(self, command: str, parameters: Dict = None) -> bool:
-        \"\"\"Send production command to PLC\"\"\"
+        """Send production command to PLC"""
         if not self.plc:
             return False
 
@@ -950,13 +950,13 @@ node_ids = [
             return False
 
     async def _auto_reset_reset_alarms(self):
-        \"\"\"Auto-reset alarm reset bit\"\"\"
+        """Auto-reset alarm reset bit"""
         await asyncio.sleep(1)
         if self.plc:
             self.plc.Write("ResetAlarms", 0)
 
     async def send_to_mes(self, production_data: Dict[str, any]):
-        \"\"\"Send production data to MES system\"\"\"
+        """Send production data to MES system"""
         mes_payload = {
             "timestamp": datetime.now().isoformat(),
             "equipment_id": "PLC-001",
@@ -977,7 +977,7 @@ node_ids = [
                 return response.status == 200
 
     async def monitor_plc_production(self, interval: float = 2.0):
-        \"\"\"Monitor PLC production and send data to MES\"\"\"
+        """Monitor PLC production and send data to MES"""
         if not self.connect_to_plc():
             raise RuntimeError("Failed to connect to PLC")
 
@@ -1002,7 +1002,7 @@ node_ids = [
                 self.plc.Disconnect()
 
     async def handle_plc_alarms(self, data: Dict[str, any]):
-        \"\"\"Handle PLC alarms and notifications\"\"\"
+        """Handle PLC alarms and notifications"""
         alarm_message = f"PLC Alarm Active - Equipment ID: PLC-001"
         print(f"ALARM: {alarm_message}")
 
@@ -1020,7 +1020,7 @@ node_ids = [
         await self.send_alarm_to_mes(alarm_payload)
 
     async def send_alarm_to_mes(self, alarm_payload: Dict):
-        \"\"\"Send alarm notification to MES\"\"\"
+        """Send alarm notification to MES"""
         # Similar implementation to send_to_mes for alarms
         pass
 
@@ -1117,7 +1117,7 @@ plc_integration = PLC_MES_Integration(
         return production_orders
 
     async def update_production_status(self, order_id: str, status: Dict) -> bool:
-        \"\"\"Update production order status\"\"\"
+        """Update production order status"""
         update_payload = {
             "order_id": order_id,
             "status": status.get("status", "IN_PROGRESS"),
@@ -1135,7 +1135,7 @@ plc_integration = PLC_MES_Integration(
         return success
 
     async def log_quality_data(self, quality_data: Dict) -> bool:
-        \"\"\"Log quality inspection results\"\"\"
+        """Log quality inspection results"""
         quality_payload = {
             "inspection_id": quality_data.get("inspection_id"),
             "order_id": quality_data.get("order_id"),
@@ -1153,7 +1153,7 @@ plc_integration = PLC_MES_Integration(
         return success
 
     async def _send_to_mes_api(self, endpoint: str, payload: Dict) -> bool:
-        \"\"\"Send data to MES API\"\"\"
+        """Send data to MES API"""
         # Implementation would make actual API calls
         print(f"Sending to MES API {endpoint}: {payload}")
         return True

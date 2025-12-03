@@ -387,9 +387,9 @@ class PumpSystemsIntegrationExpert(SignatureSkill):
 
 ```python
 def design_parallel_pump_system(total_flow_gpm, required_pressure_psi, number_pumps):
-    """
+    '''
     Design parallel pump system with redundancy
-    """
+    '''
     # Flow per pump (including redundancy)
     flow_per_pump = total_flow_gpm / number_pumps
 
@@ -434,9 +434,9 @@ print(f"Backup capacity: {parallel_system['backup_capacity']:.1f} GPM")
 
 ```python
 def design_series_pump_system(total_pressure_psi, flow_gpm, number_stages):
-    """
+    '''
     Design series pump system for high pressure
-    """
+  '''
     # Pressure per stage
     pressure_per_stage = total_pressure_psi / number_stages
 
@@ -480,9 +480,9 @@ print(f"Power loss: {series_system['power_loss_percent']:.1f}%")
 
 ```python
 def calculate_redundancy_requirements(criticality_level, annual_operating_hours, maintenance_interval_hours):
-    """
+    '''
     Calculate redundancy requirements based on criticality and operating conditions
-    """
+  '''
     # MTBF calculation based on criticality
     mtbf_hours = {
         'low': 8760,      # 1 year (8760 hours)
@@ -533,9 +533,9 @@ def calculate_redundancy_requirements(criticality_level, annual_operating_hours,
 ### 2. Fault Tolerance and Resilience
 ```python
 def analyze_system_fault_tolerance(pump_count, criticality_level, failure_rate_per_hour):
-    """
+    '''
     Analyze system fault tolerance and resilience
-    """
+  '''
     # Calculate failure probability for single pump
     single_pump_failure_rate = failure_rate_per_hour
 
@@ -595,7 +595,7 @@ def analyze_system_fault_tolerance(pump_count, criticality_level, failure_rate_p
 
         return PumpSystemsIntegrationResponse(
             answer=answer,
-            system_design[
+            system_design=[
                 {
                     "architecture": "Parallel with N+1 Redundancy",
                     "benefits": ["High reliability", "Easy maintenance", "Load sharing"],
@@ -611,7 +611,7 @@ def analyze_system_fault_tolerance(pump_count, criticality_level, failure_rate_p
                     "pressure_range": "Up to 10,000+ PSI"
                 }
             ],
-            control_systems[
+            control_systems=[
                 {
                     "strategy": "Distributed Control System (DCS)",
                     "advantages": ["Centralized control", "Advanced algorithms", "Data integration"],
@@ -623,7 +623,7 @@ def analyze_system_fault_tolerance(pump_count, criticality_level, failure_rate_p
                     "suitable_for": ["Small to medium systems", "Stand-alone applications", "Retrofit projects"]
                 }
             ],
-            integration_calculations[
+            integration_calculations=[
                 {
                     "calculation": "system_reliability",
                     "result": "R_system = 1 - (1 - R_pump)^n",

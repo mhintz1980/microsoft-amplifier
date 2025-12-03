@@ -444,9 +444,9 @@ print(f"BEP Efficiency: {curves['efficiency'][bep_index]:.1f}%")
 
 ```python
 def find_operating_point(pump_curves, system_curves):
-    """
+    '''
     Find intersection of pump and system curves
-    """
+    '''
     # System curve: H_system = H_static + k_system * Q^2
     h_static = 50  # ft (elevation + pressure head)
     k_system = 0.001  # System resistance coefficient
@@ -479,9 +479,9 @@ def find_operating_point(pump_curves, system_curves):
 #### 1. Affinity Laws for Speed Variation
 ```python
 def apply_affinity_laws(base_curves, new_speed_rpm, base_speed_rpm):
-    """
+    '''
     Apply affinity laws to predict performance at different speeds
-    """
+  '''
     speed_ratio = new_speed_rpm / base_speed_rpm
 
     # Flow varies directly with speed
@@ -508,10 +508,10 @@ def apply_affinity_laws(base_curves, new_speed_rpm, base_speed_rpm):
 #### 2. Specific Speed Calculations
 ```python
 def calculate_specific_speed(flow_gpm, head_ft, speed_rpm):
-    """
+    '''
     Calculate pump specific speed (N_s)
     N_s = (N * √Q) / H^(3/4)
-    """
+  '''
     if head_ft <= 0:
         return None
 
@@ -519,10 +519,10 @@ def calculate_specific_speed(flow_gpm, head_ft, speed_rpm):
     return ns
 
 def calculate_suction_specific_speed(flow_gpm, npshr_ft, speed_rpm):
-    """
+    '''
     Calculate suction specific speed (N_ss)
     N_ss = (N * √Q) / NPSHr^(3/4)
-    """
+  '''
     if npshr_ft <= 0:
         return None
 
@@ -561,7 +561,7 @@ else:
 
         return CentrifugalPumpResponse(
             answer=answer,
-            performance_curves[
+            performance_curves=[
                 {
                     "curve_type": "Head-Flow",
                     "equation": "H = H₀ - k × Q²",
@@ -581,7 +581,7 @@ else:
                     "characteristics": "Generally increasing with flow, minimum near shut-off"
                 }
             ],
-            efficiency_analysis[
+            efficiency_analysis=[
                 {
                     "metric": "Best Efficiency Point (BEP)",
                     "calculation": "Operating at 80-110% of BEP flow",
@@ -593,7 +593,7 @@ else:
                     "reason": "Avoid low-flow recirculation and high-flow overload"
                 }
             ],
-            performance_calculations[
+            performance_calculations=[
                 {
                     "calculation": "specific_speed",
                     "result": "N_s = (N × √Q) / H^(3/4)",

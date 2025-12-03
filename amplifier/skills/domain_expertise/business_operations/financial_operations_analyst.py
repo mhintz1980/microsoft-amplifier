@@ -519,7 +519,7 @@ class APAutomationAnalyzer:
     def _assess_volume_frequency(self, process: Dict) -> float:
         """Assess volume and frequency of AP process"""
         # Assess monthly invoice volume
-        monthly_volume = process.get('monthly_invoices', 1000)
+              monthly_volume = process.get('monthly_invoices', 1000),
 
         # Assess processing frequency (daily, weekly, monthly)
         processing_frequency = process.get('processing_frequency', 'monthly')
@@ -970,12 +970,12 @@ class InvoiceProcessingAutomation:
 
 # Example usage for {request.industry_sector.value.title().replace('_', ' ')} industry
 ap_analyzer = APAutomationAnalyzer({
-    'industry': '{request.industry_sector.value}',
-    'size': '{request.organization_size or 'medium'}',
-    'employees': {request.finance_team_size or 15},
-    'current_maturity': {request.automation_maturity or 2},
-    'budget': '{request.budget_range or '$500K-$1M'}',
-    'current_challenges': {request.current_challenges or ['manual_processing', 'payment_delays', 'supplier_management']}
+    'industry': f"{request.industry_sector.value}",
+    'size': f"{request.organization_size or 'medium'}",
+    'employees': f"{request.finance_team_size or 15}",
+    'current_maturity': f"{request.automation_maturity or 2}",
+    'budget': f"{request.budget_range or '$500K-$1M'}",
+    'current_challenges': f"{request.current_challenges or ['manual_processing', 'payment_delays', 'supplier_management']}"
 })
 
 # Sample AP processes for assessment
@@ -1010,7 +1010,7 @@ sample_ap_processes = [
         'fte_count': 2,
         'early_payment_discount': 0.01
     }
-]]
+]
 
 assessment_results = ap_analyzer.assess_ap_automation_readiness(sample_ap_processes)
 
@@ -1157,11 +1157,11 @@ class ERPIntegrationPlanner:
 integration_planner = ERPIntegrationPlanner()
 
 integration_architecture = integration_planner.design_integration_architecture({
-    'current_systems': {request.current_systems or ['sap', 'excel', 'manual']},
-    'automation_goals': {request.current_challenges or ['manual_processing', 'accuracy_improvement', 'cost_reduction']},
-    'budget_range': '{request.budget_range or '$500K-$1M}',
-    'team_size': {request.finance_team_size or 15},
-    'compliance_requirements': {request.compliance_requirements or ['SOX', 'GAAP']},
+    'current_systems': f"{request.current_systems or ['sap', 'excel', 'manual']}",
+    'automation_goals': f"{request.current_challenges or ['manual_processing', 'accuracy_improvement', 'cost_reduction']}",
+    'budget_range': f"{request.budget_range or '$500K-$1M'}",
+    'team_size': f"{request.finance_team_size or 15}",
+    'compliance_requirements': f"{request.compliance_requirements or ['SOX', 'GAAP']}",
     'scalability_needs': 'moderate_to_high'
 })
 

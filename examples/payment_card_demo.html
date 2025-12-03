@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Card Processing System - Demo</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a3b6c, #2c5282);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Responsive layout */
+        .payment-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-form-wrapper {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(40, 167, 69, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .trust-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .trust-badge {
+            padding: 0.5rem 1rem;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 1.5rem;
+            color: #065f46;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .trust-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Accessibility info */
+        .accessibility-info {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(1px, 1px, 0px);
+            white-space: nowrap;
+        }
+
+        /* Form group styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .required::after {
+            content: ' *';
+            color: #dc3545;
+            margin-left: 0.25rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .card-brand-icon {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 25px;
+            background-size: contain;
+        }
+
+        .card-brand-visa { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231432" d="M4 3a1 1 0 1 2.12l1.41-.64-.56A8 8 0a8 8 0-8 8.12l-1.41-.56A8 20 12l8 8 0v8a8 0-8 8-8H3a1 7 4.24-1.41-.56 24-6.92L3 17 4.24l1.41-.56A8 8z"/></svg>'); }
+        .card-brand-mastercard { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23eb3f0" d="M11 17c0 11.03-11.03A8 8 0a8 8 0-8 8-8H3a1 7 4.24-1.41-.56 24-6.92L3 17 4.24l1.41-.56A8 8z"/></svg>'); }
+        .card-brand-amex { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%230068f" d="M8 0c-4.463 0-10.536-10.536C8 0 0-6.496A8 8 0a8 8 0-8 8-8H3a1 7 4.24-1.41-.56 24-6.92L3 17 4.24l1.41-.56A8 8z"/></svg>'); }
+
+        /* Status indicators */
+        .field-status {
+            position: absolute;
+            top: 50%;
+            right: 2.5rem;
+            transform: translate(50%, -50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            font-size: 0.75rem;
+        }
+
+        .validation-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #f5c6cb;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .validation-message[role="alert"] {
+            display: block;
+            background: #a84442;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        .error-list {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .error-item {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        /* Button styles */
+        .form-actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 3.25rem;
+            position: relative;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .button-text {
+            font-size: 1rem;
+        }
+
+        .button-spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top: 2px solid transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        .button-spinner::after {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: -1px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ready {
+            background: linear-gradient(135deg, #28a745 0%, #2196f3 100%);
+        }
+
+        .loading {
+            background: linear-gradient(135deg, #6c757d 0%, #1e3c8f 100%);
+        }
+
+        /* CVV help button */
+        .cvv-help-button {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            cursor: help;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .cvv-help-button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .payment-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .form-input {
+                font-size: 16px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .payment-container {
+                max-width: 800px;
+                padding: 3rem;
+            }
+
+            .trust-badges {
+                gap: 1rem;
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .form-input {
+                border-width: 3px;
+                background: #000;
+                color: #fff;
+            }
+
+            .card-brand-icon {
+                filter: contrast(100%) brightness(1.2);
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .submit-button {
+                transition: none;
+            }
+
+            .button-spinner {
+                animation: none;
+            }
+
+            .trust-badge:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container" id="payment-container"></div>
+
+    <script type="module" src="../payment_card_ui.js"></script>
+    <script>
+        // Initialize payment card form with full configuration
+        const form = create_payment_form(
+            "payment-container",
+            {
+                enable_real_time_validation: true,
+                enable_animations: true,
+                accessibility_mode: "enhanced",
+                theme: "default",
+                language: "en",
+                onValidationChange: (results) => {
+                    console.log("Validation results:", results);
+
+                    // Update form appearance based on validation
+                    if (results.card_number?.valid) {{
+                        document.querySelector('.payment-form').classList.add('validated-card');
+                    }}
+                },
+                onSubmit: (data) => {
+                    console.log("Form submitted with data:", data);
+
+                    // Show success message
+                    const form = document.querySelector('.payment-form');
+                    form.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h2 style="color: #28a745; margin-bottom: 1rem;">✅ Payment Processed Successfully</h2>
+                            <p style="color: #666; margin-bottom: 1rem;">
+                                Card Brand: <strong>${{data.brand || 'Unknown'}}</strong><br>
+                                Card Number: ****${{data.card_number?.slice(-4) || '****'}<br>
+                                Status: <strong>${{data.card_number?.valid ? 'Valid' : 'Invalid'}}</strong>
+                            </p>
+                        </div>
+                    `;
+                }}
+            }
+        );
+
+        // Test with different card types
+        const testCases = [
+            {
+                name: "Valid Visa Card",
+                card_data: {
+                    card_number: "4532015112830366",
+                    expiry_month: "12",
+                    expiry_year: "25",
+                    cvv: "123",
+                    holder_name: "John Doe"
+                },
+                {
+                name: "Valid AMEX Card",
+                card_data: {
+                    card_number: "378282246310005",
+                    expiry_month: "06",
+                    expiry_year: "26",
+                    cvv: "1234",
+                    holder_name: "Jane Smith"
+                },
+                {
+                name: "Invalid Card Number",
+                card_data: {
+                    card_number: "1234567890123456",
+                    expiry_month: "invalid",
+                    expiry_year: "format",
+                    cvv: "99",
+                    holder_name: "Test User"
+                },
+                {
+                name: "Expired Card",
+                card_data: {
+                    card_number: "4532015112830366",
+                    expiry_month: "01",
+                    expiry_year: "20", // Past date
+                    cvv: "123",
+                    holder_name: "John Doe"
+                }
+            },
+            {
+                name: "Missing Required Fields",
+                card_data: {
+                    card_number: "",
+                    expiry_month: "",
+                    expiry_year: "",
+                    cvv: "",
+                    holder_name: ""
+                }
+            }
+        ];
+
+        // Create test buttons
+        setTimeout(() => {
+            const container = document.getElementById('payment-container');
+
+            const testPanel = document.createElement('div');
+            testPanel.className = 'test-panel';
+            testPanel.innerHTML = `
+                <h3 style="text-align: center; margin-bottom: 2rem; color: #2c5282;">Test Scenarios</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                    ${testCases.map((testCase, index) => `
+                        <button onclick="runTest(${index})"
+                                style="padding: 0.5rem 1rem; margin: 0.25rem; border: 1px solid #ddd; border-radius: 0.25rem; background: #f8f9fa; cursor: pointer; font-size: 0.875rem;"
+                                ${testCase.name}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            container.appendChild(testPanel);
+
+            // Add global test function
+            window.runTest = (testIndex) => {
+                const testCase = testCases[testIndex];
+                console.log(`Running test: ${testCase.name}`);
+
+                // Update form with test data
+                const form = document.querySelector('.payment-form');
+                const inputs = form.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.name in testCase.card_data) {{
+                        input.value = testCase.card_data[input.name];
+                    }}
+                }});
+
+                // Trigger validation
+                const submitButton = form.querySelector('button');
+                submitButton.click();
+            };
+
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -37,6 +37,47 @@ class ParallelCoordinator:
         self.agents = []
         self.results = {}
 
+
+class DependencyManager:
+    """Manages dependencies between agents and tasks."""
+
+    def __init__(self):
+        self.dependencies = {}
+        self.execution_order = []
+
+    def add_dependency(self, task_id: str, depends_on: str):
+        """Add a dependency relationship between tasks."""
+        if task_id not in self.dependencies:
+            self.dependencies[task_id] = []
+        self.dependencies[task_id].append(depends_on)
+
+    def get_execution_order(self, tasks: list) -> list:
+        """Get execution order based on dependencies."""
+        # Simple topological sort
+        visited = set()
+        order = []
+
+        def visit(task):
+            if task in visited:
+                return
+            visited.add(task)
+            for dep in self.dependencies.get(task, []):
+                visit(dep)
+            order.append(task)
+
+        for task in tasks:
+            visit(task)
+
+        return order
+
+
+class TaskComplexity(Enum):
+    """Task complexity levels for parallel processing."""
+
+    SIMPLE = "simple"
+    INTERMEDIATE = "intermediate"
+    COMPLEX = "complex"
+
     def add_agent(self, agent_id: str, agent: Any):
         """Add an agent to the coordinator."""
         self.agents.append((agent_id, agent))
@@ -109,35 +150,39 @@ __all__ = [
     # Basic coordination (always available)
     "AggregationStrategy",
     "ParallelCoordinator",
+    "DependencyManager",
+    "TaskComplexity",
 ]
 
 # Add full implementation exports if available
 if _has_full_implementation:
-    __all__.extend([
-        # Core coordination
-        "AgentPool",
-        "AgentPoolManager",
-        "AgentStatus",
-        "PoolConfiguration",
-        # Task routing and distribution
-        "TaskRouter",
-        "TaskRoutingDecision",
-        # Result aggregation and conflict resolution
-        "ResultAggregator",
-        "AggregatedResult",
-        "ConflictResolver",
-        # Performance monitoring and optimization
-        "PerformanceMonitor",
-        "PerformanceOptimizer",
-        "EfficiencyMetrics",
-        # Load balancing and dependency management
-        "LoadBalancer",
-        "TaskDependency",
-        "TaskPriority",
-        # Main coordinator
-        "ParallelAgentCoordinator",
-        "CoordinationRequest",
-        "CoordinationResult",
-        "get_parallel_coordinator",
-        "execute_parallel_tasks",
-    ])
+    __all__.extend(
+        [
+            # Core coordination
+            "AgentPool",
+            "AgentPoolManager",
+            "AgentStatus",
+            "PoolConfiguration",
+            # Task routing and distribution
+            "TaskRouter",
+            "TaskRoutingDecision",
+            # Result aggregation and conflict resolution
+            "ResultAggregator",
+            "AggregatedResult",
+            "ConflictResolver",
+            # Performance monitoring and optimization
+            "PerformanceMonitor",
+            "PerformanceOptimizer",
+            "EfficiencyMetrics",
+            # Load balancing and dependency management
+            "LoadBalancer",
+            "TaskDependency",
+            "TaskPriority",
+            # Main coordinator
+            "ParallelAgentCoordinator",
+            "CoordinationRequest",
+            "CoordinationResult",
+            "get_parallel_coordinator",
+            "execute_parallel_tasks",
+        ]
+    )

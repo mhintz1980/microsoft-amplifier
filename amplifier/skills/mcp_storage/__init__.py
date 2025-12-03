@@ -27,6 +27,7 @@ __all__ = [
     "BackupRecoveryManager",
     "PerformanceMonitor",
     "IntegrationConnectors",
+    "get_skill_repository",
 ]
 
 # Global instances
@@ -96,6 +97,16 @@ def get_integration_connectors():
 
         _integration_connectors = IntegrationConnectors()
     return _integration_connectors
+
+
+def get_skill_repository():
+    """Get the global skill repository manager instance."""
+    global _skill_repository_manager
+    if _skill_repository_manager is None:
+        from .skill_repository_manager import SkillRepositoryManager
+
+        _skill_repository_manager = SkillRepositoryManager()
+    return _skill_repository_manager
 
 
 async def initialize_mcp_storage():

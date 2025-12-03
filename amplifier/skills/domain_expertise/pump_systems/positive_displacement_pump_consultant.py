@@ -605,9 +605,9 @@ print(f"Confidence: {selection_result['confidence_score']:.1%}")
 def calculate_total_cost_ownership(pump_type, initial_cost, efficiency,
                                  maintenance_interval, labor_cost_hour,
                                  energy_cost_kwh, annual_hours):
-    """
+    '''
     Calculate 10-year total cost of ownership
-    """
+    '''
     # Energy cost calculation
     power_rating = 10  # Example HP
     energy_cost_annual = (power_rating * 0.746 * annual_hours *
@@ -651,7 +651,7 @@ for pump_type, params in costs.items():
 
         return PositiveDisplacementPumpResponse(
             answer=answer,
-            pump_recommendations[
+            pump_recommendations=[
                 {
                     "pump_type": "Axial Piston",
                     "best_applications": ["High pressure hydraulics", "Precision control", "Mobile equipment"],
@@ -677,7 +677,7 @@ for pump_type, params in costs.items():
                     "efficiency": "75-85%"
                 }
             ],
-            performance_calculations[
+            performance_calculations=[
                 {
                     "calculation": "pump_displacement",
                     "result": "V = (Q × 231) / (N × η_v)",
@@ -689,21 +689,21 @@ for pump_type, params in costs.items():
                     "parameters": ["P_hp: power (HP)", "Q: flow (GPM)", "P: pressure (PSI)", "η_o: overall efficiency"]
                 }
             ],
-            best_practices[
+            best_practices=[
                 "Select pump based on application requirements, not just pressure and flow",
                 "Consider total cost of ownership including energy and maintenance costs",
                 "Ensure fluid compatibility and proper filtration",
                 "Plan for maintenance access and service requirements",
                 "Consider future expansion and flexibility needs"
             ],
-            optimization_recommendations[
+            optimization_recommendations=[
                 "Use variable displacement pumps for varying flow requirements",
                 "Implement proper filtration to extend pump life",
                 "Consider energy recovery systems for high-power applications",
                 "Select pumps with built-in monitoring and diagnostic capabilities",
                 "Design for easy maintenance and component replacement"
             ],
-            industry_standards[
+            industry_standards=[
                 {"standard": "ISO 4414", "description": "Hydraulic fluid power - General rules and safety requirements for systems and their components"},
                 {"standard": "NFPA T3.6.7", "description": "Hydraulic Power Pumps - Performance Test Code"},
                 {"standard": "SAE J745", "description": "Hydraulic Pump Test Procedure"}
@@ -715,7 +715,7 @@ for pump_type, params in costs.items():
         """Handle flow control and pressure regulation expertise."""
         return PositiveDisplacementPumpResponse(
             answer="# Flow Control and Pressure Regulation Systems\n\nComprehensive analysis of control strategies for positive displacement pumps...",
-            flow_control_systems[
+            flow_control_systems=[
                 {
                     "method": "Servo Control",
                     "accuracy": "±0.1%",
@@ -736,7 +736,7 @@ for pump_type, params in costs.items():
         """Handle seal technology expertise."""
         return PositiveDisplacementPumpResponse(
             answer="# Positive Displacement Pump Seal Technology\n\nComprehensive analysis of sealing solutions...",
-            seal_technology[
+            seal_technology=[
                 {
                     "seal_type": "Mechanical Seal",
                     "advantages": ["Low leakage", "Long life", "Suitable for high pressure"],

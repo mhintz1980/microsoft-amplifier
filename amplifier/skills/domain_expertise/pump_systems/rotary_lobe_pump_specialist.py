@@ -452,9 +452,9 @@ print(f"Surface finish: {specs['surface_finish']} Ra")
 #### Operating Parameters
 ```python
 def calculate_sanitary_operating_limits(rotor_diameter, material_strength):
-    """
+    '''
     Calculate operating limits for sanitary rotary lobe pumps
-    """
+    '''
     # Maximum pressure based on rotor size
     max_pressure = min(400, rotor_diameter * 50)  # PSI
 
@@ -499,7 +499,7 @@ def calculate_sanitary_operating_limits(rotor_diameter, material_strength):
                     "limitations": "Slightly lower strength than 316"
                 }
             ],
-            performance_calculations[
+            performance_calculations=[
                 {
                     "calculation": "sanitary_displacement",
                     "result": "V = (π/4) × (D² - d²) × L × n",
@@ -534,7 +534,7 @@ def calculate_sanitary_operating_limits(rotor_diameter, material_strength):
                 "Quarterly seal inspection and replacement",
                 "Annual rotor clearance measurement and adjustment"
             ],
-            industry_standards[
+            industry_standards=[
                 {"standard": "3-A SSI 01-00", "description": "General Requirements for 3-A Sanitary Standards"},
                 {"standard": "EHEDG Doc. 8", "description": "Metallic Materials in Contact with Food"},
                 {"standard": "FDA 21 CFR 177.2600", "description": "Indirect Food Additives"},
@@ -560,9 +560,9 @@ def calculate_sanitary_operating_limits(rotor_diameter, material_strength):
 
 ```python
 def calculate_high_viscosity_pump_specs(viscosity_cp, flow_rate_gpm, temperature_f):
-    """
+    '''
     Calculate pump specifications for high-viscosity applications
-    """
+  '''
     # Temperature correction factor
     temp_correction = 1.0 + ((viscosity_cp - 1000) / 10000) * ((140 - temperature_f) / 100)
 
@@ -618,9 +618,9 @@ def calculate_high_viscosity_pump_specs(viscosity_cp, flow_rate_gpm, temperature
 
 ```python
 def calculate_viscosity_temperature_curve(base_viscosity, base_temp, target_temp):
-    """
+    '''
     Estimate viscosity at different temperature using ASTM D341
-    """
+  '''
     log_viscosity = math.log10(base_viscosity)
 
     # Simplified viscosity-temperature relationship
@@ -654,9 +654,9 @@ print(f"Viscosity at 100°F: {visc_100f:.0f} cP")
 #### Speed Control
 ```python
 def optimize_pump_speed(viscosity_cp, target_flow_gpm, pump_displacement):
-    """
+    '''
     Calculate optimal pump speed for high-viscosity fluids
-    """
+  '''
     # Viscosity limit curve (empirical)
     max_viscosity_speed = 300000 / viscosity_cp  # RPM
 
@@ -676,7 +676,7 @@ def optimize_pump_speed(viscosity_cp, target_flow_gpm, pump_displacement):
 
         return RotaryLobePumpResponse(
             answer=answer,
-            design_recommendations[
+            design_recommendations=[
                 "Select bi-lobe configuration for viscosities above 10,000 cP",
                 "Install heating systems for temperature-sensitive viscous fluids",
                 "Use oversize inlet piping to reduce suction losses",

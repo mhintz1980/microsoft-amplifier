@@ -500,38 +500,38 @@ specs = calculate_robot_specifications(
 # ```python
 # class GripperSelection:
 #     """Advanced gripper selection algorithm based on application requirements"""
-
-    #     def __init__(self):
+#
+#     def __init__(self):
 #         self.gripper_database = {
-            'pneumatic_parallel': {
-                'payload_range': (1, 50),
-                'precision_mm': 0.5,
-                'response_time_s': 0.1,
-                'cost_factor': 1.0,
-                'suitable_for': ['boxes', 'rigid_parts', 'cylinders']
-            },
-            'electric_parallel': {
-                'payload_range': (0.5, 20),
-                'precision_mm': 0.05,
-                'response_time_s': 0.05,
-                'cost_factor': 2.5,
-                'suitable_for': ['delicate_parts', 'electronics', 'assembly']
-            },
-            'vacuum_cup': {
-                'payload_range': (0.1, 30),
-                'precision_mm': 1.0,
-                'response_time_s': 0.2,
-                'cost_factor': 0.8,
-                'suitable_for': ['flat_surfaces', 'boxes', 'glass', 'sheet_metal']
-            },
-            'magnetic': {
-                'payload_range': (5, 100),
-                'precision_mm': 2.0,
-                'response_time_s': 0.15,
-                'cost_factor': 1.5,
-                'suitable_for': ['ferrous_metal', 'machined_parts']
-            }
-        }
+#             'pneumatic_parallel': {
+#                 'payload_range': (1, 50),
+#                 'precision_mm': 0.5,
+#                 'response_time_s': 0.1,
+#                 'cost_factor': 1.0,
+#                 'suitable_for': ['boxes', 'rigid_parts', 'cylinders']
+#             },
+#            'electric_parallel': {
+#                'payload_range': (0.5, 20),
+#                'precision_mm': 0.05,
+#                'response_time_s': 0.05,
+#                'cost_factor': 2.5,
+#                'suitable_for': ['delicate_parts', 'electronics', 'assembly']
+#            },
+  #            'vacuum_cup': {
+#                'payload_range': (0.1, 30),
+#                'precision_mm': 1.0,
+#                'response_time_s': 0.2,
+#                'cost_factor': 0.8,
+#                'suitable_for': ['flat_surfaces', 'boxes', 'glass', 'sheet_metal']
+#            },
+#            'magnetic': {
+#                'payload_range': (5, 100),
+#                'precision_mm': 2.0,
+#                'response_time_s': 0.15,
+#                'cost_factor': 1.5,
+#                'suitable_for': ['ferrous_metal', 'machined_parts']
+#            }
+#        }
 
     def select_gripper(self, part_characteristics, application_constraints):
         """
